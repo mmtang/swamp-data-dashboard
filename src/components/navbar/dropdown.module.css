@@ -1,0 +1,46 @@
+/* navItem's default properties are in nav-bar.module.css */
+
+.navItem:hover {
+    background: #20639b;
+}
+
+.navItem:hover .subMenu {
+    display: block;
+}
+
+.navItem:hover .subMenuItem {
+    display: block;
+}
+
+.navText {
+    color: #fff;
+    padding: 0 20px;
+}
+
+.subMenu {
+    display: none;
+    list-style: none;
+    position: absolute;
+    vertical-align: baseline;
+    background: #20639b;
+    padding: 0;
+    margin: 0;
+    z-index: 800;
+}
+
+.subMenu > a {
+    text-decoration: none;
+}
+
+.subMenuItem {
+    display: block;
+    min-width: 117px;
+    padding: 10px 18px;
+    line-height: 20px;
+    color: #fff;
+    font-size: 1em;
+}
+
+.subMenuItem:hover {
+    background: #3caea3;
+}

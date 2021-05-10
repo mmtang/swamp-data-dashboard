@@ -1,0 +1,41 @@
+.navBar {
+    display: flex;
+    position: fixed;
+    width: 100vw;
+    left: 0;
+    top: 0;
+    height: 60px;
+    background-color: #173f5f;
+    color: #fff;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.navTitle {
+    color: #ffffff;
+    font-size: 1.4em;
+    font-weight: 600;
+    margin: 15px;
+}
+
+.navMenu > ul {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.navMenu > ul > li {
+    display: inline-block;
+    list-style: none;
+    vertical-align: baseline;
+    color: inherit;
+    font-size: 1em;
+    font-weight: 400;
+    height: 60px;
+    margin: 0;
+    border: 0;
+    line-height: 60px;
+    padding: 0;
+}
+

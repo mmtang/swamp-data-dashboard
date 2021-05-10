@@ -1,0 +1,25 @@
+.mapContainer {
+    height: calc(100% - 60px);
+    top: 60px;
+    order: 1;
+    flex-basis: 40%;
+    z-index: 2;
+}
+
+.mainContainer {
+    height: calc(100% - 60px);
+    background-color: #fff;
+    top: 60px;
+    order: 2;
+    flex-basis: 60%;
+    overflow-y: auto;
+    z-index: 50 !important;
+}
+
+.infoContainer {
+    height: auto;
+    max-width: 823px;
+    background-color: #fff;
+    margin: 0;
+    padding: 22px;
+}
