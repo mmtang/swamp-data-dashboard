@@ -1,12 +1,14 @@
 import React from 'react';
 import Layout from '../components/layout/layout';
+import MapIndex from '../components/map/map-index';
 import { mapContainer, mainContainer, infoContainer } from './index.module.css';
 
 class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedStation: null
+      selectedStation: null,
+      stations: []
     }
   }
 
@@ -14,7 +16,7 @@ class Index extends React.Component {
     return (
       <Layout>
         <div className={mapContainer}>
-          {/* Map */}
+          <MapIndex stations={this.state.stations} />
         </div>
         <div className={mainContainer}>
           <div className={infoContainer}>
