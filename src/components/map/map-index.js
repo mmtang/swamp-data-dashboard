@@ -1,5 +1,7 @@
 import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { loadModules } from 'esri-loader';
+import StationPopup from './station-popup';
 
 
 class MapIndex extends React.Component {
@@ -7,7 +9,7 @@ class MapIndex extends React.Component {
         super(props);
         this.state = {
             stationData: [],
-            hoveredStation: null
+            hoveredStation: {}
         }
         this.mapRef = React.createRef();
     }
@@ -64,9 +66,9 @@ class MapIndex extends React.Component {
                     color: '#fff'
                 }
             }
-        }
+        };
         const stationTemplate = {
-            content: 'Test'
+            content: this.stationPopup
         }
 
         const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=500';
@@ -77,26 +79,51 @@ class MapIndex extends React.Component {
                 const stationData = this.convertToGeoJSON(records);
                 const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
                 const url = URL.createObjectURL(blob);
-                const layer = new GeoJSONLayer({
+                this.stations = new GeoJSONLayer({
                   id: 'stationLayer',
                   url: url,
-                  renderer: stationRenderer
+                  outFields: ['StationName'],
+                  renderer: stationRenderer,
+                  popupTemplate: stationTemplate
                 });
-                this.map.add(layer);
+                this.map.add(this.stations);
+                initializePopup();
             })
             .catch((err) => {
               console.error(err);
             });
-    }
 
-    /*
-    getStations = () => {
-        const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=500';
-        return fetch(url)
-            .then((resp => resp.json()))
-            .then((json) => json.result.records);
+        const initializePopup = () => {
+            // hover listener
+            let lResult = { attributes: { StationName: null } };
+            this.view.on('pointer-move', (event) => {
+                const opts = { include: this.stations };
+                this.view.hitTest(event, opts).then((response) => {
+                    if (response.results.length > 0) {
+                        const result = response.results[0];
+                        if (result.graphic.layer.id === this.stations.id) {
+                            // check if you are still over the same graphic in the pointer-move event
+                            // fixes the flickering issue
+                            if (lResult.attributes.StationName !== result.graphic.attributes.StationName) {
+                                this.setState({ 
+                                    hoveredStation: {
+                                        name: result.graphic.attributes.StationName
+                                    }
+                                });
+                                this.view.popup.open({
+                                    features: [result.graphic],
+                                    location: result.graphic.geometry.centroid
+                                });
+                                lResult = result.graphic;
+                            }
+                        } 
+                    } else {
+                        this.view.popup.close();
+                    }
+                });
+            });
+        }
     }
-    */
 
     initializeMap = (Map, MapView) => {
         this.map = new Map({
@@ -116,10 +143,17 @@ class MapIndex extends React.Component {
                 breakpoint: false,
                 collapseEnabled: false,
                 visibleElements: {
-                    closeButton: false
+                    closeButton: false,
+                    zoomIn: false
                 }
             }
         });
+        this.view.popup.viewModel.actions = [];
+    }
+
+    stationPopup = () => {
+        const content = ReactDOMServer.renderToString(<StationPopup station={this.state.hoveredStation} />);
+        return content;
     }
 
     componentDidMount = () => {
@@ -127,12 +161,17 @@ class MapIndex extends React.Component {
         loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/FeatureLayer', 'esri/layers/GeoJSONLayer'], { css: true })
         .then(([Map, MapView, FeatureLayer, GeoJSONLayer]) => {
             this.initializeMap(Map, MapView);
-            this.drawBoundaries(FeatureLayer);
             this.drawStations(GeoJSONLayer);
         })
         .catch(err => {
             console.error(err);
         });
+    }
+
+    componentWillUnmount = () => {
+        if (this.view) {
+            this.view.destroy();
+        }
     }
 
     render() {
