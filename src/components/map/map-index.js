@@ -37,6 +37,70 @@ class MapIndex extends React.Component {
         }
     }
 
+    drawAttains = (FeatureLayer) => {
+        const lineRenderer = {
+            type: 'simple',
+            symbol: {
+                type: 'simple-line',
+                color: '#0baca1',
+            }
+        };
+        const polyRenderer = {
+            type: 'simple',
+            symbol: {
+                type: "simple-fill",
+                color: 'rgba(11,172,161,100)',
+                outline: {
+                    color: '#0baca1'
+                }
+            }
+        }
+        const attainsTemplate = {
+            title: '{assessmentunitname}<br><span style="font-size: 10px">Assessment ID: {assessmentunitidentifier}</span>',
+            content: [
+                {
+                    type: 'fields',
+                    fieldInfos: [
+                        {
+                            fieldName: 'overallstatus',
+                            label: 'Status'
+                        },
+                        {
+                            fieldName: 'on303dlist',
+                            label: 'On 303(d) List'
+                        },
+                        {
+                            fieldName: 'reportingcycle',
+                            label: 'Year Reported'
+                        },
+                        {
+                            fieldName: 'waterbodyreportlink',
+                            label: 'USEPA ATTAINS Waterbody Report'
+                        }
+                    ]
+                }
+            ]
+        };
+        this.attainsPolys = new FeatureLayer({
+            id: 'attainsPolys',
+            url: 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/2',
+            outfields: ['reportingcycle', 'assessmentunitname', 'assessmentunitidentifier', 'waterbodyreportlink', 'overallstatus', 'on303dlist'],
+            definitionExpression: "organizationid='CA_SWRCB'",
+            popupTemplate: attainsTemplate,
+            renderer: polyRenderer
+        });
+        this.attainsLines = new FeatureLayer({
+            id: 'attainsLines',
+            url: 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/1',
+            outfields: ['reportingcycle', 'assessmentunitname', 'assessmentunitidentifier', 'waterbodyreportlink', 'overallstatus', 'on303dlist'],
+            definitionExpression: "organizationid='CA_SWRCB'",
+            popupTemplate: attainsTemplate,
+            renderer: lineRenderer
+        })
+        //this.map.addMany([this.attainsPolys, this.attainsLines]);
+        this.map.add(this.attainsPolys);
+    }
+
     drawBoundaries = (FeatureLayer) => {
         const boundariesRenderer = {
             type: 'simple',
@@ -65,7 +129,7 @@ class MapIndex extends React.Component {
                 .then((d) => resolve(d));
             });
         }
-        const fetchRelatedData = (feature) => {
+        const buildPopupContent = (feature) => {
             const waterbodyID = feature.graphic.attributes['OBJECTID'];
             const urlPolys = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/0/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=2&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
             const urlLines = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/1/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=2&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
@@ -88,7 +152,7 @@ class MapIndex extends React.Component {
         }
         const bpTemplate = {
             title: '{WB_NAME} ({OBJECTID})',
-            content: fetchRelatedData
+            content: buildPopupContent
         }
         this.bpFeatures = new MapImageLayer({
             url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer',
@@ -122,6 +186,7 @@ class MapIndex extends React.Component {
         const stationTemplate = {
             content: this.stationPopup
         }
+                    
 
         const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=500';
         fetch(url)
@@ -213,9 +278,12 @@ class MapIndex extends React.Component {
         loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/FeatureLayer', 'esri/layers/GeoJSONLayer', 'esri/layers/MapImageLayer'], { css: true })
         .then(([Map, MapView, FeatureLayer, GeoJSONLayer, MapImageLayer]) => {
             this.initializeMap(Map, MapView);
-            this.drawBoundaries(FeatureLayer);
-            this.drawStations(GeoJSONLayer);
-            this.drawBPMP(MapImageLayer);
+            this.view.when(() => {
+                this.drawAttains(FeatureLayer);
+                this.drawBoundaries(FeatureLayer);
+                this.drawStations(GeoJSONLayer);
+                //this.drawBPMP(MapImageLayer);
+            });
         })
         .catch(err => {
             console.error(err);

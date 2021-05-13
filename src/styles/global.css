@@ -53,13 +53,14 @@ a {
 }
 
 .esri-popup__header h2 {
-  font-size: 1.2em !important;
+  font-size: 1.3em !important;
 }
 
 .esri-popup--shadow {
   box-shadow: 0 1px 4px rgba(0, 0, 0, .2) !important;
 }
 
+/*
 .esri-popup__main-container.esri-widget {
   width: auto !important;
   max-width: 250px !important;
@@ -68,6 +69,7 @@ a {
 .esri-popup__content {
   margin: 0 !important;
 }
+*/
 
 /* To hide the footer area in ArcGIS 4.14 */
 .esri-popup__footer {
