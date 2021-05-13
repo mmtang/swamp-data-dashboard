@@ -2,7 +2,7 @@
     height: calc(100% - 60px);
     top: 60px;
     order: 1;
-    flex-basis: 40%;
+    flex-basis: 60%;
     z-index: 2;
 }
 
@@ -11,7 +11,7 @@
     background-color: #fff;
     top: 60px;
     order: 2;
-    flex-basis: 60%;
+    flex-basis: 40%;
     overflow-y: auto;
     z-index: 50 !important;
 }
@@ -21,5 +21,5 @@
     max-width: 823px;
     background-color: #fff;
     margin: 0;
-    padding: 22px;
+    padding: 12px 26px;
 }

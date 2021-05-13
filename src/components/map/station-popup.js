@@ -7,14 +7,13 @@ class StationPopup extends React.Component {
     render() {
         return (
             <div className={header}>
-                <IconStation size={28} />
+                <IconStation />
                 <div className={headerRight}>
                     <h5 className={title}>{this.props.station.name}</h5>
                 </div>
             </div>
         )
     }
-
 }
 
 export default StationPopup;

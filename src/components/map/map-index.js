@@ -9,7 +9,9 @@ class MapIndex extends React.Component {
         super(props);
         this.state = {
             stationData: [],
-            hoveredStation: {}
+            hoveredStation: {},
+            hoveredWaterbody: {},
+            clickedWaterbody: {}
         }
         this.mapRef = React.createRef();
     }
@@ -53,6 +55,56 @@ class MapIndex extends React.Component {
             renderer: boundariesRenderer
         });
         this.map.add(this.rbBoundaries);
+    }
+
+    drawBPMP = (MapImageLayer) => {
+        const fetchData = (url) => {
+            return new Promise((resolve, reject) => {
+                fetch(url)
+                .then((resp) => resp.json())
+                .then((d) => resolve(d));
+            });
+        }
+        const fetchRelatedData = (feature) => {
+            const waterbodyID = feature.graphic.attributes['OBJECTID'];
+            const urlPolys = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/0/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=2&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
+            const urlLines = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/1/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=2&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
+            Promise.all([
+                fetchData(urlPolys),
+                fetchData(urlLines)
+            ]).then((res) => {
+                console.log(res);
+                let buData;
+                if (res[0].relatedRecordGroups && res[0].relatedRecordGroups.length > 0) {
+                    buData = res[0].relatedRecordGroups[0].relatedRecords;
+                } else if (res[1].relatedRecordGroups && res[1].relatedRecordGroups.length > 0) {
+                    buData = res[1].relatedRecordGroups[0].relatedRecords;
+                } else {
+                    console.error('No related records found')
+                }
+                console.log(buData.map(d => d.attributes));
+            });
+            return '<div><ul><li>Hello</li><li>there</li></ul></div>'
+        }
+        const bpTemplate = {
+            title: '{WB_NAME} ({OBJECTID})',
+            content: fetchRelatedData
+        }
+        this.bpFeatures = new MapImageLayer({
+            url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer',
+            sublayers: [
+                {
+                    id: 0, // polygon sublayer
+                    definitionExpression: "REG_ID = '2S'",
+                    popupTemplate: bpTemplate
+                }, {
+                    id: 1, // line sublayer
+                    definitionExpression: "REG_ID = '2S'",
+                    popupTemplate: bpTemplate
+                }
+            ]
+        });
+        this.map.add(this.bpFeatures);
     }
 
     drawStations = (GeoJSONLayer) => {
@@ -118,7 +170,7 @@ class MapIndex extends React.Component {
                             }
                         } 
                     } else {
-                        this.view.popup.close();
+                        //this.view.popup.close();
                     }
                 });
             });
@@ -158,10 +210,12 @@ class MapIndex extends React.Component {
 
     componentDidMount = () => {
         // make sure the loaded modules match in exact order of the callback variables
-        loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/FeatureLayer', 'esri/layers/GeoJSONLayer'], { css: true })
-        .then(([Map, MapView, FeatureLayer, GeoJSONLayer]) => {
+        loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/FeatureLayer', 'esri/layers/GeoJSONLayer', 'esri/layers/MapImageLayer'], { css: true })
+        .then(([Map, MapView, FeatureLayer, GeoJSONLayer, MapImageLayer]) => {
             this.initializeMap(Map, MapView);
+            this.drawBoundaries(FeatureLayer);
             this.drawStations(GeoJSONLayer);
+            this.drawBPMP(MapImageLayer);
         })
         .catch(err => {
             console.error(err);
@@ -179,7 +233,7 @@ class MapIndex extends React.Component {
             <div 
                 className="map" 
                 ref={this.mapRef} 
-                style={{ width: "50vw", height: `calc(100vh - 60px)` }} />
+                style={{ width: "60vw", height: `calc(100vh - 60px)` }} />
         )
     }
 }
