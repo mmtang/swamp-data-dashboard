@@ -53,7 +53,7 @@ a {
 }
 
 .esri-popup__header h2 {
-  font-size: 1.3em !important;
+  font-size: 1.2em !important;
 }
 
 .esri-popup--shadow {
@@ -74,4 +74,8 @@ a {
 /* To hide the footer area in ArcGIS 4.14 */
 .esri-popup__footer {
   display: none !important;
+}
+
+.map-popup-subtitle {
+  font-size: 11px;
 }

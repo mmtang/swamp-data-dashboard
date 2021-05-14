@@ -56,7 +56,7 @@ class MapIndex extends React.Component {
             }
         }
         const attainsTemplate = {
-            title: '{assessmentunitname}<br><span style="font-size: 10px">Assessment ID: {assessmentunitidentifier}</span>',
+            title: '{assessmentunitname}<br><span class="map-popup-subtitle" style="color: #00a99d">Basin Plan waterbody</span>',
             content: [
                 {
                     type: 'fields',
@@ -121,7 +121,7 @@ class MapIndex extends React.Component {
         this.map.add(this.rbBoundaries);
     }
 
-    drawBPMP = (MapImageLayer) => {
+    drawBPMP = (MapImageLayer, RelationshipQuery) => {
         const fetchData = (url) => {
             return new Promise((resolve, reject) => {
                 fetch(url)
@@ -129,15 +129,16 @@ class MapIndex extends React.Component {
                 .then((d) => resolve(d));
             });
         }
+        // This block manually queries the attributes from the REST API
+        /*
         const buildPopupContent = (feature) => {
             const waterbodyID = feature.graphic.attributes['OBJECTID'];
-            const urlPolys = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/0/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=2&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
+            const urlPolys = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/0/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=0&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
             const urlLines = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/1/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=2&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
             Promise.all([
                 fetchData(urlPolys),
                 fetchData(urlLines)
             ]).then((res) => {
-                console.log(res);
                 let buData;
                 if (res[0].relatedRecordGroups && res[0].relatedRecordGroups.length > 0) {
                     buData = res[0].relatedRecordGroups[0].relatedRecords;
@@ -150,9 +151,90 @@ class MapIndex extends React.Component {
             });
             return '<div><ul><li>Hello</li><li>there</li></ul></div>'
         }
-        const bpTemplate = {
-            title: '{WB_NAME} ({OBJECTID})',
-            content: buildPopupContent
+        */
+        const buildPopupTitle = (feature) => {
+            const attributes = feature.graphic.attributes;
+            if (!attributes.WB_NAME) {
+                return '<span style="font-style: italic">Unnamed waterbody</span><br><span class="map-popup-subtitle" style="color: #0071bc">Basin Plan waterbody</span>'
+            } else {
+                return attributes.WB_NAME + '<br><span class="map-popup-subtitle" style="color: #0071bc">Basin Plan waterbody</span>';
+            }
+        }
+        /*
+        const infoTable = [
+            {
+                type: 'fields',
+                fieldInfos: [
+                    {
+                        fieldName: 'relationships/2/BU_CODE',
+                        label: 'Basin Plan'
+                    },
+                    {
+                        fieldName: 'relationships/2/BU_NAME',
+                        label: 'Waterbody type'
+                    }
+                ]
+            }
+        ];
+        */
+        const buildLinePopup = (feature) => {
+            const attributes = feature.graphic.attributes;
+            if (attributes.WBID_T === 'Trib') {
+                attributes.WBID_T = 'Tributary';
+            };
+            const waterbodyID = attributes['OBJECTID'];
+            const url = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/1/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=2&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
+            return fetch(url)
+                .then((resp) => resp.json())
+                .then((json) => {
+                    if (json.relatedRecordGroups && json.relatedRecordGroups.length > 0) {
+                        const records = json.relatedRecordGroups[0].relatedRecords;
+                        const buData = records.map((d) => d.attributes);
+                        buData.sort((a, b) => a.BU_CODE > b.BU_CODE);
+                        // Table for waterbody information
+                        let table = '<table class="esri-widget__table"><tbody><tr><th class="esri-feature-fields__field-header">Basin Plan</th><td>' + attributes.BASINPLANNAME + '</td></tr><tr><th class="esri-feature-fields__field-header">Waterbody type</th><td>' + attributes.WBID_T  + '</td></tr></tbody></table><br><h3 style="font-size: 13px">Beneficial uses</h3>'
+                        // Table for beneficial uses
+                        table += '<table class="esri-widget__table"><tbody>';
+                        for (const d in buData) {
+                            table += '<tr><th class="esri-feature-fields__field-header">' + buData[d].BU_CODE + '</th><td class="esri-feature-fields__field-data">' + buData[d].BU_NAME + '</td></tr>';
+                        };
+                        table += '</tbody></table>'
+                        return table.toString();
+                    } 
+                });
+        }
+        const buildPolyPopup = (feature) => {
+            const attributes = feature.graphic.attributes;
+            const waterbodyID = attributes['OBJECTID'];
+            const url = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/0/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=0&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
+            return fetch(url)
+                .then((resp) => resp.json())
+                .then((json) => {
+                    if (json.relatedRecordGroups && json.relatedRecordGroups.length > 0) {
+                        const records = json.relatedRecordGroups[0].relatedRecords;
+                        const buData = records.map((d) => d.attributes);
+                        buData.sort((a, b) => a.BU_CODE > b.BU_CODE);
+                        // Table for waterbody information
+                        let table = '<table class="esri-widget__table"><tbody><tr><th class="esri-feature-fields__field-header">Basin Plan</th><td>' + attributes.BASINPLANNAME + '</td></tr><tr><th class="esri-feature-fields__field-header">Waterbody type</th><td>' + attributes.WBID_T  + '</td></tr></tbody></table><br><h3 style="font-size: 13px">Beneficial uses</h3>'
+                        // Table for beneficial uses
+                        table += '<table class="esri-widget__table"><tbody>';
+                        for (const d in buData) {
+                            table += '<tr><th class="esri-feature-fields__field-header">' + buData[d].BU_CODE + '</th><td class="esri-feature-fields__field-data">' + buData[d].BU_NAME + '</td></tr>';
+                        };
+                        table += '</tbody></table>'
+                        return table.toString();
+                    } 
+                });
+        }
+        const lineTemplate = {
+            outFields: ['BASINPLANNAME', 'WB_NAME', 'WBID_T'],
+            title: buildPopupTitle,
+            content: buildLinePopup
+        }
+        const polyTemplate = {
+            outFields: ['BASINPLANNAME', 'WB_NAME', 'WBID_T'],
+            title: buildPopupTitle,
+            content: buildPolyPopup
         }
         this.bpFeatures = new MapImageLayer({
             url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer',
@@ -160,11 +242,11 @@ class MapIndex extends React.Component {
                 {
                     id: 0, // polygon sublayer
                     definitionExpression: "REG_ID = '2S'",
-                    popupTemplate: bpTemplate
+                    popupTemplate: polyTemplate
                 }, {
                     id: 1, // line sublayer
                     definitionExpression: "REG_ID = '2S'",
-                    popupTemplate: bpTemplate
+                    popupTemplate: lineTemplate
                 }
             ]
         });
@@ -172,6 +254,10 @@ class MapIndex extends React.Component {
     }
 
     drawStations = (GeoJSONLayer) => {
+        const generatePopup = () => {
+            const content = ReactDOMServer.renderToString(<StationPopup station={this.state.hoveredStation} />);
+            return content;
+        }
         const stationRenderer = {
             type: 'simple',
             symbol: {
@@ -184,7 +270,8 @@ class MapIndex extends React.Component {
             }
         };
         const stationTemplate = {
-            content: this.stationPopup
+            title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>'
+            //content: generatePopup
         }
                     
 
@@ -204,7 +291,7 @@ class MapIndex extends React.Component {
                   popupTemplate: stationTemplate
                 });
                 this.map.add(this.stations);
-                initializePopup();
+                //initializePopup();
             })
             .catch((err) => {
               console.error(err);
@@ -260,7 +347,7 @@ class MapIndex extends React.Component {
                 breakpoint: false,
                 collapseEnabled: false,
                 visibleElements: {
-                    closeButton: false,
+                    closeButton: true,
                     zoomIn: false
                 }
             }
@@ -268,21 +355,16 @@ class MapIndex extends React.Component {
         this.view.popup.viewModel.actions = [];
     }
 
-    stationPopup = () => {
-        const content = ReactDOMServer.renderToString(<StationPopup station={this.state.hoveredStation} />);
-        return content;
-    }
-
     componentDidMount = () => {
         // make sure the loaded modules match in exact order of the callback variables
-        loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/FeatureLayer', 'esri/layers/GeoJSONLayer', 'esri/layers/MapImageLayer'], { css: true })
-        .then(([Map, MapView, FeatureLayer, GeoJSONLayer, MapImageLayer]) => {
+        loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/FeatureLayer', 'esri/layers/GeoJSONLayer', 'esri/layers/MapImageLayer', 'esri/tasks/support/RelationshipQuery'], { css: true })
+        .then(([Map, MapView, FeatureLayer, GeoJSONLayer, MapImageLayer, RelationshipQuery]) => {
             this.initializeMap(Map, MapView);
             this.view.when(() => {
-                this.drawAttains(FeatureLayer);
+                //this.drawAttains(FeatureLayer);
                 this.drawBoundaries(FeatureLayer);
-                this.drawStations(GeoJSONLayer);
-                //this.drawBPMP(MapImageLayer);
+                //this.drawStations(GeoJSONLayer);
+                this.drawBPMP(MapImageLayer, RelationshipQuery);
             });
         })
         .catch(err => {
