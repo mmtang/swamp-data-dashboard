@@ -1,0 +1,15 @@
+.searchContainer {
+    background-color: #e5e5e5;
+    padding: 1.2em;
+    font-size: 1em;
+}
+
+.searchWrapper {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+.emphasis {
+    font-weight: 600;
+}

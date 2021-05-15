@@ -16,6 +16,65 @@ class MapIndex extends React.Component {
         this.mapRef = React.createRef();
     }
 
+    initializeSearch = (Search) => {
+        /*
+        this.view.whenLayerView(this.attainsPolys).then(layerView => {
+            watchUtils.whenFalse(layerView, 'updating', () => {
+                console.log('attains polys loaded');
+                sources.push({
+                    layer: this.attainsPolys,
+                    searchFields: ['assessmentunitname'],
+                    displayField: 'assessmentunitname',
+                    exactMatch: false,
+                    outFields: ['assessmentunitname'],
+                    name: 'Assessment Lakes & Areas',
+                    placeholder: 'Example: Folsom Lake',
+                });
+            })
+        });
+        if (this.attainsLines) {
+            sources.push({
+                layer: this.attainsLines,
+                searchFields: ['assessmentunitname'],
+                displayField: 'assessmentunitname',
+                exactMatch: false,
+                outFields: ['assessmentunitname'],
+                name: 'Assessment Rivers & Streams',
+                placeholder: 'Example: American River',
+            });
+        }
+        this.view.whenLayerView(this.stations).then(layerView => {
+            watchUtils.whenFalse(layerView, 'updating', () => {
+                console.log('stations loaded');
+                sources.push({
+                    layer: this.stations,
+                    searchFields: ['StationName', 'StationCode'],
+                    displayField: 'StationName',
+                    exactMatch: false,
+                    outFields: ['StationName'],
+                    name: 'Monitoring stations',
+                    placeholder: 'Example: Buena Vista Park',
+                })
+            })
+        });
+        console.log(sources);
+        */
+        this.searchWidget = new Search({
+            view: this.view,
+            allPlaceholder: 'Waterbody or station',
+            locationEnabled: false,
+            suggestionsEnabled: true,
+            autoNavigate: false,
+            autoSelect: false,
+            includeDefaultSources: false,
+            sources: []
+        });
+        this.searchWidget.on('select-result', (result) => {
+            console.log(result);
+        });
+        this.view.ui.add(this.searchWidget, { position: 'top-right' });
+    }
+
     convertToGeoJSON = (data) => {
         // converts json to geojson
         return {
@@ -99,6 +158,28 @@ class MapIndex extends React.Component {
         })
         //this.map.addMany([this.attainsPolys, this.attainsLines]);
         this.map.add(this.attainsPolys);
+
+        // add to search
+        this.searchWidget.sources.push({
+            layer: this.attainsPolys,
+            searchFields: ['assessmentunitname'],
+            displayField: 'assessmentunitname',
+            exactMatch: false,
+            outFields: ['assessmentunitname'],
+            name: 'Assessment Lakes & Areas',
+            placeholder: 'Example: Folsom Lake',
+        });
+        /*
+        this.searchWidget.sources.push({
+            layer: this.attainsPolys,
+            searchFields: ['assessmentunitname'],
+            displayField: 'assessmentunitname',
+            exactMatch: false,
+            outFields: ['assessmentunitname'],
+            name: 'Assessment Lakes & Areas',
+            placeholder: 'Example: Folsom Lake',
+        });
+        */
     }
 
     drawBoundaries = (FeatureLayer) => {
@@ -274,7 +355,6 @@ class MapIndex extends React.Component {
             //content: generatePopup
         }
                     
-
         const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=500';
         fetch(url)
             .then((resp) => resp.json())
@@ -286,12 +366,21 @@ class MapIndex extends React.Component {
                 this.stations = new GeoJSONLayer({
                   id: 'stationLayer',
                   url: url,
-                  outFields: ['StationName'],
+                  outFields: ['StationName', 'StationCode'],
                   renderer: stationRenderer,
                   popupTemplate: stationTemplate
                 });
                 this.map.add(this.stations);
-                //initializePopup();
+                // add to search
+                this.searchWidget.sources.push({
+                    layer: this.stations,
+                    searchFields: ['StationName', 'StationCode'],
+                    displayField: 'StationName',
+                    exactMatch: false,
+                    outFields: ['StationName'],
+                    name: 'Monitoring stations',
+                    placeholder: 'Example: Buena Vista Park'
+                })
             })
             .catch((err) => {
               console.error(err);
@@ -355,16 +444,23 @@ class MapIndex extends React.Component {
         this.view.popup.viewModel.actions = [];
     }
 
+    getData = (url) => {
+        return   fetch(url)
+        .then((resp) => resp.json())
+        .then((json) => json.result.records);
+    }
+
     componentDidMount = () => {
         // make sure the loaded modules match in exact order of the callback variables
-        loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/FeatureLayer', 'esri/layers/GeoJSONLayer', 'esri/layers/MapImageLayer', 'esri/tasks/support/RelationshipQuery'], { css: true })
-        .then(([Map, MapView, FeatureLayer, GeoJSONLayer, MapImageLayer, RelationshipQuery]) => {
+        loadModules(['esri/Map', 'esri/views/MapView', 'esri/layers/FeatureLayer', 'esri/layers/GeoJSONLayer', 'esri/layers/MapImageLayer', 'esri/widgets/Search', 'esri/core/watchUtils'], { css: true })
+        .then(([Map, MapView, FeatureLayer, GeoJSONLayer, MapImageLayer, Search, watchUtils]) => {
             this.initializeMap(Map, MapView);
             this.view.when(() => {
-                //this.drawAttains(FeatureLayer);
+                this.initializeSearch(Search);
+                this.drawAttains(FeatureLayer);
                 this.drawBoundaries(FeatureLayer);
-                //this.drawStations(GeoJSONLayer);
-                this.drawBPMP(MapImageLayer, RelationshipQuery);
+                this.drawStations(GeoJSONLayer);
+                //this.drawBPMP(MapImageLayer);
             });
         })
         .catch(err => {
