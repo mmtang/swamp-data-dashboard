@@ -1,12 +1,13 @@
 import React from 'react';
-import { searchContainer, emphasis } from './search-container.module.css';
+import { searchContainer, searchWrapper, emphasis } from './search-container.module.css';
 
 
 class SearchContainer extends React.Component {
     render() {
         return (
             <div className={searchContainer}>
-                <label>Search by <span class={emphasis}>waterbody</span> or <span class={emphasis}>monitoring station</span></label>
+                <label>Search by <span className={emphasis}>waterbody</span> or <span className={emphasis}>monitoring station</span></label>
+                <div id="search-div" className={searchWrapper}></div>
             </div>
         )
     }
