@@ -8,16 +8,17 @@ export default function MapIndex() {
     const viewRef = useRef(null);
     const searchRef = useRef(null);
     const attainsPolyRef = useRef(null);
+    const bpLayerRef = useRef(null);
     const boundaryLayerRef = useRef(null);
     const stationLayerRef = useRef(null);
 
     useEffect(() => {
-        // 
         setDefaultOptions({ version: '4.16' });
         loadCss();
         initializeMap()
         .then(() => {
-            drawAttains();
+            //drawAttains();
+            drawBasinPlan();
             drawBoundaries();
             drawStations();
         });
@@ -45,6 +46,9 @@ export default function MapIndex() {
                         collapseEnabled: false,
                     }
                 });
+                if (searchRef) {
+                    searchRef.current = null;
+                }
                 searchRef.current = new Search({
                     view: viewRef.current,
                     container: 'search-div',
@@ -116,6 +120,106 @@ export default function MapIndex() {
                     name: 'Assessment Lakes & Areas',
                     placeholder: 'Example: Folsom Lake'
                 })
+            });
+        }
+    }
+
+    const drawBasinPlan = () => {
+        const templateTitle = (feature) => {
+            const attributes = feature.graphic.attributes;
+            if (!attributes.WB_NAME) {
+                return '<span style="font-style: italic">Unnamed waterbody</span><br><span class="map-popup-subtitle" style="color: #0071bc">Basin Plan waterbody</span>'
+            } else {
+                return attributes.WB_NAME + '<br><span class="map-popup-subtitle" style="color: #0071bc">Basin Plan waterbody</span>';
+            }
+        }
+        const buildLinePopup = (feature) => {
+            const attributes = feature.graphic.attributes;
+            if (attributes.WBID_T === 'Trib') {
+                attributes.WBID_T = 'Tributary';
+            };
+            const waterbodyID = attributes['OBJECTID'];
+            const url = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/1/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=2&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
+            return fetch(url)
+                .then((resp) => resp.json())
+                .then((json) => {
+                    if (json.relatedRecordGroups && json.relatedRecordGroups.length > 0) {
+                        const records = json.relatedRecordGroups[0].relatedRecords;
+                        const buData = records.map((d) => d.attributes);
+                        buData.sort((a, b) => a.BU_CODE > b.BU_CODE);
+                        // Table for waterbody information
+                        let table = '<table class="esri-widget__table"><tbody><tr><th class="esri-feature-fields__field-header">Basin Plan</th><td>' + attributes.BASINPLANNAME + '</td></tr><tr><th class="esri-feature-fields__field-header">Waterbody type</th><td>' + attributes.WBID_T  + '</td></tr></tbody></table><br><h3>Beneficial uses</h3>'
+                        // Table for beneficial uses
+                        table += '<table class="esri-widget__table"><tbody>';
+                        for (const d in buData) {
+                            table += '<tr><th class="esri-feature-fields__field-header">' + buData[d].BU_CODE + '</th><td class="esri-feature-fields__field-data">' + buData[d].BU_NAME + '</td></tr>';
+                        };
+                        table += '</tbody></table>'
+                        return table.toString();
+                    } 
+                });
+        }
+        const buildPolyPopup = (feature) => {
+            const attributes = feature.graphic.attributes;
+            const waterbodyID = attributes['OBJECTID'];
+            const url = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/0/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=0&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
+            return fetch(url)
+                .then((resp) => resp.json())
+                .then((json) => {
+                    if (json.relatedRecordGroups && json.relatedRecordGroups.length > 0) {
+                        const records = json.relatedRecordGroups[0].relatedRecords;
+                        const buData = records.map((d) => d.attributes);
+                        buData.sort((a, b) => a.BU_CODE > b.BU_CODE);
+                        // Table for waterbody information
+                        let table = '<table class="esri-widget__table"><tbody><tr><th class="esri-feature-fields__field-header">Basin Plan</th><td>' + attributes.BASINPLANNAME + '</td></tr><tr><th class="esri-feature-fields__field-header">Waterbody type</th><td>' + attributes.WBID_T  + '</td></tr></tbody></table><br><h3>Beneficial uses</h3>'
+                        // Table for beneficial uses
+                        table += '<table class="esri-widget__table"><tbody>';
+                        for (const d in buData) {
+                            table += '<tr><th class="esri-feature-fields__field-header">' + buData[d].BU_CODE + '</th><td class="esri-feature-fields__field-data">' + buData[d].BU_NAME + '</td></tr>';
+                        };
+                        table += '</tbody></table>'
+                        return table;
+                    }
+                });
+        }
+        const bpPolyTemplate = {
+            outFields: ['BASINPLANNAME', 'WB_NAME', 'WBID_T'],
+            title: templateTitle,
+            content: buildPolyPopup
+        }
+        const bpLineTemplate = {
+            outFields: ['BASINPLANNAME', 'WB_NAME', 'WBID_T'],
+            title: templateTitle,
+            content: buildLinePopup
+        }
+        if (mapRef) {
+            loadModules(['esri/layers/MapImageLayer'])
+            .then(([MapImageLayer]) => {
+                bpLayerRef.current = new MapImageLayer({
+                    url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer',
+                    sublayers: [
+                        {
+                            id: 0, // polygon sublayer
+                            definitionExpression: "REG_ID = '2S'",
+                            popupTemplate: bpPolyTemplate,  
+                        },
+                        {
+                            id: 1, // line sublayer
+                            definitionExpression: "REG_ID = '2S'",
+                            popupTemplate: bpLineTemplate
+                        }
+                    ]
+                });
+                mapRef.current.add(bpLayerRef.current);
+                searchRef.current.sources.add({
+                    layer: bpLayerRef.current,
+                    searchFields: ['WB_NAME'],
+                    displayField: 'WB_NAME',
+                    exactMatch: false,
+                    outFields: ['WB_NAME'],
+                    name: 'Basin Plan waterbodies',
+                    placeholder: 'Example: Folsom Lake'
+                });
             });
         }
     }

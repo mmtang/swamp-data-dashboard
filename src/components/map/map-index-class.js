@@ -282,7 +282,7 @@ class MapIndex extends React.Component {
             const attributes = feature.graphic.attributes;
             const waterbodyID = attributes['OBJECTID'];
             const url = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/0/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=0&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
-            return fetch(url)
+            fetch(url)
                 .then((resp) => resp.json())
                 .then((json) => {
                     if (json.relatedRecordGroups && json.relatedRecordGroups.length > 0) {

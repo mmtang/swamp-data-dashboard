@@ -56,6 +56,11 @@ a {
   font-size: 1.2em !important;
 }
 
+.esri-feature-content h3 {
+  font-size: 1.1em;
+  color: #103c68;
+}
+
 .esri-popup--shadow {
   box-shadow: 0 1px 4px rgba(0, 0, 0, .2) !important;
 }
