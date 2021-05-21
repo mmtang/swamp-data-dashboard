@@ -81,7 +81,11 @@ class Station extends React.Component {
             return (
                 <div>Loading</div>
             )
-        } 
+        } else if (this.state.status === 'error') {
+            return (
+                <div>Error loading data. Please refresh and try again.</div>
+            )
+        }
     }
 
 }
