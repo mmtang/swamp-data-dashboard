@@ -52,7 +52,7 @@ export default function MapIndex() {
                 searchRef.current = new Search({
                     view: viewRef.current,
                     container: 'search-div',
-                    allPlaceholder: 'Waterbody or station',
+                    allPlaceholder: 'Example: Buena Vista Park',
                     includeDefaultSources: false,
                     locationEnabled: false,
                     sources: []

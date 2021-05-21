@@ -20,11 +20,10 @@ body {
 }
 
 h1 {
-    font-familiy: inherit;
+    font-family: inherit;
     color: #103c68;
     font-size: 1.8rem;
     margin-top: 0;
-    margin-bottom: 18px !important;
 }
   
 h2 {
@@ -50,6 +49,17 @@ p {
 a {
   color: #064e96;
   text-decoration: none;
+}
+
+.small {
+  display: block;
+  font-size: 0.9em;
+  font-weight: 600;
+  margin: 4px 0;
+}
+
+.esri-search {
+  width: auto !important;
 }
 
 .esri-popup__header h2 {
