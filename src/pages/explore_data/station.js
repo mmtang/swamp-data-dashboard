@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../../components/layout/layout';
 import MapStation from '../../components/map/map-station';
+import { regionDict } from '../../utils/utils';
 import { leftContainer, siteMapContainer, rightContainer, stationName } from './station.module.css';
 
 
@@ -63,7 +64,7 @@ class Station extends React.Component {
                         <section>
                             <h2 className={stationName}>{station.StationName ? station.StationName : null}</h2>
                             <span className="small">Code: {station.StationCode ? station.StationCode : null}</span>
-                            <span className="small">San Diego Region</span>
+                            <span className="small">{regionDict[station.Region]} Region</span>
                         </section>
                         <section>
                             <h2>Nearby waterbodies</h2>
