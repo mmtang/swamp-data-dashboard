@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
+import { Link } from 'gatsby';
 
 
 export default function MapIndex() {
@@ -249,9 +250,18 @@ export default function MapIndex() {
         }
     }
 
+    const buildStationPopup = (feature) => {
+        let div = document.createElement('div');
+        const attributes = feature.graphic.attributes;
+        const stationCode = attributes['StationCode'];
+        div.innerHTML = '<a href="/explore_data/station/?q=' + stationCode + '" target="_blank">All data</a>';
+        return div;
+    }
+
     const drawStations = () => {
         const stationTemplate = {
-            title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>'
+            title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
+            content: buildStationPopup
         };
         const stationRenderer = {
             type: 'simple',
@@ -288,7 +298,7 @@ export default function MapIndex() {
                         searchFields: ['StationName', 'StationCode'],
                         displayField: 'StationName',
                         exactMatch: false,
-                        outFields: ['StationName'],
+                        outFields: ['StationName', 'StationCode'],
                         name: 'Monitoring stations',
                         placeholder: 'Example: Buena Vista Park'
                     });

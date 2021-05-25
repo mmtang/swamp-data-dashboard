@@ -2,7 +2,7 @@
     height: calc(100% - 60px);
     top: 60px;
     order: 1;
-    flex-basis: 32%;
+    flex-basis: 30%;
     z-index: 2;
     background-color: #f4f2f2;
     padding: 1.2em 26px;
@@ -13,7 +13,7 @@
     background-color: #fff;
     top: 60px;
     order: 2;
-    flex-basis: 68%;
+    flex-basis: 70%;
     overflow-y: auto;
     z-index: 50 !important;
     padding: 1.2em 26px;
@@ -29,10 +29,10 @@
 }
 
 .leftContainer h2 {
-    font-size: 1.3em;
+    font-size: 1.2em !important;
 }
 
 .rightContainer h2 {
     margin-top: 10px;
-    font-size: 1.3em;
+    font-size: 1.2em !important;
 }
