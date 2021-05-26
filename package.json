@@ -16,6 +16,7 @@
   "dependencies": {
     "@arcgis/core": "^4.19.3",
     "@tabler/icons": "^1.41.2",
+    "d3-time-format": "^3.0.0",
     "esri-loader": "^3.1.0",
     "gatsby": "^3.4.1",
     "react": "^17.0.1",

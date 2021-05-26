@@ -58,6 +58,10 @@ a {
   margin: 4px 0;
 }
 
+table {
+  font-size: 0.9em;
+}
+
 .esri-search {
   width: auto !important;
 }

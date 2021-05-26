@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import DataTable from './data-table';
+import { timeParse } from 'd3-time-format';
 
 
 export default function ChemistryTable(props) {
@@ -9,6 +10,10 @@ export default function ChemistryTable(props) {
         if (props.station) {
             getData()
             .then((records) => {
+                const parseDate = timeParse('%Y-%m-%d')
+                records.forEach(d => {
+                    d.resultWithUnit = d.Result.toString() + ' ' + d.Unit
+                });
                 console.log(records);
                 setData(records);
             });
@@ -19,19 +24,23 @@ export default function ChemistryTable(props) {
         return [
             {
                 Header: 'Analyte',
-                accessor: 'Analyte'
+                accessor: 'Analyte',
+                sortType: 'string'
             },
             {
                 Header: 'Last Sample Date',
-                accessor: 'SampleDate'
+                accessor: 'SampleDate',
+                sortType: 'string'
             },
             {
                 Header: 'Last Sample Result',
-                accessor: 'Result'
-            },
+                accessor: 'resultWithUnit',
+                disableSortBy: true
+            }
         ]
     }, [])
 
+    
     const getData = () => {
         return new Promise((resolve, reject) => {
             let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=100';
@@ -46,6 +55,8 @@ export default function ChemistryTable(props) {
     }
     
     return (
-        <DataTable columns={columns} data={data} />
+        <div style={{ marginBottom: '100px' }}>
+            <DataTable columns={columns} data={data} />
+        </div>
     )
 }
