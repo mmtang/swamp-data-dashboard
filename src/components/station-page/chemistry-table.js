@@ -16,7 +16,6 @@ export default function ChemistryTable(props) {
                 records.forEach(d => {
                     d.resultWithUnit = d.Result.toString() + ' ' + d.Unit
                 });
-                console.log(records);
                 setData(records);
             });
         }

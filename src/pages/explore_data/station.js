@@ -19,7 +19,6 @@ class Station extends React.Component {
     getStationCode = () => {
         return new Promise((resolve, reject) => {
             const url = this.props.location.href;
-            console.log(url);
             const re = new RegExp(/station\/\?q=([a-z0-9]+)$/i);
             const matches = url.match(re);
             if (matches[1]) {
