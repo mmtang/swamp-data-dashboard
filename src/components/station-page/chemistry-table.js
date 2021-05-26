@@ -1,6 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import DataTable from './data-table';
+import ChemistrySubRowAsync from './chemistry-sub-row-async';
 import { timeParse } from 'd3-time-format';
+
 
 
 export default function ChemistryTable(props) {
@@ -22,6 +24,18 @@ export default function ChemistryTable(props) {
 
     const columns = useMemo(() => {
         return [
+            {
+                Header: () => null,  // no header for expander column
+                id: 'expander',
+                Cell: ({ row }) => (
+                    // use cell to render an expander for each row
+                    <span {...row.getToggleRowExpandedProps()}>
+                        {row.isExpanded ? 'v' : '>'}
+                    </span>
+                ),
+                // override the cell renderer with a SubCell to be used with an expanded row
+                SubCell: () => null  // no expander on an expanded row
+            },
             {
                 Header: 'Analyte',
                 accessor: 'Analyte',
@@ -53,10 +67,17 @@ export default function ChemistryTable(props) {
             })
         })
     }
+
+    const renderRowSubComponent = useCallback(({ row, rowProps, visibleColumns }) => (
+        <ChemistrySubRowAsync row={row} rowProps={rowProps} visibleColumns={visibleColumns} />
+    ), []);
     
     return (
         <div style={{ marginBottom: '100px' }}>
-            <DataTable columns={columns} data={data} />
+            <DataTable 
+                columns={columns} 
+                data={data} 
+                renderRowSubComponent={renderRowSubComponent} />
         </div>
     )
 }

@@ -1,14 +1,15 @@
 import React from 'react';
-import { useTable, useSortBy, usePagination } from 'react-table'
+import { useTable, useSortBy, usePagination, useExpanded } from 'react-table'
 
 
-export default function DataTable({ columns, data }) {
+export default function DataTable({ columns, data, renderRowSubComponent }) {
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
         //rows,
         prepareRow,
+        visibleColumns,
         page,
         canPreviousPage,
         canNextPage,
@@ -18,13 +19,14 @@ export default function DataTable({ columns, data }) {
         nextPage,
         previousPage,
         setPageSize,
-        state: { pageIndex, pageSize }
+        state: { pageIndex, pageSize, expanded }
     } = useTable(
         { 
             columns, 
             data 
         }, 
         useSortBy,
+        useExpanded,
         usePagination
     )
 
@@ -38,7 +40,7 @@ export default function DataTable({ columns, data }) {
                                 <th {...column.getHeaderProps(column.getSortByToggleProps())} style={{ background: '#fff', fontWeight: 'bold' }}>
                                     {column.render('Header')}
                                     <span>
-                                        {column.isSorted ? (column.isSortedDesc ? '<' : '>') : ''}
+                                        {column.isSorted ? (column.isSortedDesc ? 'v' : '^') : ''}
                                     </span>
                                 </th>
                             ))}
@@ -48,16 +50,22 @@ export default function DataTable({ columns, data }) {
                 <tbody {...getTableBodyProps()}>
                     {page.map(row => {
                         prepareRow(row)
+                        const rowProps = row.getRowProps()
                         return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map(cell => {
-                                    return (
-                                        <td {...cell.getCellProps()} style={{ padding: '10px', border: 'solid 1px #e3e4e6'}}>
-                                            {cell.render('Cell')}
-                                        </td>
-                                    )
-                                })}
-                            </tr>
+                            <React.Fragment key={rowProps.key}>
+                                <tr {...rowProps}>
+                                    {row.cells.map(cell => {
+                                        return (
+                                            <td {...cell.getCellProps()} style={{ padding: '10px', border: 'solid 1px #e3e4e6'}}>
+                                                {cell.render('Cell')}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                                {/* Sub-component */}
+                                {row.isExpanded &&
+                                    renderRowSubComponent({ row, rowProps, visibleColumns })}
+                            </React.Fragment>
                         )
                     })}
                 </tbody>
