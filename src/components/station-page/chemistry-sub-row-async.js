@@ -38,9 +38,10 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
         Promise.all(promises)
         .then((data) => {
             const recordsOnly = data.map(d => d.result.records);
-            const resData = [].concat.apply([], recordsOnly);
+            let resData = [].concat.apply([], recordsOnly);
+            resData = resData.filter(d => d.Result !== 'NaN');
             resData.forEach(d => {
-                d.parsedDate = dateParser(d.SampleDate).valueOf();
+                d.parsedDate = dateParser(d.SampleDate);
             });
             resData.sort((a, b) => a.parsedDate - b.parsedDate);
             setData(resData);

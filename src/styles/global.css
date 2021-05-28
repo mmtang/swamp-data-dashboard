@@ -62,6 +62,18 @@ table {
   font-size: 0.9em;
 }
 
+.customTooltip {
+  position: absolute;
+  padding: 4px 8px;
+  background-color: #1a252f;
+  color: #fff;
+  vertical-align: middle;
+  text-align: left;
+  font-family: inherit;
+  font-size: 12px;
+  pointer-events: none;
+}
+
 .esri-search {
   width: auto !important;
 }

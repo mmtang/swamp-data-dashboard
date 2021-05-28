@@ -1,5 +1,20 @@
 .customTooltip {
-    background-color: rgba(255, 255, 255, 0.9);
-    border: 1px solid #e3e4e6;
+    position: absolute;
+    background-color: #103c68;
+    color: #fff;
+    font-size: 0.75em;
+    border: 1px solid #5d5d5d;
     padding: 0.6em;
+    z-index: 1000;
+}
+
+.axisLabel {
+    font-size: 0.9em;
+    color: #747474;
+}
+
+.lineLabel {
+    font-size: 0.9em;
+    color: #747474;
+    z-index: 50;
 }
