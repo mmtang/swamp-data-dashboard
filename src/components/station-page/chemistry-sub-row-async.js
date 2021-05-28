@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { timeParse } from 'd3-time-format';
+import TimeSeries from './time-series';
 import { fetchData, chemistryEndpoint } from '../../utils/utils';
+
 
 export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) {
     const years = Object.keys(chemistryEndpoint).sort((a, b) => b - a);
@@ -10,11 +13,10 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
     const [data, setData] = useState([]);
     const [timePeriod, setTimePeriod] = useState(fiveYears);
 
-    const columns = ['Program', 'Analyte', 'SampleDate', 'Result', 'Unit'];
+    const columns = ['Analyte', 'StationCode', 'SampleDate', 'Result', 'Unit'];
+    const dateParser = timeParse('%Y-%m-%dT%H:%M:%S');
 
     useEffect(() => {
-        console.log(timePeriod);
-
         let promises = [];
         // get data from all endpoints
         for (const i in timePeriod) {
@@ -37,6 +39,10 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
         .then((data) => {
             const recordsOnly = data.map(d => d.result.records);
             const resData = [].concat.apply([], recordsOnly);
+            resData.forEach(d => {
+                d.parsedDate = dateParser(d.SampleDate).valueOf();
+            });
+            resData.sort((a, b) => a.parsedDate - b.parsedDate);
             setData(resData);
             setLoading(false);
         })
@@ -47,8 +53,7 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
         if (loading) {
             return (
                 <tr>
-                    <td />
-                    <td colSpan={visibleColumns.length - 1}>
+                    <td colSpan={visibleColumns.length}>
                         Loading...
                     </td>
                 </tr>
@@ -56,9 +61,8 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
         } else {
             return (
                 <tr>
-                    <td />
-                    <td colSpan={visibleColumns.length - 1}>
-                        Loaded {data.length} records!
+                    <td colSpan={visibleColumns.length}>
+                        <TimeSeries data={data} />
                     </td>
                 </tr>
             )
