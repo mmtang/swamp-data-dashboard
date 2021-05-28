@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
-import { Link } from 'gatsby';
 
 
 export default function MapIndex() {

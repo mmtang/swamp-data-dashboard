@@ -1,8 +1,10 @@
 import React from 'react';
-import { useTable, useSortBy, usePagination, useExpanded } from 'react-table'
+import { useTable, useSortBy, usePagination, useExpanded } from 'react-table';
+import { IconArrowNarrowDown, IconArrowNarrowUp, IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from '@tabler/icons';
+import { dataTable, paginationContainer, paginationButton, paginationSelect, selectWrapper, navigationWrapper } from './data-table.module.css';
 
 
-export default function DataTable({ columns, data, renderRowSubComponent }) {
+export default function DataTable({ columns, data, initialState, renderRowSubComponent }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -23,7 +25,8 @@ export default function DataTable({ columns, data, renderRowSubComponent }) {
     } = useTable(
         { 
             columns, 
-            data 
+            data,
+            initialState 
         }, 
         useSortBy,
         useExpanded,
@@ -32,15 +35,15 @@ export default function DataTable({ columns, data, renderRowSubComponent }) {
 
     return (
         <React.Fragment>
-            <table {...getTableProps()} style={{ width: '100%' }}>
+            <table {...getTableProps()} className={dataTable}>
                 <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps(column.getSortByToggleProps())} style={{ background: '#fff', fontWeight: 'bold' }}>
-                                    {column.render('Header')}
+                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                    {column.render('Header')}{' '}
                                     <span>
-                                        {column.isSorted ? (column.isSortedDesc ? 'v' : '^') : ''}
+                                        {column.isSorted ? (column.isSortedDesc ? <IconArrowNarrowDown size={16} color="#5d5d5d" stroke={2} /> : <IconArrowNarrowUp size={16} color="#5d5d5d" stroke={2} />) : ''}
                                     </span>
                                 </th>
                             ))}
@@ -56,7 +59,7 @@ export default function DataTable({ columns, data, renderRowSubComponent }) {
                                 <tr {...rowProps}>
                                     {row.cells.map(cell => {
                                         return (
-                                            <td {...cell.getCellProps()} style={{ padding: '10px', border: 'solid 1px #e3e4e6'}}>
+                                            <td {...cell.getCellProps()}>
                                                 {cell.render('Cell')}
                                             </td>
                                         );
@@ -70,44 +73,36 @@ export default function DataTable({ columns, data, renderRowSubComponent }) {
                     })}
                 </tbody>
             </table>
-            <div className="pagination">
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                    {'<<'}
-                </button>{' '}
-                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                    {'<'}
-                </button>{' '}
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                    {'>'}
-                </button>{' '}
-                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                    {'>>'}
-                </button>{' '}
-                <span>
-                    Page{' '}
-                    <strong>
-                        {pageIndex + 1} of {pageOptions.length}
-                    </strong>{' '}
-                </span>
-                <span>
-                    | Go to page:{' '}
-                    <input
-                        type="number"
-                        defaultValue={pageIndex + 1}
-                        onChange={e => {
-                        const page = e.target.value ? Number(e.target.value) - 1 : 0
-                        gotoPage(page)
-                        }}
-                        style={{ width: '100px' }}
-                    />
-                </span>{' '}
-                <select value={pageSize} onChange={e => { setPageSize(Number(e.target.value)) }}>
-                    {[10, 20, 50].map(pageSize => (
-                        <option key={pageSize} value={pageSize}>
-                            Show {pageSize}
-                        </option>
-                    ))}
-                </select>
+            <div className={paginationContainer}>
+                <div className={selectWrapper}>
+                    <select className={paginationSelect} value={pageSize} onChange={e => { setPageSize(Number(e.target.value)) }}>
+                        {[10, 20, 50].map(pageSize => (
+                            <option key={pageSize} value={pageSize}>
+                                Show {pageSize}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className={navigationWrapper}>
+                    <button className={paginationButton} onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                        <IconChevronsLeft size={18} color="#5d5d5d" stroke={2} />
+                    </button>{' '}
+                    <button className={paginationButton} onClick={() => previousPage()} disabled={!canPreviousPage}>
+                        <IconChevronLeft size={17} color="#5d5d5d" stroke={2} />
+                    </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span>
+                        Page{' '}
+                        <strong>
+                            {pageIndex + 1} of {pageOptions.length}
+                        </strong>
+                    </span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button className={paginationButton} onClick={() => nextPage()} disabled={!canNextPage}>
+                        <IconChevronRight size={17} color="#5d5d5d" stroke={2} />
+                    </button>{' '}
+                    <button className={paginationButton} onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                        <IconChevronsRight size={18} color="#5d5d5d" stroke={2} />
+                    </button>
+                </div>
             </div>
         </React.Fragment>
     )

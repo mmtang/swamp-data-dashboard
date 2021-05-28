@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import DataTable from './data-table';
 import ChemistrySubRowAsync from './chemistry-sub-row-async';
+import { IconCirclePlus, IconCircleMinus } from '@tabler/icons';
 import { timeParse } from 'd3-time-format';
 
 
@@ -28,31 +29,46 @@ export default function ChemistryTable(props) {
                 id: 'expander',
                 Cell: ({ row }) => (
                     // use cell to render an expander for each row
-                    <span {...row.getToggleRowExpandedProps()}>
-                        {row.isExpanded ? 'v' : '>'}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <span {...row.getToggleRowExpandedProps()}>
+                            { row.isExpanded ? <IconCircleMinus size={18} color="#5d5d5d" stroke={2} /> : <IconCirclePlus size={18} color="#5d5d5d" stroke={2} /> }
+                        </span>
+                    </div>
                 ),
                 // override the cell renderer with a SubCell to be used with an expanded row
                 SubCell: () => null  // no expander on an expanded row
             },
             {
                 Header: 'Analyte',
+                id: 'analyte',
                 accessor: 'Analyte',
-                sortType: 'string'
+                sortType: 'string',
             },
             {
                 Header: 'Last Sample Date',
+                id: 'lastsampledate',
                 accessor: 'SampleDate',
                 sortType: 'string'
             },
             {
                 Header: 'Last Sample Result',
+                id: 'lastsampleresult',
                 accessor: 'resultWithUnit',
                 disableSortBy: true
             }
         ]
     }, [])
 
+    const initialState = useMemo(() => {
+        return {
+            sortBy: [
+                {
+                    id: 'lastsampledate',
+                    desc: true
+                }
+            ]
+        }
+    }, [])
     
     const getData = () => {
         return new Promise((resolve, reject) => {
@@ -76,6 +92,7 @@ export default function ChemistryTable(props) {
             <DataTable 
                 columns={columns} 
                 data={data} 
+                initialState={initialState}
                 renderRowSubComponent={renderRowSubComponent} />
         </div>
     )

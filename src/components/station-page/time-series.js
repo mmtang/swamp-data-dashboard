@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import * as d3 from 'd3';
 import { customTooltip, axisLabel, lineLabel } from './time-series.module.css';
 
@@ -61,7 +61,7 @@ export default function TimeSeries({ data }) {
         }
     }
 
-    const drawChart = () => {
+    const drawChart = useCallback(() => {
         const chart = d3.select('#container-' + randomId).append('svg')
             .attr('id', chartId)
             .attr('className', 'chart')
@@ -147,12 +147,11 @@ export default function TimeSeries({ data }) {
             })
             .attr('cy', (d) => { return yScale(d.Result); })
             .attr('fill', (d) => { return getColor(d, objective); })
-            .on('mouseover', (d) => {
-                const attributes = d.originalTarget.__data__;
+            .on('mouseover', function(event, d) {
                 const formatDate = d3.timeFormat('%b %e, %Y');
                 return tooltip
                     .style('opacity', 1)
-                    .html(formatDate(attributes.parsedDate) + '<br>' + attributes.Result + ' ' + attributes.Unit);
+                    .html(formatDate(d.parsedDate) + '<br>' + d.Result + ' ' + d.Unit);
             })
             .on('mousemove', () => {
                 return tooltip
@@ -176,11 +175,11 @@ export default function TimeSeries({ data }) {
             .attr('text-anchor', 'middle')  
             .attr('transform', 'translate(' + 12 + "," + (height / 2) + ') rotate(-90)')
             .text(unit);
-    };
+    });
 
     useEffect(() => {
         drawChart();
-    }, [])
+    }, [drawChart])
     
     return (
         <div id={'container-' + randomId}></div>
