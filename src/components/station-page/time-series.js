@@ -1,34 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import * as d3 from 'd3';
 import { customTooltip, axisLabel, lineLabel } from './time-series.module.css';
 
 
 export default function TimeSeries({ data }) {
-    const randomId = Math.floor((Math.random() * 100000).toString());
-    const analyte = data[0].Analyte;
-    const unit = data[0].Unit;
-
-    // filter out "NaN values"
-    const results = data.map(d => d.Result).filter(d => d !== 'NaN');
-
-    // calculate average for placeholder threshold line
-    const avgResult = Math.floor(results.reduce((a, b) => a + b) / results.length);
-    const placeholderObjective = {
-        type: 'max',
-        label: 'Threshold',
-        value: avgResult,
-        unit: unit,
-        upper: null,
-        lower: null
-    }
-    const [objective, setObjective] = useState(placeholderObjective);
-
-    const chartId = 'chart-' + randomId;
-    const margin = { top: 20, right: 20, bottom: 30, left: 60 };
-    const width = 380 + margin.left + margin.right;
-    const height = 225 + margin.top + margin.bottom;
-    const clipPadding = 4;
-
+    const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
+    
     const getColor = (d, objective) => {
         const red = '#e84141';
         const blue = '#0071BC';
@@ -62,7 +39,30 @@ export default function TimeSeries({ data }) {
     }
 
     const drawChart = useCallback(() => {
-        const chart = d3.select('#container-' + randomId).append('svg')
+        //const analyte = data[0].Analyte;
+        const unit = data[0].Unit;
+
+        // filter out "NaN values"
+        const results = data.map(d => d.Result).filter(d => d !== 'NaN');
+
+        // calculate average for placeholder threshold line
+        const avgResult = Math.floor(results.reduce((a, b) => a + b) / results.length);
+        const objective = {
+            type: 'max',
+            label: 'Threshold',
+            value: avgResult,
+            unit: unit,
+            upper: null,
+            lower: null
+        }
+
+        const chartId = 'chart-' + randomId.current;
+        const margin = { top: 20, right: 20, bottom: 30, left: 60 };
+        const width = 380 + margin.left + margin.right;
+        const height = 225 + margin.top + margin.bottom;
+        const clipPadding = 4;
+
+        const chart = d3.select('#container-' + randomId.current).append('svg')
             .attr('id', chartId)
             .attr('className', 'chart')
             .attr('width', width)
@@ -83,7 +83,7 @@ export default function TimeSeries({ data }) {
             .attr('height', height - margin.bottom);
         // add tooltip
         const tooltip = d3.select('body').append('div')
-            .attr('id', randomId + '-tooltip')
+            .attr('id', randomId.current + '-tooltip')
             .attr('class', customTooltip)
             .style('opacity', 0);
 
@@ -175,13 +175,13 @@ export default function TimeSeries({ data }) {
             .attr('text-anchor', 'middle')  
             .attr('transform', 'translate(' + 12 + "," + (height / 2) + ') rotate(-90)')
             .text(unit);
-    });
+    }, [data]);
 
     useEffect(() => {
         drawChart();
     }, [drawChart])
     
     return (
-        <div id={'container-' + randomId}></div>
+        <div id={'container-' + randomId.current}></div>
     )
 }

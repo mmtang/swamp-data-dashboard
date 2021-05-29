@@ -5,18 +5,15 @@ import { fetchData, chemistryEndpoint } from '../../utils/utils';
 
 
 export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) {
-    const years = Object.keys(chemistryEndpoint).sort((a, b) => b - a);
-    const fiveYears = years.slice(0, 5);
-    const tenYears = years.slice(0, 9);
-
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
-    const [timePeriod, setTimePeriod] = useState(fiveYears);
-
-    const columns = ['Analyte', 'StationCode', 'SampleDate', 'Result', 'Unit'];
-    const dateParser = timeParse('%Y-%m-%dT%H:%M:%S');
 
     useEffect(() => {
+        const years = Object.keys(chemistryEndpoint).sort((a, b) => b - a);
+        const timePeriod = years.slice(0, 5);
+        const columns = ['Analyte', 'StationCode', 'SampleDate', 'Result', 'Unit'];
+        const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
+
         let promises = [];
         // get data from all endpoints
         for (const i in timePeriod) {
@@ -41,14 +38,14 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
             let resData = [].concat.apply([], recordsOnly);
             resData = resData.filter(d => d.Result !== 'NaN');
             resData.forEach(d => {
-                d.parsedDate = dateParser(d.SampleDate);
+                d.parsedDate = parseDate(d.SampleDate);
             });
             resData.sort((a, b) => a.parsedDate - b.parsedDate);
             setData(resData);
             setLoading(false);
         })
 
-    }, [])
+    }, [row])
 
     function SubRows({ row, rowProps, visibleColumns, data, loading }) {
         if (loading) {

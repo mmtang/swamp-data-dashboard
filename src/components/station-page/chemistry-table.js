@@ -2,8 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import DataTable from './data-table';
 import ChemistrySubRowAsync from './chemistry-sub-row-async';
 import { IconCirclePlus, IconCircleMinus } from '@tabler/icons';
-import { timeParse } from 'd3-time-format';
-
+import { fetchData } from '../../utils/utils';
 
 
 export default function ChemistryTable(props) {
@@ -11,9 +10,11 @@ export default function ChemistryTable(props) {
 
     useEffect(() => {
         if (props.station) {
-            getData()
-            .then((records) => {
-                const parseDate = timeParse('%Y-%m-%d')
+            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=100';
+            url += '&filters={%22StationCode%22:%22' + props.station + '%22}';
+            fetchData(url)
+            .then(json => json.result.records)
+            .then(records => {
                 records.forEach(d => {
                     d.resultWithUnit = d.Result.toString() + ' ' + d.Unit
                 });
@@ -69,19 +70,6 @@ export default function ChemistryTable(props) {
             ]
         }
     }, [])
-    
-    const getData = () => {
-        return new Promise((resolve, reject) => {
-            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=100';
-            url += '&filters={%22StationCode%22:%22' + props.station + '%22}';
-            fetch(url)
-            .then((res) => res.json())
-            .then((json) => {
-                const records = json.result.records;
-                resolve(records);
-            })
-        })
-    }
 
     const renderRowSubComponent = useCallback(({ row, rowProps, visibleColumns }) => (
         <ChemistrySubRowAsync row={row} rowProps={rowProps} visibleColumns={visibleColumns} />

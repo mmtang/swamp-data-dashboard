@@ -7,12 +7,60 @@ export default function MapIndex() {
     const mapRef = useRef(null);
     const viewRef = useRef(null);
     const searchRef = useRef(null);
-    const attainsPolyRef = useRef(null);
+    //const attainsPolyRef = useRef(null);
     const bpLayerRef = useRef(null);
     const boundaryLayerRef = useRef(null);
     const stationLayerRef = useRef(null);
 
     useEffect(() => {
+        const drawStations = () => {
+            const stationTemplate = {
+                title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
+                content: buildStationPopup
+            };
+            const stationRenderer = {
+                type: 'simple',
+                symbol: {
+                    type: 'simple-marker',
+                    size: 5.5,
+                    color: '#f15f2b',
+                    outline: {
+                        color: '#fff'
+                    }
+                }
+            };
+            if (mapRef) {
+                loadModules(['esri/layers/GeoJSONLayer'])
+                .then(([GeoJSONLayer]) => {
+                    const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=500';
+                    fetch(url)
+                    .then((resp) => resp.json())
+                    .then((json) => json.result.records)
+                    .then((records) => {
+                        const stationData = convertToGeoJSON(records);
+                        const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
+                        const url = URL.createObjectURL(blob);
+                        stationLayerRef.current = new GeoJSONLayer({
+                            id: 'stationLayer',
+                            url: url,
+                            outFields: ['StationName', 'StationCode'],
+                            renderer: stationRenderer,
+                            popupTemplate: stationTemplate
+                        });
+                        mapRef.current.add(stationLayerRef.current);
+                        searchRef.current.sources.add({
+                            layer: stationLayerRef.current,
+                            searchFields: ['StationName', 'StationCode'],
+                            displayField: 'StationName',
+                            exactMatch: false,
+                            outFields: ['StationName', 'StationCode'],
+                            name: 'Monitoring stations',
+                            placeholder: 'Example: Buena Vista Park'
+                        });
+                    });
+                });
+            }
+        };
         setDefaultOptions({ version: '4.16' });
         loadCss();
         initializeMap()
@@ -53,6 +101,7 @@ export default function MapIndex() {
                     view: viewRef.current,
                     container: 'search-div',
                     allPlaceholder: 'Example: Buena Vista Park',
+                    label: 'Search for a waterbody or monitoring station',
                     includeDefaultSources: false,
                     locationEnabled: false,
                     sources: []
@@ -62,6 +111,7 @@ export default function MapIndex() {
         })
     }
 
+    /*
     const drawAttains = () => {
         const attainsTemplate = {
             title: '{assessmentunitname}<br><span class="map-popup-subtitle" style="color: #00a99d">Basin Plan waterbody</span>',
@@ -123,6 +173,7 @@ export default function MapIndex() {
             });
         }
     }
+    */
 
     const drawBasinPlan = () => {
         const templateTitle = (feature) => {
@@ -255,55 +306,6 @@ export default function MapIndex() {
         const stationCode = attributes['StationCode'];
         div.innerHTML = '<a href="/explore_data/station/?q=' + stationCode + '" target="_blank">All data</a>';
         return div;
-    }
-
-    const drawStations = () => {
-        const stationTemplate = {
-            title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
-            content: buildStationPopup
-        };
-        const stationRenderer = {
-            type: 'simple',
-            symbol: {
-                type: 'simple-marker',
-                size: 5.5,
-                color: '#f15f2b',
-                outline: {
-                    color: '#fff'
-                }
-            }
-        };
-        if (mapRef) {
-            loadModules(['esri/layers/GeoJSONLayer'])
-            .then(([GeoJSONLayer]) => {
-                const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=500';
-                fetch(url)
-                .then((resp) => resp.json())
-                .then((json) => json.result.records)
-                .then((records) => {
-                    const stationData = convertToGeoJSON(records);
-                    const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
-                    const url = URL.createObjectURL(blob);
-                    stationLayerRef.current = new GeoJSONLayer({
-                        id: 'stationLayer',
-                        url: url,
-                        outFields: ['StationName', 'StationCode'],
-                        renderer: stationRenderer,
-                        popupTemplate: stationTemplate
-                    });
-                    mapRef.current.add(stationLayerRef.current);
-                    searchRef.current.sources.add({
-                        layer: stationLayerRef.current,
-                        searchFields: ['StationName', 'StationCode'],
-                        displayField: 'StationName',
-                        exactMatch: false,
-                        outFields: ['StationName', 'StationCode'],
-                        name: 'Monitoring stations',
-                        placeholder: 'Example: Buena Vista Park'
-                    });
-                });
-            });
-        }
     }
 
     const convertToGeoJSON = (data) => {

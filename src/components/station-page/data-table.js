@@ -21,7 +21,7 @@ export default function DataTable({ columns, data, initialState, renderRowSubCom
         nextPage,
         previousPage,
         setPageSize,
-        state: { pageIndex, pageSize, expanded }
+        state: { pageIndex, pageSize }
     } = useTable(
         { 
             columns, 

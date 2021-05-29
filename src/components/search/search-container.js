@@ -6,7 +6,7 @@ class SearchContainer extends React.Component {
     render() {
         return (
             <div className={searchContainer}>
-                <label>Search for a <span className={emphasis}>waterbody</span> or <span className={emphasis}>monitoring station</span></label>
+                Search for a <span className={emphasis}>waterbody</span> or <span className={emphasis}>monitoring station</span>
                 <div id="search-div" className={searchWrapper}></div>
             </div>
         )
