@@ -21,12 +21,15 @@ export default function MapIndex() {
             const stationRenderer = {
                 type: 'simple',
                 symbol: {
-                    type: 'simple-marker',
-                    size: 5.5,
+                    type: 'picture-marker',
+                    //size: 5.5,
+                    width: '20px',
+                    height: '20px',
                     color: '#f15f2b',
                     outline: {
                         color: '#fff'
-                    }
+                    },
+                    url: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0'
                 }
             };
             if (mapRef) {

@@ -3,6 +3,8 @@ import DataTable from './data-table';
 import ChemistrySubRowAsync from './chemistry-sub-row-async';
 import { IconCirclePlus, IconCircleMinus } from '@tabler/icons';
 import { fetchData } from '../../utils/utils';
+import { timeParse, timeFormat } from 'd3';
+import { format } from 'prettier';
 
 
 export default function ChemistryTable(props) {
@@ -10,13 +12,15 @@ export default function ChemistryTable(props) {
 
     useEffect(() => {
         if (props.station) {
+            const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
             let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=100';
             url += '&filters={%22StationCode%22:%22' + props.station + '%22}';
             fetchData(url)
             .then(json => json.result.records)
             .then(records => {
                 records.forEach(d => {
-                    d.resultWithUnit = d.Result.toString() + ' ' + d.Unit
+                    d.LastSampleDate = parseDate(d.LastSampleDate);
+                    d.resultWithUnit = d.LastResult.toString() + ' ' + d.Unit
                 });
                 setData(records);
             });
@@ -24,6 +28,7 @@ export default function ChemistryTable(props) {
     }, [props])
 
     const columns = useMemo(() => {
+        const formatDate = timeFormat('%m/%d/%Y');
         return [
             {
                 Header: () => null,  // no header for expander column
@@ -47,9 +52,10 @@ export default function ChemistryTable(props) {
             },
             {
                 Header: 'Last Sample Date',
-                id: 'lastsampledate',
-                accessor: 'SampleDate',
-                sortType: 'string'
+                id: 'LastSampleDate',
+                accessor: 'LastSampleDate',
+                sortType: 'datetime',
+                Cell: props => <span>{formatDate(props.value)}</span>
             },
             {
                 Header: 'Last Sample Result',
@@ -64,7 +70,7 @@ export default function ChemistryTable(props) {
         return {
             sortBy: [
                 {
-                    id: 'lastsampledate',
+                    id: 'LastSampleDate',
                     desc: true
                 }
             ]
