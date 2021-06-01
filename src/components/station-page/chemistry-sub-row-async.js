@@ -14,11 +14,12 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
         const columns = ['Analyte', 'StationCode', 'SampleDate', 'Result', 'Unit'];
         const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
 
+        /*
         let promises = [];
         // get data from all endpoints
         for (const i in timePeriod) {
             // build api query
-            let url = chemistryEndpoint[timePeriod[i]];
+            let url = chemistryEndpoint;
             url += '&fields=' + columns.join();
             url += '&filters={%22Program%22:%22Surface Water Ambient Monitoring Program%22,%22StationCode%22:%22' + row.original.StationCode + '%22,%22Analyte%22:%22' + row.original.Analyte + '%22}';
             url += '&limit=500';
@@ -31,13 +32,19 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
                 })
             );
         }
+        */
 
-        Promise.all(promises)
+        let url = chemistryEndpoint;
+        url += '&fields=' + columns.join();
+        url += '&filters={%22Program%22:%22Surface Water Ambient Monitoring Program%22,%22StationCode%22:%22' + row.original.StationCode + '%22,%22Analyte%22:%22' + row.original.Analyte + '%22}';
+        url += '&limit=500';
+        fetchData(url)
+        .then((res) => res.result.records)
         .then((data) => {
-            const recordsOnly = data.map(d => d.result.records);
-            let resData = [].concat.apply([], recordsOnly);
-            resData = resData.filter(d => d.Result !== 'NaN');
+            console.log(data);
+            const resData = data.filter(d => d.Result !== 'NaN');
             resData.forEach(d => {
+                d.Result = +d.Result;
                 d.parsedDate = parseDate(d.SampleDate);
             });
             resData.sort((a, b) => a.parsedDate - b.parsedDate);

@@ -43,7 +43,7 @@ export default function TimeSeries({ data }) {
         const unit = data[0].Unit;
 
         // filter out "NaN values"
-        const results = data.map(d => d.Result).filter(d => d !== 'NaN');
+        const results = data.map(d => d.Result);
 
         // calculate average for placeholder threshold line
         const avgResult = Math.floor(results.reduce((a, b) => a + b) / results.length);

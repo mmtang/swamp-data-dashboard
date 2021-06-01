@@ -1,4 +1,6 @@
-export const chemistryEndpoint = {
+export const chemistryEndpoint = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4';
+
+export const cedenChemistryEndpoint = {
     2021: 'https://data.ca.gov/api/3/action/datastore_search?resource_id=dde19a95-504b-48d7-8f3e-8af3d484009f',
     2020: 'https://data.ca.gov/api/3/action/datastore_search?resource_id=2eba14fa-2678-4d54-ad8b-f60784c1b234',
     2019: 'https://data.ca.gov/api/3/action/datastore_search?resource_id=6cf99106-f45f-4c17-80af-b91603f391d9',
