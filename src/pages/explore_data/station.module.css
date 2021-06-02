@@ -19,12 +19,16 @@
     padding: 1.2em 26px;
 }
 
+.titleContainer {
+    margin-bottom: 20px;
+}
+
 .siteMapContainer {
     margin: 10px 0 1.2em 0;
 }
 
 .stationName {
-    margin: 20px 0 15px 0;
+    margin: 10px 0 8px 0;
     font-size: 1.3em;
 }
 

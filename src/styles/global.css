@@ -53,9 +53,44 @@ a {
 
 .small {
   display: block;
+  color: #5d5d5d;
   font-size: 0.9em;
   font-weight: 600;
   margin: 4px 0;
+}
+
+.popup-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  border: 3px solid #f2f2f2;
+}
+
+.popup-table tr td {
+  font-size: 12px;
+  vertical-align: top;
+  font-weight: 400;
+  padding: 4px;
+  border: 3px solid #f2f2f2;
+}
+
+.popup-button {
+	background-color: #f2f2f2;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+  text-indent: 0;
+	display: inline-block;
+  color: #333;
+	font-size: 12px;
+	font-weight: normal;
+	font-style: normal;
+	text-decoration: none;
+	text-align: center;
+  padding: 6px 10px;
+}
+
+.popup-button:hover {
+	background-color: #cfd3d4;
 }
 
 .esri-search {

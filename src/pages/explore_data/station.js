@@ -3,7 +3,7 @@ import Layout from '../../components/layout/layout';
 import MapStation from '../../components/map/map-station';
 import ChemistryTable from '../../components/station-page/chemistry-table';
 import { regionDict } from '../../utils/utils';
-import { leftContainer, siteMapContainer, rightContainer, stationName } from './station.module.css';
+import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName } from './station.module.css';
 
 
 class Station extends React.Component {
@@ -58,16 +58,15 @@ class Station extends React.Component {
             return (
                 <Layout>
                     <div className={leftContainer}>
+                        <section className={titleContainer}>
+                            <h2 className={stationName}>{station.StationName ? station.StationName : null}</h2>
+                            <span className="small">Station: {station.StationCode ? station.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{regionDict[station.Region]} Region</span>
+                        </section>
                         <div className={siteMapContainer}>
                             <MapStation coordinates={[station.TargetLongitude, station.TargetLatitude]} />
                         </div>
                         <section>
-                            <h2 className={stationName}>{station.StationName ? station.StationName : null}</h2>
-                            <span className="small">Code: {station.StationCode ? station.StationCode : null}</span>
-                            <span className="small">{regionDict[station.Region]} Region</span>
-                        </section>
-                        <section>
-                            <h2>Nearby waterbodies</h2>
+                            <h2 style={{ marginTop: '25px' }}>Nearby stations</h2>
                         </section>
                     </div>
                         <div className={rightContainer}>

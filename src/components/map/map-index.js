@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
+import { timeParse, timeFormat } from 'd3';
 
 
 export default function MapIndex() {
@@ -117,7 +118,6 @@ export default function MapIndex() {
 
     const drawAttains = () => {
         const buildAttainsPopup = (feature) => {
-            console.log(feature.graphic.attributes);
             // Manually build the popup (and popup table) so that we can replace the default values coming from ATTAINS
             const attributes = feature.graphic.attributes;
             if (attributes.on303dlist === 'Y') {
@@ -324,10 +324,28 @@ export default function MapIndex() {
 
     const buildStationPopup = (feature) => {
         let div = document.createElement('div');
+        const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
+        const formatDate = timeFormat('%m/%d/%Y');
         const attributes = feature.graphic.attributes;
         const stationCode = attributes['StationCode'];
-        div.innerHTML = '<a href="/explore_data/station/?q=' + stationCode + '" target="_blank">All data</a>';
-        return div;
+        const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&filters={%22StationCode%22:%22' + stationCode + '%22}&sort=%22SampleDate%22%20desc&limit=3';
+        return fetch(url)
+            .then(resp => resp.json())
+            .then(json => json.result.records)
+            .then(records => {
+                records.forEach(d => {
+                    d.SampleDate = parseDate(d.SampleDate);
+                });
+                // Build popup content
+                let content = '<span class="small" style="font-weight: 500">Latest results:</span><table class="popup-table"><colgroup><col span="1" style="width: 30%;"></col><col span="1" style="width: 35%;"></col><col span="1" style="width: 35%;"></col></colgroup><tbody>';
+                content += '<tr><td>' + formatDate(records[0]['SampleDate']) + '</td><td>' + records[0]['Analyte'] + '</td><td>' + records[0]['Result'] + ' ' + records[0]['Unit'] + '</td></tr>';
+                content += '<tr><td>' + formatDate(records[1]['SampleDate']) + '</td><td>' + records[1]['Analyte'] + '</td><td>' + records[1]['Result'] + ' ' + records[1]['Unit'] + '</td></tr>';
+                content += '<tr><td>' + formatDate(records[2]['SampleDate']) + '</td><td>' + records[2]['Analyte'] + '</td><td>' + records[2]['Result'] + ' ' + records[2]['Unit'] + '</td></tr>';
+                content += '</tbody></table>';
+                content += '<div style="margin: 8px 0 2px 0"><a href="/explore_data/station/?q=' + stationCode + '" target="_blank" rel="noopener noreferrer" class="popup-button">View all station data</a></div>'
+                div.innerHTML = content;
+                return div;
+            });
     }
 
     const convertToGeoJSON = (data) => {
@@ -355,7 +373,7 @@ export default function MapIndex() {
         <div
             className="mapDiv"
             ref={divRef}
-            style={{ width: "60vw", height: `calc(100vh - 60px)` }}
+            style={{ width: "50vw", height: `calc(100vh - 60px)` }}
         />
     )
 }

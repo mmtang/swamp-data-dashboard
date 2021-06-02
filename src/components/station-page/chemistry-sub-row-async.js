@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { timeParse } from 'd3-time-format';
 import TimeSeries from './time-series';
+import Trend from './trend';
 import { fetchData, chemistryEndpoint } from '../../utils/utils';
 
 
@@ -67,7 +68,15 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
             return (
                 <tr>
                     <td colSpan={visibleColumns.length}>
-                        <TimeSeries data={data} />
+                        <div style={{ display: 'flex', flexDirection: 'row', margin: '1em' }}>
+                            <div style={{ flexBasis: '66%' }}>
+                                <TimeSeries data={data} />
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', flexBasis: '34%' }}>
+                                <Trend />
+                                <Trend />
+                            </div>
+                        </div>
                     </td>
                 </tr>
             )
