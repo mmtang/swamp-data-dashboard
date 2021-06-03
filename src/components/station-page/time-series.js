@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { customTooltip, axisLabel, lineLabel } from './time-series.module.css';
 
 
-export default function TimeSeries({ data }) {
+export default function TimeSeries({ data, trend }) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
     
     const getColor = (d, objective) => {
@@ -151,7 +151,7 @@ export default function TimeSeries({ data }) {
                 const formatDate = d3.timeFormat('%b %e, %Y');
                 return tooltip
                     .style('opacity', 1)
-                    .html(formatDate(d.parsedDate) + '<br>' + d.Result + ' ' + d.Unit);
+                    .html('<span style="color: #a6a6a6">' + formatDate(d.parsedDate) + '</span><br>' + d.Analyte + ": " + d.Result + ' ' + d.Unit);
             })
             .on('mousemove', () => {
                 return tooltip
@@ -166,6 +166,29 @@ export default function TimeSeries({ data }) {
             .attr('cy', (d) => { return yScale(d.Result); });
         points.exit()
             .remove();
+
+        
+        // draw trend line
+        if (trend) {
+            if (trend.trend === 'Increasing' || trend.trend === 'Decreasing') {
+                const y2 = trend.intercept + (data.length * trend.slope);
+                const trendValues = [xExtent[0], trend.intercept, xExtent[1], y2];
+                console.log(trendValues);
+                const trendLine = chart.append('g')
+                    .datum(trendValues)
+                    .attr('clip-path', 'url(#clean-clip)');
+                trendLine.append('line')
+                    .attr('className', 'trendLine')
+                    .style('stroke', '#000')
+                    .style('stroke-width', '2px')
+                    .attr('stroke-dasharray', ('9, 3'))
+                    .attr('x1', (d) => { return xScale(d[0]) })
+                    .attr('y1', (d) => { return yScale(d[1]) })
+                    .attr('x2', (d) => { return xScale(d[2]) })
+                    .attr('y2', (d) => { return yScale(d[3]) });
+            }
+        }
+
 
         // draw axes
         chart.select('.x.axis').call(xAxis);

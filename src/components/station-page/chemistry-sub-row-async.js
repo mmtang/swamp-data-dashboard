@@ -8,32 +8,20 @@ import { fetchData, chemistryEndpoint } from '../../utils/utils';
 export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
+    const [trend, setTrend] = useState({
+        trend: row.original['AllYears_Trend'],
+        intercept: parseFloat(row.original['AllYears_Intercept']),
+        pValue: row.original['AllYears_PValue'],
+        slope: parseFloat(row.original['AllYears_Slope']),
+        tau: row.original['AllYears_Tau']
+    })
+    console.log(trend);
 
     useEffect(() => {
         const years = Object.keys(chemistryEndpoint).sort((a, b) => b - a);
         const timePeriod = years.slice(0, 5);
         const columns = ['Analyte', 'StationCode', 'SampleDate', 'Result', 'Unit'];
         const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
-
-        /*
-        let promises = [];
-        // get data from all endpoints
-        for (const i in timePeriod) {
-            // build api query
-            let url = chemistryEndpoint;
-            url += '&fields=' + columns.join();
-            url += '&filters={%22Program%22:%22Surface Water Ambient Monitoring Program%22,%22StationCode%22:%22' + row.original.StationCode + '%22,%22Analyte%22:%22' + row.original.Analyte + '%22}';
-            url += '&limit=500';
-            promises.push(
-                new Promise((resolve) => {
-                    fetchData(url)
-                    .then((json) => {
-                        resolve(json);
-                    });
-                })
-            );
-        }
-        */
 
         let url = chemistryEndpoint;
         url += '&fields=' + columns.join();
@@ -70,11 +58,10 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
                     <td colSpan={visibleColumns.length}>
                         <div style={{ display: 'flex', flexDirection: 'row', margin: '1em' }}>
                             <div style={{ flexBasis: '66%' }}>
-                                <TimeSeries data={data} />
+                                <TimeSeries data={data} trend={trend} />
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', flexBasis: '34%' }}>
-                                <Trend />
-                                <Trend />
+                                <Trend trend={trend} />
                             </div>
                         </div>
                     </td>

@@ -4,7 +4,6 @@ import ChemistrySubRowAsync from './chemistry-sub-row-async';
 import { IconCirclePlus, IconCircleMinus } from '@tabler/icons';
 import { fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
-import { format } from 'prettier';
 
 
 export default function ChemistryTable(props) {
@@ -62,6 +61,11 @@ export default function ChemistryTable(props) {
                 id: 'lastsampleresult',
                 accessor: 'resultWithUnit',
                 disableSortBy: true
+            },
+            {
+                Header: 'Trend',
+                id: 'trend',
+                accessor: 'AllYears_Trend',
             }
         ]
     }, [])

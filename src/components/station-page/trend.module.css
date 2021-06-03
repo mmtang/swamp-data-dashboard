@@ -1,12 +1,11 @@
 .trendCard {
     display: flex;
     flex-direction: row;
-    text-align: center;
     margin: 0.4em;
     border: 1px solid rgba(0,0,0,.125);
 }
 
-.cardHeader {
+.iconContainer {
     color:#707070;
     font-weight: 500;
     text-transform: uppercase;
@@ -16,12 +15,15 @@
   }
 
 .cardBody {
-    padding: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .cardTitle {
     font-size: 1.3em;
-    margin: 0.2em;
+    margin: 0.2em 0;
 }
 
 .small {

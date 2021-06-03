@@ -337,7 +337,7 @@ export default function MapIndex() {
                     d.SampleDate = parseDate(d.SampleDate);
                 });
                 // Build popup content
-                let content = '<span class="small" style="font-weight: 500">Latest results:</span><table class="popup-table"><colgroup><col span="1" style="width: 30%;"></col><col span="1" style="width: 35%;"></col><col span="1" style="width: 35%;"></col></colgroup><tbody>';
+                let content = '<span class="small">Latest results:</span><table class="popup-table"><colgroup><col span="1" style="width: 30%;"></col><col span="1" style="width: 35%;"></col><col span="1" style="width: 35%;"></col></colgroup><tbody>';
                 content += '<tr><td>' + formatDate(records[0]['SampleDate']) + '</td><td>' + records[0]['Analyte'] + '</td><td>' + records[0]['Result'] + ' ' + records[0]['Unit'] + '</td></tr>';
                 content += '<tr><td>' + formatDate(records[1]['SampleDate']) + '</td><td>' + records[1]['Analyte'] + '</td><td>' + records[1]['Result'] + ' ' + records[1]['Unit'] + '</td></tr>';
                 content += '<tr><td>' + formatDate(records[2]['SampleDate']) + '</td><td>' + records[2]['Analyte'] + '</td><td>' + records[2]['Result'] + ' ' + records[2]['Unit'] + '</td></tr>';
