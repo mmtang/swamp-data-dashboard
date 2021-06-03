@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { timeParse } from 'd3-time-format';
+import { extent } from 'd3-array';
 import TimeSeries from './time-series';
 import Trend from './trend';
 import { fetchData, chemistryEndpoint } from '../../utils/utils';
@@ -8,6 +9,7 @@ import { fetchData, chemistryEndpoint } from '../../utils/utils';
 export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
+    const [yearRange, setYearRange] = useState(null);
     const [trend, setTrend] = useState({
         trend: row.original['AllYears_Trend'],
         intercept: parseFloat(row.original['AllYears_Intercept']),
@@ -15,11 +17,10 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
         slope: parseFloat(row.original['AllYears_Slope']),
         tau: row.original['AllYears_Tau']
     })
-    console.log(trend);
 
     useEffect(() => {
-        const years = Object.keys(chemistryEndpoint).sort((a, b) => b - a);
-        const timePeriod = years.slice(0, 5);
+        //const years = Object.keys(chemistryEndpoint).sort((a, b) => b - a);
+        //const timePeriod = years.slice(0, 5);
         const columns = ['Analyte', 'StationCode', 'SampleDate', 'Result', 'Unit'];
         const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
 
@@ -37,6 +38,11 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
                 d.parsedDate = parseDate(d.SampleDate);
             });
             resData.sort((a, b) => a.parsedDate - b.parsedDate);
+            // Get year range for passing to time series and trend components
+            const years = extent(resData, (d) => { return d.parsedDate; });
+            years[0] = years[0].getFullYear();
+            years[1] = years[1].getFullYear();
+            setYearRange(years)
             setData(resData);
             setLoading(false);
         })
@@ -61,7 +67,7 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
                                 <TimeSeries data={data} trend={trend} />
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', flexBasis: '34%' }}>
-                                <Trend trend={trend} />
+                                <Trend trend={trend} yearRange={yearRange} />
                             </div>
                         </div>
                     </td>

@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import DataTable from './data-table';
 import ChemistrySubRowAsync from './chemistry-sub-row-async';
-import { IconCirclePlus, IconCircleMinus } from '@tabler/icons';
+import { IconCirclePlus, IconCircleMinus, IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
+import { trendWrapper } from './data-table.module.css';
 
 
 export default function ChemistryTable(props) {
@@ -66,9 +67,28 @@ export default function ChemistryTable(props) {
                 Header: 'Trend',
                 id: 'trend',
                 accessor: 'AllYears_Trend',
+                Cell: props => <span>{props.value === 'Increasing' ? <TrendingUp /> : props.value === 'Decreasing' ? <TrendingDown /> : <Minus trend={props.value} /> }</span>
             }
         ]
     }, [])
+
+    function TrendingUp() {
+        return (
+            <span className={trendWrapper}><IconTrendingUp size={18} />&nbsp;&nbsp;&nbsp;Increasing</span>
+        )
+    }
+
+    function TrendingDown() {
+        return (
+            <span className={trendWrapper}><IconTrendingDown size={18} />&nbsp;&nbsp;&nbsp;Decreasing</span>
+        )
+    }
+
+    function Minus({ trend }) {
+        return (
+            <span className={trendWrapper}><IconMinus size={18} />&nbsp;&nbsp;&nbsp;{trend}</span>
+        )
+    }
 
     const initialState = useMemo(() => {
         return {

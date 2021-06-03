@@ -19,6 +19,11 @@
     border-top: solid 1px #e3e4e6;
 }
 
+.trendWrapper {
+    display: flex;
+    align-items: center;
+}
+
 .paginationContainer {
     display: flex;
     justify-content: space-between;

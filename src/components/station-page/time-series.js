@@ -49,7 +49,7 @@ export default function TimeSeries({ data, trend }) {
         const avgResult = Math.floor(results.reduce((a, b) => a + b) / results.length);
         const objective = {
             type: 'max',
-            label: 'Threshold',
+            label: 'Objective',
             value: avgResult,
             unit: unit,
             upper: null,
