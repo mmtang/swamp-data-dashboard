@@ -10,3 +10,8 @@
     flex-direction: row;
     margin-top: 12px;
 }
+
+.customSelect {
+    width: 100%;
+    box-sizing: border-box;
+}
