@@ -59,6 +59,10 @@ a {
   margin: 4px 0;
 }
 
+.emphasis {
+  font-weight: 600;
+}
+
 .popup-table {
   width: 100%;
   border-collapse: collapse;

@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../../components/layout/layout';
 import MapStation from '../../components/map/map-station';
+import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
 import ChemistryTable from '../../components/station-page/chemistry-table';
 import { regionDict } from '../../utils/utils';
 import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName } from './station.module.css';
@@ -66,7 +67,8 @@ class Station extends React.Component {
                             <MapStation coordinates={[station.TargetLongitude, station.TargetLatitude]} />
                         </div>
                         <section>
-                            <h2 style={{ marginTop: '25px' }}>Nearby stations</h2>
+                            <h2 style={{ margin: "25px 0 15px 0" }}>Nearby waterbodies</h2>
+                            <NearbyWaterbodies coordinates={[station.TargetLongitude, station.TargetLatitude]} />
                         </section>
                     </div>
                         <div className={rightContainer}>

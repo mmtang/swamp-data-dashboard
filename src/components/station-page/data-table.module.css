@@ -30,7 +30,7 @@
     margin: 5px 0 20px 0;
     background-color: #e3e4e6;
     padding: 10px 14px;
-    font-size: 0.85em;
+    font-size: 0.9em;
 }
 
 /* needed for custom select arrow */
@@ -65,6 +65,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    font-size: 0.9em;
 }
 
 .navigationWrapper {

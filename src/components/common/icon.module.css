@@ -2,5 +2,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 6px;
+    width: inherit;
+    height: 100%;
 }

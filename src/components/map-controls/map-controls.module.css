@@ -1,10 +1,11 @@
-.searchContainer {
+.boxContainer {
     background-color: #e5e5e5;
     padding: 1.1em;
     font-size: 1em;
+    margin: 15px 0;
 }
 
-.searchWrapper {
+.selectWrapper {
     display: flex;
     flex-direction: row;
     margin-top: 12px;
