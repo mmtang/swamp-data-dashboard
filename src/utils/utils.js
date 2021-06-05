@@ -34,3 +34,47 @@ export const fetchData = (url) => {
         .then((d) => resolve(d));
     });
 }
+
+export const convertStationsToGeoJSON = (data) => {
+    // converts json to geojson
+    return {
+        'type': 'FeatureCollection',
+        'features': data.map((d) => {
+            return {
+                'type': 'Feature',
+                'geometry': {
+                    'coordinates': [d.TargetLongitude, d.TargetLatitude],
+                    'type': 'Point'
+                },
+                'properties': {
+                    'StationName': d.StationName,
+                    'StationCode': d.StationCode,
+                }
+
+            }
+        })
+    }
+}
+
+export const convertStationSummaryToGeoJSON = (data) => {
+    // converts json to geojson
+    return {
+        'type': 'FeatureCollection',
+        'features': data.map((d) => {
+            return {
+                'type': 'Feature',
+                'geometry': {
+                    'coordinates': [d.TargetLongitude, d.TargetLatitude],
+                    'type': 'Point'
+                },
+                'properties': {
+                    'StationName': d.StationName,
+                    'StationCode': d.StationCode,
+                    'Analyte': d.Analyte,
+                    'Trend': d.AllYears_Trend
+                }
+
+            }
+        })
+    }
+}

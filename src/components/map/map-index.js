@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
+import { convertStationsToGeoJSON, convertStationSummaryToGeoJSON } from '../../utils/utils';
 
 
-export default function MapIndex() {
+export default function MapIndex({ selectedAnalyte }) {
     const divRef = useRef(null);
     const mapRef = useRef(null);
     const viewRef = useRef(null);
@@ -13,6 +14,7 @@ export default function MapIndex() {
     const bpLayerRef = useRef(null);
     const boundaryLayerRef = useRef(null);
     const stationLayerRef = useRef(null);
+    const stationSummaryLayerRef = useRef(null);
 
     useEffect(() => {
         setDefaultOptions({ version: '4.16' });
@@ -25,6 +27,124 @@ export default function MapIndex() {
             drawStations();
         });
     }, [mapRef]);
+
+    useEffect(() => {
+        if (selectedAnalyte) {
+            mapRef.current.remove(stationLayerRef.current);
+            if (!stationSummaryLayerRef.current) {
+                drawStationAnalyteLayer();
+            } else {
+                updateStationAnalyteLayer();
+            }
+        }
+    }, [selectedAnalyte])
+
+
+    const updateStationAnalyteLayer = () => {
+        if (stationSummaryLayerRef.current) {
+            mapRef.current.remove(stationSummaryLayerRef.current);
+            stationSummaryLayerRef.current = null;
+            drawStationAnalyteLayer();
+        }
+    }
+
+    const drawStationAnalyteLayer = () => {
+        if (mapRef) {
+            loadModules(['esri/layers/GeoJSONLayer'])
+            .then(([GeoJSONLayer]) => {
+                const increasingSym = {
+                    type: 'simple-marker',
+                    size: 5.5,
+                    color: '#ff0000',
+                    outline: {
+                        color: '#fff'
+                    }
+                }
+                const decreasingSym = {
+                    type: 'simple-marker',
+                    size: 5.5,
+                    color: '#000',
+                    outline: {
+                        color: '#fff'
+                    }
+                }
+                const noTrendSym = {
+                    type: 'simple-marker',
+                    size: 5.5,
+                    color: '#828282',
+                    outline: {
+                        color: '#fff'
+                    }
+                }
+                const notAssessedSym = {
+                    type: 'simple-marker',
+                    size: 5.5,
+                    color: '#fff',
+                    outline: {
+                        color: '#363636'
+                    }
+                }
+                const analyteRenderer = {
+                    type: 'unique-value',
+                    field: 'Trend',
+                    uniqueValueInfos: [
+                        {
+                            value: 'Increasing',
+                            symbol: increasingSym,
+                        },
+                        {
+                            value: 'Decreasing',
+                            symbol: decreasingSym
+                        },
+                        {
+                            value: 'No trend',
+                            symbol: noTrendSym
+                        },
+                        {
+                            value: 'Not assessed',
+                            symbol: notAssessedSym
+                        }
+                    ]
+                };
+                /*
+                    symbol: {
+                        type: 'web-style',
+                        name: 'triangle-1',
+                        styleName: 'Esri2DPointSymbolsStyle'
+                    }
+                }
+                */
+                let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,AllYears_Trend&limit=500';
+                url += '&filters={%22Analyte%22:%22' + selectedAnalyte + '%22}'
+                fetch(url)
+                .then((resp) => resp.json())
+                .then((json) => json.result.records)
+                .then((records) => {
+                    const data = convertStationSummaryToGeoJSON(records);
+                    console.log(data);
+                    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+                    const url = URL.createObjectURL(blob);
+                    stationSummaryLayerRef.current = new GeoJSONLayer({
+                        id: 'stationAnalyteLayer',
+                        url: url,
+                        outFields: ['StationName', 'StationCode', 'Analyte', 'Trend'],
+                        renderer: analyteRenderer
+                    });
+                    /*
+                    // convert web style symbol to CIMSymbol
+                    stationSummaryLayerRef.current.renderer.symbol.fetchCIMSymbol().then((cimSymbol) => {
+                        stationSummaryLayerRef.current.renderer.symbol = cimSymbol;
+                    });
+                    */
+                    mapRef.current.add(stationSummaryLayerRef.current);
+                    stationSummaryLayerRef.current.queryFeatureCount()
+                        .then(numFeatures => {
+                            console.log(numFeatures);
+                        });
+                });
+            });
+        }
+    }
 
     const drawStations = () => {
         const stationTemplate = {
@@ -51,7 +171,7 @@ export default function MapIndex() {
                 .then((resp) => resp.json())
                 .then((json) => json.result.records)
                 .then((records) => {
-                    const stationData = convertToGeoJSON(records);
+                    const stationData = convertStationsToGeoJSON(records);
                     const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
                     const url = URL.createObjectURL(blob);
                     stationLayerRef.current = new GeoJSONLayer({
@@ -346,27 +466,6 @@ export default function MapIndex() {
                 div.innerHTML = content;
                 return div;
             });
-    }
-
-    const convertToGeoJSON = (data) => {
-        // converts json to geojson
-        return {
-            'type': 'FeatureCollection',
-            'features': data.map((d) => {
-                return {
-                    'type': 'Feature',
-                    'geometry': {
-                        'coordinates': [d.TargetLongitude, d.TargetLatitude],
-                        'type': 'Point'
-                    },
-                    'properties': {
-                        'StationName': d.StationName,
-                        'StationCode': d.StationCode
-                    }
-
-                }
-            })
-        }
     }
 
     return (
