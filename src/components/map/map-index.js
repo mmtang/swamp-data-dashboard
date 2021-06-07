@@ -15,14 +15,16 @@ export default function MapIndex({ selectedAnalyte }) {
     const boundaryLayerRef = useRef(null);
     const stationLayerRef = useRef(null);
     const stationSummaryLayerRef = useRef(null);
+    const layerListRef = useRef(null);
+    
 
     useEffect(() => {
         setDefaultOptions({ version: '4.16' });
         loadCss();
         initializeMap()
         .then(() => {
-            drawAttains();
             drawBasinPlan();
+            drawAttains();
             drawBoundaries();
             drawStations();
         });
@@ -50,27 +52,168 @@ export default function MapIndex({ selectedAnalyte }) {
 
     const drawStationAnalyteLayer = () => {
         if (mapRef) {
-            loadModules(['esri/layers/GeoJSONLayer'])
-            .then(([GeoJSONLayer]) => {
-                const increasingSym = {
-                    type: 'simple-marker',
-                    size: 5.5,
-                    color: '#ff0000',
-                    outline: {
-                        color: '#fff'
+            loadModules(['esri/layers/GeoJSONLayer', 'esri/symbols/CIMSymbol', 'esri/symbols/support/cimSymbolUtils'])
+            .then(([GeoJSONLayer, CIMSymbol, cimSymbolUtils]) => {
+                const arrowIncreasing = new CIMSymbol({
+                    "data": {
+                      "type": "CIMSymbolReference",
+                      "symbol": {
+                        "type": "CIMPointSymbol",
+                        "symbolLayers": [
+                          {
+                            "type": "CIMVectorMarker",
+                            "enable": true,
+                            "anchorPoint": {
+                              "x": 0,
+                              "y": 0,
+                              "z": 0
+                            },
+                            "anchorPointUnits": "Relative",
+                            "dominantSizeAxis3D": "Y",
+                            "size": 10,
+                            "billboardMode3D": "FaceNearPlane",
+                            "frame": {
+                              "xmin": 0,
+                              "ymin": 0,
+                              "xmax": 17,
+                              "ymax": 17
+                            },
+                            "markerGraphics": [
+                              {
+                                "type": "CIMMarkerGraphic",
+                                "geometry": {
+                                  "rings": [
+                                    [
+                                      [
+                                        0,
+                                        0
+                                      ],
+                                      [
+                                        8.61,
+                                        14.85
+                                      ],
+                                      [
+                                        17,
+                                        0
+                                      ],
+                                      [
+                                        0,
+                                        0
+                                      ]
+                                    ]
+                                  ]
+                                },
+                                "symbol": {
+                                  "type": "CIMPolygonSymbol",
+                                  "symbolLayers": [
+                                    {
+                                      "type": "CIMSolidFill",
+                                      "enable": true,
+                                      "color": [
+                                        230,
+                                        0,
+                                        0,
+                                        255
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "scaleSymbolsProportionally": true,
+                            "respectFrame": true
+                          }
+                        ],
+                        "haloSize": 1,
+                        "scaleX": 1,
+                        "angleAlignment": "Display",
+                        "version": "2.0.0",
+                        "build": "8933"
+                      }
                     }
-                }
-                const decreasingSym = {
-                    type: 'simple-marker',
-                    size: 5.5,
-                    color: '#000',
-                    outline: {
-                        color: '#fff'
+                });
+                const arrowDecreasing = new CIMSymbol({
+                    "data": {
+                      "type": "CIMSymbolReference",
+                      "symbol": {
+                        "type": "CIMPointSymbol",
+                        "symbolLayers": [
+                          {
+                            "type": "CIMVectorMarker",
+                            "enable": true,
+                            "anchorPoint": {
+                              "x": 0,
+                              "y": 0,
+                              "z": 0
+                            },
+                            "anchorPointUnits": "Relative",
+                            "dominantSizeAxis3D": "Y",
+                            "size": 10,
+                            "billboardMode3D": "FaceNearPlane",
+                            "frame": {
+                              "xmin": 0,
+                              "ymin": 0,
+                              "xmax": 17,
+                              "ymax": 17
+                            },
+                            "markerGraphics": [
+                              {
+                                "type": "CIMMarkerGraphic",
+                                "geometry": {
+                                  "rings": [
+                                    [
+                                      [
+                                        0,
+                                        0
+                                      ],
+                                      [
+                                        8.61,
+                                        14.85
+                                      ],
+                                      [
+                                        17,
+                                        0
+                                      ],
+                                      [
+                                        0,
+                                        0
+                                      ]
+                                    ]
+                                  ]
+                                },
+                                "symbol": {
+                                  "type": "CIMPolygonSymbol",
+                                  "symbolLayers": [
+                                    {
+                                      "type": "CIMSolidFill",
+                                      "enable": true,
+                                      "color": [
+                                        0,
+                                        0,
+                                        0,
+                                        255
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "scaleSymbolsProportionally": true,
+                            "respectFrame": true
+                          }
+                        ],
+                        "haloSize": 1,
+                        "scaleX": 1,
+                        "angleAlignment": "Display",
+                        "version": "2.0.0",
+                        "build": "8933"
+                      }
                     }
-                }
+                });
+                cimSymbolUtils.applyCIMSymbolRotation(arrowDecreasing, 180)
                 const noTrendSym = {
                     type: 'simple-marker',
-                    size: 5.5,
+                    size: 6,
                     color: '#828282',
                     outline: {
                         color: '#fff'
@@ -78,7 +221,7 @@ export default function MapIndex({ selectedAnalyte }) {
                 }
                 const notAssessedSym = {
                     type: 'simple-marker',
-                    size: 5.5,
+                    size: 6,
                     color: '#fff',
                     outline: {
                         color: '#363636'
@@ -90,11 +233,11 @@ export default function MapIndex({ selectedAnalyte }) {
                     uniqueValueInfos: [
                         {
                             value: 'Increasing',
-                            symbol: increasingSym,
+                            symbol: arrowIncreasing,
                         },
                         {
                             value: 'Decreasing',
-                            symbol: decreasingSym
+                            symbol: arrowDecreasing
                         },
                         {
                             value: 'No trend',
@@ -106,14 +249,6 @@ export default function MapIndex({ selectedAnalyte }) {
                         }
                     ]
                 };
-                /*
-                    symbol: {
-                        type: 'web-style',
-                        name: 'triangle-1',
-                        styleName: 'Esri2DPointSymbolsStyle'
-                    }
-                }
-                */
                 let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,AllYears_Trend&limit=500';
                 url += '&filters={%22Analyte%22:%22' + selectedAnalyte + '%22}'
                 fetch(url)
@@ -121,26 +256,16 @@ export default function MapIndex({ selectedAnalyte }) {
                 .then((json) => json.result.records)
                 .then((records) => {
                     const data = convertStationSummaryToGeoJSON(records);
-                    console.log(data);
                     const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
                     const url = URL.createObjectURL(blob);
                     stationSummaryLayerRef.current = new GeoJSONLayer({
                         id: 'stationAnalyteLayer',
+                        title: 'SWAMP Monitoring Stations - Trends',
                         url: url,
                         outFields: ['StationName', 'StationCode', 'Analyte', 'Trend'],
                         renderer: analyteRenderer
                     });
-                    /*
-                    // convert web style symbol to CIMSymbol
-                    stationSummaryLayerRef.current.renderer.symbol.fetchCIMSymbol().then((cimSymbol) => {
-                        stationSummaryLayerRef.current.renderer.symbol = cimSymbol;
-                    });
-                    */
                     mapRef.current.add(stationSummaryLayerRef.current);
-                    stationSummaryLayerRef.current.queryFeatureCount()
-                        .then(numFeatures => {
-                            console.log(numFeatures);
-                        });
                 });
             });
         }
@@ -176,7 +301,9 @@ export default function MapIndex({ selectedAnalyte }) {
                     const url = URL.createObjectURL(blob);
                     stationLayerRef.current = new GeoJSONLayer({
                         id: 'stationLayer',
+                        title: 'SWAMP Monitoring Stations',
                         url: url,
+                        listMode: 'hide',
                         outFields: ['StationName', 'StationCode'],
                         renderer: stationRenderer,
                         popupTemplate: stationTemplate
@@ -201,8 +328,9 @@ export default function MapIndex({ selectedAnalyte }) {
             loadModules([
                 'esri/Map',
                 'esri/views/MapView',
-                'esri/widgets/Search'
-            ]).then(([Map, MapView, Search]) => {
+                'esri/widgets/Search',
+                'esri/widgets/LayerList'
+            ]).then(([Map, MapView, Search, LayerList]) => {
                 mapRef.current = new Map({
                     basemap: 'gray-vector'
                 });
@@ -218,9 +346,6 @@ export default function MapIndex({ selectedAnalyte }) {
                         collapseEnabled: false,
                     }
                 });
-                if (searchRef) {
-                    searchRef.current = null;
-                }
                 searchRef.current = new Search({
                     view: viewRef.current,
                     container: 'search-div',
@@ -231,6 +356,22 @@ export default function MapIndex({ selectedAnalyte }) {
                     popupEnabled: false,
                     sources: []
                 });
+
+                layerListRef.current = new LayerList({
+                    view: viewRef.current,
+                    listItemCreatedFunction: function(event) {
+                        const item = event.item;
+                        if (item.layer.type != 'group') {
+                          // don't show legend twice
+                          item.panel = {
+                            content: 'legend',
+                            open: true
+                          };
+                        }
+                    }
+                });
+                viewRef.current.ui.add(layerListRef.current, 'bottom-left');
+
                 resolve();
             });
         })
@@ -392,15 +533,19 @@ export default function MapIndex({ selectedAnalyte }) {
                     sublayers: [
                         {
                             id: 0, // polygon sublayer
+                            title: 'Beneficial Uses - Polygons',
                             definitionExpression: "REG_ID = '2S'",
                             popupTemplate: bpPolyTemplate,  
                         },
                         {
                             id: 1, // line sublayer
+                            title: 'Beneficial Uses - Lines',
                             definitionExpression: "REG_ID = '2S'",
                             popupTemplate: bpLineTemplate
                         }
                     ],
+                    listMode: 'hide-children',
+                    legendEnabled: true,
                     visible: false
                 });
                 mapRef.current.add(bpLayerRef.current);
@@ -435,6 +580,7 @@ export default function MapIndex({ selectedAnalyte }) {
                 boundaryLayerRef.current = new FeatureLayer({
                     id: 'boundaryLayer',
                     url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Regional_Board_Boundary_Features/FeatureServer/1',
+                    listMode: 'hide',
                     renderer: boundaryRenderer
                 });
                 mapRef.current.add(boundaryLayerRef.current);
@@ -472,7 +618,7 @@ export default function MapIndex({ selectedAnalyte }) {
         <div
             className="mapDiv"
             ref={divRef}
-            style={{ width: "50vw", height: `calc(100vh - 60px)` }}
+            style={{ width: "60vw", height: `calc(100vh - 60px)` }}
         />
     )
 }

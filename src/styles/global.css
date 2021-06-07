@@ -94,6 +94,15 @@ a {
   padding: 6px 10px;
 }
 
+.esri-layer-list {
+  max-width: 250px !important;
+  max-height: 150px !important;
+}
+
+.esri-legend__message {
+  display: none;
+}
+
 .esri-search {
   width: auto !important;
 }
