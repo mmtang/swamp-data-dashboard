@@ -186,13 +186,13 @@
     left: 0;
     border-radius: 0;
     overflow: auto;
-    max-height: 150px;
+    max-height: 200px;
 }
 
 .select-search--multiple .select-search__select {
     position: relative;
     overflow: auto;
-    max-height: 150px;
+    max-height: 200px;
     border-top: 1px solid #eee;
     border-radius: 0;
 }

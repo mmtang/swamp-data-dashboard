@@ -1,0 +1,28 @@
+.arrowContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.arrowUp {
+    width: 0;
+    height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-bottom: 14px solid #f2f8f9;
+}
+
+.cardContainer {
+    background-color: #f2f8f9;
+    padding: 1.1em;
+}
+
+.cardTitle {
+    margin: 0;
+    font-size: 1em;
+}
+
+.cardContainer p {
+    margin: 8px 0 0 0;
+    font-size: 0.9em;
+    font-weight: 300;
+}
