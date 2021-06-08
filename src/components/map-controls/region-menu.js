@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import SelectSearch from 'react-select-search';
+import RegionCard from './region-card';
 import { boxContainer, selectWrapper } from './map-controls.module.css';
 
-export default function RegionMenu() {   
+export default function RegionMenu({ selectedRegion, setRegion }) {   
     const regionList = [
         {
             name: 'North Coast',
@@ -42,12 +43,10 @@ export default function RegionMenu() {
         }
     ];
 
-    useEffect(() => {
-        console.log('hey')
-    }, []);
-
     const handleChange = (value) => {
-        alert(value);
+        if (value !== selectedRegion) {
+            setRegion(value);
+        }
     }
 
     return (
@@ -60,6 +59,7 @@ export default function RegionMenu() {
                     onChange={handleChange}
                 />
             </div>
+            { selectedRegion ? <RegionCard selectedRegion={selectedRegion} /> : null }
         </div>
     )
 }
