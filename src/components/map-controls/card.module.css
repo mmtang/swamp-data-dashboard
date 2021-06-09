@@ -1,7 +1,7 @@
 .arrowContainer {
     display: flex;
     justify-content: center;
-    margin-top: 8px;
+    margin-top: 0;
 }
 
 .arrowUp {

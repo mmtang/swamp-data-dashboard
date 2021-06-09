@@ -17,7 +17,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
     const stationSummaryLayerRef = useRef(null);
     const layerListRef = useRef(null);
     const highlightRef = useRef(null);
-    
 
     useEffect(() => {
         const drawStations = () => {
@@ -290,6 +289,10 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                             }
                         ]
                     };
+                    const analyteTemplate = {
+                        title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
+                        content: buildStationPopup
+                    }
                     let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,AllYears_Trend&limit=500';
                     url += '&filters={%22Analyte%22:%22' + selectedAnalyte + '%22}'
                     fetch(url)
@@ -304,7 +307,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                             title: 'SWAMP Monitoring Stations - Trends',
                             url: url,
                             outFields: ['StationName', 'StationCode', 'Analyte', 'Trend'],
-                            renderer: analyteRenderer
+                            renderer: analyteRenderer,
+                            popupTemplate: analyteTemplate
                         });
                         mapRef.current.add(stationSummaryLayerRef.current);
                     });
@@ -619,7 +623,12 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
         const formatDate = timeFormat('%m/%d/%Y');
         const attributes = feature.graphic.attributes;
         const stationCode = attributes['StationCode'];
-        const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&filters={%22StationCode%22:%22' + stationCode + '%22}&sort=%22SampleDate%22%20desc&limit=3';
+        let url; 
+        if (selectedAnalyte) {
+            url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&filters={%22StationCode%22:%22' + stationCode + '%22%2C%22Analyte%22:%22' + selectedAnalyte + '%22}&sort=%22SampleDate%22%20desc&limit=3';
+        } else {
+            url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&filters={%22StationCode%22:%22' + stationCode + '%22}&sort=%22SampleDate%22%20desc&limit=3';
+        }
         return fetch(url)
             .then(resp => resp.json())
             .then(json => json.result.records)
@@ -628,7 +637,11 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                     d.SampleDate = parseDate(d.SampleDate);
                 });
                 // Build popup content
-                let content = '<span class="small">Latest results:</span><table class="popup-table"><colgroup><col span="1" style="width: 30%;"></col><col span="1" style="width: 35%;"></col><col span="1" style="width: 35%;"></col></colgroup><tbody>';
+                let content = '<span class="small">Latest results';
+                if (selectedAnalyte) {
+                    content += ' for ' + selectedAnalyte
+                }
+                content += ':</span><table class="popup-table"><colgroup><col span="1" style="width: 30%;"></col><col span="1" style="width: 35%;"></col><col span="1" style="width: 35%;"></col></colgroup><tbody>';
                 content += '<tr><td>' + formatDate(records[0]['SampleDate']) + '</td><td>' + records[0]['Analyte'] + '</td><td>' + records[0]['Result'] + ' ' + records[0]['Unit'] + '</td></tr>';
                 content += '<tr><td>' + formatDate(records[1]['SampleDate']) + '</td><td>' + records[1]['Analyte'] + '</td><td>' + records[1]['Result'] + ' ' + records[1]['Unit'] + '</td></tr>';
                 content += '<tr><td>' + formatDate(records[2]['SampleDate']) + '</td><td>' + records[2]['Analyte'] + '</td><td>' + records[2]['Result'] + ' ' + records[2]['Unit'] + '</td></tr>';

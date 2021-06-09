@@ -51,7 +51,7 @@ export default function RegionMenu({ selectedRegion, setRegion }) {
 
     return (
         <div className={boxContainer}>
-            Select a <span className="emphasis">Region</span>
+            Select a <span className="emphasis">region</span>
             <div className={selectWrapper}>
                 <SelectSearch
                     options={regionList} 

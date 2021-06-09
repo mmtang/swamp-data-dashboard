@@ -38,12 +38,12 @@ export default function AnalyteMenu({ selectedAnalyte, setAnalyte }) {
                             onChange={handleSelectChange}
                         />
                     </div>
+                    { selectedAnalyte ? <AnalyteCard selectedAnalyte={selectedAnalyte} /> : null }
                     <div className={radioWrapper}>
                         <input type="radio" id="analyteTrend10" name="mapDisplay" value="ten" onChange={handleRadioChange} checked={trendType === 'ten'} /><label htmlFor="analyteTrend10">&nbsp;Trend (last 10 years)</label>
                         &nbsp;
                         <input type="radio" id="analyteTrend10" name="mapDisplay" value="all" onChange={handleRadioChange} checked={trendType === 'all' } /><label htmlFor="analyteTrend10">&nbsp;Trend (all readings)</label>
                     </div>
-                    { selectedAnalyte ? <AnalyteCard selectedAnalyte={selectedAnalyte} /> : null }
                 </div>
             </React.Fragment>
         )

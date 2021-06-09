@@ -61,7 +61,7 @@ class Station extends React.Component {
                     <div className={leftContainer}>
                         <section className={titleContainer}>
                             <h2 className={stationName}>{station.StationName ? station.StationName : null}</h2>
-                            <span className="small">Station: {station.StationCode ? station.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{regionDict[station.Region]} Region</span>
+                            <span style={{ fontSize: '0.95em' }}>Station: {station.StationCode ? station.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{regionDict[station.Region]} Region</span>
                         </section>
                         <div className={siteMapContainer}>
                             <MapStation coordinates={[station.TargetLongitude, station.TargetLatitude]} />
