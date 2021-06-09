@@ -642,9 +642,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                     content += ' for ' + selectedAnalyte
                 }
                 content += ':</span><table class="popup-table"><colgroup><col span="1" style="width: 30%;"></col><col span="1" style="width: 35%;"></col><col span="1" style="width: 35%;"></col></colgroup><tbody>';
-                content += '<tr><td>' + formatDate(records[0]['SampleDate']) + '</td><td>' + records[0]['Analyte'] + '</td><td>' + records[0]['Result'] + ' ' + records[0]['Unit'] + '</td></tr>';
-                content += '<tr><td>' + formatDate(records[1]['SampleDate']) + '</td><td>' + records[1]['Analyte'] + '</td><td>' + records[1]['Result'] + ' ' + records[1]['Unit'] + '</td></tr>';
-                content += '<tr><td>' + formatDate(records[2]['SampleDate']) + '</td><td>' + records[2]['Analyte'] + '</td><td>' + records[2]['Result'] + ' ' + records[2]['Unit'] + '</td></tr>';
+                for (let i = 0; i < records.length; i++) {
+                    content += '<tr><td>' + formatDate(records[i]['SampleDate']) + '</td><td>' + records[i]['Analyte'] + '</td><td>' + records[i]['Result'] + ' ' + records[i]['Unit'] + '</td></tr>';
+                }
                 content += '</tbody></table>';
                 content += '<div style="margin: 8px 0 2px 0"><a href="/explore_data/station/?q=' + stationCode + '" target="_blank" rel="noopener noreferrer" class="popup-button">View all station data</a></div>'
                 div.innerHTML = content;
