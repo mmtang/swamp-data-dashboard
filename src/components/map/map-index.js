@@ -346,6 +346,10 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                 })
                 
             });
+        } else {
+            if (highlightRef.current) {
+                highlightRef.current.remove();
+            }
         }
     }, [selectedRegion]);
 

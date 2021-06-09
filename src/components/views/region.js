@@ -1,7 +1,7 @@
 import React from 'react';
-import { arrowContainer, arrowUp, cardContainer, cardTitle } from './card.module.css';
+import Back from '../common/back';
 
-export default function RegionCard({ selectedRegion }) {
+export default function Region({ selectedRegion, setView, setRegion }) {
     const regionDesc = {
         'North Coast': 'The North Coast Region receives more precipitation than any other part of California. Abundant in surface water and groundwater resources, the North Coast Region constitutes only about 12 percent of the area of California but produces about 40 percent of the annual runoff.',
         'San Francisco Bay': 'The San Francisco Bay Region, centrally located along our state’s coastline, marks a natural topographic separation between the northern and southern coastal mountain ranges. The San Francisco estuary is the largest estuary on the west coast of North and South America and forms the centerpiece of the Bay Area.',
@@ -14,20 +14,16 @@ export default function RegionCard({ selectedRegion }) {
         'San Diego': 'The San Diego Region stretches along 85 miles of coastline from Laguna Beach to the Mexican border and extends 50 miles inland to the crest of the coastal mountain range. It encompasses most of San Diego County, southwestern Riverside County and southern Orange County.'
     };
 
-    if (selectedRegion) {
-        return (
-            <React.Fragment>
-                <div className={arrowContainer}>
-                    <div className={arrowUp}></div>
-                </div>
-                <div className={cardContainer}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <h3 className={cardTitle}>{selectedRegion}&nbsp;Region</h3>
-                    </div>
-                    <p>{regionDesc[selectedRegion]}</p>
-                    <p><span style={{ color: '#20639b' }}>View summary</span></p>
-                </div>
-            </React.Fragment>
-        )
+    const handleBackClick = () => {
+        setRegion(null);
+        setView('home');
     }
+
+    return (
+        <React.Fragment>
+            <Back handleClick={handleBackClick} />
+            <h2>{selectedRegion}</h2>
+            <p>{regionDesc[selectedRegion]}</p>
+        </React.Fragment>
+    )
 }
