@@ -1,5 +1,5 @@
 import React from 'react';
-import { searchContainer, searchWrapper, emphasis } from './search-container.module.css';
+import { searchContainer, searchWrapper } from './search-container.module.css';
 
 
 class SearchContainer extends React.Component {

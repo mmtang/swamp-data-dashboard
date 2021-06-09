@@ -198,7 +198,7 @@ export default function TimeSeries({ data, trend }) {
             .attr('text-anchor', 'middle')  
             .attr('transform', 'translate(' + 12 + "," + (height / 2) + ') rotate(-90)')
             .text(unit);
-    }, [data]);
+    }, [data, trend]);
 
     useEffect(() => {
         drawChart();

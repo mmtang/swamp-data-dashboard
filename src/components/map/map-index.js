@@ -20,6 +20,58 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
     
 
     useEffect(() => {
+        const drawStations = () => {
+            const stationTemplate = {
+                title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
+                content: buildStationPopup
+            };
+            const stationRenderer = {
+                type: 'simple',
+                symbol: {
+                    type: 'simple-marker',
+                    size: 5.5,
+                    color: '#fff',
+                    //color: '#fff',
+                    outline: {
+                        color: '#363636'
+                    }
+                }
+            };
+            if (mapRef) {
+                loadModules(['esri/layers/GeoJSONLayer'])
+                .then(([GeoJSONLayer]) => {
+                    const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=1000';
+                    fetch(url)
+                    .then((resp) => resp.json())
+                    .then((json) => json.result.records)
+                    .then((records) => {
+                        const stationData = convertStationsToGeoJSON(records);
+                        const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
+                        const url = URL.createObjectURL(blob);
+                        stationLayerRef.current = new GeoJSONLayer({
+                            id: 'stationLayer',
+                            title: 'SWAMP Monitoring Stations',
+                            url: url,
+                            listMode: 'hide',
+                            outFields: ['StationName', 'StationCode'],
+                            renderer: stationRenderer,
+                            popupTemplate: stationTemplate
+                        });
+                        mapRef.current.add(stationLayerRef.current);
+                        searchRef.current.sources.add({
+                            layer: stationLayerRef.current,
+                            searchFields: ['StationName', 'StationCode'],
+                            displayField: 'StationName',
+                            exactMatch: false,
+                            outFields: ['StationName', 'StationCode'],
+                            name: 'Monitoring stations',
+                            placeholder: 'Example: Buena Vista Park'
+                        });
+                    });
+                });
+            }
+        };
+
         setDefaultOptions({ version: '4.16' });
         loadCss();
         initializeMap()
@@ -32,6 +84,234 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
     }, [mapRef]);
 
     useEffect(() => {
+        const updateStationAnalyteLayer = () => {
+            if (stationSummaryLayerRef.current) {
+                mapRef.current.remove(stationSummaryLayerRef.current);
+                stationSummaryLayerRef.current = null;
+                drawStationAnalyteLayer();
+            }
+        }
+        const drawStationAnalyteLayer = () => {
+            if (mapRef) {
+                loadModules(['esri/layers/GeoJSONLayer', 'esri/symbols/CIMSymbol', 'esri/symbols/support/cimSymbolUtils'])
+                .then(([GeoJSONLayer, CIMSymbol, cimSymbolUtils]) => {
+                    const arrowIncreasing = new CIMSymbol({
+                        "data": {
+                          "type": "CIMSymbolReference",
+                          "symbol": {
+                            "type": "CIMPointSymbol",
+                            "symbolLayers": [
+                              {
+                                "type": "CIMVectorMarker",
+                                "enable": true,
+                                "anchorPoint": {
+                                  "x": 0,
+                                  "y": 0,
+                                  "z": 0
+                                },
+                                "anchorPointUnits": "Relative",
+                                "dominantSizeAxis3D": "Y",
+                                "size": 10,
+                                "billboardMode3D": "FaceNearPlane",
+                                "frame": {
+                                  "xmin": 0,
+                                  "ymin": 0,
+                                  "xmax": 17,
+                                  "ymax": 17
+                                },
+                                "markerGraphics": [
+                                  {
+                                    "type": "CIMMarkerGraphic",
+                                    "geometry": {
+                                      "rings": [
+                                        [
+                                          [
+                                            0,
+                                            0
+                                          ],
+                                          [
+                                            8.61,
+                                            14.85
+                                          ],
+                                          [
+                                            17,
+                                            0
+                                          ],
+                                          [
+                                            0,
+                                            0
+                                          ]
+                                        ]
+                                      ]
+                                    },
+                                    "symbol": {
+                                      "type": "CIMPolygonSymbol",
+                                      "symbolLayers": [
+                                        {
+                                          "type": "CIMSolidFill",
+                                          "enable": true,
+                                          "color": [
+                                            230,
+                                            0,
+                                            0,
+                                            255
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                "scaleSymbolsProportionally": true,
+                                "respectFrame": true
+                              }
+                            ],
+                            "haloSize": 1,
+                            "scaleX": 1,
+                            "angleAlignment": "Display",
+                            "version": "2.0.0",
+                            "build": "8933"
+                          }
+                        }
+                    });
+                    const arrowDecreasing = new CIMSymbol({
+                        "data": {
+                          "type": "CIMSymbolReference",
+                          "symbol": {
+                            "type": "CIMPointSymbol",
+                            "symbolLayers": [
+                              {
+                                "type": "CIMVectorMarker",
+                                "enable": true,
+                                "anchorPoint": {
+                                  "x": 0,
+                                  "y": 0,
+                                  "z": 0
+                                },
+                                "anchorPointUnits": "Relative",
+                                "dominantSizeAxis3D": "Y",
+                                "size": 10,
+                                "billboardMode3D": "FaceNearPlane",
+                                "frame": {
+                                  "xmin": 0,
+                                  "ymin": 0,
+                                  "xmax": 17,
+                                  "ymax": 17
+                                },
+                                "markerGraphics": [
+                                  {
+                                    "type": "CIMMarkerGraphic",
+                                    "geometry": {
+                                      "rings": [
+                                        [
+                                          [
+                                            0,
+                                            0
+                                          ],
+                                          [
+                                            8.61,
+                                            14.85
+                                          ],
+                                          [
+                                            17,
+                                            0
+                                          ],
+                                          [
+                                            0,
+                                            0
+                                          ]
+                                        ]
+                                      ]
+                                    },
+                                    "symbol": {
+                                      "type": "CIMPolygonSymbol",
+                                      "symbolLayers": [
+                                        {
+                                          "type": "CIMSolidFill",
+                                          "enable": true,
+                                          "color": [
+                                            0,
+                                            0,
+                                            0,
+                                            255
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                "scaleSymbolsProportionally": true,
+                                "respectFrame": true
+                              }
+                            ],
+                            "haloSize": 1,
+                            "scaleX": 1,
+                            "angleAlignment": "Display",
+                            "version": "2.0.0",
+                            "build": "8933"
+                          }
+                        }
+                    });
+                    cimSymbolUtils.applyCIMSymbolRotation(arrowDecreasing, 180)
+                    const noTrendSym = {
+                        type: 'simple-marker',
+                        size: 6,
+                        color: '#828282',
+                        outline: {
+                            color: '#fff'
+                        }
+                    }
+                    const notAssessedSym = {
+                        type: 'simple-marker',
+                        size: 6,
+                        color: '#fff',
+                        outline: {
+                            color: '#363636'
+                        }
+                    }
+                    const analyteRenderer = {
+                        type: 'unique-value',
+                        field: 'Trend',
+                        uniqueValueInfos: [
+                            {
+                                value: 'Increasing',
+                                symbol: arrowIncreasing,
+                            },
+                            {
+                                value: 'Decreasing',
+                                symbol: arrowDecreasing
+                            },
+                            {
+                                value: 'No trend',
+                                symbol: noTrendSym
+                            },
+                            {
+                                value: 'Not assessed',
+                                symbol: notAssessedSym
+                            }
+                        ]
+                    };
+                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,AllYears_Trend&limit=500';
+                    url += '&filters={%22Analyte%22:%22' + selectedAnalyte + '%22}'
+                    fetch(url)
+                    .then((resp) => resp.json())
+                    .then((json) => json.result.records)
+                    .then((records) => {
+                        const data = convertStationSummaryToGeoJSON(records);
+                        const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+                        const url = URL.createObjectURL(blob);
+                        stationSummaryLayerRef.current = new GeoJSONLayer({
+                            id: 'stationAnalyteLayer',
+                            title: 'SWAMP Monitoring Stations - Trends',
+                            url: url,
+                            outFields: ['StationName', 'StationCode', 'Analyte', 'Trend'],
+                            renderer: analyteRenderer
+                        });
+                        mapRef.current.add(stationSummaryLayerRef.current);
+                    });
+                });
+            }
+        }
+        
         if (selectedAnalyte) {
             mapRef.current.remove(stationLayerRef.current);
             if (!stationSummaryLayerRef.current) {
@@ -64,288 +344,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
             });
         }
     }, [selectedRegion]);
-
-
-    const updateStationAnalyteLayer = () => {
-        if (stationSummaryLayerRef.current) {
-            mapRef.current.remove(stationSummaryLayerRef.current);
-            stationSummaryLayerRef.current = null;
-            drawStationAnalyteLayer();
-        }
-    }
-
-    const drawStationAnalyteLayer = () => {
-        if (mapRef) {
-            loadModules(['esri/layers/GeoJSONLayer', 'esri/symbols/CIMSymbol', 'esri/symbols/support/cimSymbolUtils'])
-            .then(([GeoJSONLayer, CIMSymbol, cimSymbolUtils]) => {
-                const arrowIncreasing = new CIMSymbol({
-                    "data": {
-                      "type": "CIMSymbolReference",
-                      "symbol": {
-                        "type": "CIMPointSymbol",
-                        "symbolLayers": [
-                          {
-                            "type": "CIMVectorMarker",
-                            "enable": true,
-                            "anchorPoint": {
-                              "x": 0,
-                              "y": 0,
-                              "z": 0
-                            },
-                            "anchorPointUnits": "Relative",
-                            "dominantSizeAxis3D": "Y",
-                            "size": 10,
-                            "billboardMode3D": "FaceNearPlane",
-                            "frame": {
-                              "xmin": 0,
-                              "ymin": 0,
-                              "xmax": 17,
-                              "ymax": 17
-                            },
-                            "markerGraphics": [
-                              {
-                                "type": "CIMMarkerGraphic",
-                                "geometry": {
-                                  "rings": [
-                                    [
-                                      [
-                                        0,
-                                        0
-                                      ],
-                                      [
-                                        8.61,
-                                        14.85
-                                      ],
-                                      [
-                                        17,
-                                        0
-                                      ],
-                                      [
-                                        0,
-                                        0
-                                      ]
-                                    ]
-                                  ]
-                                },
-                                "symbol": {
-                                  "type": "CIMPolygonSymbol",
-                                  "symbolLayers": [
-                                    {
-                                      "type": "CIMSolidFill",
-                                      "enable": true,
-                                      "color": [
-                                        230,
-                                        0,
-                                        0,
-                                        255
-                                      ]
-                                    }
-                                  ]
-                                }
-                              }
-                            ],
-                            "scaleSymbolsProportionally": true,
-                            "respectFrame": true
-                          }
-                        ],
-                        "haloSize": 1,
-                        "scaleX": 1,
-                        "angleAlignment": "Display",
-                        "version": "2.0.0",
-                        "build": "8933"
-                      }
-                    }
-                });
-                const arrowDecreasing = new CIMSymbol({
-                    "data": {
-                      "type": "CIMSymbolReference",
-                      "symbol": {
-                        "type": "CIMPointSymbol",
-                        "symbolLayers": [
-                          {
-                            "type": "CIMVectorMarker",
-                            "enable": true,
-                            "anchorPoint": {
-                              "x": 0,
-                              "y": 0,
-                              "z": 0
-                            },
-                            "anchorPointUnits": "Relative",
-                            "dominantSizeAxis3D": "Y",
-                            "size": 10,
-                            "billboardMode3D": "FaceNearPlane",
-                            "frame": {
-                              "xmin": 0,
-                              "ymin": 0,
-                              "xmax": 17,
-                              "ymax": 17
-                            },
-                            "markerGraphics": [
-                              {
-                                "type": "CIMMarkerGraphic",
-                                "geometry": {
-                                  "rings": [
-                                    [
-                                      [
-                                        0,
-                                        0
-                                      ],
-                                      [
-                                        8.61,
-                                        14.85
-                                      ],
-                                      [
-                                        17,
-                                        0
-                                      ],
-                                      [
-                                        0,
-                                        0
-                                      ]
-                                    ]
-                                  ]
-                                },
-                                "symbol": {
-                                  "type": "CIMPolygonSymbol",
-                                  "symbolLayers": [
-                                    {
-                                      "type": "CIMSolidFill",
-                                      "enable": true,
-                                      "color": [
-                                        0,
-                                        0,
-                                        0,
-                                        255
-                                      ]
-                                    }
-                                  ]
-                                }
-                              }
-                            ],
-                            "scaleSymbolsProportionally": true,
-                            "respectFrame": true
-                          }
-                        ],
-                        "haloSize": 1,
-                        "scaleX": 1,
-                        "angleAlignment": "Display",
-                        "version": "2.0.0",
-                        "build": "8933"
-                      }
-                    }
-                });
-                cimSymbolUtils.applyCIMSymbolRotation(arrowDecreasing, 180)
-                const noTrendSym = {
-                    type: 'simple-marker',
-                    size: 6,
-                    color: '#828282',
-                    outline: {
-                        color: '#fff'
-                    }
-                }
-                const notAssessedSym = {
-                    type: 'simple-marker',
-                    size: 6,
-                    color: '#fff',
-                    outline: {
-                        color: '#363636'
-                    }
-                }
-                const analyteRenderer = {
-                    type: 'unique-value',
-                    field: 'Trend',
-                    uniqueValueInfos: [
-                        {
-                            value: 'Increasing',
-                            symbol: arrowIncreasing,
-                        },
-                        {
-                            value: 'Decreasing',
-                            symbol: arrowDecreasing
-                        },
-                        {
-                            value: 'No trend',
-                            symbol: noTrendSym
-                        },
-                        {
-                            value: 'Not assessed',
-                            symbol: notAssessedSym
-                        }
-                    ]
-                };
-                let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,AllYears_Trend&limit=500';
-                url += '&filters={%22Analyte%22:%22' + selectedAnalyte + '%22}'
-                fetch(url)
-                .then((resp) => resp.json())
-                .then((json) => json.result.records)
-                .then((records) => {
-                    const data = convertStationSummaryToGeoJSON(records);
-                    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-                    const url = URL.createObjectURL(blob);
-                    stationSummaryLayerRef.current = new GeoJSONLayer({
-                        id: 'stationAnalyteLayer',
-                        title: 'SWAMP Monitoring Stations - Trends',
-                        url: url,
-                        outFields: ['StationName', 'StationCode', 'Analyte', 'Trend'],
-                        renderer: analyteRenderer
-                    });
-                    mapRef.current.add(stationSummaryLayerRef.current);
-                });
-            });
-        }
-    }
-
-    const drawStations = () => {
-        const stationTemplate = {
-            title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
-            content: buildStationPopup
-        };
-        const stationRenderer = {
-            type: 'simple',
-            symbol: {
-                type: 'simple-marker',
-                size: 5.5,
-                color: '#fff',
-                //color: '#fff',
-                outline: {
-                    color: '#363636'
-                }
-            }
-        };
-        if (mapRef) {
-            loadModules(['esri/layers/GeoJSONLayer'])
-            .then(([GeoJSONLayer]) => {
-                const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=500';
-                fetch(url)
-                .then((resp) => resp.json())
-                .then((json) => json.result.records)
-                .then((records) => {
-                    const stationData = convertStationsToGeoJSON(records);
-                    const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
-                    const url = URL.createObjectURL(blob);
-                    stationLayerRef.current = new GeoJSONLayer({
-                        id: 'stationLayer',
-                        title: 'SWAMP Monitoring Stations',
-                        url: url,
-                        listMode: 'hide',
-                        outFields: ['StationName', 'StationCode'],
-                        renderer: stationRenderer,
-                        popupTemplate: stationTemplate
-                    });
-                    mapRef.current.add(stationLayerRef.current);
-                    searchRef.current.sources.add({
-                        layer: stationLayerRef.current,
-                        searchFields: ['StationName', 'StationCode'],
-                        displayField: 'StationName',
-                        exactMatch: false,
-                        outFields: ['StationName', 'StationCode'],
-                        name: 'Monitoring stations',
-                        placeholder: 'Example: Buena Vista Park'
-                    });
-                });
-            });
-        }
-    };
 
     const initializeMap = () => {
         return new Promise((resolve, reject) => {
@@ -388,7 +386,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                     view: viewRef.current,
                     listItemCreatedFunction: function(event) {
                         const item = event.item;
-                        if (item.layer.type != 'group') {
+                        if (item.layer.type !== 'group') {
                           // don't show legend twice
                           item.panel = {
                             content: 'legend',

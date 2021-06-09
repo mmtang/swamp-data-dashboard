@@ -18,7 +18,7 @@ export default function WaterbodyCard({ feature }) {
             <div style={{ marginTop: '0.5em', fontSize: "0.8em"}}>
                 { feature.on303dlist === 'Y' ? 'On 303(d) list' : 'Not on 303(d) List' }
                 &nbsp;&nbsp;&#9679;&nbsp;&nbsp;
-                <a href={feature.waterbodyreportlink} target="_blank" rel="noreferrer" rel="noopener">USEPA Report</a>
+                <a href={feature.waterbodyreportlink} target="_blank" rel="noopener noreferrer">USEPA Report</a>
             </div>
         )
     }
@@ -32,7 +32,7 @@ export default function WaterbodyCard({ feature }) {
                         <div><span className={cardTitle}>{feature.assessmentunitname}</span></div>
                         { expanded ? <ExpandedCard /> : null }
                     </div>
-                    <div>{ expanded ? <IconCircleMinus size={18} color="#5d5d5d" stroke={2} /> : <IconCirclePlus size={18} color="#5d5d5d" stroke={2} /> }</div>
+                    <div style={{ marginLeft: '8px' }}>{ expanded ? <IconCircleMinus size={18} color="#5d5d5d" stroke={2} /> : <IconCirclePlus size={18} color="#5d5d5d" stroke={2} /> }</div>
                 </div>
             </div>
         </React.Fragment>

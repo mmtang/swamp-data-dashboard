@@ -5,6 +5,7 @@ import { boxContainer, selectWrapper, radioWrapper } from './map-controls.module
 
 export default function AnalyteMenu({ selectedAnalyte, setAnalyte }) {
     const [analyteList, setAnalyteList] = useState(null);
+    const [trendType, setTrendType] = useState('ten');
     const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT%20DISTINCT%20%22Analyte%22%20from%20%22555ee3bf-891f-4ac4-a1fc-c8855cf70e7e%22%20ORDER%20BY%20%22Analyte%22%20ASC';
     
     useEffect(() => {
@@ -17,8 +18,12 @@ export default function AnalyteMenu({ selectedAnalyte, setAnalyte }) {
             })
     }, []);
 
-    const handleChange = (value) => {
+    const handleSelectChange = (value) => {
         setAnalyte(value);
+    }
+
+    const handleRadioChange = (e) => {
+        setTrendType(e.currentTarget.value);
     }
 
     if (analyteList) {
@@ -30,12 +35,13 @@ export default function AnalyteMenu({ selectedAnalyte, setAnalyte }) {
                         <SelectSearch
                             options={analyteList} 
                             placeholder="Example: Nitrogen, Total"
-                            onChange={handleChange}
+                            onChange={handleSelectChange}
                         />
                     </div>
                     <div className={radioWrapper}>
-                        <input type="radio" id="analyteTrend10" name="mapDisplay" value="ten" checked /><label htmlFor="analyteTrend10">Trend (last 10 years)</label>
-                        <input type="radio" id="analyteTrend10" name="mapDisplay" value="all" /><label htmlFor="analyteTrend10">Trend (all readings)</label>
+                        <input type="radio" id="analyteTrend10" name="mapDisplay" value="ten" onChange={handleRadioChange} checked={trendType === 'ten'} /><label htmlFor="analyteTrend10">&nbsp;Trend (last 10 years)</label>
+                        &nbsp;
+                        <input type="radio" id="analyteTrend10" name="mapDisplay" value="all" onChange={handleRadioChange} checked={trendType === 'all' } /><label htmlFor="analyteTrend10">&nbsp;Trend (all readings)</label>
                     </div>
                     { selectedAnalyte ? <AnalyteCard selectedAnalyte={selectedAnalyte} /> : null }
                 </div>

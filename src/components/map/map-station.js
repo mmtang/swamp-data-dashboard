@@ -79,14 +79,6 @@ export default function MapStation(props) {
                 'esri/Graphic',
                 'esri/symbols/CIMSymbol'
             ]).then(([GraphicsLayer, Graphic, CIMSymbol]) => {
-                const markerSymbol = {
-                    type: 'simple-marker',
-                    size: 8,
-                    color: '#f15f2b',
-                    outline: {
-                        color: '#fff'
-                    }
-                };
                 const cimSymbol = new CIMSymbol({
                     "data": {
                       "type": "CIMSymbolReference",
