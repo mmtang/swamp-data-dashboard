@@ -2,7 +2,7 @@
     height: calc(100% - 60px);
     top: 60px;
     order: 1;
-    flex-basis: 60%;
+    flex-basis: 45%;
     z-index: 2;
 }
 
@@ -11,7 +11,7 @@
     background-color: #fff;
     top: 60px;
     order: 2;
-    flex-basis: 40%;
+    flex-basis: 55%;
     overflow-y: auto;
     z-index: 50 !important;
 }
@@ -22,4 +22,14 @@
     background-color: #fff;
     margin: 0;
     padding: 12px 26px;
+}
+
+.twinContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.twin {
+    flex: 1;
 }

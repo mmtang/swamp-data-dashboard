@@ -3,7 +3,7 @@ import SelectSearch from 'react-select-search';
 import RegionCard from './region-card';
 import { boxContainer, selectWrapper } from './map-controls.module.css';
 
-export default function RegionMenu({ selectedRegion, setRegion, setView }) {   
+export default function RegionMenu({ selectedRegion, setRegion }) {   
     const regionList = [
         {
             name: 'North Coast',
@@ -46,13 +46,12 @@ export default function RegionMenu({ selectedRegion, setRegion, setView }) {
     const handleChange = (value) => {
         if (value !== selectedRegion) {
             setRegion(value);
-            setView('region');
         }
     }
 
     return (
         <div className={boxContainer}>
-            Select a <span className="emphasis">region</span>
+            Select a <span className="emphasis">Region</span>
             <div className={selectWrapper}>
                 <SelectSearch
                     options={regionList} 
@@ -60,7 +59,9 @@ export default function RegionMenu({ selectedRegion, setRegion, setView }) {
                     onChange={handleChange}
                 />
             </div>
+            {/*
             { selectedRegion ? <RegionCard selectedRegion={selectedRegion} /> : null }
+            */}
         </div>
     )
 }

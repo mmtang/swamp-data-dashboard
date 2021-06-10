@@ -330,21 +330,22 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
         if (selectedRegion) {
             loadModules(['esri/views/layers/LayerView', 'esri/tasks/support/Query'])
             .then(([LayerView, Query]) => {
-                viewRef.current.whenLayerView(regionLayerRef.current).then((layerView) => {
-                    // if a feature is already highlighted, then remove the highlight
-                    if (highlightRef.current) {
-                        highlightRef.current.remove();
-                    }
-                    const query = regionLayerRef.current.createQuery();
-                    query.where = `rb_name = '${selectedRegion}'`;
-                    regionLayerRef.current.queryFeatures(query).then(results => {
-                        const feature = results.features[0];
-                        viewRef.current.goTo(feature.geometry);
-                        // set the highlight on the first feature returned by the query
-                        highlightRef.current = layerView.highlight(feature);
+                if (viewRef.current) {
+                    viewRef.current.whenLayerView(regionLayerRef.current).then((layerView) => {
+                        // if a feature is already highlighted, then remove the highlight
+                        if (highlightRef.current) {
+                            highlightRef.current.remove();
+                        }
+                        const query = regionLayerRef.current.createQuery();
+                        query.where = `rb_name = '${selectedRegion}'`;
+                        regionLayerRef.current.queryFeatures(query).then(results => {
+                            const feature = results.features[0];
+                            viewRef.current.goTo(feature.geometry);
+                            // set the highlight on the first feature returned by the query
+                            highlightRef.current = layerView.highlight(feature);
+                        })
                     })
-                })
-                
+                }
             });
         } else {
             if (highlightRef.current) {
@@ -381,9 +382,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                 });
                 searchRef.current = new Search({
                     view: viewRef.current,
-                    container: 'search-div',
-                    allPlaceholder: 'Example: Buena Vista Park',
-                    label: 'Search for a waterbody or monitoring station',
+                    //container: 'search-div',
+                    allPlaceholder: 'Search for a waterbody',
+                    label: 'Search for a waterbody',
                     includeDefaultSources: false,
                     locationEnabled: false,
                     popupEnabled: false,
@@ -403,6 +404,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                         }
                     }
                 });
+                viewRef.current.ui.add(searchRef.current, { position: 'top-right' });
                 viewRef.current.ui.add(layerListRef.current, 'bottom-left');
 
                 resolve();
@@ -660,7 +662,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
         <div
             className="mapDiv"
             ref={divRef}
-            style={{ width: "60vw", height: `calc(100vh - 60px)` }}
+            style={{ width: "45vw", height: `calc(100vh - 60px)` }}
         />
     )
 }
