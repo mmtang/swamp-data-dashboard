@@ -9,6 +9,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
     const mapRef = useRef(null);
     const viewRef = useRef(null);
     const searchRef = useRef(null);
+    const attainsLayerRef = useRef(null);
     const attainsLineRef = useRef(null);
     const attainsPolyRef = useRef(null);
     const bpLayerRef = useRef(null);
@@ -452,8 +453,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
             }
         };
         if (mapRef) {
-            loadModules(['esri/layers/FeatureLayer'])
-            .then(([FeatureLayer]) => {
+            loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
+            .then(([FeatureLayer, GroupLayer]) => {
                 attainsLineRef.current = new FeatureLayer({
                     id: 'attainsLines',
                     url: 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/1',
@@ -470,15 +471,22 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                     popupTemplate: attainsTemplate,
                     renderer: attainsPolyRenderer
                 });
-                mapRef.current.add(attainsLineRef.current);
-                mapRef.current.add(attainsPolyRef.current);
+                attainsLayerRef.current = new GroupLayer({
+                    title: 'ATTAINS Assessment',
+                    visible: true,
+                    visibilityMode: 'inherited',
+                    layers: [attainsLineRef.current, attainsPolyRef.current],
+                });
+                // Add grouplayer to map
+                mapRef.current.add(attainsLayerRef.current);
+                // Add feature layers to search widget
                 searchRef.current.sources.add({
                     layer: attainsLineRef.current,
                     searchFields: ['assessmentunitname'],
                     displayField: 'assessmentunitname',
                     exactMatch: false,
                     outFields: ['assessmentunitname'],
-                    name: 'Assessment Rivers & Streams',
+                    name: 'ATTAINS Assessment - Lines',
                     placeholder: 'Example: Burney Creek'
                 });
                 searchRef.current.sources.add({
@@ -487,7 +495,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                     displayField: 'assessmentunitname',
                     exactMatch: false,
                     outFields: ['assessmentunitname'],
-                    name: 'Assessment Lakes & Areas',
+                    name: 'ATTAINS Assessment - Areas',
                     placeholder: 'Example: Folsom Lake'
                 });
             });
@@ -586,15 +594,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                     visible: false
                 });
                 mapRef.current.add(bpLayerRef.current);
-                searchRef.current.sources.add({
-                    layer: bpLayerRef.current,
-                    searchFields: ['WB_NAME'],
-                    displayField: 'WB_NAME',
-                    exactMatch: false,
-                    outFields: ['WB_NAME'],
-                    name: 'Basin Plan waterbodies',
-                    placeholder: 'Example: Folsom Lake'
-                });
             });
         }
     }
