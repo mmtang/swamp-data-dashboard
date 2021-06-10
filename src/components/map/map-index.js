@@ -64,7 +64,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                             exactMatch: false,
                             outFields: ['StationName', 'StationCode'],
                             name: 'Monitoring stations',
-                            placeholder: 'Example: Buena Vista Park'
+                            placeholder: 'Example: Buena Vista Park',
+                            zoomScale: 14000
                         });
                     });
                 });
@@ -388,6 +389,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                     includeDefaultSources: false,
                     locationEnabled: false,
                     popupEnabled: false,
+                    autoSelect: true,
                     sources: []
                 });
 
