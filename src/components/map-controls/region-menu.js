@@ -1,7 +1,8 @@
 import React from 'react';
 import SelectSearch from 'react-select-search';
-import RegionCard from './region-card';
-import { boxContainer, selectWrapper } from './map-controls.module.css';
+//import RegionCard from './region-card';
+import ClearFilter from './clear-filter';
+import { boxContainer, selectWrapper, titleWrapper } from './map-controls.module.css';
 
 export default function RegionMenu({ selectedRegion, setRegion }) {   
     const regionList = [
@@ -51,11 +52,14 @@ export default function RegionMenu({ selectedRegion, setRegion }) {
 
     return (
         <div className={boxContainer}>
-            Select a <span className="emphasis">Region</span>
+            <div className={titleWrapper}>
+                <div>Select a <span className="emphasis">Region</span></div>
+                { selectedRegion ? <ClearFilter clearFunction={setRegion} /> : null }
+            </div>
             <div className={selectWrapper}>
                 <SelectSearch
                     options={regionList} 
-                    placeholder="Example: Central Coast"
+                    value={ selectedRegion ? selectedRegion : '' }
                     onChange={handleChange}
                 />
             </div>

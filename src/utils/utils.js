@@ -27,6 +27,18 @@ export const regionDict = {
     9: 'San Diego'
 }
 
+export const regionNumDict = {
+    'North Coast': 1,
+    'San Francisco Bay': 2,
+    'Central Coast': 3,
+    'Los Angeles': 4,
+    'Central Valley': 5,
+    'Lahontan': 6,
+    'Colorado River': 7,
+    'Santa Ana': 8,
+    'San Diego': 9
+}
+
 export const fetchData = (url) => {
     return new Promise((resolve, reject) => {
         fetch(url)
