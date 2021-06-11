@@ -4,7 +4,7 @@ import { timeParse, timeFormat } from 'd3';
 import { convertStationsToGeoJSON, convertStationSummaryToGeoJSON } from '../../utils/utils';
 
 
-export default function MapIndex({ selectedAnalyte, selectedRegion }) {
+export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite }) {
     const divRef = useRef(null);
     const mapRef = useRef(null);
     const viewRef = useRef(null);
@@ -263,7 +263,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                     }
                     const notAssessedSym = {
                         type: 'simple-marker',
-                        size: 6,
+                        size: 5.5,
                         color: '#fff',
                         outline: {
                             color: '#363636'
@@ -295,12 +295,14 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                         title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                         content: buildStationPopup
                     }
-                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,AllYears_Trend&limit=500';
-                    url += '&filters={%22Analyte%22:%22' + selectedAnalyte + '%22}'
+                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,AllYears_Trend&limit=5000';
+                    url += '&filters={%22Analyte%22:%22' + encodeURIComponent(selectedAnalyte) + '%22}'
+                    console.log(url);
                     fetch(url)
                     .then((resp) => resp.json())
                     .then((json) => json.result.records)
                     .then((records) => {
+                        console.log(records);
                         const data = convertStationSummaryToGeoJSON(records);
                         const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
                         const url = URL.createObjectURL(blob);
@@ -317,44 +319,61 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                 });
             }
         }
-        
-        if (selectedAnalyte) {
-            mapRef.current.remove(stationLayerRef.current);
-            if (!stationSummaryLayerRef.current) {
-                drawStationAnalyteLayer();
+        if (mapRef.current) {
+            if (selectedAnalyte) {
+                mapRef.current.remove(stationLayerRef.current);
+                if (!stationSummaryLayerRef.current) {
+                    drawStationAnalyteLayer();
+                } else {
+                    updateStationAnalyteLayer();
+                }
             } else {
-                updateStationAnalyteLayer();
+                mapRef.current.remove(stationSummaryLayerRef.current);
+                mapRef.current.add(stationLayerRef.current);
             }
         }
     }, [selectedAnalyte])
 
     useEffect(() => {
-        if (selectedRegion) {
-            loadModules(['esri/views/layers/LayerView', 'esri/tasks/support/Query'])
-            .then(([LayerView, Query]) => {
-                if (viewRef.current) {
-                    viewRef.current.whenLayerView(regionLayerRef.current).then((layerView) => {
-                        // if a feature is already highlighted, then remove the highlight
-                        if (highlightRef.current) {
-                            highlightRef.current.remove();
-                        }
-                        const query = regionLayerRef.current.createQuery();
-                        query.where = `rb_name = '${selectedRegion}'`;
-                        regionLayerRef.current.queryFeatures(query).then(results => {
-                            const feature = results.features[0];
-                            viewRef.current.goTo(feature.geometry);
-                            // set the highlight on the first feature returned by the query
-                            highlightRef.current = layerView.highlight(feature);
+        if (mapRef.current) {
+            if (selectedRegion) {
+                loadModules(['esri/views/layers/LayerView', 'esri/tasks/support/Query'])
+                .then(([LayerView, Query]) => {
+                    if (viewRef.current) {
+                        viewRef.current.whenLayerView(regionLayerRef.current).then((layerView) => {
+                            // if a feature is already highlighted, then remove the highlight
+                            if (highlightRef.current) {
+                                highlightRef.current.remove();
+                            }
+                            const query = regionLayerRef.current.createQuery();
+                            query.where = `rb_name = '${selectedRegion}'`;
+                            regionLayerRef.current.queryFeatures(query).then(results => {
+                                const feature = results.features[0];
+                                viewRef.current.goTo(feature.geometry);
+                                // set the highlight on the first feature returned by the query
+                                highlightRef.current = layerView.highlight(feature);
+                            })
                         })
-                    })
+                    }
+                });
+            } else {
+                if (highlightRef.current) {
+                    highlightRef.current.remove();
                 }
-            });
-        } else {
-            if (highlightRef.current) {
-                highlightRef.current.remove();
             }
         }
     }, [selectedRegion]);
+
+    useEffect(() => {
+        if (viewRef.current && clickedSite) {
+            console.log(clickedSite);
+            const coordinates = [parseFloat(clickedSite.TargetLongitude), parseFloat(clickedSite.TargetLatitude)];
+            viewRef.current.goTo({
+                target: [coordinates],
+                zoom: 15
+            });
+        }
+    }, [clickedSite])
 
     const initializeMap = () => {
         return new Promise((resolve, reject) => {
@@ -473,7 +492,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion }) {
                 });
                 attainsLayerRef.current = new GroupLayer({
                     title: 'ATTAINS Assessment',
-                    visible: true,
+                    visible: false,
                     visibilityMode: 'inherited',
                     layers: [attainsLineRef.current, attainsPolyRef.current],
                 });

@@ -9,12 +9,13 @@ import { mapContainer, mainContainer, infoContainer, twinContainer, twin } from 
 export default function Index() {
   const [analyte, setAnalyte] = useState(null);
   const [region, setRegion] = useState(null);
+  const [site, setSite] = useState(null);
 
 
   return (
     <Layout>
       <div className={mapContainer}>
-        <MapIndex selectedAnalyte={analyte} selectedRegion={region} />
+        <MapIndex selectedAnalyte={analyte} selectedRegion={region} clickedSite={site} />
       </div>
       <div className={mainContainer}>
         <div className={infoContainer}>
@@ -32,7 +33,7 @@ export default function Index() {
           </div>
           {/* Table */}
           <div style={{ marginTop: '12px' }}>
-            <TableIndex selectedAnalyte={analyte} selectedRegion={region} />
+            <TableIndex selectedAnalyte={analyte} selectedRegion={region} setSite={setSite} />
           </div>
         </div>
       </div>

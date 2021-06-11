@@ -2,8 +2,9 @@ import React from 'react';
 import { IconArrowNarrowDown, IconArrowNarrowUp, IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from '@tabler/icons';
 import { useTable, useSortBy, usePagination } from 'react-table';
 import { dataTable, paginationContainer, paginationButton, paginationSelect, selectWrapper, navigationWrapper } from '../station-page/data-table.module.css'
+import { indexTableRow } from './table-index.module.css';
 
-export default function DataTableIndex({ columns, data, initialState }) {
+export default function DataTableIndex({ columns, data, initialState, setSite }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -31,6 +32,10 @@ export default function DataTableIndex({ columns, data, initialState }) {
         usePagination
     )
 
+    const handleRowClick = (site) => {
+        setSite(site);
+    }
+
     return (
         <React.Fragment>
             <table {...getTableProps()} className={dataTable}>
@@ -54,7 +59,7 @@ export default function DataTableIndex({ columns, data, initialState }) {
                         const rowProps = row.getRowProps()
                         return (
                             <React.Fragment key={rowProps.key}>
-                                <tr {...rowProps}>
+                                <tr {...rowProps} className={indexTableRow} onClick={() => handleRowClick(row.original)}>
                                     {row.cells.map(cell => {
                                         return (
                                             <td {...cell.getCellProps()}>

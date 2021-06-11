@@ -4,7 +4,7 @@ import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { fetchData, regionDict, regionNumDict } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 
-export default function TableIndex({ selectedAnalyte, selectedRegion }) {
+export default function TableIndex({ selectedAnalyte, selectedRegion, setSite }) {
     const [stationData, setStationData] = useState(null);
     const [tableData, setTableData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -37,7 +37,7 @@ export default function TableIndex({ selectedAnalyte, selectedRegion }) {
         // if only analyte is selected
         if (!(selectedRegion) && selectedAnalyte) {
             let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=5000';
-            url += '&filters={%22Analyte%22:%22' + selectedAnalyte + '%22}';
+            url += '&filters={%22Analyte%22:%22' + encodeURIComponent(selectedAnalyte) + '%22}';
             fetchData(url)
                 .then(json => json.result.records)
                 .then(records => {
@@ -71,32 +71,6 @@ export default function TableIndex({ selectedAnalyte, selectedRegion }) {
         }
     }, [selectedRegion, selectedAnalyte])
 
-    /*
-    useEffect(() => {
-        if (data) {
-            if (selectedAnalyte) {
-                setLoading(true);
-                let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=5000';
-                url += '&filters={%22Analyte%22:%22' + selectedAnalyte + '%22}';
-                fetchData(url)
-                    .then(json => json.result.records)
-                    .then(records => {
-                        records.forEach(d => {
-                            d.LastSampleDate = parseDate(d.LastSampleDate);
-                            d.ResultWithUnit = d.LastResult + ' ' + d.Unit;
-                        });
-                        console.log(records);
-                        setTableData(records);
-                        setLoading(false);
-                    })
-            }
-            if (selectedRegion) {
-                const newData = data.filter(d => d.RegionName === selectedRegion);
-            }
-        }
-    }, [selectedRegion, selectedAnalyte])
-    */
-
     const columns = useMemo(() => {
         return [
             {
@@ -105,12 +79,14 @@ export default function TableIndex({ selectedAnalyte, selectedRegion }) {
                 accessor: 'Region',
                 sortType: 'string',
             },
+            /*
             {
                 Header: 'Site Code',
                 id: 'StationCode',
                 accessor: 'StationCode',
                 sortType: 'string'
             },
+            */
             {
                 Header: 'Site Name',
                 id: 'StationName',
@@ -135,12 +111,14 @@ export default function TableIndex({ selectedAnalyte, selectedRegion }) {
                 accessor: 'Region',
                 sortType: 'string',
             },
+            /*
             {
                 Header: 'Site Code',
                 id: 'StationCode',
                 accessor: 'StationCode',
                 sortType: 'string'
             },
+            */
             {
                 Header: 'Site Name',
                 id: 'StationName',
@@ -194,6 +172,7 @@ export default function TableIndex({ selectedAnalyte, selectedRegion }) {
                     columns={ selectedAnalyte ? columnsSummary : columns} 
                     data={tableData} 
                     initialState={initialState}
+                    setSite={setSite}
                 />
             </div>
         )
