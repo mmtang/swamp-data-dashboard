@@ -17,7 +17,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
     const stationLayerRef = useRef(null);
     const stationSummaryLayerRef = useRef(null);
     const layerListRef = useRef(null);
-    const highlightRef = useRef(null);
+    const highlightRegionRef = useRef(null);
+    const highlightSiteRef = useRef(null);
 
     useEffect(() => {
         const drawStations = () => {
@@ -40,7 +41,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
             if (mapRef) {
                 loadModules(['esri/layers/GeoJSONLayer'])
                 .then(([GeoJSONLayer]) => {
-                    const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=1000';
+                    const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=5000';
                     fetch(url)
                     .then((resp) => resp.json())
                     .then((json) => json.result.records)
@@ -302,6 +303,10 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                     .then((resp) => resp.json())
                     .then((json) => json.result.records)
                     .then((records) => {
+                        records.forEach(d => {
+                            d.TargetLatitude = +d.TargetLatitude;
+                            d.TargetLongitude = +d.TargetLongitude;
+                        })
                         console.log(records);
                         const data = convertStationSummaryToGeoJSON(records);
                         const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
@@ -310,7 +315,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                             id: 'stationAnalyteLayer',
                             title: 'SWAMP Monitoring Stations - Trends',
                             url: url,
-                            outFields: ['StationName', 'StationCode', 'Analyte', 'Trend'],
+                            outFields: ['*'],
                             renderer: analyteRenderer,
                             popupTemplate: analyteTemplate
                         });
@@ -342,8 +347,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                     if (viewRef.current) {
                         viewRef.current.whenLayerView(regionLayerRef.current).then((layerView) => {
                             // if a feature is already highlighted, then remove the highlight
-                            if (highlightRef.current) {
-                                highlightRef.current.remove();
+                            if (highlightRegionRef.current) {
+                                highlightRegionRef.current.remove();
                             }
                             const query = regionLayerRef.current.createQuery();
                             query.where = `rb_name = '${selectedRegion}'`;
@@ -351,27 +356,44 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                                 const feature = results.features[0];
                                 viewRef.current.goTo(feature.geometry);
                                 // set the highlight on the first feature returned by the query
-                                highlightRef.current = layerView.highlight(feature);
+                                highlightRegionRef.current = layerView.highlight(feature);
                             })
                         })
                     }
                 });
             } else {
-                if (highlightRef.current) {
-                    highlightRef.current.remove();
+                if (highlightRegionRef.current) {
+                    highlightRegionRef.current.remove();
                 }
             }
         }
     }, [selectedRegion]);
 
     useEffect(() => {
-        if (viewRef.current && clickedSite) {
-            console.log(clickedSite);
-            const coordinates = [parseFloat(clickedSite.TargetLongitude), parseFloat(clickedSite.TargetLatitude)];
-            viewRef.current.goTo({
-                target: [coordinates],
-                zoom: 15
-            });
+        if (viewRef.current) {
+            if (clickedSite) {
+                loadModules(['esri/views/layers/LayerView','esri/tasks/support/Query'])
+                .then(([LayerView, Query]) => {
+                    const layer = selectedAnalyte ? stationSummaryLayerRef : stationLayerRef;
+                    viewRef.current.whenLayerView(layer.current).then((layerView) => {
+                        // if a site is already highlighted, then remove the highlight
+                        if (highlightSiteRef.current) {
+                            highlightSiteRef.current.remove();
+                        }
+                        const query = layer.current.createQuery();
+                        query.where = `StationCode = '${clickedSite.StationCode}'`;
+                        layer.current.queryFeatures(query)
+                            .then(results => {
+                                const feature = results.features[0];
+                                viewRef.current.goTo({
+                                    target: feature.geometry,
+                                    zoom: 13
+                                });
+                                highlightSiteRef.current = layerView.highlight(feature);
+                            })
+                    })
+                })
+            }
         }
     }, [clickedSite])
 
