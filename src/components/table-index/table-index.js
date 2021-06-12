@@ -44,6 +44,8 @@ export default function TableIndex({ selectedAnalyte, selectedRegion, setSite })
                     records.forEach(d => {
                         d.LastSampleDate = parseDate(d.LastSampleDate);
                         d.Region = regionDict[d.Region];
+                        d.LastResult = Math.round(d.LastResult * 100) / 100;
+                        d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
                         d.ResultWithUnit = d.LastResult + ' ' + d.Unit;
                     });
                     setTableData(records);
@@ -52,7 +54,7 @@ export default function TableIndex({ selectedAnalyte, selectedRegion, setSite })
         // if both region and analyte are selected
         if (selectedRegion && selectedAnalyte) {
             let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=5000';
-            url += '&filters={%22Analyte%22:%22' + selectedAnalyte + '%22,%22Region%22:%22' + regionNumDict[selectedRegion].toString() + '%22}';
+            url += '&filters={%22Analyte%22:%22' + selectedAnalyte + '%22,%22Region%22:%22' + regionNumDict[selectedRegion] + '%22}';
             fetchData(url)
                 .then(json => json.result.records)
                 .then(records => {
@@ -60,6 +62,8 @@ export default function TableIndex({ selectedAnalyte, selectedRegion, setSite })
                     records.forEach(d => {
                         d.LastSampleDate = parseDate(d.LastSampleDate);
                         d.Region = regionDict[d.Region];
+                        d.LastResult = Math.round(d.LastResult * 100) / 100;
+                        d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
                         d.ResultWithUnit = d.LastResult + ' ' + d.Unit;
                     });
                     setTableData(records);

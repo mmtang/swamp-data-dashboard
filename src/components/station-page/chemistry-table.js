@@ -13,14 +13,18 @@ export default function ChemistryTable(props) {
     useEffect(() => {
         if (props.station) {
             const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
-            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=100';
+            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,Analyte,LastSampleDate,LastResult,Unit,AllYears_Min,AllYears_Max,AllYears_Median,AllYears_Mean,AllYears_Trend,AllYears_n';
             url += '&filters={%22StationCode%22:%22' + props.station + '%22}';
             fetchData(url)
             .then(json => json.result.records)
             .then(records => {
+                console.log(records);
                 records.forEach(d => {
+                    d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
                     d.LastSampleDate = parseDate(d.LastSampleDate);
-                    d.resultWithUnit = d.LastResult.toString() + ' ' + d.Unit
+                    d.resultWithUnit = d.LastResult.toString() + ' ' + d.Unit;
+                    //d.AllYears_Median = Math.round(d.AllYears_Mean * 10) / 10;
+                    //d.AllYears_Median = Math.round(d.AllYears_Mean * 10) / 10;
                 });
                 setData(records);
             });
@@ -51,14 +55,21 @@ export default function ChemistryTable(props) {
                 sortType: 'string',
             },
             {
+                Header: 'Samples',
+                id: 'Samples',
+                accessor: 'AllYears_n',
+                sortType: 'number',
+                Cell: props => <div style={{ textAlign: 'right' }}>{props.value}</div>
+            },
+            {
                 Header: 'Last Sample Date',
                 id: 'LastSampleDate',
                 accessor: 'LastSampleDate',
                 sortType: 'datetime',
-                Cell: props => <span>{formatDate(props.value)}</span>
+                Cell: props => <div style={{ textAlign: 'center' }}>{formatDate(props.value)}</div>
             },
             {
-                Header: 'Last Sample Result',
+                Header: 'Last Result',
                 id: 'lastsampleresult',
                 accessor: 'resultWithUnit',
                 disableSortBy: true
@@ -67,28 +78,38 @@ export default function ChemistryTable(props) {
                 Header: 'Trend',
                 id: 'trend',
                 accessor: 'AllYears_Trend',
-                Cell: props => <span>{props.value === 'Increasing' ? <TrendingUp /> : props.value === 'Decreasing' ? <TrendingDown /> : <Minus trend={props.value} /> }</span>
+                Cell: props => <div style={{ textAlign: 'center' }}>{props.value === 'Increasing' ? <IconTrendingDown size={18} /> : props.value === 'Decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={props.value} /> }</div>
+            },
+            {
+                Header: 'Min',
+                id: 'min',
+                accessor: 'AllYears_Min',
+                Cell: props => <div style={{ textAlign: 'right' }}>{Math.round(props.value * 100) / 100}</div>,
+                disableSortBy: true
+            },
+            {
+                Header: 'Mean',
+                id: 'mean',
+                accessor: 'AllYears_Mean',
+                Cell: props => <div style={{ textAlign: 'right' }}>{Math.round(props.value * 100) / 100}</div>,
+                disableSortBy: true
+            },
+            {
+                Header: 'Med',
+                id: 'median',
+                accessor: 'AllYears_Median',
+                Cell: props => <div style={{ textAlign: 'right' }}>{Math.round(props.value * 100) / 100}</div>,
+                disableSortBy: true
+            },
+            {
+                Header: 'Max',
+                id: 'max',
+                accessor: 'AllYears_Max',
+                Cell: props => <div style={{ textAlign: 'right' }}>{Math.round(props.value * 100) / 100}</div>,
+                disableSortBy: true
             }
         ]
     }, [])
-
-    function TrendingUp() {
-        return (
-            <span className={trendWrapper}><IconTrendingUp size={18} />&nbsp;&nbsp;&nbsp;Increasing</span>
-        )
-    }
-
-    function TrendingDown() {
-        return (
-            <span className={trendWrapper}><IconTrendingDown size={18} />&nbsp;&nbsp;&nbsp;Decreasing</span>
-        )
-    }
-
-    function Minus({ trend }) {
-        return (
-            <span className={trendWrapper}><IconMinus size={18} />&nbsp;&nbsp;&nbsp;{trend}</span>
-        )
-    }
 
     const initialState = useMemo(() => {
         return {

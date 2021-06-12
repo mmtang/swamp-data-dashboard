@@ -38,6 +38,31 @@ export default function TimeSeries({ data, trend }) {
         }
     }
 
+    const responsive = (id) => {
+        // get container + svg aspect ratio
+        const svg = d3.select('#' + id),
+            container = svg.node().parentNode,
+            width = parseInt(svg.style('width')),
+            height = parseInt(svg.style('height')),
+            aspect = width / height;
+        // add viewBox and preserveAspectRatio properties,
+        // and call resize so that svg resizes on inital page load
+        svg.attr('viewBox', '0 0 ' + width + ' ' + height)
+            .attr('perserveAspectRatio', 'xMinYMid')
+            .call(resize);
+        // to register multiple listeners for same event type, 
+        // you need to add namespace, i.e., 'click.foo'
+        // necessary if you call invoke this function for multiple svgs
+        // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+        d3.select(window).on('resize.' + container.id, resize);
+        // get width of container and resize svg to fit it
+        function resize() {
+            const targetWidth = parseInt(container.offsetWidth);
+            svg.attr('width', targetWidth);
+            svg.attr('height', Math.round(targetWidth / aspect));
+        }
+    }
+
     const drawChart = useCallback(() => {
         //const analyte = data[0].Analyte;
         const unit = data[0].Unit;
@@ -58,15 +83,16 @@ export default function TimeSeries({ data, trend }) {
 
         const chartId = 'chart-' + randomId.current;
         const margin = { top: 20, right: 20, bottom: 30, left: 60 };
-        const width = 380 + margin.left + margin.right;
-        const height = 225 + margin.top + margin.bottom;
+        const width = 650 + margin.left + margin.right;
+        const height = 180 + margin.top + margin.bottom;
         const clipPadding = 4;
 
         const chart = d3.select('#container-' + randomId.current).append('svg')
             .attr('id', chartId)
             .attr('className', 'chart')
             .attr('width', width)
-            .attr('height', height);
+            .attr('height', height)
+            .call(() => { responsive(chartId); });
         chart.append('clipPath')
             .attr('id', 'clip')
             .append('rect')

@@ -4,9 +4,7 @@ import { trendCard, iconContainer, cardBody, cardTitle, small } from './trend.mo
 
 
 export default function Trend({ trend, yearRange }) {
-    console.log(yearRange);
     const numberOfYears = yearRange[1] - yearRange[0];
-    console.log(numberOfYears);
 
     return (
         <div className={trendCard}>

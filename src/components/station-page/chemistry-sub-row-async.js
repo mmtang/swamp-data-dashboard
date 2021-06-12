@@ -31,7 +31,6 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
         fetchData(url)
         .then((res) => res.result.records)
         .then((data) => {
-            console.log(data);
             const resData = data.filter(d => d.Result !== 'NaN');
             resData.forEach(d => {
                 d.Result = +d.Result;
@@ -63,12 +62,14 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
                 <tr>
                     <td colSpan={visibleColumns.length}>
                         <div style={{ display: 'flex', flexDirection: 'row', margin: '1em' }}>
-                            <div style={{ flexBasis: '66%' }}>
+                            <div style={{ flexBasis: '100%' }}>
                                 <TimeSeries data={data} trend={trend} />
                             </div>
+                            {/*
                             <div style={{ display: 'flex', flexDirection: 'column', flexBasis: '34%' }}>
                                 <Trend trend={trend} yearRange={yearRange} />
                             </div>
+                            */}
                         </div>
                     </td>
                 </tr>
