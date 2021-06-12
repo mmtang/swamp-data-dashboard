@@ -30,48 +30,70 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                 type: 'simple',
                 symbol: {
                     type: 'simple-marker',
-                    size: 5.5,
-                    color: '#fff',
-                    //color: '#fff',
+                    size: 9,
+                    //color: '#e0681d', // muted orange
+                    color: '#f06c1a',
                     outline: {
-                        color: '#363636'
+                        color: '#fff',
+                        width: 2
                     }
                 }
             };
-            if (mapRef) {
-                loadModules(['esri/layers/GeoJSONLayer'])
+            loadModules(['esri/layers/GeoJSONLayer'])
                 .then(([GeoJSONLayer]) => {
-                    const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=5000';
-                    fetch(url)
-                    .then((resp) => resp.json())
-                    .then((json) => json.result.records)
-                    .then((records) => {
-                        const stationData = convertStationsToGeoJSON(records);
-                        const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
-                        const url = URL.createObjectURL(blob);
-                        stationLayerRef.current = new GeoJSONLayer({
-                            id: 'stationLayer',
-                            title: 'SWAMP Monitoring Stations',
-                            url: url,
-                            listMode: 'hide',
-                            outFields: ['StationName', 'StationCode'],
-                            renderer: stationRenderer,
-                            popupTemplate: stationTemplate
+                    if (mapRef) {
+                        const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=5000';
+                        fetch(url)
+                        .then((resp) => resp.json())
+                        .then((json) => json.result.records)
+                        .then((records) => {
+                            const stationData = convertStationsToGeoJSON(records);
+                            const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
+                            const url = URL.createObjectURL(blob);
+                            stationLayerRef.current = new GeoJSONLayer({
+                                id: 'stationLayer',
+                                title: 'SWAMP Monitoring Stations',
+                                url: url,
+                                outFields: ['StationName', 'StationCode'],
+                                featureReduction: {
+                                    type: 'cluster',
+                                    clusterRadius: 100,
+                                    clusterMinSize: '24px',
+                                    clusterMaxSize: '60px',
+                                    labelingInfo: [{
+                                        labelExpressionInfo: {
+                                            expression: "Text($feature.cluster_count, '#,###')"
+                                        },
+                                        symbol: {
+                                            type: 'text',
+                                            color: '#fff',
+                                            font: {
+                                                weight: 'bold',
+                                                family: 'Noto Sans',
+                                                size: '12px'
+                                            }
+                                        },
+                                        labelPlacement: 'center-center'
+                                    }]
+                                },
+                                renderer: stationRenderer,
+                                popupTemplate: stationTemplate
+                            });
+                            mapRef.current.add(stationLayerRef.current);
+                            searchRef.current.sources.add({
+                                layer: stationLayerRef.current,
+                                searchFields: ['StationName', 'StationCode'],
+                                displayField: 'StationName',
+                                exactMatch: false,
+                                outFields: ['StationName', 'StationCode'],
+                                name: 'Monitoring stations',
+                                placeholder: 'Example: Buena Vista Park',
+                                zoomScale: 14000
+                            });
                         });
-                        mapRef.current.add(stationLayerRef.current);
-                        searchRef.current.sources.add({
-                            layer: stationLayerRef.current,
-                            searchFields: ['StationName', 'StationCode'],
-                            displayField: 'StationName',
-                            exactMatch: false,
-                            outFields: ['StationName', 'StationCode'],
-                            name: 'Monitoring stations',
-                            placeholder: 'Example: Buena Vista Park',
-                            zoomScale: 14000
-                        });
-                    });
+                    }
+
                 });
-            }
         };
 
         setDefaultOptions({ version: '4.16' });
@@ -704,7 +726,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
         <div
             className="mapDiv"
             ref={divRef}
-            style={{ width: "45vw", height: `calc(100vh - 60px)` }}
+            style={{ width: "43vw", height: `calc(100vh - 60px)` }}
         />
     )
 }

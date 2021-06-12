@@ -5,7 +5,7 @@
     width: 50px; 
     background-color: #0BACA1; 
     color: #fff;
-    padding: 1px 4px;
+    padding: 0 4px;
 }
 
 .tag:hover {
@@ -13,6 +13,6 @@
 }
 
 .tagText {
-    font-weight: 400;
-    font-size: 0.8em;
+    font-weight: 300;
+    font-size: 0.78em;
 }

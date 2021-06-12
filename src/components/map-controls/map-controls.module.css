@@ -1,6 +1,6 @@
 .boxContainer {
     background-color: #e3e4e6;
-    padding: 1.1em;
+    padding: 0.8em;
     font-size: 1em;
     margin-bottom: 0;
 }
@@ -8,7 +8,7 @@
 .selectWrapper {
     display: flex;
     flex-direction: row;
-    margin-top: 12px;
+    margin-top: 10px;
 }
 
 .customSelect {

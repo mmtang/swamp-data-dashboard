@@ -2,7 +2,7 @@
     height: calc(100% - 60px);
     top: 60px;
     order: 1;
-    flex-basis: 45%;
+    flex-basis: 43%;
     z-index: 2;
 }
 
@@ -11,7 +11,7 @@
     background-color: #fff;
     top: 60px;
     order: 2;
-    flex-basis: 55%;
+    flex-basis: 57%;
     overflow-y: auto;
     z-index: 50 !important;
 }
@@ -21,7 +21,7 @@
     max-width: 823px;
     background-color: #fff;
     margin: 0;
-    padding: 12px 26px;
+    padding: 12px 20px;
 }
 
 .twinContainer {
