@@ -93,7 +93,7 @@
 .select-search__option,
 .select-search__not-found {
     display: block;
-    height: 32px;
+    min-height: 32px;
     width: 100%;
     padding: 0 16px;
     background: #fff;

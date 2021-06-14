@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
-import { convertStationsToGeoJSON, convertStationSummaryToGeoJSON } from '../../utils/utils';
+import { convertStationsToGeoJSON, convertStationSummaryToGeoJSON, regionNumDict } from '../../utils/utils';
 
 
 export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite }) {
@@ -42,17 +42,18 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
             loadModules(['esri/layers/GeoJSONLayer'])
                 .then(([GeoJSONLayer]) => {
                     if (mapRef) {
-                        const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude&limit=5000';
+                        const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region&limit=5000';
                         fetch(url)
                         .then((resp) => resp.json())
                         .then((json) => json.result.records)
                         .then((records) => {
                             const stationData = convertStationsToGeoJSON(records);
+                            console.log(stationData);
                             const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
                             const url = URL.createObjectURL(blob);
                             stationLayerRef.current = new GeoJSONLayer({
                                 id: 'stationLayer',
-                                title: 'SWAMP Monitoring Stations',
+                                title: 'SWAMP Monitoring Sites',
                                 url: url,
                                 outFields: ['StationName', 'StationCode'],
                                 featureReduction: {
@@ -318,7 +319,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                         title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                         content: buildStationPopup
                     }
-                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,AllYears_Trend&limit=5000';
+                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,Region,AllYears_Trend&limit=5000';
                     url += '&filters={%22Analyte%22:%22' + encodeURIComponent(selectedAnalyte) + '%22}'
                     console.log(url);
                     fetch(url)
@@ -341,6 +342,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                             renderer: analyteRenderer,
                             popupTemplate: analyteTemplate
                         });
+                        if (selectedRegion) {
+                            stationSummaryLayerRef.current.definitionExpression = `Region = '${regionNumDict[selectedRegion]}'`;
+                        }
                         mapRef.current.add(stationSummaryLayerRef.current);
                     });
                 });
@@ -364,6 +368,14 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
     useEffect(() => {
         if (mapRef.current) {
             if (selectedRegion) {
+                // Filter stations
+                if (stationLayerRef.current) { 
+                    stationLayerRef.current.definitionExpression = `Region = '${regionNumDict[selectedRegion]}'`;
+                }
+                if (stationSummaryLayerRef.current) {
+                    stationSummaryLayerRef.current.definitionExpression = `Region = '${regionNumDict[selectedRegion]}'`;
+                }
+                // Highlight region
                 loadModules(['esri/views/layers/LayerView', 'esri/tasks/support/Query'])
                 .then(([LayerView, Query]) => {
                     if (viewRef.current) {
@@ -384,6 +396,14 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                     }
                 });
             } else {
+                // Unfilter stations
+                if (stationLayerRef.current) {
+                    stationLayerRef.current.definitionExpression = '';
+                }
+                if (stationSummaryLayerRef.current) {
+                    stationSummaryLayerRef.current.definitionExpression = '';
+                }
+                // Remove region highlight
                 if (highlightRegionRef.current) {
                     highlightRegionRef.current.remove();
                 }
@@ -448,8 +468,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                 searchRef.current = new Search({
                     view: viewRef.current,
                     //container: 'search-div',
-                    allPlaceholder: 'Search for a waterbody',
-                    label: 'Search for a waterbody',
+                    allPlaceholder: 'Find a waterbody',
+                    label: 'Find a waterbody',
                     includeDefaultSources: false,
                     locationEnabled: false,
                     popupEnabled: false,

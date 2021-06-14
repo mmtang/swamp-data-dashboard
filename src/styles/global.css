@@ -139,3 +139,10 @@ a {
 .map-popup-subtitle {
   font-size: 11px;
 }
+
+.select-search__input {
+  height: 34px;
+  font-size: 13px;
+  border: 1px solid #c2c2c2;
+  padding-left: 8px;
+}

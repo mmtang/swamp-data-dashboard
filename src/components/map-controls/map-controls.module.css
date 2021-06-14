@@ -5,12 +5,6 @@
     margin-bottom: 0;
 }
 
-.selectWrapper {
-    display: flex;
-    flex-direction: row;
-    margin-top: 10px;
-}
-
 .customSelect {
     width: 100%;
     box-sizing: border-box;

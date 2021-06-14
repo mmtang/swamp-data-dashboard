@@ -4,7 +4,7 @@ import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { fetchData, regionDict, regionNumDict } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 
-export default function TableIndex({ selectedAnalyte, selectedRegion, setSite }) {
+export default function TableIndex({ selectedRegion, setRegion, selectedAnalyte, setAnalyte, setSite }) {
     const [stationData, setStationData] = useState(null);
     const [tableData, setTableData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -83,14 +83,12 @@ export default function TableIndex({ selectedAnalyte, selectedRegion, setSite })
                 accessor: 'Region',
                 sortType: 'string',
             },
-            /*
             {
                 Header: 'Site Code',
                 id: 'StationCode',
                 accessor: 'StationCode',
                 sortType: 'string'
             },
-            */
             {
                 Header: 'Site Name',
                 id: 'StationName',
@@ -176,6 +174,10 @@ export default function TableIndex({ selectedAnalyte, selectedRegion, setSite })
                     columns={ selectedAnalyte ? columnsSummary : columns} 
                     data={tableData} 
                     initialState={initialState}
+                    selectedRegion={selectedRegion}
+                    setRegion={setRegion}
+                    selectedAnalyte={selectedAnalyte}
+                    setAnalyte={setAnalyte}
                     setSite={setSite}
                 />
             </div>

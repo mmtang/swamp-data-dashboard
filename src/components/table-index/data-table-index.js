@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IconArrowNarrowDown, IconArrowNarrowUp, IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from '@tabler/icons';
-import { useTable, useSortBy, usePagination } from 'react-table';
-import { dataTable, paginationContainer, paginationButton, paginationSelect, selectWrapper, navigationWrapper } from '../station-page/data-table.module.css'
+import { useTable, useSortBy, usePagination, useGlobalFilter } from 'react-table';
+import ControlsContainer from '../map-controls/controls-container';
+import { dataTable, paginationContainer, paginationButton, paginationSelect, selectWrapper, navigationWrapper } from '../station-page/data-table.module.css';
 import { indexTableRow } from './table-index.module.css';
 
-export default function DataTableIndex({ columns, data, initialState, setSite }) {
+export default function DataTableIndex({ columns, data, initialState, selectedRegion, setRegion, selectedAnalyte, setAnalyte, setSite }) {
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
         //rows,
         prepareRow,
-        visibleColumns,
+        setGlobalFilter,
+        //visibleColumns,
         page,
         canPreviousPage,
         canNextPage,
@@ -21,13 +23,14 @@ export default function DataTableIndex({ columns, data, initialState, setSite })
         nextPage,
         previousPage,
         setPageSize,
-        state: { pageIndex, pageSize }
+        state: { pageIndex, pageSize, globalFilter }
     } = useTable(
         { 
             columns, 
             data,
             initialState 
         }, 
+        useGlobalFilter,
         useSortBy,
         usePagination
     )
@@ -36,8 +39,22 @@ export default function DataTableIndex({ columns, data, initialState, setSite })
         setSite(site);
     }
 
+    useEffect(() => {
+        console.log(globalFilter);
+      }, [globalFilter]);
+
     return (
         <React.Fragment>
+            <div>
+                <ControlsContainer 
+                    globalFilter={globalFilter} 
+                    setGlobalFilter={setGlobalFilter} 
+                    selectedRegion={selectedRegion}
+                    setRegion={setRegion}
+                    selectedAnalyte={selectedAnalyte}
+                    setAnalyte={setAnalyte}
+                />
+            </div>
             <table {...getTableProps()} className={dataTable}>
                 <thead>
                     {headerGroups.map(headerGroup => (

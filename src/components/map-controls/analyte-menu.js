@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import SelectSearch from 'react-select-search';
 import AnalyteCard from './analyte-card';
 import ClearFilter from './clear-filter';
-import { boxContainer, selectWrapper, radioWrapper, titleWrapper } from './map-controls.module.css';
 
 export default function AnalyteMenu({ selectedAnalyte, setAnalyte }) {
     const [analyteList, setAnalyteList] = useState(null);
@@ -30,22 +29,15 @@ export default function AnalyteMenu({ selectedAnalyte, setAnalyte }) {
     if (analyteList) {
         return (
             <React.Fragment>
-                <div className={boxContainer}>
-                    <div className={titleWrapper}>
-                        <div>Select a <span className="emphasis">water quality parameter</span></div>
-                        { selectedAnalyte ? <ClearFilter clearFunction={setAnalyte} /> : null }
-                    </div>
-                    <div className={selectWrapper}>
-                        <SelectSearch
-                            options={analyteList} 
-                            value={ selectedAnalyte ? selectedAnalyte : '' }
-                            onChange={handleSelectChange}
-                        />
-                    </div>
-                    {/*
-                    { selectedAnalyte ? <AnalyteCard selectedAnalyte={selectedAnalyte} /> : null }
-                    */}
-                </div>
+                <SelectSearch
+                    options={analyteList} 
+                    value={ selectedAnalyte ? selectedAnalyte : '' }
+                    placeholder="Analyte"
+                    onChange={handleSelectChange}
+                />
+                {/*
+                { selectedAnalyte ? <AnalyteCard selectedAnalyte={selectedAnalyte} /> : null }
+                */}
             </React.Fragment>
         )
     } else {

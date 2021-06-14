@@ -4,7 +4,6 @@ import ChemistrySubRowAsync from './chemistry-sub-row-async';
 import { IconCirclePlus, IconCircleMinus, IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
-import { trendWrapper } from './data-table.module.css';
 
 
 export default function ChemistryTable(props) {
@@ -23,8 +22,6 @@ export default function ChemistryTable(props) {
                     d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
                     d.LastSampleDate = parseDate(d.LastSampleDate);
                     d.resultWithUnit = d.LastResult.toString() + ' ' + d.Unit;
-                    //d.AllYears_Median = Math.round(d.AllYears_Mean * 10) / 10;
-                    //d.AllYears_Median = Math.round(d.AllYears_Mean * 10) / 10;
                 });
                 setData(records);
             });
@@ -78,7 +75,7 @@ export default function ChemistryTable(props) {
                 Header: 'Trend',
                 id: 'trend',
                 accessor: 'AllYears_Trend',
-                Cell: props => <div style={{ textAlign: 'center' }}>{props.value === 'Increasing' ? <IconTrendingDown size={18} /> : props.value === 'Decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={props.value} /> }</div>
+                Cell: props => <div style={{ textAlign: 'center' }}>{props.value === 'Increasing' ? <IconTrendingUp size={18} /> : props.value === 'Decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={props.value} /> }</div>
             },
             {
                 Header: 'Min',

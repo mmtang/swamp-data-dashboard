@@ -28,15 +28,15 @@ export const regionDict = {
 }
 
 export const regionNumDict = {
-    'North Coast': 1,
-    'San Francisco Bay': 2,
-    'Central Coast': 3,
-    'Los Angeles': 4,
-    'Central Valley': 5,
-    'Lahontan': 6,
-    'Colorado River': 7,
-    'Santa Ana': 8,
-    'San Diego': 9
+    'North Coast': '1',
+    'San Francisco Bay': '2',
+    'Central Coast': '3',
+    'Los Angeles': '4',
+    'Central Valley': '5',
+    'Lahontan': '6',
+    'Colorado River': '7',
+    'Santa Ana': '8',
+    'San Diego': '9'
 }
 
 export const fetchData = (url) => {
@@ -61,6 +61,7 @@ export const convertStationsToGeoJSON = (data) => {
                 'properties': {
                     'StationName': d.StationName,
                     'StationCode': d.StationCode,
+                    'Region': d.Region.toString()
                 }
 
             }
@@ -83,7 +84,8 @@ export const convertStationSummaryToGeoJSON = (data) => {
                     'StationName': d.StationName,
                     'StationCode': d.StationCode,
                     'Analyte': d.Analyte,
-                    'Trend': d.AllYears_Trend
+                    'Trend': d.AllYears_Trend,
+                    'Region': d.Region.toString()
                 }
 
             }
