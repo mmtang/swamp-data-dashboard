@@ -9,6 +9,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
     const mapRef = useRef(null);
     const viewRef = useRef(null);
     const searchRef = useRef(null);
+    const expandRef = useRef(null);
     const attainsLayerRef = useRef(null);
     const attainsLineRef = useRef(null);
     const attainsPolyRef = useRef(null);
@@ -445,8 +446,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                 'esri/Map',
                 'esri/views/MapView',
                 'esri/widgets/Search',
-                'esri/widgets/LayerList'
-            ]).then(([Map, MapView, Search, LayerList]) => {
+                'esri/widgets/LayerList',
+                'esri/widgets/Expand'
+            ]).then(([Map, MapView, Search, LayerList, Expand]) => {
                 mapRef.current = new Map({
                     basemap: 'gray-vector'
                 });
@@ -476,7 +478,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                     autoSelect: true,
                     sources: []
                 });
-
                 layerListRef.current = new LayerList({
                     view: viewRef.current,
                     listItemCreatedFunction: function(event) {
@@ -490,9 +491,15 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                         }
                     }
                 });
+                expandRef.current = new Expand({
+                    expandIconClass: 'esri-icon-layer-list',
+                    view: viewRef.current,
+                    content: layerListRef.current,
+                    expanded: true
+                })
                 viewRef.current.ui.add(searchRef.current, { position: 'top-right' });
-                viewRef.current.ui.add(layerListRef.current, 'bottom-left');
-
+                //viewRef.current.ui.add(layerListRef.current, 'bottom-left');
+                viewRef.current.ui.add(expandRef.current, 'bottom-left');
                 resolve();
             });
         })
