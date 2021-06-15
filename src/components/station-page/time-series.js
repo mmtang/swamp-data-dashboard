@@ -108,10 +108,15 @@ export default function TimeSeries({ data, trend }) {
             .attr('width', width - margin.left - margin.right)
             .attr('height', height - margin.bottom);
         // add tooltip
+        /*
         const tooltip = d3.select('body').append('div')
             .attr('id', randomId.current + '-tooltip')
             .attr('class', customTooltip)
             .style('opacity', 0);
+        */
+       const tooltip = d3.select('#chartTooltip')
+        .attr('class', customTooltip)
+        .style('opacity', 0);
 
         // initialize axes
         chart.append('g')
@@ -181,8 +186,8 @@ export default function TimeSeries({ data, trend }) {
             })
             .on('mousemove', () => {
                 return tooltip
-                    .style('top', (window.event.pageY - 20) + 'px')
-                    .style('left', (window.event.pageX + 10) + 'px');
+                    .style('top', (window.event.pageY - 50) + 'px')
+                    .style('left', (window.event.pageX - 100) + 'px');
             })
             .on('mouseout', () => {
                 return tooltip.style('opacity', 0);
@@ -199,7 +204,6 @@ export default function TimeSeries({ data, trend }) {
             if (trend.trend === 'Increasing' || trend.trend === 'Decreasing') {
                 const y2 = trend.intercept + (data.length * trend.slope);
                 const trendValues = [xExtent[0], trend.intercept, xExtent[1], y2];
-                console.log(trendValues);
                 const trendLine = chart.append('g')
                     .datum(trendValues)
                     .attr('clip-path', 'url(#clean-clip)');

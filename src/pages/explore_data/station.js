@@ -80,6 +80,7 @@ class Station extends React.Component {
                             <ChemistryTable station={this.state.station.StationCode} />
                         </section>
                     </div>
+                    <div id="chartTooltip" style={{ opacity: '0' }}></div>
                 </Layout>
             )
         } else if (!this.state.status) {

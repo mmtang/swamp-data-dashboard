@@ -368,6 +368,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
 
     useEffect(() => {
         if (mapRef.current) {
+            const bpPolys = bpLayerRef.current.findSublayerById(0);
+            const bpLines = bpLayerRef.current.findSublayerById(1);
             if (selectedRegion) {
                 // Filter stations
                 if (stationLayerRef.current) { 
@@ -376,6 +378,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                 if (stationSummaryLayerRef.current) {
                     stationSummaryLayerRef.current.definitionExpression = `Region = '${regionNumDict[selectedRegion]}'`;
                 }
+                // Filter BPMP
+                bpPolys.definitionExpression = `BASINPLANNAME = '${selectedRegion}'`;
+                bpLines.definitionExpression = `BASINPLANNAME = '${selectedRegion}'`;
                 // Highlight region
                 loadModules(['esri/views/layers/LayerView', 'esri/tasks/support/Query'])
                 .then(([LayerView, Query]) => {
@@ -404,6 +409,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                 if (stationSummaryLayerRef.current) {
                     stationSummaryLayerRef.current.definitionExpression = '';
                 }
+                // Unfilter BPMP
+                bpPolys.definitionExpression = "BASINPLANNAME = ''";
+                bpLines.definitionExpression = "BASINPLANNAME = ''";
                 // Remove region highlight
                 if (highlightRegionRef.current) {
                     highlightRegionRef.current.remove();
@@ -669,13 +677,11 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                         {
                             id: 0, // polygon sublayer
                             title: 'Beneficial Uses - Polygons',
-                            definitionExpression: "REG_ID = '2S'",
                             popupTemplate: bpPolyTemplate,  
                         },
                         {
                             id: 1, // line sublayer
                             title: 'Beneficial Uses - Lines',
-                            definitionExpression: "REG_ID = '2S'",
                             popupTemplate: bpLineTemplate
                         }
                     ],

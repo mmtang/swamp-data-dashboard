@@ -12,11 +12,12 @@ export default function ChemistrySubRowAsync({ row, rowProps, visibleColumns }) 
     const [yearRange, setYearRange] = useState(null);
     const trend = {
         trend: row.original['AllYears_Trend'],
-        intercept: parseFloat(row.original['AllYears_Intercept']),
+        intercept: row.original['AllYears_Intercept'],
         pValue: row.original['AllYears_PValue'],
-        slope: parseFloat(row.original['AllYears_Slope']),
+        slope: row.original['AllYears_Slope'],
         tau: row.original['AllYears_Tau']
     };
+    console.log(trend);
 
     useEffect(() => {
         //const years = Object.keys(chemistryEndpoint).sort((a, b) => b - a);

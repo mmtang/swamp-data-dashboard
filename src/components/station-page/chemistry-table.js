@@ -12,12 +12,11 @@ export default function ChemistryTable(props) {
     useEffect(() => {
         if (props.station) {
             const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
-            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,Analyte,LastSampleDate,LastResult,Unit,AllYears_Min,AllYears_Max,AllYears_Median,AllYears_Mean,AllYears_Trend,AllYears_n';
+            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,Analyte,LastSampleDate,LastResult,Unit,AllYears_Min,AllYears_Max,AllYears_Median,AllYears_Mean,AllYears_Trend,AllYears_Tau,AllYears_PValue,AllYears_Slope,AllYears_Intercept,AllYears_n';
             url += '&filters={%22StationCode%22:%22' + props.station + '%22}';
             fetchData(url)
             .then(json => json.result.records)
             .then(records => {
-                console.log(records);
                 records.forEach(d => {
                     d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
                     d.LastSampleDate = parseDate(d.LastSampleDate);
