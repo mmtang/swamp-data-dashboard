@@ -528,7 +528,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                     sublayers: [{
                         name: 'NLCD_2016_Land_Cover_L48',
                         title: 'Land Cover',
-                        legendUrl: 'https://www.usna.edu/Users/oceano/pguth/md_help/images/nlcd_grid_legend1.gif' // there are some issues with using locally hosted images in arcgis javascript. i am temporarily using this one found online. need to upload the image with approx 180px width to server before inserting into legend
+                        legendUrl: 'https://www.mrlc.gov/geoserver/mrlc_display/wms?REQUEST=GetLegendGraphic&FORMAT=image/png&WIDTH=12&HEIGHT=12&LAYER=NLCD_2016_Land_Cover_L48&legend_options=fontAntiAliasing:true;fontSize:8;dpi:100'
                     }],
                     copyright: 'MRLC NLCD',
                     listMode: 'hide-children',
