@@ -10,6 +10,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
     const viewRef = useRef(null);
     const searchRef = useRef(null);
     const expandRef = useRef(null);
+    const landUseLayerRef = useRef(null);
     const attainsLayerRef = useRef(null);
     const attainsLineRef = useRef(null);
     const attainsPolyRef = useRef(null);
@@ -82,6 +83,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                                 popupTemplate: stationTemplate
                             });
                             mapRef.current.add(stationLayerRef.current);
+                            /*
                             searchRef.current.sources.add({
                                 layer: stationLayerRef.current,
                                 searchFields: ['StationName', 'StationCode'],
@@ -92,6 +94,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                                 placeholder: 'Example: Buena Vista Park',
                                 zoomScale: 14000
                             });
+                            */
                         });
                     }
 
@@ -102,6 +105,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
         loadCss();
         initializeMap()
         .then(() => {
+            drawLandUse();
             drawBasinPlan();
             drawAttains();
             drawRegions();
@@ -511,6 +515,29 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                 resolve();
             });
         })
+    }
+
+    const drawLandUse = () => {
+        if (mapRef) {
+            loadModules(['esri/layers/WMSLayer'])
+            .then(([WMSLayer]) => {
+                landUseLayerRef.current = new WMSLayer({
+                    id: 'nlcdLayer',
+                    title: 'National Land Cover Database (2016)',
+                    url: 'https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Land_Cover_L48/wms?service=WMS&request=GetCapabilities',
+                    sublayers: [{
+                        name: 'NLCD_2016_Land_Cover_L48',
+                        title: 'Land Cover',
+                        legendUrl: 'https://www.usna.edu/Users/oceano/pguth/md_help/images/nlcd_grid_legend1.gif' // there are some issues with using locally hosted images in arcgis javascript. i am temporarily using this one found online. need to upload the image with approx 180px width to server before inserting into legend
+                    }],
+                    copyright: 'MRLC NLCD',
+                    listMode: 'hide-children',
+                    opacity: 0.6,
+                    visible: false
+                });
+                mapRef.current.add(landUseLayerRef.current);
+            });
+        }
     }
 
     const drawAttains = () => {

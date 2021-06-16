@@ -67,7 +67,6 @@ class Station extends React.Component {
                             <MapStation coordinates={[station.TargetLongitude, station.TargetLatitude]} />
                         </div>
                         <section>
-                            <h2 style={{ margin: "25px 0 15px 0" }}>Nearby waterbodies</h2>
                             <NearbyWaterbodies coordinates={[station.TargetLongitude, station.TargetLatitude]} />
                         </section>
                     </div>

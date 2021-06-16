@@ -35,6 +35,7 @@ export default function AnalyteMenu({ selectedAnalyte, setAnalyte }) {
                     placeholder="Analyte"
                     onChange={handleSelectChange}
                 />
+                { selectedAnalyte ? <ClearFilter clearFunction={setAnalyte} /> : null}
                 {/*
                 { selectedAnalyte ? <AnalyteCard selectedAnalyte={selectedAnalyte} /> : null }
                 */}

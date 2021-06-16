@@ -4,7 +4,7 @@ import WaterbodyCard from './waterbody-card';
 
 export default function NearbyWaterbodies({ coordinates }) {
     const [loading, setLoading] = useState(true);
-    const featuresRef = useRef(null);
+    const [features, setFeatures] = useState(null);
 
     useEffect(() => {
         const getLines = (distance) => {
@@ -38,7 +38,9 @@ export default function NearbyWaterbodies({ coordinates }) {
         ]).then(responses => {
             const data = responses[0].concat(responses[1]);
             const features = data.map(d => d.attributes);
-            featuresRef.current = features;
+            if (features.length > 0) {
+                setFeatures(features);
+            }
             setLoading(false);
         });
     }, [coordinates])
@@ -47,13 +49,18 @@ export default function NearbyWaterbodies({ coordinates }) {
         return (
             <div>Loading...</div>
         )
-    } else {
+    } else if (features) {
         return (
             <div>
-                {featuresRef.current.map(d => (
+                <h2 style={{ margin: "25px 0 15px 0" }}>Nearby waterbodies</h2>
+                {features.map(d => (
                     <WaterbodyCard key={'card-' + d.assessmentunitidentifier} feature={d} />
                 ))}
             </div>
         )
-    }    
+    } else {
+        return (
+            <div></div>
+        )
+    }
 }

@@ -57,6 +57,7 @@ export default function RegionMenu({ selectedRegion, setRegion }) {
                 placeholder="Region"
                 onChange={handleChange}
             />
+            { selectedRegion ? <ClearFilter clearFunction={setRegion} /> : null}
             {/*
             { selectedRegion ? <RegionCard selectedRegion={selectedRegion} /> : null }
             */}
