@@ -19,7 +19,7 @@ export default function NearbyStations({ nearbyStations }) {
         if (nearbyStations.length > 0) {
             return (
                 <div>
-                    <h2 style={{ margin: "25px 0 15px 0" }}>Nearby monitoring sites</h2>
+                    <h3 style={{ margin: "25px 0 15px 0" }}>Nearby monitoring sites</h3>
                     {nearbyStations.map(d => (
                         <CardStation key={'card-' + d.StationCode} feature={d} />
                     ))}

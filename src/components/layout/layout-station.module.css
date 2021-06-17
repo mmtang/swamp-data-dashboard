@@ -1,0 +1,17 @@
+.appContainer {
+    height: calc(100% - 60px);
+    position: absolute;
+    overflow-y: auto;
+}
+
+.mainFlex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+@media screen and (max-width: 600px) {
+    .mainFlex {
+        flex-wrap: wrap;
+    }
+}

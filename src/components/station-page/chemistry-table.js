@@ -129,6 +129,7 @@ export default function ChemistryTable(props) {
                 data={data} 
                 initialState={initialState}
                 renderRowSubComponent={renderRowSubComponent} />
+            <div id="chartTooltip" style={{ opacity: '0' }}></div>
         </div>
     )
 }

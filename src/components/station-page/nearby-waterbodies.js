@@ -52,7 +52,7 @@ export default function NearbyWaterbodies({ coordinates }) {
     } else if (features) {
         return (
             <div>
-                <h2 style={{ margin: "25px 0 15px 0" }}>Nearby waterbodies</h2>
+                <h3 style={{ margin: "25px 0 15px 0" }}>Nearby waterbodies</h3>
                 {features.map(d => (
                     <CardWaterbody key={'card-' + d.assessmentunitidentifier} feature={d} />
                 ))}

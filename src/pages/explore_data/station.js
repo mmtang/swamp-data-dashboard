@@ -84,7 +84,7 @@ class Station extends React.Component {
                             <NearbyStations nearbyStations={this.state.nearbyStations} />
                         </section>
                     </div>
-                        <div className={rightContainer}>
+                    <div className={rightContainer}>
                         <section>
                             <h2>Water quality data and trends</h2>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper. Ornare aenean euismod elementum nisi quis. Scelerisque fermentum dui faucibus in ornare.</p>
@@ -93,7 +93,6 @@ class Station extends React.Component {
                             <ChemistryTable station={this.state.station.StationCode} />
                         </section>
                     </div>
-                    <div id="chartTooltip" style={{ opacity: '0' }}></div>
                 </LayoutStation>
             )
         } else if (!this.state.status) {

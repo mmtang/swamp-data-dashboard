@@ -1,14 +1,16 @@
 import React from 'react';
 import Navbar from '../navbar/navbar.js';
-import { appContainer } from './layout.module.css';
+import { appContainer, mainFlex } from './layout-station.module.css';
 
 
 function LayoutStation({ children }) {    
     return (
         <React.Fragment>
             <Navbar />
-            <div className={appContainer} style={{ alignItems: 'flex-start', overflowY: 'auto', backgroundColor: '#f4f2f2' }}>
-                {children}
+            <div className={appContainer}>
+                <div className={mainFlex}>
+                    {children}
+                </div>
             </div>
         </React.Fragment>
     )
