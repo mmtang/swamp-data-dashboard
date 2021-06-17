@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CardStation from './card-station';
+import { title } from './nearby.module.css';
 
 
 export default function NearbyStations({ nearbyStations }) {
@@ -19,7 +20,7 @@ export default function NearbyStations({ nearbyStations }) {
         if (nearbyStations.length > 0) {
             return (
                 <div>
-                    <h3 style={{ margin: "25px 0 15px 0" }}>Nearby monitoring sites</h3>
+                    <h3 className={title}>Nearby monitoring sites</h3>
                     {nearbyStations.map(d => (
                         <CardStation key={'card-' + d.StationCode} feature={d} />
                     ))}
@@ -27,7 +28,10 @@ export default function NearbyStations({ nearbyStations }) {
             )
         } else {
             return (
-                <div></div>
+                <div>
+                    <h3 className={title}>Nearby monitoring sites</h3>
+                    <i className="light">No other monitoring sites within 500 meters.</i>
+                </div>
             )
         }
     } else {

@@ -64,6 +64,10 @@ a {
   font-weight: 600;
 }
 
+.light {
+  font-weight: 300;
+}
+
 .popup-table {
   width: 100%;
   border-collapse: collapse;
