@@ -4,7 +4,7 @@ import { timeParse, timeFormat } from 'd3';
 import { convertStationsToGeoJSON, convertStationSummaryToGeoJSON, regionNumDict } from '../../utils/utils';
 
 
-export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite }) {
+export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, clustered }) {
     const divRef = useRef(null);
     const mapRef = useRef(null);
     const viewRef = useRef(null);
@@ -21,25 +21,71 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
     const layerListRef = useRef(null);
     const highlightRegionRef = useRef(null);
     const highlightSiteRef = useRef(null);
+    
+    const clusterProps = {
+        type: 'cluster',
+        clusterRadius: 100,
+        clusterMinSize: '24px',
+        clusterMaxSize: '60px',
+        labelingInfo: [{
+            labelExpressionInfo: {
+                expression: "Text($feature.cluster_count, '#,###')"
+            },
+            symbol: {
+                type: 'text',
+                color: '#5d5d5d',
+                font: {
+                    weight: 'bold',
+                    family: 'Noto Sans',
+                    size: '12px'
+                }
+            },
+            labelPlacement: 'center-center'
+        }]
+    };
+
+    const clusterRenderer = {
+        type: 'simple',
+        symbol: {
+            type: 'simple-marker',
+            size: 9,
+            color: '#fff',
+            outline: {
+                color: '#5d5d5d',
+                width: 2
+            }
+        }
+    };
+    const stationRenderer = {
+        type: 'simple',
+        symbol: {
+            type: 'simple-marker',
+            size: 5.5,
+            color: '#fff',
+            outline: {
+                color: '#2a2a29',
+                width: 1
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (mapRef.current && stationLayerRef.current) {
+            if (clustered === true) {
+                stationLayerRef.current.featureReduction = clusterProps;
+                stationLayerRef.current.renderer = clusterRenderer;
+            } else if (clustered === false) {
+                stationLayerRef.current.featureReduction = null;
+                stationLayerRef.current.renderer = stationRenderer;
+            }  
+        }
+    }, [clustered])
 
     useEffect(() => {
         const drawStations = () => {
             const stationTemplate = {
                 title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                 content: buildStationPopup
-            };
-            const stationRenderer = {
-                type: 'simple',
-                symbol: {
-                    type: 'simple-marker',
-                    size: 9,
-                    //color: '#e0681d', // muted orange
-                    color: '#f06c1a',
-                    outline: {
-                        color: '#fff',
-                        width: 2
-                    }
-                }
             };
             loadModules(['esri/layers/GeoJSONLayer'])
                 .then(([GeoJSONLayer]) => {
@@ -58,27 +104,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                                 title: 'SWAMP Monitoring Sites',
                                 url: url,
                                 outFields: ['StationName', 'StationCode'],
-                                featureReduction: {
-                                    type: 'cluster',
-                                    clusterRadius: 100,
-                                    clusterMinSize: '24px',
-                                    clusterMaxSize: '60px',
-                                    labelingInfo: [{
-                                        labelExpressionInfo: {
-                                            expression: "Text($feature.cluster_count, '#,###')"
-                                        },
-                                        symbol: {
-                                            type: 'text',
-                                            color: '#fff',
-                                            font: {
-                                                weight: 'bold',
-                                                family: 'Noto Sans',
-                                                size: '12px'
-                                            }
-                                        },
-                                        labelPlacement: 'center-center'
-                                    }]
-                                },
                                 renderer: stationRenderer,
                                 popupTemplate: stationTemplate
                             });
@@ -462,13 +487,14 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                 'esri/widgets/Expand'
             ]).then(([Map, MapView, Search, LayerList, Expand]) => {
                 mapRef.current = new Map({
-                    basemap: 'gray-vector'
+                    basemap: 'topo-vector'
+                    //basemap: 'gray-vector'
                 });
                 viewRef.current = new MapView({
                     container: divRef.current,
                     map: mapRef.current,
                     center: [-119.3624, 37.5048],
-                    zoom: 5,
+                    zoom: 6,
                     popup: {
                         dockOptions: {
                             buttonEnabled: false
@@ -504,13 +530,12 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                     }
                 });
                 expandRef.current = new Expand({
-                    expandIconClass: 'esri-icon-layer-list',
+                    expandIconClass: 'esri-icon-layers',
                     view: viewRef.current,
                     content: layerListRef.current,
-                    expanded: true
+                    expanded: false
                 })
                 viewRef.current.ui.add(searchRef.current, { position: 'top-right' });
-                //viewRef.current.ui.add(layerListRef.current, 'bottom-left');
                 viewRef.current.ui.add(expandRef.current, 'bottom-left');
                 resolve();
             });
@@ -532,7 +557,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite 
                     }],
                     copyright: 'MRLC NLCD',
                     listMode: 'hide-children',
-                    opacity: 0.6,
+                    opacity: 0.5,
                     visible: false
                 });
                 mapRef.current.add(landUseLayerRef.current);
