@@ -1,4 +1,4 @@
-.waterbodyCard {
+.card {
     display: flex;
     flex-direction: row;
     margin-top: -1px;
@@ -6,7 +6,7 @@
     height: auto;
 }
 
-.waterbodyCard:hover {
+.card:hover {
     cursor: pointer;
 }
 
@@ -15,9 +15,16 @@
     font-weight: 500;
     text-transform: uppercase;
     font-size: 1rem;
-    background-color: #247ba0;
     padding: .75rem;
-  }
+}
+
+.waterbody {
+    background-color: #247ba0;
+}
+
+.station {
+    background-color: #f15f2b;
+}
 
 .cardBody {
     width: 100%;

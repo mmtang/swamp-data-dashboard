@@ -1,15 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
+import { convertStationsToGeoJSON } from '../../utils/utils';
 
 
-export default function MapStation(props) {
+export default function MapStation({ coordinates, stationCode, region, setNearbyStations}) {
     const stationMapDivRef = useRef(null);
     const stationMapRef = useRef(null);
     const stationViewRef = useRef(null);
+    const markerRef = useRef(null);
     const markerLayerRef = useRef(null);
     const attainsLineLayerRef = useRef(null);
     const attainsPolyLayerRef = useRef(null);
-    
+    const stationLayerRef = useRef(null);
+
 
     useEffect(() => {
         const attainsLineRenderer = {
@@ -33,7 +36,7 @@ export default function MapStation(props) {
         const getLines = (distance) => {
             return new Promise((resolve, reject) => {
                 // Input distance is in meters
-                const url = 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/1/query?where=organizationid%3D%27CA_SWRCB%27&text=&objectIds=&time=&geometry=' + props.coordinates[0] + '%2C' + props.coordinates[1] + '&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&distance=' + distance + '&units=esriSRUnit_Meter&relationParam=&outFields=assessmentunitname%2creportingcycle%2Cwaterbodyreportlink%2Coverallstatus%2Con303dlist&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson';
+                const url = 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/1/query?where=organizationid%3D%27CA_SWRCB%27&text=&objectIds=&time=&geometry=' + coordinates[0] + '%2C' + coordinates[1] + '&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&distance=' + distance + '&units=esriSRUnit_Meter&relationParam=&outFields=assessmentunitname%2creportingcycle%2Cwaterbodyreportlink%2Coverallstatus%2Con303dlist&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson';
                 fetch(url)
                     .then(response => response.json())
                     .then(json => {
@@ -41,19 +44,17 @@ export default function MapStation(props) {
                     })
             })
         }
-    
         const getPolys = (distance) => {
             return new Promise((resolve, reject) => {
                 // Input distance is in meters
-                const url = 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/2/query?where=organizationid%3D%27CA_SWRCB%27&text=&objectIds=&time=&geometry=' + props.coordinates[0] + '%2C' + props.coordinates[1] + '&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&distance=' + distance + '&units=esriSRUnit_Meter&relationParam=&outFields=assessmentunitname%2creportingcycle%2Cwaterbodyreportlink%2Coverallstatus%2Con303dlist&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson';
+                const url = 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/2/query?where=organizationid%3D%27CA_SWRCB%27&text=&objectIds=&time=&geometry=' + coordinates[0] + '%2C' + coordinates[1] + '&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&distance=' + distance + '&units=esriSRUnit_Meter&relationParam=&outFields=assessmentunitname%2creportingcycle%2Cwaterbodyreportlink%2Coverallstatus%2Con303dlist&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson';
                 fetch(url)
                     .then(response => response.json())
                     .then(json => {
                         resolve(json);
                     })
             })
-        }
-    
+        } 
         const initializeMap = () => {
             return new Promise((resolve, reject) => {
                 loadModules([
@@ -66,8 +67,8 @@ export default function MapStation(props) {
                     stationViewRef.current = new MapView({
                         container: stationMapDivRef.current,
                         map: stationMapRef.current,
-                        center: props.coordinates,
-                        zoom: 10
+                        center: coordinates,
+                        zoom: 12
                     });
                     resolve();
                 });
@@ -263,16 +264,16 @@ export default function MapStation(props) {
                       }
                     }
                 });
-                const stationMarker = new Graphic({
+                markerRef.current = new Graphic({
                     geometry: {
                         type: 'point',
-                        longitude: props.coordinates[0],
-                        latitude: props.coordinates[1]
+                        longitude: coordinates[0],
+                        latitude: coordinates[1]
                     },
                     symbol: cimSymbol
                 });
                 markerLayerRef.current = new GraphicsLayer({
-                    graphics: [stationMarker]
+                    graphics: [markerRef.current]
                 });
                 stationMapRef.current.add(markerLayerRef.current);
             });
@@ -337,7 +338,56 @@ export default function MapStation(props) {
                 });
             });
         }
-            
+        const findNearbyStations = () => {
+          if (stationViewRef.current) {
+            loadModules(['esri/layers/GeoJSONLayer'])
+              .then(([GeoJSONLayer]) => {
+                const url = `https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=StationName%2CStationCode%2CRegion%2CTargetLatitude%2CTargetLongitude&filters={%22Region%22:%22${region}%22}&limit=2500`;
+                fetch(url)
+                  .then((resp) => resp.json())
+                  .then((json) => json.result.records)
+                  .then((records) => {
+                    const stationData = convertStationsToGeoJSON(records);
+                    console.log(stationData);
+                    const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
+                    const url = URL.createObjectURL(blob);
+                    stationLayerRef.current = new GeoJSONLayer({
+                      id: 'stations',
+                      url: url,
+                      outFields: ['StationName', 'StationCode'],
+                      visible: false
+                    });
+                    // Add layer to map
+                    stationMapRef.current.add(stationLayerRef.current);
+                    // Find nearby sites
+                    loadModules(['esri/views/layers/LayerView', 'esri/tasks/support/Query'])
+                      .then(([LayerView, Query]) => {
+                        if (stationViewRef.current) {
+                          stationViewRef.current.whenLayerView(stationLayerRef.current).then((layerView) => {
+                              const query = stationLayerRef.current.createQuery();
+                              query.geometry = {
+                                type: 'point',
+                                longitude: coordinates[0],
+                                latitude: coordinates[1],
+                                spatialReference: { wkid: 4326 }
+                              };
+                              query.distance = 500;
+                              query.units = 'meters';
+                              query.returnGeometry = false;
+                              query.outfields = ['StationCode', 'StationName', 'Region'];
+                              stationLayerRef.current.queryFeatures(query)
+                                .then(results => {
+                                  const resultsFeatures = results.features.map(d => d.attributes);
+                                  const features = resultsFeatures.filter(d => d.StationCode !== stationCode);
+                                  setNearbyStations(features);
+                                });
+                            })
+                        }
+                      });
+                  });
+              });
+          }
+        }
 
         setDefaultOptions({ version: '4.16' });
         loadCss();
@@ -346,9 +396,12 @@ export default function MapStation(props) {
             drawWaterbodies()
                 .then(() => {
                     drawMarker();
+                    findNearbyStations();
                 });
         });
-    }, [stationMapRef, props.coordinates]);
+    }, []);
+
+
 
     return (
         <div 

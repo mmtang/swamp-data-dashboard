@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import WaterbodyCard from './waterbody-card';
+import React, { useEffect, useState } from 'react';
+import CardWaterbody from './card-waterbody';
 
 
 export default function NearbyWaterbodies({ coordinates }) {
@@ -54,7 +54,7 @@ export default function NearbyWaterbodies({ coordinates }) {
             <div>
                 <h2 style={{ margin: "25px 0 15px 0" }}>Nearby waterbodies</h2>
                 {features.map(d => (
-                    <WaterbodyCard key={'card-' + d.assessmentunitidentifier} feature={d} />
+                    <CardWaterbody key={'card-' + d.assessmentunitidentifier} feature={d} />
                 ))}
             </div>
         )

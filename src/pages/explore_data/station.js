@@ -1,7 +1,8 @@
 import React from 'react';
-import Layout from '../../components/layout/layout';
+import LayoutStation from '../../components/layout/layout-station';
 import MapStation from '../../components/map/map-station';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
+import NearbyStations from '../../components/station-page/nearby-stations';
 import ChemistryTable from '../../components/station-page/chemistry-table';
 import { regionDict } from '../../utils/utils';
 import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName } from './station.module.css';
@@ -13,7 +14,8 @@ class Station extends React.Component {
       this.state = {
         stationCode: null,
         station: null,
-        status: null
+        status: null,
+        nearbyStations: null
       }
     }
 
@@ -53,21 +55,33 @@ class Station extends React.Component {
         });
     }
 
+    setNearbyStations = (stations) => {
+        this.setState({ nearbyStations: stations });
+    }
+
     render() {
         if (this.state.status === 'loaded') {
             let station = this.state.station;
             return (
-                <Layout>
+                <LayoutStation>
                     <div className={leftContainer}>
                         <section className={titleContainer}>
                             <h2 className={stationName}>{station.StationName ? station.StationName : null}</h2>
                             <span style={{ fontSize: '0.95em' }}>Station: {station.StationCode ? station.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{regionDict[station.Region]} Region</span>
                         </section>
                         <div className={siteMapContainer}>
-                            <MapStation coordinates={[station.TargetLongitude, station.TargetLatitude]} />
+                            <MapStation 
+                                coordinates={[station.TargetLongitude, station.TargetLatitude]} 
+                                stationCode={station.StationCode}
+                                region={station.Region}
+                                setNearbyStations={this.setNearbyStations}
+                            />
                         </div>
                         <section>
                             <NearbyWaterbodies coordinates={[station.TargetLongitude, station.TargetLatitude]} />
+                        </section>
+                        <section>
+                            <NearbyStations nearbyStations={this.state.nearbyStations} />
                         </section>
                     </div>
                         <div className={rightContainer}>
@@ -80,7 +94,7 @@ class Station extends React.Component {
                         </section>
                     </div>
                     <div id="chartTooltip" style={{ opacity: '0' }}></div>
-                </Layout>
+                </LayoutStation>
             )
         } else if (!this.state.status) {
             return (
