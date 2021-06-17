@@ -25,6 +25,10 @@ export default function NearbyStations({ nearbyStations }) {
                     ))}
                 </div>
             )
+        } else {
+            return (
+                <div></div>
+            )
         }
     } else {
         return (
