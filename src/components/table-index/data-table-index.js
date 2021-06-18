@@ -3,7 +3,7 @@ import { IconArrowNarrowDown, IconArrowNarrowUp, IconChevronLeft, IconChevronRig
 import { useTable, useSortBy, usePagination, useGlobalFilter } from 'react-table';
 import ControlsContainer from '../map-controls/controls-container';
 import { dataTable, paginationContainer, paginationButton, paginationSelect, selectWrapper, navigationWrapper } from '../station-page/data-table.module.css';
-import { indexTableRow } from './table-index.module.css';
+import { tableContainer, indexTableRow } from './table-index.module.css';
 
 export default function DataTableIndex({ columns, data, initialState, selectedRegion, setRegion, selectedAnalyte, setAnalyte, setSite }) {
     const {
@@ -55,7 +55,7 @@ export default function DataTableIndex({ columns, data, initialState, selectedRe
                     setAnalyte={setAnalyte}
                 />
             </div>
-            <div>
+            <div className={tableContainer}>
                 <table {...getTableProps()} className={dataTable}>
                     <thead>
                         {headerGroups.map(headerGroup => (

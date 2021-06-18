@@ -143,8 +143,9 @@ export default function TableIndex({ selectedRegion, setRegion, selectedAnalyte,
             {
                 Header: 'Last Result',
                 id: 'LastResult',
-                accessor: 'ResultWithUnit',
-                sortType: 'string'
+                accessor: 'LastResult',
+                sortType: 'number',
+                Cell: row => <span>{row.row.original.ResultWithUnit}</span>
             },
             {
                 Header: 'Trend',

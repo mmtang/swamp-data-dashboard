@@ -18,9 +18,10 @@ export default function ChemistryTable(props) {
             .then(json => json.result.records)
             .then(records => {
                 records.forEach(d => {
+                    d.AllYears_n = +d.AllYears_n;
                     d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
                     d.LastSampleDate = parseDate(d.LastSampleDate);
-                    d.resultWithUnit = d.LastResult.toString() + ' ' + d.Unit;
+                    d.ResultWithUnit = d.LastResult.toString() + ' ' + d.Unit;
                 });
                 setData(records);
             });
@@ -67,7 +68,7 @@ export default function ChemistryTable(props) {
             {
                 Header: 'Last Result',
                 id: 'lastsampleresult',
-                accessor: 'resultWithUnit',
+                accessor: 'ResultWithUnit',
                 disableSortBy: true
             },
             {
