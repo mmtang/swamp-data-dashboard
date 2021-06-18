@@ -33,3 +33,12 @@
 .twin {
     flex: 1;
 }
+
+@media screen and (max-width: 800px) {
+    .mapContainer {
+        flex-basis: 40%;
+    }
+    .mainContainer {
+        flex-basis: 60%;
+    }
+}

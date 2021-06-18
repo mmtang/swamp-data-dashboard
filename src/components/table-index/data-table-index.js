@@ -55,41 +55,43 @@ export default function DataTableIndex({ columns, data, initialState, selectedRe
                     setAnalyte={setAnalyte}
                 />
             </div>
-            <table {...getTableProps()} className={dataTable}>
-                <thead>
-                    {headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                    {column.render('Header')}{' '}
-                                    <span>
-                                        {column.isSorted ? (column.isSortedDesc ? <IconArrowNarrowDown size={16} color="#5d5d5d" stroke={2} /> : <IconArrowNarrowUp size={16} color="#5d5d5d" stroke={2} />) : ''}
-                                    </span>
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {page.map(row => {
-                        prepareRow(row)
-                        const rowProps = row.getRowProps()
-                        return (
-                            <React.Fragment key={rowProps.key}>
-                                <tr {...rowProps} className={indexTableRow} onClick={() => handleRowClick(row.original)}>
-                                    {row.cells.map(cell => {
-                                        return (
-                                            <td {...cell.getCellProps()}>
-                                                {cell.render('Cell')}
-                                            </td>
-                                        );
-                                    })}
-                                </tr>
-                            </React.Fragment>
-                        )
-                    })}
-                </tbody>
-            </table>
+            <div>
+                <table {...getTableProps()} className={dataTable}>
+                    <thead>
+                        {headerGroups.map(headerGroup => (
+                            <tr {...headerGroup.getHeaderGroupProps()}>
+                                {headerGroup.headers.map(column => (
+                                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                        {column.render('Header')}{' '}
+                                        <span>
+                                            {column.isSorted ? (column.isSortedDesc ? <IconArrowNarrowDown size={16} color="#5d5d5d" stroke={2} /> : <IconArrowNarrowUp size={16} color="#5d5d5d" stroke={2} />) : ''}
+                                        </span>
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
+                    </thead>
+                    <tbody {...getTableBodyProps()}>
+                        {page.map(row => {
+                            prepareRow(row)
+                            const rowProps = row.getRowProps()
+                            return (
+                                <React.Fragment key={rowProps.key}>
+                                    <tr {...rowProps} className={indexTableRow} onClick={() => handleRowClick(row.original)}>
+                                        {row.cells.map(cell => {
+                                            return (
+                                                <td {...cell.getCellProps()}>
+                                                    {cell.render('Cell')}
+                                                </td>
+                                            );
+                                        })}
+                                    </tr>
+                                </React.Fragment>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
             <div className={paginationContainer}>
                 <div className={selectWrapper}>
                     <select className={paginationSelect} value={pageSize} onChange={e => { setPageSize(Number(e.target.value)) }}>

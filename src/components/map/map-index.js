@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
 import { convertStationsToGeoJSON, convertStationSummaryToGeoJSON, regionNumDict } from '../../utils/utils';
-
+import { container } from './map-index.module.css';
 
 export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, clustered }) {
     const divRef = useRef(null);
@@ -809,9 +809,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
 
     return (
         <div
-            className="mapDiv"
+            className={container}
             ref={divRef}
-            style={{ width: "43vw", height: `calc(100vh - 60px)` }}
         />
     )
 }

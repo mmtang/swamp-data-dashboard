@@ -1,3 +1,8 @@
+.tableContainer {
+    width: 100%;
+    overflow-x: auto;
+}
+
 .indexTableRow:hover {
     cursor: pointer;
 }

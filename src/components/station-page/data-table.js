@@ -35,6 +35,7 @@ export default function DataTable({ columns, data, initialState, renderRowSubCom
 
     return (
         <React.Fragment>
+            <div style={{ display: 'block', overflowX: 'auto' }}>
             <table {...getTableProps()} className={dataTable}>
                 <thead>
                     {headerGroups.map(headerGroup => (
@@ -73,6 +74,7 @@ export default function DataTable({ columns, data, initialState, renderRowSubCom
                     })}
                 </tbody>
             </table>
+            </div>
             <div className={paginationContainer}>
                 <div className={selectWrapper}>
                     <select className={paginationSelect} value={pageSize} onChange={e => { setPageSize(Number(e.target.value)) }}>
