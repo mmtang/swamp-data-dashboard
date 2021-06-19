@@ -30,7 +30,7 @@ export default function NearbyStations({ nearbyStations }) {
             return (
                 <div>
                     <h3 className={title}>Nearby monitoring sites</h3>
-                    <i className="light">No other monitoring sites within 500 meters.</i>
+                    <i className="light">No other monitoring sites within 3,000 meters.</i>
                 </div>
             )
         }

@@ -34,9 +34,10 @@ export default function NearbyWaterbodies({ coordinates }) {
         }
 
         Promise.all([
-            getLines(100),
-            getPolys(100)
+            getLines(3000),
+            getPolys(3000)
         ]).then(responses => {
+            console.log(responses);
             const data = responses[0].concat(responses[1]);
             const features = data.map(d => d.attributes);
             setFeatures(features);
@@ -62,7 +63,7 @@ export default function NearbyWaterbodies({ coordinates }) {
             return (
                 <div>
                     <h3 className={title}>Nearby waterbodies</h3>
-                    <i className="light">No waterbodies within 500 meters.</i>
+                    <i className="light">No waterbodies within 3,000 meters.</i>
                 </div>
             )
         }

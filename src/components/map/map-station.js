@@ -371,7 +371,7 @@ export default function MapStation({ coordinates, stationCode, region, setNearby
                                 latitude: coordinates[1],
                                 spatialReference: { wkid: 4326 }
                               };
-                              query.distance = 500;
+                              query.distance = 3000;
                               query.units = 'meters';
                               query.returnGeometry = false;
                               query.outfields = ['StationCode', 'StationName', 'Region'];
