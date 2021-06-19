@@ -178,6 +178,7 @@ export default function TimeSeries({ data, trend }) {
             })
             .attr('cy', (d) => { return yScale(d.Result); })
             .attr('fill', (d) => { return getColor(d, objective); })
+            /*
             .on('mouseover', function(event, d) {
                 const formatDate = d3.timeFormat('%b %e, %Y');
                 return tooltip
@@ -192,6 +193,7 @@ export default function TimeSeries({ data, trend }) {
             .on('mouseout', () => {
                 return tooltip.style('opacity', 0);
             })
+            */
             .merge(points)
             .attr('cx', (d) => { return xScale(d.parsedDate); })
             .attr('cy', (d) => { return yScale(d.Result); });
