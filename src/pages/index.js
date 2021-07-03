@@ -52,14 +52,17 @@ export default function Index() {
           </div>
           {/* Table and Controls */}
           <div>
+            {/*
             <TableIndex 
               selectedRegion={region} 
               setRegion={setRegion} 
               selectedAnalyte={analyte}
               setAnalyte={setAnalyte}
               setSite={setSite} />
+            */}
           </div>
         </div>
+        <div id="indexTableContainer" style={{ padding: '0 20px', marginBottom: '100px' }}></div>
       </div>
     </Layout>
   )

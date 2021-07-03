@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
-import { convertStationsToGeoJSON, convertStationSummaryToGeoJSON, regionNumDict } from '../../utils/utils';
+import { convertStationsToGeoJSON, convertStationSummaryToGeoJSON, regionNumDict, regionDict } from '../../utils/utils';
 import { container } from './map-index.module.css';
 
 export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, clustered }) {
@@ -21,6 +21,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
     const layerListRef = useRef(null);
     const highlightRegionRef = useRef(null);
     const highlightSiteRef = useRef(null);
+    const tableRef = useRef(null);
     
     const clusterProps = {
         type: 'cluster',
@@ -70,6 +71,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
     }
 
     useEffect(() => {
+        /*
         if (mapRef.current && stationLayerRef.current) {
             if (clustered === true) {
                 stationLayerRef.current.featureReduction = clusterProps;
@@ -79,7 +81,41 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 stationLayerRef.current.renderer = stationRenderer;
             }  
         }
+        */
+        if (mapRef.current && stationLayerRef.current) {
+            if (clustered === true) {
+                stationLayerRef.current.definitionExpression = "Region = '2'";
+            } else if (clustered === false ) {
+                stationLayerRef.current.definitionExpression = '';
+            }
+        }
     }, [clustered])
+
+    const convertStationsToGraphics = (data) => {
+        return new Promise((resolve, reject) => {
+            const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
+            const formatDate = timeFormat('%Y/%m/%d');
+            const features = data.map((d, i) => {
+                return {
+                    geometry: {
+                        type: 'point',
+                        latitude: d.TargetLatitude,
+                        longitude: d.TargetLongitude
+                    },
+                    attributes: {
+                        ObjectId: i,
+                        StationCode: d.StationCode,
+                        StationName: d.StationName,
+                        Region: d.Region.toString(),
+                        RegionName: regionDict[d.Region],
+                        LastSampleDate: formatDate(parseDate(d.LastSampleDate))
+                    }
+                };
+            });
+            console.log(features);
+            resolve(features);
+        })
+    }
 
     useEffect(() => {
         const drawStations = () => {
@@ -87,46 +123,113 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                 content: buildStationPopup
             };
-            loadModules(['esri/layers/GeoJSONLayer'])
-                .then(([GeoJSONLayer]) => {
+            loadModules(['esri/layers/FeatureLayer', 'esri/widgets/FeatureTable', 'esri/core/watchUtils'])
+                .then(([FeatureLayer, FeatureTable, watchUtils]) => {
                     if (mapRef) {
-                        const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region&limit=5000';
+                        const fields = [
+                            {
+                                name: 'ObjectId',
+                                alias: 'ObjectId',
+                                type: 'oid'
+                            },
+                            {
+                                name: 'StationCode',
+                                alias: 'Station Code',
+                                type: 'string'
+                            },
+                            {
+                                name: 'StationName',
+                                alias: 'Station Name',
+                                type: 'string'
+                            },
+                            {
+                                name: 'Region',
+                                alias: 'Region',
+                                type: 'string'
+                            },
+                            {
+                                name: 'RegionName',
+                                alias: 'Region',
+                                type: 'string'
+                            },
+                            {
+                                name: 'LastSampleDate',
+                                alias: 'Last Sample',
+                                type: 'string'
+                            }
+                        ]
+                        const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region,LastSampleDate&limit=5000';
                         fetch(url)
                         .then((resp) => resp.json())
                         .then((json) => json.result.records)
                         .then((records) => {
-                            const stationData = convertStationsToGeoJSON(records);
-                            console.log(stationData);
-                            const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
-                            const url = URL.createObjectURL(blob);
-                            stationLayerRef.current = new GeoJSONLayer({
-                                id: 'stationLayer',
-                                title: 'SWAMP Monitoring Sites',
-                                url: url,
-                                outFields: ['StationName', 'StationCode'],
-                                renderer: stationRenderer,
-                                popupTemplate: stationTemplate
+                            convertStationsToGraphics(records)
+                            .then(res => {
+                                console.log(viewRef);
+                                stationLayerRef.current = new FeatureLayer({
+                                    id: 'stationLayer',
+                                    objectIdField: 'ObjectId',
+                                    title: 'SWAMP Monitoring Sites',
+                                    source: res,
+                                    fields: fields,
+                                    outFields: ['StationName', 'StationCode'],
+                                    renderer: stationRenderer,
+                                    popupTemplate: stationTemplate
+                                });
+                                mapRef.current.add(stationLayerRef.current);
+                                tableRef.current = new FeatureTable({
+                                    view: viewRef.current, // The view property must be set for the select/highlight to work
+                                    layer: stationLayerRef.current,
+                                    fieldConfigs: [
+                                        {
+                                            name: 'RegionName',
+                                            label: 'Region'
+                                        },
+                                        {
+                                            name: 'StationName',
+                                            label: 'Name'
+                                        },
+                                        {
+                                            name: 'LastSampleDate',
+                                            label: 'Last Sample',
+                                            direction: 'desc'
+                                        }
+                                    ],
+                                    pageSize: 20,
+                                    container: 'indexTableContainer'
+                                });
+                                // Listen for when the view is updated. If so, pass the new view.extent into the table's filterGeometry
+                                stationLayerRef.current.watch('loaded', () => {
+                                    watchUtils.whenFalse(viewRef.current, 'updating', () => {
+                                    // Get the new extent of view/map whenever map is updated.
+                                    console.log(viewRef.current);
+                                    if (viewRef.current.extent) {
+                                        console.log(viewRef.current.extent);
+                                        // Filter out and show only the visible features in the feature table
+                                        tableRef.current.filterGeometry = viewRef.current.extent;
+                                    }
+                                    });
+                                });
+                                /*
+                                searchRef.current.sources.add({
+                                    layer: stationLayerRef.current,
+                                    searchFields: ['StationName', 'StationCode'],
+                                    displayField: 'StationName',
+                                    exactMatch: false,
+                                    outFields: ['StationName', 'StationCode'],
+                                    name: 'Monitoring stations',
+                                    placeholder: 'Example: Buena Vista Park',
+                                    zoomScale: 14000
+                                });
+                                */
                             });
-                            mapRef.current.add(stationLayerRef.current);
-                            /*
-                            searchRef.current.sources.add({
-                                layer: stationLayerRef.current,
-                                searchFields: ['StationName', 'StationCode'],
-                                displayField: 'StationName',
-                                exactMatch: false,
-                                outFields: ['StationName', 'StationCode'],
-                                name: 'Monitoring stations',
-                                placeholder: 'Example: Buena Vista Park',
-                                zoomScale: 14000
-                            });
-                            */
                         });
                     }
 
                 });
         };
 
-        setDefaultOptions({ version: '4.16' });
+        setDefaultOptions({ version: '4.20' });
         loadCss();
         initializeMap()
         .then(() => {
@@ -476,6 +579,22 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             }
         }
     }, [clickedSite])
+
+    /*
+    useEffect(() => {
+        if (stationLayerRef.current) {
+            console.log('test');
+            loadModules(['esri/widgets/FeatureTable'])
+            .then(([FeatureTable]) => {
+                const featureTable = new FeatureTable({
+                    view: viewRef.current, // The view property must be set for the select/highlight to work
+                    layer: stationLayerRef.current,
+                    container: 'indexTableContainer'
+                });
+            });
+        }
+    }, [stationLayerRef])
+    */
 
     const initializeMap = () => {
         return new Promise((resolve, reject) => {
