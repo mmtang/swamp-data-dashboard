@@ -77,10 +77,10 @@ class Station extends React.Component {
                                 setNearbyStations={this.setNearbyStations}
                             />
                         </div>
-                        <section>
+                        <section style={{ margin: '1em 0' }}>
                             <NearbyWaterbodies coordinates={[station.TargetLongitude, station.TargetLatitude]} />
                         </section>
-                        <section>
+                        <section style={{ margin: '1em 0' }}>
                             <NearbyStations nearbyStations={this.state.nearbyStations} />
                         </section>
                     </div>

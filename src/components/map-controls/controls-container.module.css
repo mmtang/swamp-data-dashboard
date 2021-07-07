@@ -3,34 +3,9 @@
     flex-direction: row;
     flex-wrap: wrap;
     font-size: 1em;
-    margin: 1em 0;
+    margin-top: 1em;
 }
 
 .containerItem {
     margin-right: 8px;
-}
-
-.searchWrapper {
-    height: 32px;
-    display: flex;
-    align-items: center;
-    border: 1px solid #c2c2c2;
-}
-
-.indexSearch {
-    width: 100%;
-    height: calc(100% - 2px);
-    border: 0;
-    border-radius: 0;
-    padding-left: 8px;
-    color: inherit;
-}
-
-.indexSearch:focus {
-    outline: none;
-}
-
-.iconWrapper {
-    margin: 8px;
-    padding: 6px 2px 2px 0;
 }

@@ -1,63 +1,101 @@
 import React from 'react';
-import SelectSearch from 'react-select-search';
+import Select from 'react-select';
 //import RegionCard from './region-card';
 import ClearFilter from './clear-filter';
 
 export default function RegionMenu({ selectedRegion, setRegion }) {   
     const regionList = [
         {
-            name: 'North Coast',
+            label: 'North Coast',
             value: 'North Coast'
         },
         {
-            name: 'San Francisco Bay',
+            label: 'San Francisco Bay',
             value: 'San Francisco Bay'
         },
         {
-            name: 'Central Coast',
+            label: 'Central Coast',
             value: 'Central Coast'
         },
         {
-            name: 'Los Angeles',
+            label: 'Los Angeles',
             value: 'Los Angeles'
         },
         {
-            name: 'Central Valley',
+            label: 'Central Valley',
             value: 'Central Valley'
         },
         {
-            name: 'Lahontan',
+            label: 'Lahontan',
             value: 'Lahontan'
         },
         {
-            name: 'Colorado River',
+            label: 'Colorado River',
             value: 'Colorado River'
         },
         {
-            name: 'Santa Ana',
+            label: 'Santa Ana',
             value: 'Santa Ana'
         },
         {
-            name: 'San Diego',
+            label: 'San Diego',
             value: 'San Diego'
         }
     ];
 
-    const handleChange = (value) => {
-        if (value !== selectedRegion) {
-            setRegion(value);
+    const customStyle = {
+        control: (base, state) => ({
+            ...base,
+            height: 34,
+            minHeight: 34,
+            color: '#b1b1b1',
+            fontSize: '13px',
+            border: '1px solid #6e6e6e',
+            borderRadius: 0,
+            boxShadow: 'none',
+            '&:hover': {
+                border: '1px solid #6e6e6e'
+            }
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            paddingTop: 0,
+            paddingBottom: 0
+        }),
+        clearIndicator: (base) => ({
+            ...base,
+            paddingTop: 0,
+            paddingBottom: 0
+        })
+    }
+
+    const handleChange = (selection) => {
+        if (selection ) {
+            const value = selection.value;
+            if (value !== selectedRegion) {
+                setRegion(value);
+            }
+        } else {
+            if (selection !== selectedRegion) {
+                setRegion(selection)
+            }
         }
     }
 
     return (
         <React.Fragment>
-            <SelectSearch
+            <Select
                 options={regionList} 
-                value={ selectedRegion ? selectedRegion : '' }
-                placeholder="Region"
+                isClearable={true}
+                //value={ selectedRegion ? selectedRegion : '' }
+                placeholder='Region'
                 onChange={handleChange}
+                styles={customStyle}
+                maxMenuHeight={200}
             />
+            {/*
             { selectedRegion ? <ClearFilter clearFunction={setRegion} /> : null}
+            */}
             {/*
             { selectedRegion ? <RegionCard selectedRegion={selectedRegion} /> : null }
             */}

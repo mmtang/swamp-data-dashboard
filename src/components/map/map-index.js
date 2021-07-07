@@ -112,7 +112,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                     }
                 };
             });
-            console.log(features);
             resolve(features);
         })
     }
@@ -165,7 +164,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                         .then((records) => {
                             convertStationsToGraphics(records)
                             .then(res => {
-                                console.log(viewRef);
                                 stationLayerRef.current = new FeatureLayer({
                                     id: 'stationLayer',
                                     objectIdField: 'ObjectId',
@@ -195,22 +193,20 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                             direction: 'desc'
                                         }
                                     ],
-                                    pageSize: 20,
+                                    pageSize: 10,
+                                    pagination: true,
                                     container: 'indexTableContainer'
                                 });
                                 // Listen for when the view is updated. If so, pass the new view.extent into the table's filterGeometry
                                 stationLayerRef.current.watch('loaded', () => {
                                     watchUtils.whenFalse(viewRef.current, 'updating', () => {
                                     // Get the new extent of view/map whenever map is updated.
-                                    console.log(viewRef.current);
                                     if (viewRef.current.extent) {
-                                        console.log(viewRef.current.extent);
                                         // Filter out and show only the visible features in the feature table
                                         tableRef.current.filterGeometry = viewRef.current.extent;
                                     }
                                     });
                                 });
-                                /*
                                 searchRef.current.sources.add({
                                     layer: stationLayerRef.current,
                                     searchFields: ['StationName', 'StationCode'],
@@ -221,7 +217,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                     placeholder: 'Example: Buena Vista Park',
                                     zoomScale: 14000
                                 });
-                                */
                             });
                         });
                     }
@@ -626,9 +621,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 });
                 searchRef.current = new Search({
                     view: viewRef.current,
-                    //container: 'search-div',
-                    allPlaceholder: 'Find a waterbody',
-                    label: 'Find a waterbody',
+                    container: 'searchContainer',
+                    allPlaceholder: 'Find a waterbody or monitoring site',
+                    label: 'Find a waterbody or monitoring site',
                     includeDefaultSources: false,
                     locationEnabled: false,
                     popupEnabled: false,
@@ -654,7 +649,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                     content: layerListRef.current,
                     expanded: false
                 })
-                viewRef.current.ui.add(searchRef.current, { position: 'top-right' });
+                //viewRef.current.ui.add(searchRef.current, { position: 'top-right' });
                 viewRef.current.ui.add(expandRef.current, 'bottom-left');
                 resolve();
             });
