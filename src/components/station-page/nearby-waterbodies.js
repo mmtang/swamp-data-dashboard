@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import CardWaterbody from './card-waterbody';
+import NearbyWaterbodiesResults from './nearby-waterbodies-results';
 import { title } from './nearby.module.css';
 
 
@@ -34,42 +34,23 @@ export default function NearbyWaterbodies({ coordinates }) {
         }
 
         Promise.all([
-            getLines(3000),
-            getPolys(3000)
+            getLines(2000),
+            getPolys(2000)
         ]).then(responses => {
-            console.log(responses);
             const data = responses[0].concat(responses[1]);
-            const features = data.map(d => d.attributes);
+            let features = data.map(d => d.attributes);
+            if (features.length > 5) { 
+                features = features.slice(0, 5);
+            }
             setFeatures(features);
             setLoading(false);
         });
     }, [coordinates])
 
-    if (loading) {
-        return (
-            <div>Loading...</div>
-        )
-    } else if (features) {
-        if (features.length > 0) {
-            return (
-                <div>
-                    <h3 className={title}>Nearby waterbodies</h3>
-                    {features.map(d => (
-                        <CardWaterbody key={'card-' + d.assessmentunitidentifier} feature={d} />
-                    ))}
-                </div>
-            )
-        } else {
-            return (
-                <div>
-                    <h3 className={title}>Nearby waterbodies</h3>
-                    <i className="light">No waterbodies within 3,000 meters.</i>
-                </div>
-            )
-        }
-    } else {
-        return (
-            <div></div>
-        )
-    }
+    return (
+        <div>
+            <h3 className={title}>Nearby waterbodies</h3>
+            { loading ? <i className="light">Loading...</i> : features.length > 0 ? <NearbyWaterbodiesResults waterbodies={features} /> : <i className="light">No waterbodies within 2,000 meters.</i> }
+        </div>
+    )
 }

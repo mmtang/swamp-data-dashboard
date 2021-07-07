@@ -68,7 +68,11 @@ export default function MapStation({ coordinates, stationCode, region, setNearby
                         container: stationMapDivRef.current,
                         map: stationMapRef.current,
                         center: coordinates,
-                        zoom: 12
+                        zoom: 12,
+                        navigation: {
+                          mouseWheelZoomEnabled: false,
+                          browserTouchPanEnabled: false
+                        }
                     });
                     resolve();
                 });
@@ -371,7 +375,7 @@ export default function MapStation({ coordinates, stationCode, region, setNearby
                                 latitude: coordinates[1],
                                 spatialReference: { wkid: 4326 }
                               };
-                              query.distance = 3000;
+                              query.distance = 2000;
                               query.units = 'meters';
                               query.returnGeometry = false;
                               query.outfields = ['StationCode', 'StationName', 'Region'];
