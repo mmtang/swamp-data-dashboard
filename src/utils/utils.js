@@ -47,6 +47,161 @@ export const fetchData = (url) => {
     });
 }
 
+export const stationDataFields = [
+    {
+        name: 'ObjectId',
+        alias: 'ObjectId',
+        type: 'oid'
+    },
+    {
+        name: 'StationCode',
+        alias: 'Station Code',
+        type: 'string'
+    },
+    {
+        name: 'StationName',
+        alias: 'Station Name',
+        type: 'string'
+    },
+    {
+        name: 'Region',
+        alias: 'Region',
+        type: 'string'
+    },
+    {
+        name: 'RegionName',
+        alias: 'Region',
+        type: 'string'
+    },
+    {
+        name: 'LastSampleDate',
+        alias: 'Last Sample',
+        type: 'string'
+    }
+]
+
+export const stationDataTableFields = [
+    {
+        name: 'RegionName',
+        label: 'Region'
+    },
+    {
+        name: 'StationName',
+        label: 'Name'
+    },
+    {
+        name: 'LastSampleDate',
+        label: 'Last Sample',
+        direction: 'desc'
+    }
+]
+
+export const stationSummaryDataFields = [
+    {
+        name: 'ObjectId',
+        alias: 'ObjectId',
+        type: 'oid'
+    },
+    {
+        name: 'StationCode',
+        alias: 'Station Code',
+        type: 'string'
+    },
+    {
+        name: 'StationName',
+        alias: 'Station Name',
+        type: 'string'
+    },
+    {
+        name: 'Region',
+        alias: 'Region',
+        type: 'string'
+    },
+    {
+        name: 'RegionName',
+        alias: 'Region',
+        type: 'string'
+    },
+    {
+        name: 'Analyte',
+        alias: 'Analyte',
+        type: 'string'
+    },
+    {
+        name: 'LastSampleDate',
+        alias: 'Last Sample',
+        type: 'string'
+    },
+    {
+        name: 'Trend',
+        alias: 'Trend',
+        type: 'string'
+    }
+];
+
+export const stationSummaryTableFields = [
+    {
+        name: 'RegionName',
+        label: 'Region'
+    },
+    {
+        name: 'StationName',
+        label: 'Name'
+    },
+    {
+        name: 'LastSampleDate',
+        label: 'Last Sample',
+        direction: 'desc'
+    },
+    {
+        name: 'Analyte',
+        label: 'Analyte',
+    },
+    {
+        name: 'Trend',
+        label: 'Trend'
+    }
+];
+
+export const stationRenderer = {
+    type: 'simple',
+    symbol: {
+        type: 'simple-marker',
+        size: 5.5,
+        color: '#fff',
+        outline: {
+            color: '#2a2a29',
+            width: 1
+        }
+    }
+}
+
+export const customSelectStyle = {
+    control: (base, state) => ({
+        ...base,
+        height: 34,
+        minHeight: 34,
+        color: '#b1b1b1',
+        fontSize: '13px',
+        border: '1px solid #6e6e6e',
+        borderRadius: 0,
+        boxShadow: 'none',
+        '&:hover': {
+            border: '1px solid #6e6e6e'
+        }
+    }),
+    dropdownIndicator: (base) => ({
+        ...base,
+        paddingTop: 0,
+        paddingBottom: 0
+    }),
+    clearIndicator: (base) => ({
+        ...base,
+        paddingTop: 0,
+        paddingBottom: 0
+    })
+}
+
 export const convertStationsToGeoJSON = (data) => {
     // converts json to geojson
     return {
@@ -61,30 +216,6 @@ export const convertStationsToGeoJSON = (data) => {
                 'properties': {
                     'StationName': d.StationName,
                     'StationCode': d.StationCode,
-                    'Region': d.Region.toString()
-                }
-
-            }
-        })
-    }
-}
-
-export const convertStationSummaryToGeoJSON = (data) => {
-    // converts json to geojson
-    return {
-        'type': 'FeatureCollection',
-        'features': data.map((d) => {
-            return {
-                'type': 'Feature',
-                'geometry': {
-                    'coordinates': [d.TargetLongitude, d.TargetLatitude],
-                    'type': 'Point'
-                },
-                'properties': {
-                    'StationName': d.StationName,
-                    'StationCode': d.StationCode,
-                    'Analyte': d.Analyte,
-                    'Trend': d.AllYears_Trend,
                     'Region': d.Region.toString()
                 }
 

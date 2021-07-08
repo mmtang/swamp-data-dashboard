@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import SelectSearch from 'react-select-search';
-import AnalyteCard from './analyte-card';
-import ClearFilter from './clear-filter';
+import Select from 'react-select';
+import { customSelectStyle } from '../../utils/utils';
+//import AnalyteCard from './analyte-card';
 
 export default function AnalyteMenu({ selectedAnalyte, setAnalyte }) {
     const [analyteList, setAnalyteList] = useState(null);
-    const [trendType, setTrendType] = useState('ten');
     const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT%20DISTINCT%20%22Analyte%22%20from%20%22555ee3bf-891f-4ac4-a1fc-c8855cf70e7e%22%20ORDER%20BY%20%22Analyte%22%20ASC';
     
     useEffect(() => {
@@ -13,29 +12,42 @@ export default function AnalyteMenu({ selectedAnalyte, setAnalyte }) {
             .then(response => response.json())
             .then(json => json.result.records)
             .then(records => {
-                const data = records.map(d => ({ name: d.Analyte, value: d.Analyte }));
+                const data = records.map(d => ({ label: d.Analyte, value: d.Analyte }));
                 setAnalyteList(data);
             })
     }, []);
 
-    const handleSelectChange = (value) => {
-        setAnalyte(value);
+    const handleSelectChange = (selection) => {
+        if (selection) {
+            const value = selection.value;
+            if (value !== selectedAnalyte) {
+                setAnalyte(value);
+            }
+        } else {
+            if (selection !== selectedAnalyte) {
+                setAnalyte(selection)
+            }
+        }
     }
 
+    /*
     const handleRadioChange = (e) => {
         setTrendType(e.currentTarget.value);
     }
+    */
 
     if (analyteList) {
         return (
             <React.Fragment>
-                <SelectSearch
+                <Select
                     options={analyteList} 
-                    value={ selectedAnalyte ? selectedAnalyte : '' }
-                    placeholder="Analyte"
+                    isClearable={true}
+                    isSearchable={true}
+                    placeholder='Analyte'
                     onChange={handleSelectChange}
+                    styles={customSelectStyle}
+                    maxMenuHeight={200}
                 />
-                { selectedAnalyte ? <ClearFilter clearFunction={setAnalyte} /> : null}
                 {/*
                 { selectedAnalyte ? <AnalyteCard selectedAnalyte={selectedAnalyte} /> : null }
                 */}

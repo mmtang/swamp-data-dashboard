@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
-import { convertStationsToGeoJSON, convertStationSummaryToGeoJSON, regionNumDict, regionDict } from '../../utils/utils';
+import { regionNumDict, regionDict, stationRenderer, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields } from '../../utils/utils';
 import { container } from './map-index.module.css';
+
 
 export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, clustered }) {
     const divRef = useRef(null);
@@ -22,85 +23,18 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
     const highlightRegionRef = useRef(null);
     const highlightSiteRef = useRef(null);
     const tableRef = useRef(null);
-    
-    const clusterProps = {
-        type: 'cluster',
-        clusterRadius: 100,
-        clusterMinSize: '24px',
-        clusterMaxSize: '60px',
-        labelingInfo: [{
-            labelExpressionInfo: {
-                expression: "Text($feature.cluster_count, '#,###')"
-            },
-            symbol: {
-                type: 'text',
-                color: '#5d5d5d',
-                font: {
-                    weight: 'bold',
-                    family: 'Noto Sans',
-                    size: '12px'
-                }
-            },
-            labelPlacement: 'center-center'
-        }]
-    };
 
-    const clusterRenderer = {
-        type: 'simple',
-        symbol: {
-            type: 'simple-marker',
-            size: 9,
-            color: '#fff',
-            outline: {
-                color: '#5d5d5d',
-                width: 2
-            }
-        }
-    };
-    const stationRenderer = {
-        type: 'simple',
-        symbol: {
-            type: 'simple-marker',
-            size: 5.5,
-            color: '#fff',
-            outline: {
-                color: '#2a2a29',
-                width: 1
-            }
-        }
-    }
+    const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
+    const formatDate = timeFormat('%Y/%m/%d');
 
-    useEffect(() => {
-        /*
-        if (mapRef.current && stationLayerRef.current) {
-            if (clustered === true) {
-                stationLayerRef.current.featureReduction = clusterProps;
-                stationLayerRef.current.renderer = clusterRenderer;
-            } else if (clustered === false) {
-                stationLayerRef.current.featureReduction = null;
-                stationLayerRef.current.renderer = stationRenderer;
-            }  
-        }
-        */
-        if (mapRef.current && stationLayerRef.current) {
-            if (clustered === true) {
-                stationLayerRef.current.definitionExpression = "Region = '2'";
-            } else if (clustered === false ) {
-                stationLayerRef.current.definitionExpression = '';
-            }
-        }
-    }, [clustered])
-
-    const convertStationsToGraphics = (data) => {
+    const convertStationDataToGraphics = (data) => {
         return new Promise((resolve, reject) => {
-            const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
-            const formatDate = timeFormat('%Y/%m/%d');
             const features = data.map((d, i) => {
                 return {
                     geometry: {
                         type: 'point',
-                        latitude: d.TargetLatitude,
-                        longitude: d.TargetLongitude
+                        latitude: +d.TargetLatitude,
+                        longitude: +d.TargetLongitude
                     },
                     attributes: {
                         ObjectId: i,
@@ -109,6 +43,31 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                         Region: d.Region.toString(),
                         RegionName: regionDict[d.Region],
                         LastSampleDate: formatDate(parseDate(d.LastSampleDate))
+                    }
+                };
+            });
+            resolve(features);
+        })
+    }
+
+    const convertStationSummaryDataToGraphics = (data) => {
+        return new Promise((resolve, reject) => {
+            const features = data.map((d, i) => {
+                return {
+                    geometry: {
+                        type: 'point',
+                        latitude: +d.TargetLatitude,
+                        longitude: +d.TargetLongitude
+                    },
+                    attributes: {
+                        ObjectId: i,
+                        StationCode: d.StationCode,
+                        StationName: d.StationName,
+                        Region: d.Region.toString(),
+                        RegionName: regionDict[d.Region],
+                        Analyte: d.Analyte,
+                        LastSampleDate: formatDate(parseDate(d.LastSampleDate)),
+                        Trend: d.AllYears_Trend
                     }
                 };
             });
@@ -125,51 +84,19 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             loadModules(['esri/layers/FeatureLayer', 'esri/widgets/FeatureTable', 'esri/core/watchUtils'])
                 .then(([FeatureLayer, FeatureTable, watchUtils]) => {
                     if (mapRef) {
-                        const fields = [
-                            {
-                                name: 'ObjectId',
-                                alias: 'ObjectId',
-                                type: 'oid'
-                            },
-                            {
-                                name: 'StationCode',
-                                alias: 'Station Code',
-                                type: 'string'
-                            },
-                            {
-                                name: 'StationName',
-                                alias: 'Station Name',
-                                type: 'string'
-                            },
-                            {
-                                name: 'Region',
-                                alias: 'Region',
-                                type: 'string'
-                            },
-                            {
-                                name: 'RegionName',
-                                alias: 'Region',
-                                type: 'string'
-                            },
-                            {
-                                name: 'LastSampleDate',
-                                alias: 'Last Sample',
-                                type: 'string'
-                            }
-                        ]
                         const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region,LastSampleDate&limit=5000';
                         fetch(url)
                         .then((resp) => resp.json())
                         .then((json) => json.result.records)
                         .then((records) => {
-                            convertStationsToGraphics(records)
+                            convertStationDataToGraphics(records)
                             .then(res => {
                                 stationLayerRef.current = new FeatureLayer({
                                     id: 'stationLayer',
                                     objectIdField: 'ObjectId',
                                     title: 'SWAMP Monitoring Sites',
                                     source: res,
-                                    fields: fields,
+                                    fields: stationDataFields,
                                     outFields: ['StationName', 'StationCode'],
                                     renderer: stationRenderer,
                                     popupTemplate: stationTemplate
@@ -178,35 +105,37 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                 tableRef.current = new FeatureTable({
                                     view: viewRef.current, // The view property must be set for the select/highlight to work
                                     layer: stationLayerRef.current,
-                                    fieldConfigs: [
-                                        {
-                                            name: 'RegionName',
-                                            label: 'Region'
-                                        },
-                                        {
-                                            name: 'StationName',
-                                            label: 'Name'
-                                        },
-                                        {
-                                            name: 'LastSampleDate',
-                                            label: 'Last Sample',
-                                            direction: 'desc'
-                                        }
-                                    ],
+                                    fieldConfigs: stationDataTableFields,
                                     pageSize: 10,
                                     pagination: true,
                                     container: 'indexTableContainer'
                                 });
-                                // Listen for when the view is updated. If so, pass the new view.extent into the table's filterGeometry
+                                // Listen for zooming/panning. Pass the new view.extent into the table's filterGeometry
                                 stationLayerRef.current.watch('loaded', () => {
-                                    watchUtils.whenFalse(viewRef.current, 'updating', () => {
-                                    // Get the new extent of view/map whenever map is updated.
-                                    if (viewRef.current.extent) {
-                                        // Filter out and show only the visible features in the feature table
-                                        tableRef.current.filterGeometry = viewRef.current.extent;
-                                    }
+                                    watchUtils.whenFalse(viewRef.current, 'stationary', (event) => {
+                                        if (!viewRef.current.stationary) {
+                                            watchUtils.whenTrueOnce(viewRef.current, 'stationary', (event) => {
+                                                // Get the new extent of view/map whenever map is updated.
+                                                if (viewRef.current.extent) {
+                                                    // Filter out and show only the visible features in the feature table
+                                                    tableRef.current.filterGeometry = viewRef.current.extent;
+                                                }
+                                            });
+                                        } else {
+                                            watchUtils.whenFalseOnce(viewRef.current, 'interacting', (event) => {
+                                                console.log(event);
+                                            });
+                                        }
+                                        /*
+                                        // Get the new extent of view/map whenever map is updated.
+                                        if (viewRef.current.extent) {
+                                            // Filter out and show only the visible features in the feature table
+                                            tableRef.current.filterGeometry = viewRef.current.extent;
+                                        }
+                                        */
                                     });
                                 });
+                                // Add station data to search
                                 searchRef.current.sources.add({
                                     layer: stationLayerRef.current,
                                     searchFields: ['StationName', 'StationCode'],
@@ -246,8 +175,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
         }
         const drawStationAnalyteLayer = () => {
             if (mapRef) {
-                loadModules(['esri/layers/GeoJSONLayer', 'esri/symbols/CIMSymbol', 'esri/symbols/support/cimSymbolUtils'])
-                .then(([GeoJSONLayer, CIMSymbol, cimSymbolUtils]) => {
+                loadModules(['esri/layers/FeatureLayer', 'esri/symbols/CIMSymbol', 'esri/symbols/support/cimSymbolUtils'])
+                .then(([FeatureLayer, CIMSymbol, cimSymbolUtils]) => {
                     const arrowIncreasing = new CIMSymbol({
                         "data": {
                           "type": "CIMSymbolReference",
@@ -447,33 +376,33 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                         title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                         content: buildStationPopup
                     }
-                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,Region,AllYears_Trend&limit=5000';
+                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,AllYears_Trend&limit=5000';
                     url += '&filters={%22Analyte%22:%22' + encodeURIComponent(selectedAnalyte) + '%22}'
-                    console.log(url);
                     fetch(url)
                     .then((resp) => resp.json())
                     .then((json) => json.result.records)
                     .then((records) => {
-                        records.forEach(d => {
-                            d.TargetLatitude = +d.TargetLatitude;
-                            d.TargetLongitude = +d.TargetLongitude;
+                        convertStationSummaryDataToGraphics(records)
+                        .then(res => {
+                            stationSummaryLayerRef.current = new FeatureLayer({
+                                id: 'stationSummaryLayer',
+                                objectIdField: 'ObjectId',
+                                title: 'SWAMP Monitoring Sites - Trends',
+                                source: res,
+                                fields: stationSummaryDataFields,
+                                outFields: ['*'],
+                                renderer: analyteRenderer,
+                                popupTemplate: analyteTemplate
+                            });
+                            if (selectedRegion) {
+                                stationSummaryLayerRef.current.definitionExpression = `Region = '${regionNumDict[selectedRegion]}'`;
+                            }
+                            // Add to map
+                            mapRef.current.add(stationSummaryLayerRef.current);
+                            // Change table data source
+                            tableRef.current.layer = stationSummaryLayerRef.current;
+                            tableRef.current.fieldConfigs = stationSummaryTableFields;
                         })
-                        console.log(records);
-                        const data = convertStationSummaryToGeoJSON(records);
-                        const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-                        const url = URL.createObjectURL(blob);
-                        stationSummaryLayerRef.current = new GeoJSONLayer({
-                            id: 'stationAnalyteLayer',
-                            title: 'SWAMP Monitoring Stations - Trends',
-                            url: url,
-                            outFields: ['*'],
-                            renderer: analyteRenderer,
-                            popupTemplate: analyteTemplate
-                        });
-                        if (selectedRegion) {
-                            stationSummaryLayerRef.current.definitionExpression = `Region = '${regionNumDict[selectedRegion]}'`;
-                        }
-                        mapRef.current.add(stationSummaryLayerRef.current);
                     });
                 });
             }
@@ -489,6 +418,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             } else {
                 mapRef.current.remove(stationSummaryLayerRef.current);
                 mapRef.current.add(stationLayerRef.current);
+                tableRef.current.layer = stationLayerRef.current;
+                tableRef.current.fieldConfigs = stationDataTableFields;
             }
         }
     }, [selectedAnalyte])
@@ -573,23 +504,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 })
             }
         }
-    }, [clickedSite])
-
-    /*
-    useEffect(() => {
-        if (stationLayerRef.current) {
-            console.log('test');
-            loadModules(['esri/widgets/FeatureTable'])
-            .then(([FeatureTable]) => {
-                const featureTable = new FeatureTable({
-                    view: viewRef.current, // The view property must be set for the select/highlight to work
-                    layer: stationLayerRef.current,
-                    container: 'indexTableContainer'
-                });
-            });
-        }
-    }, [stationLayerRef])
-    */
+    }, [clickedSite, selectedAnalyte])
 
     const initializeMap = () => {
         return new Promise((resolve, reject) => {
@@ -602,7 +517,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             ]).then(([Map, MapView, Search, LayerList, Expand]) => {
                 mapRef.current = new Map({
                     basemap: 'topo-vector'
-                    //basemap: 'gray-vector'
                 });
                 viewRef.current = new MapView({
                     container: divRef.current,

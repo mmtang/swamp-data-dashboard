@@ -1,7 +1,8 @@
 import React from 'react';
 import Select from 'react-select';
+import { customSelectStyle } from '../../utils/utils';
 //import RegionCard from './region-card';
-import ClearFilter from './clear-filter';
+
 
 export default function RegionMenu({ selectedRegion, setRegion }) {   
     const regionList = [
@@ -43,32 +44,6 @@ export default function RegionMenu({ selectedRegion, setRegion }) {
         }
     ];
 
-    const customStyle = {
-        control: (base, state) => ({
-            ...base,
-            height: 34,
-            minHeight: 34,
-            color: '#b1b1b1',
-            fontSize: '13px',
-            border: '1px solid #6e6e6e',
-            borderRadius: 0,
-            boxShadow: 'none',
-            '&:hover': {
-                border: '1px solid #6e6e6e'
-            }
-        }),
-        dropdownIndicator: (base) => ({
-            ...base,
-            paddingTop: 0,
-            paddingBottom: 0
-        }),
-        clearIndicator: (base) => ({
-            ...base,
-            paddingTop: 0,
-            paddingBottom: 0
-        })
-    }
-
     const handleChange = (selection) => {
         if (selection ) {
             const value = selection.value;
@@ -87,15 +62,12 @@ export default function RegionMenu({ selectedRegion, setRegion }) {
             <Select
                 options={regionList} 
                 isClearable={true}
-                //value={ selectedRegion ? selectedRegion : '' }
+                isSearchable={true}
                 placeholder='Region'
                 onChange={handleChange}
-                styles={customStyle}
+                styles={customSelectStyle}
                 maxMenuHeight={200}
             />
-            {/*
-            { selectedRegion ? <ClearFilter clearFunction={setRegion} /> : null}
-            */}
             {/*
             { selectedRegion ? <RegionCard selectedRegion={selectedRegion} /> : null }
             */}
