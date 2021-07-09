@@ -23,6 +23,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
     const highlightRegionRef = useRef(null);
     const highlightSiteRef = useRef(null);
     const tableRef = useRef(null);
+    const selectedFeaturesRef = useRef([]);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = timeFormat('%Y/%m/%d');
@@ -108,7 +109,35 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                     fieldConfigs: stationDataTableFields,
                                     pageSize: 10,
                                     pagination: true,
-                                    container: 'indexTableContainer'
+                                    container: 'indexTableContainer',
+                                    menuConfig: { // Creates a custom menu to zoom to selected features
+                                        items: [{
+                                            label: 'Zoom to feature(s)',
+                                            iconClass: 'esri-icon-zoom-in-magnifying-glass',
+                                            clickFunction: function(event) {
+                                                zoomToSelectedFeature();
+                                            }
+                                        }]
+                                    },
+                                });
+                                // listen for selection changes
+                                tableRef.current.on('selection-change', (changes) => {
+                                    // If the selection is removed, remove the feature from the array
+                                    changes.removed.forEach((item) => {
+                                        const data = selectedFeaturesRef.current.find((data) => {
+                                            return data.feature === item.feature;
+                                        });
+                                        if (data) {
+                                            selectedFeaturesRef.current.splice(selectedFeaturesRef.current.indexOf(data), 1);
+                                        }
+                                    });
+                                    // If the selection is added, push all added selections to array
+                                    changes.added.forEach((item) => {
+                                        const feature = item.feature;
+                                        selectedFeaturesRef.current.push({
+                                            feature: feature
+                                        });
+                                    });
                                 });
                                 // Listen for zooming/panning. Pass the new view.extent into the table's filterGeometry
                                 stationLayerRef.current.watch('loaded', () => {
@@ -152,6 +181,52 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
 
                 });
         };
+        const zoomToSelectedFeature = () => {
+            // Create a query off of the feature layer
+            const stationLayer = mapRef.current.allLayers.find((layer) => {
+                return layer.id === 'stationLayer';
+            });
+            const summaryLayer = mapRef.current.allLayers.find((layer) => {
+                return layer.id === 'stationSummaryLayer';
+            });
+            if (stationLayer) {
+                const query = stationLayerRef.current.createQuery();
+                // Iterate through the features and grab the feature's objectID
+                const featureIds = selectedFeaturesRef.current.map((result) => {
+                    return result.feature.getAttribute(stationLayerRef.current.objectIdField);
+                });
+                // Set the query's objectId
+                query.objectIds = featureIds;
+                // Make sure to return the geometry to zoom to
+                query.returnGeometry = true;
+                // Call queryFeatures on the feature layer and zoom to the resulting features
+                stationLayerRef.current.queryFeatures(query).then((results) => {
+                    viewRef.current.goTo(results.features).catch((error) => {
+                        if (error.name != 'AbortError') {
+                            console.error(error);
+                        }
+                    });
+                });
+            } else if (summaryLayer) {
+                const query = stationSummaryLayerRef.current.createQuery();
+                // Iterate through the features and grab the feature's objectID
+                const featureIds = selectedFeaturesRef.current.map((result) => {
+                    return result.feature.getAttribute(stationSummaryLayerRef.current.objectIdField);
+                });
+                // Set the query's objectId
+                query.objectIds = featureIds;
+                // Make sure to return the geometry to zoom to
+                query.returnGeometry = true;
+                // Call queryFeatures on the feature layer and zoom to the resulting features
+                stationSummaryLayerRef.current.queryFeatures(query).then((results) => {
+                    viewRef.current.goTo(results.features).catch((error) => {
+                        if (error.name != 'AbortError') {
+                            console.error(error);
+                        }
+                    });
+                });
+            }
+        }
 
         setDefaultOptions({ version: '4.20' });
         loadCss();
