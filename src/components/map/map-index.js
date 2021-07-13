@@ -1,11 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
 import { regionNumDict, regionDict, stationRenderer, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields } from '../../utils/utils';
 import { container } from './map-index.module.css';
 
 
-export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, clustered }) {
+export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, setSelectedSites }) {
+    const [sites, setSites] = useState([]);
+
     const divRef = useRef(null);
     const mapRef = useRef(null);
     const viewRef = useRef(null);
@@ -23,7 +25,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
     const highlightRegionRef = useRef(null);
     const highlightSiteRef = useRef(null);
     const tableRef = useRef(null);
-    const selectedFeaturesRef = useRef([]);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = timeFormat('%Y/%m/%d');
@@ -77,6 +78,10 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
     }
 
     useEffect(() => {
+        setSelectedSites(sites);
+    }, [sites]);
+
+    useEffect(() => {
         const drawStations = () => {
             const stationTemplate = {
                 title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
@@ -124,19 +129,13 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                 tableRef.current.on('selection-change', (changes) => {
                                     // If the selection is removed, remove the feature from the array
                                     changes.removed.forEach((item) => {
-                                        const data = selectedFeaturesRef.current.find((data) => {
-                                            return data.feature === item.feature;
-                                        });
-                                        if (data) {
-                                            selectedFeaturesRef.current.splice(selectedFeaturesRef.current.indexOf(data), 1);
-                                        }
+                                        setSites(sites => sites.filter(d => {
+                                            return d !== item.feature.attributes.StationCode;
+                                        }));
                                     });
                                     // If the selection is added, push all added selections to array
                                     changes.added.forEach((item) => {
-                                        const feature = item.feature;
-                                        selectedFeaturesRef.current.push({
-                                            feature: feature
-                                        });
+                                        setSites(sites => [...sites, item.feature.attributes.StationCode]);
                                     });
                                 });
                                 // Listen for zooming/panning. Pass the new view.extent into the table's filterGeometry
@@ -192,7 +191,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             if (stationLayer) {
                 const query = stationLayerRef.current.createQuery();
                 // Iterate through the features and grab the feature's objectID
-                const featureIds = selectedFeaturesRef.current.map((result) => {
+                const featureIds = sites.map((result) => {
                     return result.feature.getAttribute(stationLayerRef.current.objectIdField);
                 });
                 // Set the query's objectId
@@ -210,7 +209,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             } else if (summaryLayer) {
                 const query = stationSummaryLayerRef.current.createQuery();
                 // Iterate through the features and grab the feature's objectID
-                const featureIds = selectedFeaturesRef.current.map((result) => {
+                const featureIds = sites.map((result) => {
                     return result.feature.getAttribute(stationSummaryLayerRef.current.objectIdField);
                 });
                 // Set the query's objectId
@@ -491,6 +490,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                     updateStationAnalyteLayer();
                 }
             } else {
+                tableRef.current.clearSelection();
                 mapRef.current.remove(stationSummaryLayerRef.current);
                 mapRef.current.add(stationLayerRef.current);
                 tableRef.current.layer = stationLayerRef.current;

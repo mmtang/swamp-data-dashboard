@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Layout from '../components/layout/layout';
 import MapIndex from '../components/map/map-index';
 import ControlsContainer from '../components/map-controls/controls-container';
+import ChartIndex from '../components/chart-index/chart-index';
 import TableIndex from '../components/table-index/table-index';
 import { mapContainer, mainContainer, infoContainer } from './index.module.css';
 
@@ -9,22 +10,18 @@ export default function Index() {
   const [analyte, setAnalyte] = useState(null);
   const [region, setRegion] = useState(null);
   const [site, setSite] = useState(null);
-  const [clustered, setClustered] = useState(false);
+  const [selectedSites, setSelectedSites] = useState([]);
 
-  const onChange = (event) => {
-    const value = event.target.value;
-    if (value === 'notClustered' && clustered === true) {
-      setClustered(false);
-    }
-    if (value === 'clustered' && clustered === false) {
-      setClustered(true);
-    }
-  };
 
   return (
     <Layout>
       <div className={mapContainer}>
-        <MapIndex selectedAnalyte={analyte} selectedRegion={region} clickedSite={site} clustered={clustered} />
+        <MapIndex 
+          selectedAnalyte={analyte} 
+          selectedRegion={region} 
+          setSelectedSites={setSelectedSites}
+          clickedSite={site} 
+        />
       </div>
       <div className={mainContainer}>
         <div className={infoContainer}>
@@ -39,6 +36,10 @@ export default function Index() {
               setRegion={setRegion}
               selectedAnalyte={analyte}
               setAnalyte={setAnalyte}
+            />
+            <ChartIndex 
+              selectedSites={selectedSites}
+              analyte={analyte}
             />
             {/*
             <TableIndex 
