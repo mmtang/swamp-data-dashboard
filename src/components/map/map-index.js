@@ -7,6 +7,7 @@ import { container } from './map-index.module.css';
 
 export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, setSelectedSites }) {
     const [sites, setSites] = useState([]);
+    const featuresRef = useRef([]);
 
     const divRef = useRef(null);
     const mapRef = useRef(null);
@@ -119,9 +120,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                         items: [{
                                             label: 'Zoom to feature(s)',
                                             iconClass: 'esri-icon-zoom-in-magnifying-glass',
-                                            clickFunction: function(event) {
-                                                zoomToSelectedFeature();
-                                            }
+                                            clickFunction: () => zoomToSelectedFeature()
                                         }]
                                     },
                                 });
@@ -129,12 +128,21 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                 tableRef.current.on('selection-change', (changes) => {
                                     // If the selection is removed, remove the feature from the array
                                     changes.removed.forEach((item) => {
+                                        // Update sites/features (for ArcGIS)
+                                        featuresRef.current = featuresRef.current.filter(d => {
+                                            return d.feature.attributes.StationCode !== item.feature.attributes.StationCode;
+                                        });
+                                        // Update array of sites
                                         setSites(sites => sites.filter(d => {
                                             return d !== item.feature.attributes.StationCode;
                                         }));
                                     });
                                     // If the selection is added, push all added selections to array
                                     changes.added.forEach((item) => {
+                                        // Update sites/features for ArcGIS
+                                        const feature = item.feature;
+                                        featuresRef.current = [...featuresRef.current, { feature: feature }];
+                                        // Update array of sites
                                         setSites(sites => [...sites, item.feature.attributes.StationCode]);
                                     });
                                 });
@@ -191,7 +199,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             if (stationLayer) {
                 const query = stationLayerRef.current.createQuery();
                 // Iterate through the features and grab the feature's objectID
-                const featureIds = sites.map((result) => {
+                const featureIds = featuresRef.current.map((result) => {
                     return result.feature.getAttribute(stationLayerRef.current.objectIdField);
                 });
                 // Set the query's objectId
@@ -209,7 +217,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             } else if (summaryLayer) {
                 const query = stationSummaryLayerRef.current.createQuery();
                 // Iterate through the features and grab the feature's objectID
-                const featureIds = sites.map((result) => {
+                const featureIds = featuresRef.current.map((result) => {
                     return result.feature.getAttribute(stationSummaryLayerRef.current.objectIdField);
                 });
                 // Set the query's objectId
@@ -611,7 +619,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 searchRef.current = new Search({
                     view: viewRef.current,
                     container: 'searchContainer',
-                    allPlaceholder: 'Find a waterbody or monitoring site',
+                    allPlaceholder: 'Zoom to a waterbody or monitoring site',
                     label: 'Find a waterbody or monitoring site',
                     includeDefaultSources: false,
                     locationEnabled: false,

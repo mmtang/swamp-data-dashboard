@@ -36,10 +36,10 @@ export default function ChartIndex({ selectedSites, analyte }) {
     useEffect(() => {
         if (modalVisible) {
             if (data) { setData(null) };
-            // Limit number of sites graphed to 5
+            // Limit number of sites graphed to 8
             let vizSites;
-            if (selectedSites.length > 5) {
-                vizSites = selectedSites.slice(0, 5);
+            if (selectedSites.length > 8) {
+                vizSites = selectedSites.slice(0, 8);
             } else {
                 vizSites = selectedSites;
             }
@@ -124,6 +124,8 @@ export default function ChartIndex({ selectedSites, analyte }) {
                                         data={data.sites[d]} 
                                         fill={colorPaletteViz[i]}
                                         shape='circle'
+                                        isAnimationActive={false}
+                                        animationDuration={0}
                                     />
                                 )
                             })
