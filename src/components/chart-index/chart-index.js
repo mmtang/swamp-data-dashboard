@@ -1,17 +1,18 @@
-import React, { PureComponent, useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     ScatterChart,
     Scatter,
     XAxis,
     YAxis,
-    ZAxis,
     CartesianGrid,
     Tooltip,
     Legend,
     ResponsiveContainer
 } from 'recharts';
+import CustomTooltip from './custom-tooltip';
 import { timeParse, timeFormat } from 'd3';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
+import { colorPaletteViz} from '../../utils/utils';
 
 
 export default function ChartIndex({ selectedSites, analyte }) {
@@ -24,11 +25,9 @@ export default function ChartIndex({ selectedSites, analyte }) {
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = timeFormat('%Y-%m-%d');
 
-    const colors = ['#269ffb', '#febb3b', '#26e7a5'];
-
-
     const handleClick = () => {
         if (modalVisible === false) {
+            setLoading(true);
             setModalVisible(true);
         }
     }
@@ -36,11 +35,17 @@ export default function ChartIndex({ selectedSites, analyte }) {
     // Because onOpen is not working for as expected, use useEffect to initiate getting the data
     useEffect(() => {
         if (modalVisible) {
-            console.log(selectedSites);
-            if (data) { setData({}) };
+            if (data) { setData(null) };
+            // Limit number of sites graphed to 5
+            let vizSites;
+            if (selectedSites.length > 5) {
+                vizSites = selectedSites.slice(0, 5);
+            } else {
+                vizSites = selectedSites;
+            }
             const promises = [];
-            for (let i = 0; i < selectedSites.length; i++) {
-                promises.push(getData(selectedSites[i], analyte));
+            for (let i = 0; i < vizSites.length; i++) {
+                promises.push(getData(vizSites[i], analyte));
             }
             Promise.all(promises)
                 .then((results) => {
@@ -81,7 +86,6 @@ export default function ChartIndex({ selectedSites, analyte }) {
     }
 
     const chart = () => {
-        console.log(data.sites['519LSAC53']);
         return (
             <div style={{ width: '99%', height: '400px' }}>
                 <ResponsiveContainer width='100%' height='100%'>
@@ -90,25 +94,26 @@ export default function ChartIndex({ selectedSites, analyte }) {
                         height={400}
                         margin={{
                             top: 30,
-                            right: 60,
+                            right: 40,
                             bottom: 30,
-                            left: 60
+                            left: 40
                         }}
                     >
                         <CartesianGrid />
                         <XAxis 
                             type='number' 
                             dataKey='x' 
-                            name='sampleDate' 
+                            name='Sample Date' 
                             tickFormatter={unixTime => formatDate(new Date(unixTime))} 
-                            domain={['auto', 'auto']} 
+                            domain={['dataMin', 'dataMax']} 
                         />
                         <YAxis 
                             type='number' 
-                            dataKey='y' 
-                            name='result' 
-                            unit={unitRef.current}
-                            domain={['0', 'auto']}
+                            name='Result' 
+                            dataKey='y'
+                            //unit={unitRef.current}
+                            domain={['dataMin', 'dataMax']} 
+                            tickFormatter={val => val.toLocaleString()}
                         />
                         { Object.keys(data.sites)
                             .map((d, i) => {
@@ -116,15 +121,18 @@ export default function ChartIndex({ selectedSites, analyte }) {
                                     <Scatter
                                         key={d + '-scatter'}
                                         name={d}
-                                        data={data.sites[d]}
-                                        fill={colors[i]}
-                                        line
+                                        data={data.sites[d]} 
+                                        fill={colorPaletteViz[i]}
                                         shape='circle'
                                     />
                                 )
                             })
                         }
-                        <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                        <Tooltip 
+                            isAnimationActive={false}
+                            animationDuration={0}
+                            content={<CustomTooltip unit={unitRef.current} />}
+                        />
                         <Legend />
                     </ScatterChart>
                 </ResponsiveContainer>
@@ -136,11 +144,11 @@ export default function ChartIndex({ selectedSites, analyte }) {
         <div style={{ marginTop: '1em'}}>
             <Button compact 
                 size='tiny'
-                disabled={selectedSites.length < 2 || !(analyte)}
+                disabled={selectedSites.length < 1 || !(analyte)}
                 onClick={handleClick} 
                 onKeyPress={handleClick}
             >
-                <Icon name='chart line' />
+                <Icon name='chart bar' />
                 Graph selected sites
             </Button>
             { modalVisible ? 
@@ -149,7 +157,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                     open={modalVisible}
                     onClose={() => setModalVisible(false)}
                 >
-                    <Header icon='chart line' content='Graph selected sites' />
+                    <Header icon='chart bar' content={analyte + ': Selected sites'} />
                     <Modal.Content>
                         { loading ? 'Loading...' : chart() }
                     </Modal.Content>
