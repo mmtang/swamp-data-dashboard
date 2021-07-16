@@ -123,6 +123,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                             clickFunction: () => zoomToSelectedFeature()
                                         }]
                                     },
+                                    gridOptions: {
+                                        pagination: true
+                                    }
                                 });
                                 // listen for selection changes
                                 tableRef.current.on('selection-change', (changes) => {
@@ -190,6 +193,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
         };
         const zoomToSelectedFeature = () => {
             // Create a query off of the feature layer
+            let activeLayer;
             const stationLayer = mapRef.current.allLayers.find((layer) => {
                 return layer.id === 'stationLayer';
             });
@@ -197,42 +201,37 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 return layer.id === 'stationSummaryLayer';
             });
             if (stationLayer) {
-                const query = stationLayerRef.current.createQuery();
-                // Iterate through the features and grab the feature's objectID
-                const featureIds = featuresRef.current.map((result) => {
-                    return result.feature.getAttribute(stationLayerRef.current.objectIdField);
-                });
-                // Set the query's objectId
-                query.objectIds = featureIds;
-                // Make sure to return the geometry to zoom to
-                query.returnGeometry = true;
-                // Call queryFeatures on the feature layer and zoom to the resulting features
-                stationLayerRef.current.queryFeatures(query).then((results) => {
-                    viewRef.current.goTo(results.features).catch((error) => {
-                        if (error.name != 'AbortError') {
-                            console.error(error);
-                        }
-                    });
-                });
+                activeLayer = stationLayerRef.current;
             } else if (summaryLayer) {
-                const query = stationSummaryLayerRef.current.createQuery();
-                // Iterate through the features and grab the feature's objectID
-                const featureIds = featuresRef.current.map((result) => {
-                    return result.feature.getAttribute(stationSummaryLayerRef.current.objectIdField);
-                });
-                // Set the query's objectId
-                query.objectIds = featureIds;
-                // Make sure to return the geometry to zoom to
-                query.returnGeometry = true;
-                // Call queryFeatures on the feature layer and zoom to the resulting features
-                stationSummaryLayerRef.current.queryFeatures(query).then((results) => {
+                activeLayer = stationSummaryLayerRef.current;
+            }
+            const query = activeLayer.createQuery();
+            // Iterate through the features and grab the feature's objectID
+            const featureIds = featuresRef.current.map((result) => {
+                return result.feature.getAttribute(activeLayer.objectIdField);
+            });
+            // Set the query's objectId
+            query.objectIds = featureIds;
+            // Make sure to return the geometry to zoom to
+            query.returnGeometry = true;
+            // Call queryFeatures on the feature layer and zoom to the resulting features
+            activeLayer.queryFeatures(query).then((results) => {
+                if (query.objectIds.length > 1) {
+                    // Zooming to the extent of multiple selected sites.
                     viewRef.current.goTo(results.features).catch((error) => {
                         if (error.name != 'AbortError') {
                             console.error(error);
                         }
                     });
-                });
-            }
+                } else {
+                    // Zooming to the extent of one selected site. The operation above does not handle single site selections well.
+                    const feature = results.features[0];
+                    viewRef.current.goTo({
+                        target: feature.geometry,
+                        zoom: 13
+                    });
+                }
+            });
         }
 
         setDefaultOptions({ version: '4.20' });
