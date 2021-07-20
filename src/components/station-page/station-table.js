@@ -10,20 +10,19 @@ export default function StationTable({ station }) {
     const [data, setData] = useState([])
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
-    //const formatDate = timeFormat('%m/%d/%Y');
     const formatDate = timeFormat('%Y/%m/%d');
 
     const customStyles = {
         headRow: {
             style: {
-                color: '#103c68',
                 backgroundColor: '#e3e4e6',
                 borderBottomWidth: '0px',
             }
         }, 
         headCells: {
             style: {
-                fontWeight: 700
+                color: '#103c68',
+                fontWeight: 700,
             }
         }
     }
@@ -33,7 +32,7 @@ export default function StationTable({ station }) {
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     {row['AllYears_Trend'] === 'Increasing' ? <IconTrendingUp size={18} /> : row['AllYears_Trend'] === 'Decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['AllYears_Trend']} /> }
-                    &nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;
                     <span>{row['AllYears_Trend']}</span>
                 </div>
             </div>
@@ -80,28 +79,28 @@ export default function StationTable({ station }) {
         {
             name: 'Min',
             selector: row => row['AllYears_Min'],
-            width: '70px',
+            width: '75px',
             sortable: false,
             right: true
         },
         {
             name: 'Mean',
             selector: row => row['AllYears_Mean'],
-            width: '70px',
+            width: '75px',
             sortable: false,
             right: true
         },
         {
             name: 'Median',
             selector: row => row['AllYears_Median'],
-            width: '70px',
+            width: '75px',
             sortable: false,
             right: true
         },
         {
             name: 'Max',
             selector: row => row['AllYears_Max'],
-            width: '70px',
+            width: '75px',
             sortable: false,
             right: true
         }
@@ -116,10 +115,10 @@ export default function StationTable({ station }) {
             .then(records => {
                 records.forEach(d => {
                     d.AllYears_n = +d.AllYears_n;
-                    d.AllYears_Min = +d.AllYears_Min;
-                    d.AllYears_Mean = +d.AllYears_Mean;
-                    d.AllYears_Median = +d.AllYears_Median;
-                    d.AllYears_Max = +d.AllYears_Max;
+                    d.AllYears_Min = +d.AllYears_Min.toFixed(3);
+                    d.AllYears_Mean = +d.AllYears_Mean.toFixed(3);
+                    d.AllYears_Median = +d.AllYears_Median.toFixed(3);
+                    d.AllYears_Max = +d.AllYears_Max.toFixed(3);
                     d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
                     d.LastSampleDate = parseDate(d.LastSampleDate);
                     d.ResultWithUnit = d.LastResult.toString() + ' ' + d.Unit;
