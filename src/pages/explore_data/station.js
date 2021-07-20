@@ -3,7 +3,8 @@ import LayoutStation from '../../components/layout/layout-station';
 import MapStation from '../../components/map/map-station';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
 import NearbyStations from '../../components/station-page/nearby-stations';
-import ChemistryTable from '../../components/station-page/chemistry-table';
+import StationTable from '../../components/station-page/station-table';
+//import ChemistryTable from '../../components/station-page/chemistry-table';
 import { regionDict } from '../../utils/utils';
 import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName } from './station.module.css';
 
@@ -90,7 +91,7 @@ class Station extends React.Component {
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper. Ornare aenean euismod elementum nisi quis. Scelerisque fermentum dui faucibus in ornare.</p>
                         </section>
                         <section>
-                            <ChemistryTable station={this.state.station.StationCode} />
+                            <StationTable station={this.state.station.StationCode} />
                         </section>
                     </div>
                 </LayoutStation>

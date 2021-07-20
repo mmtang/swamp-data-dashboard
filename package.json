@@ -20,12 +20,14 @@
     "esri-loader": "^3.1.0",
     "gatsby": "^3.4.1",
     "react": "^17.0.1",
+    "react-data-table-component": "*",
     "react-dom": "^17.0.1",
     "react-select": "^4.3.1",
     "react-table": "^7.7.0",
     "recharts": "^2.0.9",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^2.0.3"
+    "semantic-ui-react": "^2.0.3",
+    "styled-components": "^5.3.0"
   },
   "devDependencies": {
     "prettier": "2.2.1"
