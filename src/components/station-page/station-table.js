@@ -6,12 +6,14 @@ import { fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 
 
-export default function StationTable({ station }) {
+export default function StationTable({ station, setSelectedAnalytes }) {
     const [data, setData] = useState([])
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = timeFormat('%Y/%m/%d');
 
+    // overrides:
+    // https://github.com/jbetancur/react-data-table-component/blob/master/src/DataTable/styles.js
     const customStyles = {
         headRow: {
             style: {
@@ -106,6 +108,11 @@ export default function StationTable({ station }) {
         }
     ];
 
+    const handleSelectionUpdate = (rows) => {
+        const newSelection = rows.selectedRows.map(d => d.Analyte);
+        setSelectedAnalytes(newSelection);
+    };
+
     useEffect(() => {
         if (station) {
             let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,Analyte,LastSampleDate,LastResult,Unit,AllYears_Min,AllYears_Max,AllYears_Median,AllYears_Mean,AllYears_Trend,AllYears_Tau,AllYears_PValue,AllYears_Slope,AllYears_Intercept,AllYears_n';
@@ -137,6 +144,8 @@ export default function StationTable({ station }) {
                 highlightOnHover
                 pagination
                 selectableRows
+                selectableRowsHighlight
+                onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
                 dense
             />
         </div>
