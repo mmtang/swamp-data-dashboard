@@ -9,8 +9,8 @@ export default function NearbyStations({ nearbyStations }) {
 
     useEffect(() => {
         if (nearbyStations) {
-            if (nearbyStations.length > 5) {
-                setStations(nearbyStations.slice(0, 5));
+            if (nearbyStations.length > 3) {
+                setStations(nearbyStations.slice(0, 3));
             } else {
                 setStations(nearbyStations);
             }

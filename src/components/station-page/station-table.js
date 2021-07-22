@@ -54,7 +54,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             selector: row => row['AllYears_n'],
             width: '95px',
             sortable: true,
-            format: row => row['AllYears_n'],
+            format: row => row['AllYears_n'].toLocaleString(),
             right: true
         },
         {
@@ -67,8 +67,9 @@ export default function StationTable({ station, setSelectedAnalytes }) {
         {
             name: 'Last Result',
             selector: row => row['LastResult'] + ' ' + row['Unit'],
-            width: '130px',
+            width: '145px',
             sortable: false,
+            format: row => row['LastResult'].toLocaleString() + ' ' + row['Unit'],
             right: true
         },
         {
@@ -81,29 +82,33 @@ export default function StationTable({ station, setSelectedAnalytes }) {
         {
             name: 'Min',
             selector: row => row['AllYears_Min'],
-            width: '75px',
+            width: '80px',
             sortable: false,
+            format: row => row['AllYears_Min'].toLocaleString(),
             right: true
         },
         {
             name: 'Mean',
             selector: row => row['AllYears_Mean'],
-            width: '75px',
+            width: '80px',
             sortable: false,
+            format: row => row['AllYears_Mean'].toLocaleString(),
             right: true
         },
         {
             name: 'Median',
             selector: row => row['AllYears_Median'],
-            width: '75px',
+            width: '80px',
             sortable: false,
+            format: row => row['AllYears_Median'].toLocaleString(),
             right: true
         },
         {
             name: 'Max',
             selector: row => row['AllYears_Max'],
-            width: '75px',
+            width: '80px',
             sortable: false,
+            format: row => row['AllYears_Max'].toLocaleString(),
             right: true
         }
     ];
@@ -122,10 +127,10 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             .then(records => {
                 records.forEach(d => {
                     d.AllYears_n = +d.AllYears_n;
-                    d.AllYears_Min = +d.AllYears_Min.toFixed(3);
-                    d.AllYears_Mean = +d.AllYears_Mean.toFixed(3);
-                    d.AllYears_Median = +d.AllYears_Median.toFixed(3);
-                    d.AllYears_Max = +d.AllYears_Max.toFixed(3);
+                    d.AllYears_Min = +d.AllYears_Min.toFixed(2);
+                    d.AllYears_Mean = +d.AllYears_Mean.toFixed(2);
+                    d.AllYears_Median = +d.AllYears_Median.toFixed(2);
+                    d.AllYears_Max = +d.AllYears_Max.toFixed(2);
                     d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
                     d.LastSampleDate = parseDate(d.LastSampleDate);
                     d.ResultWithUnit = d.LastResult.toString() + ' ' + d.Unit;

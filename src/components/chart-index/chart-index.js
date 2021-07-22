@@ -142,29 +142,35 @@ export default function ChartIndex({ selectedSites, analyte }) {
         )
     }
 
-    return (
-        <div style={{ marginTop: '1em'}}>
-            <Button compact 
-                size='tiny'
-                disabled={selectedSites.length < 1 || !(analyte)}
-                onClick={handleClick} 
-                onKeyPress={handleClick}
-            >
-                <Icon name='chart bar' />
-                Graph selected sites
-            </Button>
-            { modalVisible ? 
-                <Modal
-                    closeIcon
-                    open={modalVisible}
-                    onClose={() => setModalVisible(false)}
+    if (analyte) {
+        return (
+            <div style={{ marginTop: '1em'}}>
+                <Button compact 
+                    size='tiny'
+                    disabled={selectedSites.length < 1 || !(analyte)}
+                    onClick={handleClick} 
+                    onKeyPress={handleClick}
                 >
-                    <Header icon='chart bar' content={analyte + ': Selected sites'} />
-                    <Modal.Content>
-                        { loading ? 'Loading...' : chart() }
-                    </Modal.Content>
-                </Modal> 
-            : '' }
-        </div>
-    )
+                    <Icon name='chart bar' />
+                    Graph selected sites {selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)' }
+                </Button>
+                { modalVisible ? 
+                    <Modal
+                        closeIcon
+                        open={modalVisible}
+                        onClose={() => setModalVisible(false)}
+                    >
+                        <Header icon='chart bar' content={analyte + ': Selected sites'} />
+                        <Modal.Content>
+                            { loading ? 'Loading...' : chart() }
+                        </Modal.Content>
+                    </Modal> 
+                : '' }
+            </div>
+        )
+    } else {
+        return (
+            <div></div>
+        )
+    }
 }

@@ -170,9 +170,9 @@ export const stationRenderer = {
     symbol: {
         type: 'simple-marker',
         size: 5.5,
-        color: '#fff',
+        color: '#046b99',
         outline: {
-            color: '#2a2a29',
+            color: '#fff',
             width: 1
         }
     }

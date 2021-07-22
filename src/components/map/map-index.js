@@ -619,7 +619,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 searchRef.current = new Search({
                     view: viewRef.current,
                     container: 'searchContainer',
-                    allPlaceholder: 'Zoom to a waterbody or monitoring site',
+                    allPlaceholder: 'Zoom to a location, waterbody, or monitoring site',
                     label: 'Zoom to a location, waterbody, or monitoring site',
                     includeDefaultSources: true,
                     locationEnabled: false,

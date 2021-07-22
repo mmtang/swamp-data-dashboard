@@ -61,7 +61,7 @@ export default function Station(props) {
                 <div className={leftContainer}>
                     <section className={titleContainer}>
                         <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>
-                        <span style={{ fontSize: '0.95em' }}>Station: {stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{regionDict[stationObjRef.current.Region]} Region</span>
+                        <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{regionDict[stationObjRef.current.Region]} Region</span>
                     </section>
                     <div className={siteMapContainer}>
                         <MapStation 
@@ -71,10 +71,10 @@ export default function Station(props) {
                             setNearbyStations={setNearbyStations}
                         />
                     </div>
-                    <section style={{ margin: '1em 0' }}>
+                    <section style={{ margin: '1.1em 0' }}>
                         <NearbyWaterbodies coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
                     </section>
-                    <section style={{ margin: '1em 0' }}>
+                    <section style={{ margin: '1.1em 0' }}>
                         <NearbyStations nearbyStations={nearbyStations} />
                     </section>
                 </div>

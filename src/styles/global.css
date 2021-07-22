@@ -114,6 +114,8 @@ a {
 
 .esri-popup__header h2 {
   font-size: 1.2em !important;
+  color: #103c68 !important;
+  padding-top: 12px;
 }
 
 .esri-feature-content h3 {

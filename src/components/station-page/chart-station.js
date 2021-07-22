@@ -292,7 +292,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
     }
 
     return (
-        <div style={{ marginTop: '1em'}}>
+        <div style={{ marginTop: '2em'}}>
             <Button compact 
                 size='tiny'
                 disabled={selectedAnalytes.length < 1}

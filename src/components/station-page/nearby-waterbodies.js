@@ -39,8 +39,8 @@ export default function NearbyWaterbodies({ coordinates }) {
         ]).then(responses => {
             const data = responses[0].concat(responses[1]);
             let features = data.map(d => d.attributes);
-            if (features.length > 5) { 
-                features = features.slice(0, 5);
+            if (features.length > 3) { 
+                features = features.slice(0, 3);
             }
             setFeatures(features);
             setLoading(false);

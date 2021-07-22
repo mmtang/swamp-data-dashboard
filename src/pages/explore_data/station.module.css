@@ -21,7 +21,7 @@
 }
 
 .siteMapContainer {
-    margin: 10px 0 1.2em 0;
+    margin: 1.5em 0 1.5em 0;
 }
 
 .stationName {
@@ -29,8 +29,13 @@
     font-size: 1.2em !important;
 }
 
+.leftContainer h2 {
+    margin-top: 6px;
+    font-size: 1.2em !important;
+}
+
 .rightContainer h2 {
-    margin-top: 10px;
+    margin-top: 6px;
     font-size: 1.2em !important;
 }
 
