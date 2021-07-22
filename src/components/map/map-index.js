@@ -595,8 +595,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 'esri/views/MapView',
                 'esri/widgets/Search',
                 'esri/widgets/LayerList',
-                'esri/widgets/Expand'
-            ]).then(([Map, MapView, Search, LayerList, Expand]) => {
+                'esri/widgets/Expand',
+                'esri/widgets/Home'
+            ]).then(([Map, MapView, Search, LayerList, Expand, Home]) => {
                 mapRef.current = new Map({
                     basemap: 'topo-vector'
                 });
@@ -647,6 +648,11 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 })
                 //viewRef.current.ui.add(searchRef.current, { position: 'top-right' });
                 viewRef.current.ui.add(expandRef.current, 'bottom-left');
+
+                // Add Home widget
+                const homeWidget = new Home({ view: viewRef.current });
+                viewRef.current.ui.add(homeWidget, 'top-left');
+
                 resolve();
             });
         })

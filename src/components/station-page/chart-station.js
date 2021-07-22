@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { event as currentEvent } from 'd3-selection';
+import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { colorPaletteViz } from '../../utils/utils';
 import { axisBlue, axisOrange, axisGreen, axisPurple, customTooltip } from './chart-station.module.css';
@@ -117,22 +118,22 @@ export default function ChartStation({ station, selectedAnalytes }) {
             const analyteName = analyteKeys[key];
             if (key == 0) {
                 chart.append('g')
-                    .attr('class', axisBlue)
+                    .attr('className', axisBlue)
                     .attr('transform', 'translate(' + margin.left + ', 0)')
                     .call(d3.axisLeft().scale(data[analyteName]['yScale']).ticks(5));
             } else if (key == 1) {
                 chart.append('g')
-                    .attr('class', axisOrange)
+                    .attr('className', axisOrange)
                     .attr('transform', 'translate(' + (width - margin.right) + ', 0)')
                     .call(d3.axisRight().scale(data[analyteName]['yScale']).ticks(5));
             } else if (key == 2) {
                 chart.append('g')
-                    .attr('class', axisGreen)
+                    .attr('className', axisGreen)
                     .attr('transform', 'translate(' + (width - margin.right) + ', 0)')
                     .call(d3.axisLeft().scale(data[analyteName]['yScale']).ticks(5));
             } else if (key == 3) {
                 chart.append('g')
-                    .attr('class', axisPurple)
+                    .attr('className', axisPurple)
                     .attr('transform', 'translate(' + margin.left + ', 0)')
                     .call(d3.axisRight().scale(data[analyteName]['yScale']).ticks(5));
             }
@@ -149,7 +150,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
                 .curve(d3.curveMonotoneX); // apply smoothing to line
             chart.append('path')
                 .datum(data[analyteName]['data'])
-                .attr('class', 'line')
+                .attr('className', 'line')
                 .attr('d', line)
                 .attr('stroke', colorPaletteViz[key])
                 .attr('fill', 'none')
@@ -194,6 +195,16 @@ export default function ChartStation({ station, selectedAnalytes }) {
             points.exit()
                 .remove();
         }
+
+        // Add legend
+        /*
+        const svgLegend = d3.select('#legend-container').append('svg')
+            .attr('width', width)
+            .attr('height', 50);
+        const ordinal = d3.scaleOrdinal()
+            .domain(analyteKeys)
+            .range(colorPaletteViz);
+        */
     };
 
 
@@ -284,6 +295,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
                     <Header icon='chart bar' content={`Selected parameters for ${station}`} />
                     <Modal.Content>
                         { loading ? 'Loading...' : <div id="station-chart-container"></div> }
+                        <div id="legend-container"></div>
                     </Modal.Content>
                 </Modal> 
             : '' }
