@@ -7,7 +7,7 @@ const Navbar = () => {
 
     return (
         <div className={navBar}>
-            <Link to="/"><span className={navTitle}>SWAMP Data Dashboard</span></Link>
+            <a href="/"><span className={navTitle}>SWAMP Data Dashboard</span></a>
             <div className={navMenu}>
                 <ul>
                     <LinkDropdown>About</LinkDropdown>
