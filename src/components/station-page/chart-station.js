@@ -42,14 +42,14 @@ export default function ChartStation({ station, selectedAnalytes }) {
 
     const drawChart = () => {
         const chartId = 'chart-' + randomId.current;
-        const margin = { top: 30, right: 40, bottom: 60, left: 40 };
+        const margin = { top: 20, right: 40, bottom: 30, left: 40 };
         const width = 645 + margin.left + margin.right;
-        const height = 180 + margin.top + margin.bottom;
+        const height = 220 + margin.top + margin.bottom;
         const clipPadding = 4;
 
         const chart = d3.select('#station-chart-container').append('svg')
             .attr('id', chartId)
-            .attr('className', 'chart')
+            .attr('class', 'chart')
             .attr('width', width)
             .attr('height', height)
             .call(() => { responsive(chartId); });
@@ -118,22 +118,22 @@ export default function ChartStation({ station, selectedAnalytes }) {
             const analyteName = analyteKeys[key];
             if (key == 0) {
                 chart.append('g')
-                    .attr('className', axisBlue)
+                    .attr('class', axisBlue)
                     .attr('transform', 'translate(' + margin.left + ', 0)')
                     .call(d3.axisLeft().scale(data[analyteName]['yScale']).ticks(5));
             } else if (key == 1) {
                 chart.append('g')
-                    .attr('className', axisOrange)
+                    .attr('class', axisOrange)
                     .attr('transform', 'translate(' + (width - margin.right) + ', 0)')
                     .call(d3.axisRight().scale(data[analyteName]['yScale']).ticks(5));
             } else if (key == 2) {
                 chart.append('g')
-                    .attr('className', axisGreen)
+                    .attr('class', axisGreen)
                     .attr('transform', 'translate(' + (width - margin.right) + ', 0)')
                     .call(d3.axisLeft().scale(data[analyteName]['yScale']).ticks(5));
             } else if (key == 3) {
                 chart.append('g')
-                    .attr('className', axisPurple)
+                    .attr('class', axisPurple)
                     .attr('transform', 'translate(' + margin.left + ', 0)')
                     .call(d3.axisRight().scale(data[analyteName]['yScale']).ticks(5));
             }
@@ -150,7 +150,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
                 .curve(d3.curveMonotoneX); // apply smoothing to line
             chart.append('path')
                 .datum(data[analyteName]['data'])
-                .attr('className', 'line')
+                .attr('class', 'line')
                 .attr('d', line)
                 .attr('stroke', colorPaletteViz[key])
                 .attr('fill', 'none')
@@ -162,7 +162,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
             points.selectAll('.circle')
                 .data(data[analyteName]['data'])
                 .enter().append('circle')
-                .attr('className', 'circle')
+                .attr('class', 'circle')
                 .attr('r', 4)
                 .attr('cx', (d) => { 
                     return xScale(d.SampleDate); 
@@ -197,14 +197,30 @@ export default function ChartStation({ station, selectedAnalytes }) {
         }
 
         // Add legend
-        /*
         const svgLegend = d3.select('#legend-container').append('svg')
             .attr('width', width)
-            .attr('height', 50);
+            .attr('height', 60);
+        svgLegend.append('g')
+            .attr('class', 'legendOrdinal')
+            .attr('transform', 'translate(40, 20)');
         const ordinal = d3.scaleOrdinal()
             .domain(analyteKeys)
             .range(colorPaletteViz);
-        */
+
+        const legendOrdinal = legendColor()
+            //d3 symbol creates a path-string, for example
+            //"M0,-8.059274488676564L9.306048591020996,
+            //8.059274488676564 -9.306048591020996,8.059274488676564Z"
+            .shape('path', d3.symbol().type(d3.symbolCircle).size(100)())
+            .shapePadding(100)
+            //use cellFilter to hide the "e" cell
+            .cellFilter(function(d){ return d.label !== 'e' })
+            .scale(ordinal)
+            .orient('horizontal')
+            .labelWrap(80)
+            .labelAlign('middle');
+        svgLegend.select('.legendOrdinal')
+            .call(legendOrdinal);
     };
 
 
@@ -295,7 +311,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
                     <Header icon='chart bar' content={`Selected parameters for ${station}`} />
                     <Modal.Content>
                         { loading ? 'Loading...' : <div id="station-chart-container"></div> }
-                        <div id="legend-container"></div>
+                        <div id="legend-container" style={{ display: 'flex', justifyContent: 'center', margin: '5px 0 15px 0' }}></div>
                     </Modal.Content>
                 </Modal> 
             : '' }
