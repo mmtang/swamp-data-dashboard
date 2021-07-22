@@ -66,11 +66,6 @@ export const stationDataFields = [
         type: 'string'
     },
     {
-        name: 'Region',
-        alias: 'Region',
-        type: 'string'
-    },
-    {
         name: 'RegionName',
         alias: 'Region',
         type: 'string'
@@ -82,14 +77,19 @@ export const stationDataFields = [
     }
 ]
 
+// Used for station layer table
 export const stationDataTableFields = [
     {
-        name: 'RegionName',
-        label: 'Region'
+        name: 'StationCode',
+        label: 'Site ID'
     },
     {
         name: 'StationName',
-        label: 'Name'
+        label: 'Site Name'
+    },
+    {
+        name: 'RegionName',
+        label: 'Region'
     },
     {
         name: 'LastSampleDate',
@@ -105,33 +105,28 @@ export const stationSummaryDataFields = [
         type: 'oid'
     },
     {
-        name: 'StationCode',
-        alias: 'Station Code',
-        type: 'string'
-    },
-    {
-        name: 'StationName',
-        alias: 'Station Name',
-        type: 'string'
-    },
-    {
-        name: 'Region',
-        alias: 'Region',
-        type: 'string'
-    },
-    {
         name: 'RegionName',
         alias: 'Region',
         type: 'string'
     },
     {
-        name: 'Analyte',
-        alias: 'Analyte',
+        name: 'StationCode',
+        alias: 'Site ID',
+        type: 'string'
+    },
+    {
+        name: 'StationName',
+        alias: 'Site Name',
         type: 'string'
     },
     {
         name: 'LastSampleDate',
         alias: 'Last Sample',
+        type: 'string'
+    },
+    {
+        name: 'Analyte',
+        alias: 'Analyte',
         type: 'string'
     },
     {
@@ -141,14 +136,19 @@ export const stationSummaryDataFields = [
     }
 ];
 
+// Used for station layer summary table
 export const stationSummaryTableFields = [
     {
-        name: 'RegionName',
-        label: 'Region'
+        name: 'StationCode',
+        label: 'Site ID'
     },
     {
         name: 'StationName',
-        label: 'Name'
+        label: 'Site Name'
+    },
+    {
+        name: 'RegionName',
+        label: 'Region'
     },
     {
         name: 'LastSampleDate',
@@ -156,6 +156,7 @@ export const stationSummaryTableFields = [
         direction: 'desc'
     },
     {
+        // There is a bug in ArcGIS that will make the old table fields still show even after changing out the layer. Put the analyte field after the Last Sample date field so that this set of fields more closely resembles that of the station layer set. 
         name: 'Analyte',
         label: 'Analyte',
     },

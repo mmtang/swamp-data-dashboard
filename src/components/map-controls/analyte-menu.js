@@ -43,7 +43,7 @@ export default function AnalyteMenu({ selectedAnalyte, setAnalyte }) {
                     options={analyteList} 
                     isClearable={true}
                     isSearchable={true}
-                    placeholder='Analyte'
+                    placeholder='Parameter'
                     onChange={handleSelectChange}
                     styles={customSelectStyle}
                     maxMenuHeight={200}

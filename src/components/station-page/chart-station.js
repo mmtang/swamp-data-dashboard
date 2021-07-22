@@ -163,7 +163,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
                 .data(data[analyteName]['data'])
                 .enter().append('circle')
                 .attr('class', 'circle')
-                .attr('r', 4)
+                .attr('r', 3)
                 .attr('cx', (d) => { 
                     return xScale(d.SampleDate); 
                 })
@@ -199,7 +199,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
         // Add legend
         const svgLegend = d3.select('#legend-container').append('svg')
             .attr('width', width)
-            .attr('height', 60);
+            .attr('height', 70);
         svgLegend.append('g')
             .attr('class', 'legendOrdinal')
             .attr('transform', 'translate(40, 20)');

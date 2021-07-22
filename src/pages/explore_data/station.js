@@ -81,7 +81,7 @@ export default function Station(props) {
                 <div className={rightContainer}>
                     <section>
                         <h2>Water quality data and trends</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper. Ornare aenean euismod elementum nisi quis. Scelerisque fermentum dui faucibus in ornare.</p>
+                        <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring site. For a more detailed view of the data, select a parameter (or multiple parameters) by checking the box to the left of the parameter and then clicking the "Graph selected parameters" button below.</p>
                     </section>
                     <section>
                         <ChartStation

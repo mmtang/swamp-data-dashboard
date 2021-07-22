@@ -6,10 +6,6 @@
     height: auto;
 }
 
-.card:hover {
-    cursor: pointer;
-}
-
 .leftContainer {
     color:#707070;
     font-weight: 500;
