@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
-import { regionNumDict, regionDict, stationRenderer, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields } from '../../utils/utils';
+import { regionDict, stationRenderer, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields } from '../../utils/utils';
 import { container } from './map-index.module.css';
 
 
@@ -476,7 +476,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                 popupTemplate: analyteTemplate
                             });
                             if (selectedRegion) {
-                                stationSummaryLayerRef.current.definitionExpression = `Region = '${regionNumDict[selectedRegion]}'`;
+                                stationSummaryLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
                             }
                             // Add to map
                             mapRef.current.add(stationSummaryLayerRef.current);
@@ -513,16 +513,16 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             if (selectedRegion) {
                 // Filter stations
                 if (stationLayerRef.current) { 
-                    stationLayerRef.current.definitionExpression = `Region = '${regionNumDict[selectedRegion]}'`;
+                    stationLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
                 }
                 if (stationSummaryLayerRef.current) {
-                    stationSummaryLayerRef.current.definitionExpression = `Region = '${regionNumDict[selectedRegion]}'`;
+                    stationSummaryLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
                 }
                 // Filter BPMP
                 bpPolys.definitionExpression = `BASINPLANNAME = '${selectedRegion}'`;
                 bpLines.definitionExpression = `BASINPLANNAME = '${selectedRegion}'`;
                 // Highlight region
-                loadModules(['esri/views/layers/LayerView', 'esri/tasks/support/Query'])
+                loadModules(['esri/views/layers/LayerView', 'esri/rest/support/Query'])
                 .then(([LayerView, Query]) => {
                     if (viewRef.current) {
                         viewRef.current.whenLayerView(regionLayerRef.current).then((layerView) => {
