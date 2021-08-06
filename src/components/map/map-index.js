@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
-import { regionDict, stationRenderer, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields } from '../../utils/utils';
+import { regionDict, irRegionDict, stationRenderer, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields } from '../../utils/utils';
 import { container } from './map-index.module.css';
 
 
@@ -15,6 +15,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
     const searchRef = useRef(null);
     const expandRef = useRef(null);
     const landUseLayerRef = useRef(null);
+    const irLayerRef = useRef(null);
+    const irLineRef = useRef(null);
+    const irPolyRef = useRef(null);
     const attainsLayerRef = useRef(null);
     const attainsLineRef = useRef(null);
     const attainsPolyRef = useRef(null);
@@ -240,7 +243,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
         .then(() => {
             drawLandUse();
             drawBasinPlan();
-            drawAttains();
+            //drawAttains();
+            drawIntegratedReportLayers();
             drawRegions();
             drawStations();
         });
@@ -511,6 +515,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             const bpPolys = bpLayerRef.current.findSublayerById(0);
             const bpLines = bpLayerRef.current.findSublayerById(1);
             if (selectedRegion) {
+                // Filter IR Layers
+                irLineRef.current.definitionExpression = `rb = '${irRegionDict[selectedRegion]}'`;
+                irPolyRef.current.definitionExpression = `rb = '${irRegionDict[selectedRegion]}'`
                 // Filter stations
                 if (stationLayerRef.current) { 
                     stationLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
@@ -549,6 +556,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 if (stationSummaryLayerRef.current) {
                     stationSummaryLayerRef.current.definitionExpression = '';
                 }
+                // Unfilter IR Layers
+                irLineRef.current.definitionExpression = '';
+                irPolyRef.current.definitionExpression = '';
                 // Unfilter BPMP
                 bpPolys.definitionExpression = "BASINPLANNAME = ''";
                 bpLines.definitionExpression = "BASINPLANNAME = ''";
@@ -677,6 +687,155 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                     visible: false
                 });
                 mapRef.current.add(landUseLayerRef.current);
+            });
+        }
+    }
+
+    const drawIntegratedReportLayers = () => {
+        const irLineRenderer = {
+            type: 'unique-value',
+            field: 'wb_listingstatus',
+            defaultSymbol: { type: 'simple-line' },
+            uniqueValueInfos: [
+                {
+                    value: 'Listed',
+                    symbol: {
+                        type: 'simple-line',
+                        color: '#518f33',
+                        width: '2px'
+                    }
+                },
+                {
+                    value: 'Not Listed',
+                    symbol: {
+                        type: 'simple-line',
+                        color: '#8db933',
+                        width: '2px'
+                    }
+                }   
+            ]
+        }
+        const irPolyRenderer = {
+            type: 'unique-value',
+            field: 'wb_listingstatus',
+            defaultSymbol: { type: 'simple-fill' },
+            uniqueValueInfos: [
+                {
+                    value: 'Listed',
+                    symbol: {
+                        type: 'simple-fill',
+                        color: '#518f33',
+                        outline: {
+                            color: '#518f33'
+                        }
+                    }
+                },
+                {
+                    value: 'Not Listed',
+                    symbol: {
+                        type: 'simple-fill',
+                        color: '#8db933',
+                        outline: {
+                            color: '#8db933'
+                        }
+                    }
+                }
+            ]
+        }
+        const irTemplate = {
+            // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
+            outFields: ['wbid', 'wbname', 'rb', 'wbtype', 'wb_category', 'wb_listingstatus', 'listed_pollutants', 'fact_sheet'],
+            title: '{wbname}<br><span class="map-popup-subtitle" style="color: #518f33">2018 Integrated Report</span>',
+            content: [
+                {
+                    type: 'fields',
+                    fieldInfos: [
+                        {
+                            fieldName: 'wbid',
+                            label: 'ID',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'wbtype',
+                            label: 'Type',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'rb',
+                            label: 'Region',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'wb_category',
+                            label: 'Waterbody Condition Category',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'wb_listingstatus',
+                            label: 'Overall Listing Status',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listed_pollutants',
+                            label: 'Listed Pollutant(s)',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'fact_sheet',
+                            label: 'Waterbody Fact Sheet',
+                            visible: true
+                        }
+                    ]
+                }
+            ]
+        };
+        if (mapRef) {
+            loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
+            .then(([FeatureLayer, GroupLayer]) => {
+                irLineRef.current = new FeatureLayer({
+                    id: 'irLines',
+                    url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/0',
+                    outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
+                    popupTemplate: irTemplate,
+                    listMode: 'show',
+                    renderer: irLineRenderer
+                });
+                irPolyRef.current = new FeatureLayer({
+                    id: 'irPolys',
+                    url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/1',
+                    outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
+                    popupTemplate: irTemplate,
+                    renderer: irPolyRenderer,
+                    listMode: 'show',
+                    opacity: 0.8
+                });
+                irLayerRef.current = new GroupLayer({
+                    title: '2018 Integrated Report',
+                    visible: true,
+                    layers: [irLineRef.current, irPolyRef.current],
+                    listMode: 'show'
+                });
+                // Add grouplayer to map
+                mapRef.current.add(irLayerRef.current);
+                // Add feature layers to search widget
+                searchRef.current.sources.add({
+                    layer: irLineRef.current,
+                    searchFields: ['wbid', 'wbname'],
+                    displayField: 'wbname',
+                    exactMatch: false,
+                    outFields: ['wbname'],
+                    name: '2018 Integrated Report - Lines',
+                    placeholder: 'Example: Burney Creek'
+                });
+                searchRef.current.sources.add({
+                    layer: irPolyRef.current,
+                    searchFields: ['wbid', 'wbname'],
+                    displayField: 'wbname',
+                    exactMatch: false,
+                    outFields: ['wbname'],
+                    name: '2018 Integrated Report - Polygons',
+                    placeholder: 'Example: Folsom Lake'
+                });
             });
         }
     }

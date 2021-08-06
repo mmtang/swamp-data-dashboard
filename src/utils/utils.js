@@ -39,6 +39,18 @@ export const regionNumDict = {
     'San Diego': '9'
 }
 
+export const irRegionDict = {
+    'North Coast': 'Regional Board 1 - North Coast Region',
+    'San Francisco Bay': 'Regional Board 2 - San Francisco Bay Region',
+    'Central Coast': 'Regional Board 3 - Central Coast Region',
+    'Los Angeles': 'Regional Board 4 - Los Angeles Region',
+    'Central Valley': 'Regional Board 5 - Central Valley Region',
+    'Lahontan': 'Regional Board 6 - Lahontan Region',
+    'Colorado River': 'Regional Board 7 - Colorado River Basin Region',
+    'Santa Ana': 'Regional Board 8 - Santa Ana Region',
+    'San Diego': 'Regional Board 9 - San Diego Region'
+}
+
 export const colorPaletteViz = ['#1f77b4', '#ff7f0e', '#2ca02c', '#af7aa1', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
 
 export const fetchData = (url) => {
