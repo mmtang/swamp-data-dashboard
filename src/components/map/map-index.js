@@ -5,7 +5,7 @@ import { regionDict, irRegionDict, stationRenderer, stationDataFields, stationDa
 import { container } from './map-index.module.css';
 
 
-export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, setSelectedSites, setTableData }) {
+export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, setSelectedSites, setTableData, filterExtentToggle, setFilterExtentToggle }) {
     const [sites, setSites] = useState([]);
     const featuresRef = useRef([]);
 
@@ -85,6 +85,22 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
         setSelectedSites(sites);
     }, [sites]);
 
+    useEffect(() => {
+        if (filterExtentToggle) {
+            filterByExtent();
+        }
+    }, [filterExtentToggle])
+
+    const filterByExtent = () => {
+        if (viewRef.current) {
+            if (selectedAnalyte) {
+                
+            } else if (!selectedAnalyte) {
+                
+            }
+        }
+    };
+
     /*
     useEffect(() => {
         if (viewRef.current) {
@@ -139,6 +155,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                 stationLayerRef.current = new FeatureLayer({
                                     id: 'stationLayer',
                                     objectIdField: 'ObjectId',
+                                    geometryType: 'point',
+                                    spatialReference: 3857,
                                     title: 'SWAMP Monitoring Sites',
                                     source: res,
                                     fields: stationDataFields,
@@ -222,6 +240,29 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                     placeholder: 'Example: Buena Vista Park',
                                     zoomScale: 14000
                                 });
+
+                                // Listener for extent changes
+                                viewRef.current.whenLayerView(stationLayerRef.current).then(layerView => {  
+                                    layerView.watch("updating", function (value) {
+                                        if (!value) {
+                                            layerView.queryFeatures({
+                                                geometry: viewRef.current.extent
+                                            }).then(results => {
+                                                const features = results.features;
+                                                const featureData = features.map(d => {
+                                                    return {
+                                                        StationName: d.attributes.StationName,
+                                                        StationCode: d.attributes.StationCode,
+                                                        RegionName: d.attributes.RegionName,
+                                                        LastSampleDate: d.attributes.LastSampleDate
+                                                    }
+                                                });
+                                                setTableData(featureData);
+                                                setFilterExtentToggle(false);
+                                            })
+                                        }
+                                    })
+                                })
                             });
                         });
                     }
@@ -506,6 +547,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                             stationSummaryLayerRef.current = new FeatureLayer({
                                 id: 'stationSummaryLayer',
                                 objectIdField: 'ObjectId',
+                                geometryType: 'point',
+                                spatialReference: 3857,
                                 title: 'SWAMP Monitoring Sites - Trends',
                                 source: res,
                                 fields: stationSummaryDataFields,
@@ -527,6 +570,31 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                             tableRef.current.layer = stationSummaryLayerRef.current;
                             tableRef.current.fieldConfigs = stationSummaryTableFields;
                             */
+
+                            // Add listener for extent changes
+                            viewRef.current.whenLayerView(stationSummaryLayerRef.current).then(layerView => {  
+                                layerView.watch("updating", function (value) {
+                                    if (!value) {
+                                        layerView.queryFeatures({
+                                            geometry: viewRef.current.extent
+                                        }).then(results => {
+                                            const features = results.features;
+                                            const featureData = features.map(d => {
+                                                return {
+                                                    StationName: d.attributes.StationName,
+                                                    StationCode: d.attributes.StationCode,
+                                                    RegionName: d.attributes.RegionName,
+                                                    LastSampleDate: d.attributes.LastSampleDate,
+                                                    Trend: d.attributes.Trend,
+                                                    Analyte: d.attributes.Analyte
+                                                }
+                                            });
+                                            setTableData(featureData);
+                                            setFilterExtentToggle(false);
+                                        })
+                                    }
+                                })
+                            })
                         })
                     });
                 });

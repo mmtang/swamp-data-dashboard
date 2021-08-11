@@ -142,7 +142,7 @@ export default function TableIndex2({ selectedAnalyte, data, setSelectedSites })
         )
     } else {
         return (
-            <div>Loading...</div>
+            <div style={{ marginTop: '20px' }}>Loading...</div>
         )
     }
 }

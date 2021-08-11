@@ -4,6 +4,7 @@ import MapIndex from '../components/map/map-index';
 import ControlsContainer from '../components/map-controls/controls-container';
 import ChartIndex from '../components/chart-index/chart-index';
 import TableIndex2 from '../components/table-index/table-index2';
+import FilterByExtent from '../components/map-controls/filter-by-extent';
 import { mapContainer, mainContainer, infoContainer } from './index.module.css';
 
 export default function Index() {
@@ -12,6 +13,7 @@ export default function Index() {
   const [site, setSite] = useState(null);
   const [selectedSites, setSelectedSites] = useState([]);
   const [tableData, setTableData] = useState();
+  const [filterExtentToggle, setFilterExtentToggle] = useState(false);
 
 
   return (
@@ -23,6 +25,8 @@ export default function Index() {
           setSelectedSites={setSelectedSites}
           clickedSite={site} 
           setTableData={setTableData}
+          filterExtentToggle={filterExtentToggle}
+          setFilterExtentToggle={setFilterExtentToggle}
         />
       </div>
       <div className={mainContainer}>
@@ -38,7 +42,9 @@ export default function Index() {
               setRegion={setRegion}
               selectedAnalyte={analyte}
               setAnalyte={setAnalyte}
+              setFilterExtentToggle={setFilterExtentToggle}
             />
+            <FilterByExtent setFilterExtentToggle={setFilterExtentToggle} />&nbsp;
             <ChartIndex 
               selectedSites={selectedSites}
               analyte={analyte}

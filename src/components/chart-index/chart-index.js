@@ -144,14 +144,13 @@ export default function ChartIndex({ selectedSites, analyte }) {
 
     if (analyte) {
         return (
-            <div style={{ marginTop: '1em'}}>
+            <>
                 <Button compact 
                     size='tiny'
                     disabled={selectedSites.length < 1 || !(analyte)}
                     onClick={handleClick} 
                     onKeyPress={handleClick}
                 >
-                    <Icon name='chart bar' />
                     Graph selected sites {selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)' }
                 </Button>
                 { modalVisible ? 
@@ -166,7 +165,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                         </Modal.Content>
                     </Modal> 
                 : '' }
-            </div>
+            </>
         )
     } else {
         return (
