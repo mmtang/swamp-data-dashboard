@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import DataTable from 'react-data-table-component';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
+import { Button, Icon } from 'semantic-ui-react';
 import { fetchData, regionDict, regionNumDict } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 
@@ -31,6 +32,14 @@ export default function TableIndex2({ selectedAnalyte, data, setSelectedSites })
                     &nbsp;&nbsp;&nbsp;
                     <span>{row['Trend']}</span>
                 </div>
+            </div>
+        )
+    }
+
+    const CustomLink = ({ row }) => {
+        return (
+            <div>
+                <Icon name='linkify' />&nbsp;<a href={"/explore_data/station/?q=" + row['StationCode']} target="_blank" rel="noopener noreferrer">Link</a>
             </div>
         )
     }
@@ -72,6 +81,13 @@ export default function TableIndex2({ selectedAnalyte, data, setSelectedSites })
                         selector: row => row['LastSampleDate'],
                         width: '110px',
                         sortable: true
+                    },
+                    {
+                        name: 'Site Page',
+                        selector: 'Link',
+                        width: '100px',
+                        sortable: false,
+                        format: row => <CustomLink row={row} />
                     }
                 ]);
             } else {
@@ -114,6 +130,13 @@ export default function TableIndex2({ selectedAnalyte, data, setSelectedSites })
                         selector: row => row['LastSampleDate'],
                         width: '110px',
                         sortable: true
+                    },
+                    {
+                        name: 'Site Page',
+                        selector: 'Link',
+                        width: '100px',
+                        sortable: false,
+                        format: row => <CustomLink row={row} />
                     }
                 ]);
             }
