@@ -218,7 +218,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                     displayField: 'StationName',
                                     exactMatch: false,
                                     outFields: ['StationName', 'StationCode'],
-                                    name: 'Monitoring stations',
+                                    name: 'SWAMP Monitoring Sites',
                                     placeholder: 'Example: Buena Vista Park',
                                     zoomScale: 14000
                                 });

@@ -46,6 +46,7 @@ export default function Index() {
             <TableIndex2 
               selectedAnalyte={analyte}
               data={tableData}
+              setSelectedSites={setSelectedSites}
             />
           </div>
         </div>

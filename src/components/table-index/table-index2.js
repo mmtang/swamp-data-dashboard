@@ -4,7 +4,7 @@ import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { fetchData, regionDict, regionNumDict } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 
-export default function TableIndex2({ selectedAnalyte, data }) {
+export default function TableIndex2({ selectedAnalyte, data, setSelectedSites }) {
     const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState(null); 
 
@@ -34,6 +34,11 @@ export default function TableIndex2({ selectedAnalyte, data }) {
             </div>
         )
     }
+
+    const handleSelectionUpdate = (rows) => {
+        const selection = rows.selectedRows.map(d => d.StationCode);
+        setSelectedSites(selection);
+    };
 
     useEffect(() => {
         if (data) {
@@ -130,7 +135,7 @@ export default function TableIndex2({ selectedAnalyte, data }) {
                     selectableRowsHighlight
                     defaultSortFieldId={'LastSampleDate'}
                     defaultSortAsc={false}
-                    //onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
+                    onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
                     dense
                 />
             </div>

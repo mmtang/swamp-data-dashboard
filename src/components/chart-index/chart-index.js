@@ -160,7 +160,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                         open={modalVisible}
                         onClose={() => setModalVisible(false)}
                     >
-                        <Header icon='chart bar' content={analyte + ': Selected sites'} />
+                        <Header icon='chart bar' content={analyte} />
                         <Modal.Content>
                             { loading ? 'Loading...' : chart() }
                         </Modal.Content>
