@@ -895,7 +895,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
         }
         const irTemplate = {
             // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
-            outFields: ['wbid', 'wbname', 'rb', 'wbtype', 'wb_category', 'wb_listingstatus', 'listed_pollutants', 'fact_sheet'],
+            outFields: ['wbid', 'wbname', 'rb', 'wbtype', 'wb_category', 'wb_listingstatus', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_', 'fact_sheet'],
             title: '{wbname}<br><span class="map-popup-subtitle" style="color: #518f33">2018 Integrated Report</span>',
             content: [
                 {
@@ -929,6 +929,31 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                         {
                             fieldName: 'listed_pollutants',
                             label: 'Listed Pollutant(s)',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listed_pollutant_w_tmdl',
+                            label: 'Listed Pollutant(s) w TMDL',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listed_pollutant_addressed_by_n',
+                            label: 'Listed Pollutant Addressed by NonTMDL',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listed_pollutant_addressed_by_n',
+                            label: 'Listed Pollutant Addressed by NonTMDL',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listed_pollutant_addressed_by_n',
+                            label: 'Listed Pollutant Addressed by NonTMDL',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'pollutants_assessed_not_listed_',
+                            label: 'Pollutants Assessed, Not Listed',
                             visible: true
                         },
                         {
