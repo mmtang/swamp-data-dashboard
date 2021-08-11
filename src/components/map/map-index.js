@@ -5,7 +5,7 @@ import { regionDict, irRegionDict, stationRenderer, stationDataFields, stationDa
 import { container } from './map-index.module.css';
 
 
-export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, setSelectedSites }) {
+export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, setSelectedSites, setTableData }) {
     const [sites, setSites] = useState([]);
     const featuresRef = useRef([]);
 
@@ -85,6 +85,41 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
         setSelectedSites(sites);
     }, [sites]);
 
+    /*
+    useEffect(() => {
+        if (viewRef.current) {
+            if (selectedAnalyte) {
+                viewRef.current.whenLayerView(stationSummaryLayerRef.current).then(layerView => {
+                    console.log('done');
+                });
+            } else {
+                viewRef.current.whenLayerView(stationLayerRef.current).then(layerView => {
+                    layerView.watch('updating', value => {
+                        if (!value) {
+                            layerView.queryFeatures({
+                                geometry: viewRef.current,
+                                returnGeometry: true
+                            }).then(results => {
+                                const features = results.features;
+                                const featureData = features.map(d => {
+                                    return {
+                                        StationName: d.attributes.StationName,
+                                        StationCode: d.attributes.StationCode,
+                                        RegionName: d.attributes.RegionName,
+                                        LastSampleDate: d.attributes.LastSampleDate
+                                    }
+                                })
+                                console.log(featureData);
+                                setTableData(featureData);
+                            });
+                        }
+                    })
+                })
+            }
+        }
+    }, [selectedRegion, selectedAnalyte]);
+    */
+
     useEffect(() => {
         const drawStations = () => {
             const stationTemplate = {
@@ -107,11 +142,12 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                     title: 'SWAMP Monitoring Sites',
                                     source: res,
                                     fields: stationDataFields,
-                                    outFields: ['StationName', 'StationCode'],
+                                    outFields: ['*'],
                                     renderer: stationRenderer,
                                     popupTemplate: stationTemplate
                                 });
                                 mapRef.current.add(stationLayerRef.current);
+                                /*
                                 tableRef.current = new FeatureTable({
                                     view: viewRef.current, // The view property must be set for the select/highlight to work
                                     layer: stationLayerRef.current,
@@ -168,15 +204,13 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                                                 console.log(event);
                                             });
                                         }
-                                        /*
-                                        // Get the new extent of view/map whenever map is updated.
-                                        if (viewRef.current.extent) {
-                                            // Filter out and show only the visible features in the feature table
-                                            tableRef.current.filterGeometry = viewRef.current.extent;
-                                        }
-                                        */
                                     });
                                 });
+                                */
+
+                                // Query features and then update table
+                                updateTableWithStationData();
+                                
                                 // Add station data to search
                                 searchRef.current.sources.add({
                                     layer: stationLayerRef.current,
@@ -484,9 +518,15 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                             }
                             // Add to map
                             mapRef.current.add(stationSummaryLayerRef.current);
+
+                            // Query features and then update table
+                            updateTableWithStationSummaryData();
+
                             // Change table data source
+                            /*
                             tableRef.current.layer = stationSummaryLayerRef.current;
                             tableRef.current.fieldConfigs = stationSummaryTableFields;
+                            */
                         })
                     });
                 });
@@ -501,14 +541,52 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                     updateStationAnalyteLayer();
                 }
             } else {
-                tableRef.current.clearSelection();
+                //tableRef.current.clearSelection();
                 mapRef.current.remove(stationSummaryLayerRef.current);
                 mapRef.current.add(stationLayerRef.current);
-                tableRef.current.layer = stationLayerRef.current;
-                tableRef.current.fieldConfigs = stationDataTableFields;
+                // Update table
+                updateTableWithStationData();
+                //tableRef.current.layer = stationLayerRef.current;
+                //tableRef.current.fieldConfigs = stationDataTableFields;
             }
         }
     }, [selectedAnalyte])
+
+    const updateTableWithStationData = () => {
+        const query = stationLayerRef.current.createQuery();
+        stationLayerRef.current.queryFeatures(query)
+            .then(response => {
+                const features = response.features;
+                const featureData = features.map(d => {
+                    return {
+                        StationName: d.attributes.StationName,
+                        StationCode: d.attributes.StationCode,
+                        RegionName: d.attributes.RegionName,
+                        LastSampleDate: d.attributes.LastSampleDate
+                    }
+                });
+                setTableData(featureData);
+            });
+    }
+
+    const updateTableWithStationSummaryData = () => {
+        const query = stationSummaryLayerRef.current.createQuery();
+        stationSummaryLayerRef.current.queryFeatures(query)
+            .then(response => {
+                const features = response.features;
+                const featureData = features.map(d => {
+                    return {
+                        StationName: d.attributes.StationName,
+                        StationCode: d.attributes.StationCode,
+                        RegionName: d.attributes.RegionName,
+                        Analyte: d.attributes.Analyte,
+                        Trend: d.attributes.Trend,
+                        LastSampleDate: d.attributes.LastSampleDate
+                    }
+                });
+                setTableData(featureData);
+            });
+    }
 
     useEffect(() => {
         if (mapRef.current) {
@@ -518,12 +596,15 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 // Filter IR Layers
                 irLineRef.current.definitionExpression = `rb = '${irRegionDict[selectedRegion]}'`;
                 irPolyRef.current.definitionExpression = `rb = '${irRegionDict[selectedRegion]}'`
-                // Filter stations
+                // Filter stations and table
                 if (stationLayerRef.current) { 
                     stationLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
+                    updateTableWithStationData();
                 }
                 if (stationSummaryLayerRef.current) {
+                    console.log(`RegionName = '${selectedRegion}'`);
                     stationSummaryLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
+                    updateTableWithStationSummaryData();
                 }
                 // Filter BPMP
                 bpPolys.definitionExpression = `BASINPLANNAME = '${selectedRegion}'`;
@@ -552,9 +633,11 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 // Unfilter stations
                 if (stationLayerRef.current) {
                     stationLayerRef.current.definitionExpression = '';
+                    updateTableWithStationData();
                 }
                 if (stationSummaryLayerRef.current) {
                     stationSummaryLayerRef.current.definitionExpression = '';
+                    updateTableWithStationSummaryData();
                 }
                 // Unfilter IR Layers
                 irLineRef.current.definitionExpression = '';

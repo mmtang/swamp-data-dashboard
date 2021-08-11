@@ -3,7 +3,7 @@ import Layout from '../components/layout/layout';
 import MapIndex from '../components/map/map-index';
 import ControlsContainer from '../components/map-controls/controls-container';
 import ChartIndex from '../components/chart-index/chart-index';
-import TableIndex from '../components/table-index/table-index';
+import TableIndex2 from '../components/table-index/table-index2';
 import { mapContainer, mainContainer, infoContainer } from './index.module.css';
 
 export default function Index() {
@@ -11,6 +11,7 @@ export default function Index() {
   const [region, setRegion] = useState(null);
   const [site, setSite] = useState(null);
   const [selectedSites, setSelectedSites] = useState([]);
+  const [tableData, setTableData] = useState();
 
 
   return (
@@ -21,6 +22,7 @@ export default function Index() {
           selectedRegion={region} 
           setSelectedSites={setSelectedSites}
           clickedSite={site} 
+          setTableData={setTableData}
         />
       </div>
       <div className={mainContainer}>
@@ -41,17 +43,13 @@ export default function Index() {
               selectedSites={selectedSites}
               analyte={analyte}
             />
-            {/*
-            <TableIndex 
-              selectedRegion={region} 
-              setRegion={setRegion} 
+            <TableIndex2 
               selectedAnalyte={analyte}
-              setAnalyte={setAnalyte}
-              setSite={setSite} />
-            */}
+              data={tableData}
+            />
           </div>
         </div>
-        <div id="indexTableContainer" style={{ padding: '0 20px', marginBottom: '100px' }}></div>
+        {/*<div id="indexTableContainer" style={{ padding: '0 20px', marginBottom: '100px' }}></div>*/}
       </div>
     </Layout>
   )
