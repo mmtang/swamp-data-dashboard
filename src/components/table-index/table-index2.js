@@ -84,7 +84,7 @@ export default function TableIndex2({ selectedAnalyte, data, setSelectedSites })
                     },
                     {
                         name: 'Site Page',
-                        selector: 'Link',
+                        selector: row => 'Link',
                         width: '100px',
                         sortable: false,
                         format: row => <CustomLink row={row} />
@@ -133,7 +133,7 @@ export default function TableIndex2({ selectedAnalyte, data, setSelectedSites })
                     },
                     {
                         name: 'Site Page',
-                        selector: 'Link',
+                        selector: row => 'Link',
                         width: '100px',
                         sortable: false,
                         format: row => <CustomLink row={row} />

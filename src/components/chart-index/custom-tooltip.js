@@ -4,6 +4,10 @@ import { timeFormat } from 'd3';
 export default function CustomTooltip({ active, payload, label, unit }) {
   const formatDate = timeFormat('%Y-%m-%d');
 
+  if (payload) {
+    console.log(payload);
+  }
+
   const style = {
     padding: '6px 12px',
     backgroundColor: '#fff',

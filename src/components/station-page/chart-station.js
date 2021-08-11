@@ -99,7 +99,8 @@ export default function ChartStation({ station, selectedAnalytes }) {
         for (const key in analyteKeys) {
             const analyteName = analyteKeys[key];
             data[analyteName]['yScale'] = d3.scaleLinear()
-                .domain([data[analyteName].yMin, data[analyteName].yMax])
+                //.domain([data[analyteName].yMin, data[analyteName].yMax])
+                .domain([0, data[analyteName].yMax])
                 .range([height - margin.bottom, margin.top]);
             data[analyteName]['yAxis'] = d3.axisLeft()
                 .scale(data[analyteName]['yScale']);
@@ -143,6 +144,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
             const analyteName = analyteKeys[key];
             const yScale = data[analyteName]['yScale'];
 
+            /*
             // draw lines
             const line = d3.line()
                 .x(function(d) { return xScale(d.SampleDate); })
@@ -155,6 +157,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
                 .attr('stroke', colorPaletteViz[key])
                 .attr('fill', 'none')
                 .attr('stroke-width', 1);
+            */
 
             // draw points
             const points = chart.append('g')
@@ -163,7 +166,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
                 .data(data[analyteName]['data'])
                 .enter().append('circle')
                 .attr('class', 'circle')
-                .attr('r', 3)
+                .attr('r', 4)
                 .attr('cx', (d) => { 
                     return xScale(d.SampleDate); 
                 })

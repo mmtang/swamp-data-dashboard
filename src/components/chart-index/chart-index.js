@@ -142,34 +142,29 @@ export default function ChartIndex({ selectedSites, analyte }) {
         )
     }
 
-    if (analyte) {
-        return (
-            <>
-                <Button compact 
-                    size='tiny'
-                    disabled={selectedSites.length < 1 || !(analyte)}
-                    onClick={handleClick} 
-                    onKeyPress={handleClick}
+    return (
+        <>
+            <Button compact 
+                size='tiny'
+                disabled={selectedSites.length < 1 || !(analyte)}
+                onClick={handleClick} 
+                onKeyPress={handleClick}
+            >
+                <Icon name='chart bar' />
+                Graph selected sites {selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)' }
+            </Button>
+            { modalVisible ? 
+                <Modal
+                    closeIcon
+                    open={modalVisible}
+                    onClose={() => setModalVisible(false)}
                 >
-                    Graph selected sites {selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)' }
-                </Button>
-                { modalVisible ? 
-                    <Modal
-                        closeIcon
-                        open={modalVisible}
-                        onClose={() => setModalVisible(false)}
-                    >
-                        <Header icon='chart bar' content={analyte} />
-                        <Modal.Content>
-                            { loading ? 'Loading...' : chart() }
-                        </Modal.Content>
-                    </Modal> 
-                : '' }
-            </>
-        )
-    } else {
-        return (
-            <div></div>
-        )
-    }
+                    <Header icon='chart bar' content={analyte} />
+                    <Modal.Content>
+                        { loading ? 'Loading...' : chart() }
+                    </Modal.Content>
+                </Modal> 
+            : '' }
+        </>
+    )
 }

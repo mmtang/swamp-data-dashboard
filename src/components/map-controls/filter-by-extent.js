@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'semantic-ui-react';
+import { Button, Icon } from 'semantic-ui-react';
 
 export default function FilterByExtent({ setFilterExtentToggle }) {   
     const handleClick = () => {
@@ -13,6 +13,7 @@ export default function FilterByExtent({ setFilterExtentToggle }) {
             onClick={handleClick} 
             onKeyPress={handleClick}
         >
+            <Icon name='filter' />
             Filter by map extent
         </Button>
     )

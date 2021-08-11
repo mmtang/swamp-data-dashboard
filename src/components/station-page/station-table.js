@@ -150,6 +150,8 @@ export default function StationTable({ station, setSelectedAnalytes }) {
                 pagination
                 selectableRows
                 selectableRowsHighlight
+                defaultSortFieldId={'LastSampleDate'}
+                defaultSortAsc={false}
                 onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
                 dense
             />
