@@ -1,0 +1,40 @@
+.parent {
+    width: 100vw;
+    overflow-y: auto;
+    margin-bottom: 60px;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    background-color: #f4f2f2;
+}
+
+.hero h1 {
+    font-size: 2.4em;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.15em;
+    margin-bottom: 24px;
+}
+
+.sectionContent {
+    margin: 0 15px;
+    padding: 60px 40px;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    background-color: #f4f2f2;
+    text-align: center;
+}
+
+.copyright {
+    font-size: 0.9em;
+    line-height: 1.6em;
+}
+
