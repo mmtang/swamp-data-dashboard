@@ -1,0 +1,42 @@
+.parent {
+    padding: 1rem;
+    line-height: 0;
+}
+
+.imageContainer {
+    width: 100%;
+    margin: 0;
+}
+
+.imageCard {
+    width: 100%;
+}
+
+.contentContainer {
+    background-color: #00b5ad;
+    padding: 20px;
+    margin: 0;
+}
+
+.contentContainer h2 {
+    font-size: 1.1em !important;
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.contentContainer p {
+    font-size: 0.9em;
+    color: #fff;
+}
+
+@media (min-width: 40rem) {
+    .parent {
+      width: 50%;
+    }
+}
+
+@media (min-width: 56rem) {
+    .parent {
+      width: 33.3333%;
+    }
+}

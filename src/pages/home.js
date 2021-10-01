@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
 import Layout from '../components/layout/layout';
+import Card from '../components/common/card';
 import { Button } from 'semantic-ui-react';
-import { parent, hero, sectionContent, footer, copyright } from './home.module.css';
+import { parent, hero, sectionContent, cardGallery, footer, copyright } from './home.module.css';
 
 export default function Home() {
     const yearRef = useRef(new Date().getFullYear());
@@ -18,10 +19,25 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="section">
-                    <div className={sectionContent}>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Aliquam etiam erat velit scelerisque. Blandit aliquam etiam erat velit scelerisque in dictum. Morbi tincidunt augue interdum velit euismod in pellentesque massa placerat. Varius vel pharetra vel turpis nunc eget lorem dolor.</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Aliquam etiam erat velit scelerisque. Blandit aliquam etiam erat velit scelerisque in dictum. Morbi tincidunt augue interdum velit euismod in pellentesque massa placerat. Varius vel pharetra vel turpis nunc eget lorem dolor. </p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Aliquam etiam erat velit scelerisque. Blandit aliquam etiam erat velit scelerisque in dictum. Morbi tincidunt augue interdum velit euismod in pellentesque massa placerat. Varius vel pharetra vel turpis nunc eget lorem dolor. </p>
+                    <div className={cardGallery}>
+                        <Card imagePath={`card_image_dashboard.png`} imageAlt={'Map showing SWAMP monitoring sites'}>
+                            <h2>
+                                Dashboard
+                            </h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </Card>
+                        <Card imagePath={`card_image_dashboard.png`} imageAlt={'Map showing SWAMP monitoring sites'}>
+                            <h2>
+                                Learn
+                            </h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </Card>
+                        <Card imagePath={`card_image_dashboard.png`} imageAlt={'Map showing SWAMP monitoring sites'}>
+                            <h2>
+                                Data
+                            </h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </Card>
                     </div>
                 </div>
                 <div className={footer}>

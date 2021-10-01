@@ -26,6 +26,12 @@
     padding: 60px 40px;
 }
 
+.cardGallery {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 2em;
+}
+
 .footer {
     display: flex;
     justify-content: center;
