@@ -150,3 +150,7 @@ a {
 #legend-container {
   font-size: 0.85em;
 }
+
+.ui.button {
+  border-radius: 0;
+}

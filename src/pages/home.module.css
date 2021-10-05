@@ -44,3 +44,14 @@
     line-height: 1.6em;
 }
 
+.logoContainer {
+    display: flex;
+    margin-bottom: 2.2em;
+    justify-content: center;
+}
+
+.logo {
+    height: 65px;
+    margin-left: 2em;
+}
+

@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import Layout from '../components/layout/layout';
 import Card from '../components/common/card';
 import { Button } from 'semantic-ui-react';
-import { parent, hero, sectionContent, cardGallery, footer, copyright } from './home.module.css';
+import { parent, hero, sectionContent, cardGallery, footer, copyright, logoContainer, logo } from './home.module.css';
 
 export default function Home() {
     const yearRef = useRef(new Date().getFullYear());
@@ -20,28 +20,32 @@ export default function Home() {
                 </div>
                 <div className="section">
                     <div className={cardGallery}>
-                        <Card imagePath={`card_image_dashboard.png`} imageAlt={'Map showing SWAMP monitoring sites'}>
+                        <Card imagePath={`card_image_dashboard.jpg`} imageAlt={'Map of monitoring sites near Grass Valley, California'}>
                             <h2>
                                 Dashboard
                             </h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                            <p>Explore SWAMP water quality data, trends, and more on an interactive platform.</p>
                         </Card>
-                        <Card imagePath={`card_image_dashboard.png`} imageAlt={'Map showing SWAMP monitoring sites'}>
+                        <Card imagePath={`card_image_learn.jpg`} imageAlt={'Scientists wading in a stream'}>
                             <h2>
                                 Learn
                             </h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                            <p>Learn about common water quality indicators and how to interpret SWAMP data.</p>
                         </Card>
-                        <Card imagePath={`card_image_dashboard.png`} imageAlt={'Map showing SWAMP monitoring sites'}>
+                        <Card imagePath={`card_image_data.jpg`} imageAlt={'Map showing SWAMP monitoring sites'}>
                             <h2>
                                 Data
                             </h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                            <p>Access and download SWAMP data from the dashboard and other platforms.</p>
                         </Card>
                     </div>
                 </div>
                 <div className={footer}>
                     <div className={sectionContent}>
+                        <div className={logoContainer}>
+                            <img className={logo} src={`swamp_logo_black_small.png`} alt='SWAMP logo' />
+                            <img className={logo} src={`wb_logo_black_small.png`} alt='Water Boards logo' />
+                        </div>
                         <span className={copyright}>
                             Copyright © {yearRef.current} State of California<br />
                             Surface Water Ambient Monitoring Program&nbsp;&nbsp;|&nbsp;&nbsp;California Water Boards
