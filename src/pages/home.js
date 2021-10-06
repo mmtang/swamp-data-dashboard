@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import Layout from '../components/layout/layout';
 import Card from '../components/common/card';
 import { Button } from 'semantic-ui-react';
-import { parent, hero, sectionContent, cardGallery, footer, copyright, logoContainer, logo } from './home.module.css';
+import { parent, hero, sectionContent, cardGallery, footer, footerContent, copyright, logoContainer, logo } from './home.module.css';
 
 export default function Home() {
     const yearRef = useRef(new Date().getFullYear());
@@ -30,7 +30,7 @@ export default function Home() {
                             <h2>
                                 Learn
                             </h2>
-                            <p>Learn about common water quality indicators and how to interpret SWAMP data.</p>
+                            <p>Read about common water quality indicators and how to interpret SWAMP data.</p>
                         </Card>
                         <Card imagePath={`card_image_data.jpg`} imageAlt={'Map showing SWAMP monitoring sites'}>
                             <h2>
@@ -42,9 +42,18 @@ export default function Home() {
                 </div>
                 <div className={footer}>
                     <div className={sectionContent}>
-                        <div className={logoContainer}>
-                            <img className={logo} src={`swamp_logo_black_small.png`} alt='SWAMP logo' />
-                            <img className={logo} src={`wb_logo_black_small.png`} alt='Water Boards logo' />
+                        <div className={footerContent}>
+                            <div className={logoContainer}>
+                                <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" rel="noopener noreferrer" target="_blank"><img className={logo} src={`swamp_logo_black_small.png`} alt='SWAMP logo' /></a>
+                                {/*
+                                <a href="https://www.waterboards.ca.gov/" rel="noopener noreferrer" target="_blank"><img className={logo} src={`wb_logo_black_small.png`} alt='Water Boards logo' /></a>
+                                */}
+                            </div>
+                            <div>
+                                <h4>Contact</h4>
+                                <span>Website or general inquiries:<br />
+                                <a href="mailto:swamp@waterboards.ca.gov">swamp@waterboards.ca.gov</a></span>
+                            </div>
                         </div>
                         <span className={copyright}>
                             Copyright © {yearRef.current} State of California<br />

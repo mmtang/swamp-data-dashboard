@@ -14,17 +14,26 @@
 
 .contentContainer {
     background-color: #00b5ad;
+    margin: 0;
+}
+
+.contentContainer:hover {
+    background-color: #009c95;
+    cursor: pointer;
+}
+
+.textContainer {
     padding: 20px;
     margin: 0;
 }
 
-.contentContainer h2 {
+.textContainer h2 {
     font-size: 1.1em !important;
     margin-bottom: 5px;
     color: #fff;
 }
 
-.contentContainer p {
+.textContainer p {
     font-size: 0.9em;
     color: #fff;
 }

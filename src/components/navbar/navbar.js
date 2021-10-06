@@ -7,10 +7,11 @@ const Navbar = () => {
 
     return (
         <div className={navBar}>
-            <a href="/"><span className={navTitle}>Surface Water Ambient Monitoring Program</span></a>
+            {/* Wrap navbar header text in span */}
+            <a href="/"><span className={navTitle}></span></a>
             {/*
             <div className={logoWrapper}>
-                <a href="/"><span className={navTitle}>Surface Water Ambient Monitoring Program</span><img className={logo} src={`SWAMP_logo_white_small.png`} alt="SWAMP Logo" /></a>
+                <a href="/"><img className={logo} src={`SWAMP_logo_white_small.png`} alt="SWAMP Logo" /></a>
             </div>
             */}
             <div className={navMenu}>
