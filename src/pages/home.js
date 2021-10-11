@@ -9,7 +9,7 @@ export default function Home() {
 
 
     return (
-        <Layout>
+        <Layout header={""}>
             <div className={parent}>
                 <div className={hero}>
                     <div className={sectionContent}>
@@ -20,19 +20,19 @@ export default function Home() {
                 </div>
                 <div className="section">
                     <div className={cardGallery}>
-                        <Card imagePath={`card_image_dashboard.jpg`} imageAlt={'Map of monitoring sites near Grass Valley, California'}>
+                        <Card imagePath={`card_image_dashboard.jpg`} imageAlt={'Digital map of monitoring sites'}>
                             <h2>
                                 Dashboard
                             </h2>
                             <p>Explore SWAMP water quality data, trends, and more on an interactive platform.</p>
                         </Card>
-                        <Card imagePath={`card_image_learn.jpg`} imageAlt={'Scientists wading in a stream'}>
+                        <Card imagePath={`card_image_learn.jpg`} imageAlt={'Scientists wading in a stream'} link={'/learn'}>
                             <h2>
                                 Learn
                             </h2>
-                            <p>Read about common water quality indicators and how to interpret SWAMP data.</p>
+                            <p>Read about how SWAMP measures water quality and how to interpret SWAMP data.</p>
                         </Card>
-                        <Card imagePath={`card_image_data.jpg`} imageAlt={'Map showing SWAMP monitoring sites'}>
+                        <Card imagePath={`card_image_data.jpg`} imageAlt={'Aerial photograph of a river and a city in the background'}>
                             <h2>
                                 Data
                             </h2>

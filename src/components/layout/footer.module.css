@@ -1,0 +1,39 @@
+.container {
+    background-color: #f4f2f2;
+    padding: 60px 40px;
+}
+
+.container h4 {
+    font-size: 0.87em !important;
+    margin: 0;
+    text-transform: uppercase;
+    border-bottom: 1px solid #5d5d5d;
+    padding-bottom: 0.4em;
+    margin-bottom: 0.4em;
+}
+
+.container span {
+    font-size: 0.9em;
+    line-height: 1.6em;
+}
+
+.contactContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.logoContainer {
+    margin-right: 2.2em;
+}
+
+.logo {
+    height: 65px;
+}
+
+.copyright {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: 3.4em;
+    white-space: pre-line;
+}

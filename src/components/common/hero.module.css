@@ -1,0 +1,31 @@
+.container {
+    width: 100vw;
+    overflow-y: auto;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.45), rgba(32, 99, 155, 0)), url("/learn_image_large.jpg");
+    background-size: cover;
+    background-position: 25% 50%;
+}
+
+.hero .content {
+    margin: 0 15px;
+    padding: 80px 40px;
+}
+
+.hero h1 {
+    font-size: 2.2em;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.hero p {
+    font-size: 1.15em;
+    font-weight: 300;
+    margin-bottom: 24px;
+    color: #fff;
+}

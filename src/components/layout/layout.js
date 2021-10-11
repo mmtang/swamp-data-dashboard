@@ -3,10 +3,10 @@ import Navbar from '../navbar/navbar.js';
 import { appContainer } from './layout.module.css';
 
 
-function Layout({ children }) {    
+function Layout({ header, children }) {    
     return (
         <React.Fragment>
-            <Navbar />
+            <Navbar header={header} />
             <div className={appContainer}>
                 {children}
             </div>
