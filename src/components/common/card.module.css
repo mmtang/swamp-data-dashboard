@@ -3,6 +3,15 @@
     line-height: 0;
 }
 
+.contentContainer:hover {
+    background-color: #009c95;
+    cursor: pointer;
+}
+
+.contentContainer:hover .imageCard {
+    -webkit-filter: brightness(90%);
+}
+
 .imageContainer {
     width: 100%;
     margin: 0;
@@ -15,11 +24,6 @@
 .contentContainer {
     background-color: #00b5ad;
     margin: 0;
-}
-
-.contentContainer:hover {
-    background-color: #009c95;
-    cursor: pointer;
 }
 
 .textContainer {

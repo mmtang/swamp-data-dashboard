@@ -1,7 +1,6 @@
 import React from 'react';
 import LayoutInfo from '../../components/layout/layout-info';
 import Hero from '../../components/common/hero';
-import Footer from '../../components/layout/footer';
 import { Icon } from 'semantic-ui-react';
 import { main } from '../pages.module.css';
 

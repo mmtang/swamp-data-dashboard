@@ -28,6 +28,19 @@
 
 .logo {
     height: 65px;
+    -webkit-filter: opacity(80%);
+    -moz-filter: opacity(80%);
+    -ms-filter: opacity(80%);
+    -o-filter: opacity(80%);
+    filter: opacity(80%);
+}
+
+.logo:hover {
+    -webkit-filter: opacity(100%);
+    -moz-filter: opacity(100%);
+    -ms-filter: opacity(100%);
+    -o-filter: opacity(100%);
+    filter: opacity(100%);
 }
 
 .copyright {
