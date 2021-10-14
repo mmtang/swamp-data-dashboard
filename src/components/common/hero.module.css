@@ -6,7 +6,7 @@
 .hero {
     display: flex;
     align-items: center;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.25), rgba(32, 99, 155, 0)), url("/learn_image_large.jpg");
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.3), rgba(32, 99, 155, 0)), url("/learn_image_large.jpg");
     background-size: cover;
     background-position: 25% 50%;
 }

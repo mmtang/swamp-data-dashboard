@@ -1,8 +1,10 @@
 import React from 'react';
 import LayoutInfo from '../../../components/layout/layout-info';
 import Hero from '../../../components/common/hero';
-import { Icon } from 'semantic-ui-react';
+import SmallCard from '../../../components/common/small-card';
+import ParameterIcon from '../../../components/icons/parameter-icon';
 import { main } from '../../pages.module.css';
+import { grid } from './index.module.css';
 
 export default function ParametersIndex() {
     return (
@@ -12,12 +14,21 @@ export default function ParametersIndex() {
                     <h1>Water quality parameters</h1>
                 </Hero>
                 <div className={main}>
-                    <h2>Chemical parameters</h2>
-                    <p>Chemical properties are a key factor in assessing the health of a waterbody. Chemical parameters include nutrients, suspended solids, pH, and specific conductivity.</p>
-                    <h2>Physical paramaters</h2>
-                    <p>Scientists monitor the physical properties of water to inform water quality assessments. These parameters include sensory observations such as appearance, color, and temperature.</p>
-                    <h2>Biological parameters</h2>
-                    <p>The fauna and flora found living in a waterbody can serve as indicators of ecological condition. Commonly used biological indicators include benthic macroinvertebrates (bugs) and algae.</p>
+                    <p>SWAMP measures a variety of chemical, physical, and biological properties that affect the quality of water in rivers, lakes, and other waterbodies. Chemical parameters include pH and dissolved oxygen, physical parameters include temperature and turbidity, and biological parameters include indicators such as benthic macroinvertebrates (bugs) and algae.</p>
+                    <div className={grid}>
+                        <SmallCard leftComponent={<ParameterIcon icon='csci' size={60} />}>
+                            <h4>California Stream Condition Index</h4>
+                            <p>A statewide index for translating complex data about benthic macroinvertebrates (bugs) found living in a stream into an overall measure of stream health.</p>
+                        </SmallCard>
+                        <SmallCard leftComponent={<ParameterIcon icon='temperature' size={60} />}>
+                            <h4>Temperature</h4>
+                            <p>A measure of the average energy (kinetic) of water molecules. It is an important indicator of the general condition of a waterbody and the ecosystem it supports.</p>
+                        </SmallCard>
+                        <SmallCard leftComponent={<ParameterIcon icon='turbidity' size={60} />}>
+                            <h4>Turbidity</h4>
+                            <p>A measure of how particles suspended in water affect water clarity. It is an important indicator of sediment and erosion levels, which can affect ecological productivity and habitat quality.</p>
+                        </SmallCard>
+                    </div>
                 </div>
             </div>
         </LayoutInfo>

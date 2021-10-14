@@ -1,0 +1,19 @@
+.grid {
+    display: grid;
+    grid-template-rows: auto 1fr auto;  /* key rule */
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 12px;
+    margin-top: 2em;
+}
+
+@media screen and (max-width: 1000px) {
+    .grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
