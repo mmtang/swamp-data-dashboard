@@ -1,0 +1,33 @@
+.container {
+    width: 280px;
+}
+
+.menu {
+    list-style-type: none;
+    margin: 0;
+}
+
+.title {
+    padding: 0 0.8em 0.8em 0;
+    font-weight: 600;
+    font-size: 1.05em;
+    color: #103c68;
+}
+
+.item {
+    display: block;
+    padding: 14px 1em;
+    border-top: 1px solid #d6d6d6;
+    font-size: 0.95em;
+}
+
+.active {
+    font-weight: 600;
+    color: #1e70bf;
+    border-left: 4px solid #1e70bf;
+    padding-left: 11px; /* offset the padding to accommodate the added border on the left */
+}
+
+.item:hover {
+    background-color: #e9ebeb;
+}
