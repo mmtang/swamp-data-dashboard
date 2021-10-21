@@ -26,6 +26,7 @@
     color: #1e70bf;
     border-left: 4px solid #1e70bf;
     padding-left: 11px; /* offset the padding to accommodate the added border on the left */
+    cursor: default;
 }
 
 .item:hover {

@@ -11,18 +11,18 @@ function LayoutParameter({ parameter, children }) {
     return (
         <LayoutInfo title='SWAMP Data Dashboard'>
             <Hero>
-                <h1>Turbidity</h1>
+                <h1>{parameter.display}</h1>
             </Hero>
             <div className={main}>
                 <div className={parent}>
                     <div>
-                        <ParameterIcon icon={parameter} size={60} />
+                        <ParameterIcon icon={parameter.name} size={60} />
                     </div>
                     <div className={textContainer}>
                         {children}
                     </div>
                     <div className={menuContainer}>
-                        <ParameterMenu activeParameter={parameter} />
+                        <ParameterMenu activeParameter={parameter.name} />
                     </div>
                 </div>
             </div>

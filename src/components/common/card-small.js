@@ -1,7 +1,7 @@
 import React from 'react';
-import { card, left, right } from './small-card.module.css';
+import { card, left, right } from './card-small.module.css';
 
-export default function SmallCard({ leftComponent, children }) {
+export default function CardSmall({ leftComponent, children }) {
     return (
         <div className={card}>
             <div className={left}>
