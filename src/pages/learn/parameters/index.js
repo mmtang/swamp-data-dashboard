@@ -55,7 +55,7 @@ export default function ParametersIndex() {
                         {/* Total Kjeldahl Nitrogen */}
                         <Link to="./total_kjeldahl_nitrogen"><CardSmall leftComponent={<ParameterIcon icon='tkn' size={60} />}>
                             <h4>Total Kjeldahl Nitrogen</h4>
-                            <p>The sum of organic nitrogen, ammonia, and ammonium in a waterbody. High concentrations can indicate sewage manure discharges are present.</p>
+                            <p>The sum of organic nitrogen, ammonia, and ammonium in a waterbody. High concentrations can indicate sewage manure discharges are present in the water.</p>
                         </CardSmall></Link>
                         {/* Total Nitrogen */}
                         <Link to="./total_nitrogen"><CardSmall leftComponent={<ParameterIcon icon='totalNitrogen' size={60} />}>

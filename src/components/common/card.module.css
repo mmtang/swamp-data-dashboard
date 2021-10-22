@@ -3,27 +3,33 @@
     line-height: 0;
 }
 
-.contentContainer:hover {
-    background-color: #009c95;
-    cursor: pointer;
-}
-
-.contentContainer:hover .imageCard {
-    -webkit-filter: brightness(90%);
-}
-
 .imageContainer {
     width: 100%;
     margin: 0;
+    overflow: hidden;
 }
 
 .imageCard {
     width: 100%;
+    transition: transform .5s ease;
 }
 
 .contentContainer {
-    background-color: #00b5ad;
+    height: 100%;
     margin: 0;
+    border: 2px solid #969696;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.15);
+    transition: transform .5s ease;
+}
+
+.contentContainer:hover {
+    cursor: pointer;
+    transform: scale(1.04);
+}
+
+.contentContainer:hover .imageCard {
+    -webkit-filter: brightness(100%);
+    /* transform: scale(1.1); */
 }
 
 .textContainer {
@@ -34,12 +40,10 @@
 .textContainer h2 {
     font-size: 1.1em !important;
     margin-bottom: 5px;
-    color: #fff;
 }
 
 .textContainer p {
     font-size: 0.9em;
-    color: #fff;
 }
 
 @media (min-width: 40rem) {
