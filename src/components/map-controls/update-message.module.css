@@ -1,0 +1,35 @@
+.message {
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: #f8f8f9;
+    border: 1px solid #c9cacb;
+    border-radius: 0;
+    padding: 0.8em;
+}
+
+.left {
+    flex-basis: 11%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content {
+    flex-basis: 84%;
+    margin: 0 10px;
+    line-height: 1.2;
+}
+
+.header {
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.small {
+    font-size: 0.85em;
+}
+
+.right {
+    flex-basis: 5%;
+}
+

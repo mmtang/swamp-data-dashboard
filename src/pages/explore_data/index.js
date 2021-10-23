@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import LayoutMap from '../../components/layout/layout-map';
 import MapIndex from '../../components/map/map-index';
+import UpdateMessage from '../../components/map-controls/update-message';
 import ControlsContainer from '../../components/map-controls/controls-container';
 import ChartIndex from '../../components/chart-index/chart-index';
 import TableIndex2 from '../../components/table-index/table-index2';
@@ -31,6 +32,7 @@ export default function Index() {
       </div>
       <div className={mainContainer}>
         <div className={infoContainer}>
+          <UpdateMessage />
           <p>Use the controls below to change the map settings.</p>
           {/* Controls */}
           <div>

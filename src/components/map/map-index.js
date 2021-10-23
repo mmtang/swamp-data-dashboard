@@ -786,7 +786,13 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                     locationEnabled: false,
                     popupEnabled: false,
                     autoSelect: true,
-                    sources: []
+                    sources: [
+                        {
+                            filter: {
+                                where: "RegionAbbr = 'CA'"
+                            }
+                        }
+                    ]
                 });
                 layerListRef.current = new LayerList({
                     view: viewRef.current,
