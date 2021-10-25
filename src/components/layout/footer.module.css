@@ -28,19 +28,20 @@
 
 .logo {
     height: 65px;
-    -webkit-filter: opacity(80%);
-    -moz-filter: opacity(80%);
-    -ms-filter: opacity(80%);
-    -o-filter: opacity(80%);
-    filter: opacity(80%);
+    -webkit-filter: opacity(65%);
+    -moz-filter: opacity(65%);
+    -ms-filter: opacity(65%);
+    -o-filter: opacity(65%);
+    filter: opacity(65%);
+    transition: 0.25s all ease-in-out;
 }
 
 .logo:hover {
-    -webkit-filter: opacity(100%);
-    -moz-filter: opacity(100%);
-    -ms-filter: opacity(100%);
-    -o-filter: opacity(100%);
-    filter: opacity(100%);
+    -webkit-filter: opacity(90%);
+    -moz-filter: opacity(90%);
+    -ms-filter: opacity(90%);
+    -o-filter: opacity(90%);
+    filter: opacity(90%);
 }
 
 .copyright {

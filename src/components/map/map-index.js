@@ -317,9 +317,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
         initializeMap()
         .then(() => {
             drawLandUse();
-            drawBasinPlan();
+            //drawBasinPlan();
             //drawAttains();
-            drawIntegratedReportLayers();
+            //drawIntegratedReportLayers();
             drawRegions();
             drawStations();
         });
@@ -780,8 +780,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 searchRef.current = new Search({
                     view: viewRef.current,
                     container: 'searchContainer',
-                    allPlaceholder: 'Zoom to a location, waterbody, or monitoring site',
-                    label: 'Zoom to a location, waterbody, or monitoring site',
+                    allPlaceholder: ' ',
+                    label: 'Search for a location, waterbody, or monitoring site',
                     includeDefaultSources: true,
                     locationEnabled: false,
                     popupEnabled: false,

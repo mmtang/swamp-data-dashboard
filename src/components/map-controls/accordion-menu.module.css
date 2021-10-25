@@ -1,0 +1,21 @@
+.customAccordion {
+    border-radius: 0 !important;
+}
+
+.titleWrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.leadingIcon {
+    margin-right: 0.6em !important;
+}
+
+.pLabel {
+    margin: 0.4em 0;
+}
+
+.pLabel span {
+    font-size: 0.9em;
+    font-weight: 600;
+}
