@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Accordion, Icon } from 'semantic-ui-react';
 import HelpIcon from '../icons/help-icon';
-import { customAccordion, titleWrapper, leadingIcon, panelContent, pLabel } from './accordion-menu.module.css';
+import RegionMenu from '../map-controls/region-menu';
+import { customAccordion, customTitle, titleWrapper, leadingIcon, panelContent, pLabel } from './accordion-menu.module.css';
+
 
 // This component generates the structure for the accordion menu on the explore_data index page
 // It calls upon other componenets to fill the content for each panel
-export default function AccordionMenu() {  
+
+export default function AccordionMenu({ region, setRegion }) {  
     // Open all three panels upon initial load; keep track of selection and save to state
     const [activeIndex, setActiveIndex] = useState([0, 1, 2]);
     const handleClick = (e, titleProps) => {
@@ -33,6 +36,7 @@ export default function AccordionMenu() {
         >
             {/* Search */}
             <Accordion.Title
+                className={customTitle}
                 active={activeIndex.includes(0)}
                 index={0}
                 onClick={handleClick}
@@ -42,18 +46,18 @@ export default function AccordionMenu() {
                         <Icon className={leadingIcon} name='search' />
                         Search
                     </div>
-                    { activeIndex.includes(0) ? <Icon name='angle down' /> : <Icon name='angle right' /> }
+                    { activeIndex.includes(0) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
                 </div>
             </Accordion.Title>
             <Accordion.Content active={activeIndex.includes(0)} className={panelContent}>
                 <p className={pLabel}>
                     <span>
                         Location, waterbody, monitoring site 
-                        <HelpIcon>
+                        <HelpIcon wide={true}>
                             <div>
                                 <p>Search for a specific location (city, region), landmark, waterbody (river, lake, reservoir), or SWAMP monitoring site (station name or code).</p>
                                 <p>This search uses the ArcGIS World Geocoding Service and also searches through the features in the loaded map layers. The results are categorized by source/layer.</p>
-                                <p>By default, this search uses a library of Integrated Report waterbodies. For Basin Plan waterbodies, turn on the Basin Plan layer in the <strong>Layers</strong> section below and try searching again once the layer has completely loaded.</p>
+                                <p>By default, this search uses a library of Integrated Report waterbodies. For Basin Plan waterbodies, turn on the Basin Plan layer in the <strong>Layers</strong> section and try searching again once the layer has completely loaded.</p>
                             </div>
                         </HelpIcon>
                     </span>
@@ -61,12 +65,13 @@ export default function AccordionMenu() {
                 {/* Container for the ArcGIS JavaScript search widget */}
                 <div id="searchContainer" style={{ border: '1px solid #6e6e6e', marginBottom: '0.4em' }} />
                 <p className={pLabel}>
-                    <span>Example: Lagunitas Creek, 201LAG195</span>
+                    <span>Example: Lagunitas Creek, 201LAG195, or Nicasio, CA</span>
                 </p>
             </Accordion.Content>
 
             {/* Filter */}
             <Accordion.Title
+                className={customTitle}
                 active={activeIndex.includes(1)}
                 index={1}
                 onClick={handleClick}
@@ -76,15 +81,28 @@ export default function AccordionMenu() {
                         <Icon className={leadingIcon} name='filter' />
                         Filters
                     </div>
-                    { activeIndex.includes(1) ? <Icon name='angle down' /> : <Icon name='angle right' /> }
+                    { activeIndex.includes(1) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
                 </div>
             </Accordion.Title>
             <Accordion.Content active={activeIndex.includes(1)}>
-                <p>A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p>
+                <p className={pLabel}>
+                    <span>
+                        Regional Water Quality Control Board
+                        <HelpIcon wide={true}>
+                            <div>
+                                <p>In addition to the State Water Resources Control Board, which sets statewide policy, there are nine semi-autonomous <strong>regional water quality control boards</strong> statewide. Regional boundaries are based on watersheds, and each Regional Board makes critical water quality decisions for its region, including setting standards, issuing waste discharge requirements, determining compliance with those requirements, and taking appropriate enforcement actions.</p>
+                                <img src="\rb_map.jpg" alt='Statewide map of regional water board boundaries' style={{ display: 'block', margin: 'auto', maxWidth: '380px' }} />
+                                <p><a href="https://www.waterboards.ca.gov/publications_forms/publications/factsheets/docs/boardoverview.pdf" target="_blank" rel="noreferrer noopener">Source</a></p>
+                            </div>
+                        </HelpIcon>
+                    </span>
+                </p>
+                <RegionMenu region={region} setRegion={setRegion} />
             </Accordion.Content>
 
             {/* Layers */}
             <Accordion.Title
+                className={customTitle}
                 active={activeIndex.includes(2)}
                 index={2}
                 onClick={handleClick}
@@ -94,7 +112,7 @@ export default function AccordionMenu() {
                         <Icon className={leadingIcon} name='map' />
                         Layers
                     </div>
-                    { activeIndex.includes(2) ? <Icon name='angle down' /> : <Icon name='angle right' /> }
+                    { activeIndex.includes(2) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
                 </div>
             </Accordion.Title>
             <Accordion.Content active={activeIndex.includes(2)}>

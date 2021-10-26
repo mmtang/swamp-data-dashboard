@@ -2,9 +2,19 @@
     border-radius: 0 !important;
 }
 
+.customTitle {
+    font-weight: 500 !important;
+    /* background-color: #f0f1f1 !important; */
+}
+
+.customAccordion p {
+    font-size: 0.9em !important;
+}
+
 .titleWrapper {
     display: flex;
     justify-content: space-between;
+    color: #5d5d5d;
 }
 
 .leadingIcon {
@@ -16,6 +26,6 @@
 }
 
 .pLabel span {
-    font-size: 0.9em;
+    font-size: 0.84rem;
     font-weight: 600;
 }

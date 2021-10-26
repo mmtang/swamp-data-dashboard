@@ -4,7 +4,7 @@ import { customSelectStyle } from '../../utils/utils';
 //import RegionCard from './region-card';
 
 
-export default function RegionMenu({ selectedRegion, setRegion }) {   
+export default function RegionMenu({ region, setRegion }) {   
     const regionList = [
         {
             label: 'North Coast',
@@ -47,11 +47,11 @@ export default function RegionMenu({ selectedRegion, setRegion }) {
     const handleChange = (selection) => {
         if (selection ) {
             const value = selection.value;
-            if (value !== selectedRegion) {
+            if (value !== region) {
                 setRegion(value);
             }
         } else {
-            if (selection !== selectedRegion) {
+            if (selection !== region) {
                 setRegion(selection)
             }
         }

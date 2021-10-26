@@ -1,7 +1,7 @@
 .message {
     display: flex;
     flex-wrap: nowrap;
-    background-color: #f8f8f9;
+    background-color: #f0f1f1;
     border: 1px solid #c9cacb;
     border-radius: 0;
     padding: 0.8em;

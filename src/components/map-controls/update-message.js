@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import HelpIcon from '../icons/help-icon';
 import { Icon } from 'semantic-ui-react';
 import { message, left, content, header, small, right } from './update-message.module.css';
 import { fetchData } from '../../utils/utils';
@@ -7,6 +8,7 @@ import { timeParse, timeFormat } from 'd3';
 // This component shows the data last updated date on the main dashboard page.
 // It calls the open data portal API where the data is hosted and gets the date from the metadata.
 export default function UpdateMessage() {   
+    const [status, setStatus] = useState('loading');
     const [visible, setVisible] = useState(true);
     const dateRef = useRef('');
     const dateDifferenceRef = useRef('');
@@ -17,28 +19,6 @@ export default function UpdateMessage() {
 
     const handleClick = () => {
         setVisible(false);
-    }
-
-    const getDate = () => {
-        // Fetch metadata of resource and extract the last modified value
-        // This URL points to the SWAMP Stations - Summary dataset on the portal. Any of the other SWAMP datasets could be used with the same result.
-        // https://data.ca.gov/dataset/surface-water-ambient-monitoring-program/resource/555ee3bf-891f-4ac4-a1fc-c8855cf70e7e
-        let url = 'https://data.ca.gov/api/3/action/resource_show?id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e';
-        fetchData(url)
-        .then(json => json.result)
-        .then(result => {
-            // Once data has been retrieved, parse and set formatted string date value to the ref variable.
-            // This will automatically update the value in the renderer.
-            const lastDate = parseDate(result['last_modified']);
-            dateRef.current = formatDate(lastDate);
-            const differenceDays = calculateDaysBetween(lastDate, new Date());
-            dateDifferenceRef.current = differenceDays.toString() + ' days ago';
-        })
-        .catch(error => {
-            console.error(error);
-            dateRef.current = 'Error';
-            dateDifferenceRef.current = 'Error';
-        });
     }
 
     const calculateDaysBetween = (date1, date2) => {
@@ -56,6 +36,27 @@ export default function UpdateMessage() {
     }
 
     useEffect(() => {
+        const getDate = () => {
+            // Fetch metadata of resource and extract the last modified value
+            // This URL points to the SWAMP Stations - Summary dataset on the portal. Any of the other SWAMP datasets could be used with the same result.
+            // https://data.ca.gov/dataset/surface-water-ambient-monitoring-program/resource/555ee3bf-891f-4ac4-a1fc-c8855cf70e7e
+            let url = 'https://data.ca.gov/api/3/action/resource_show?id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e';
+            fetchData(url)
+            .then(json => json.result)
+            .then(result => {
+                // Once data has been retrieved, parse and set formatted string date value to the ref variable.
+                // This will automatically update the value in the renderer.
+                const lastDate = parseDate(result['last_modified']);
+                dateRef.current = formatDate(lastDate);
+                const differenceDays = calculateDaysBetween(lastDate, new Date());
+                dateDifferenceRef.current = differenceDays.toString() + ' days ago';
+                setStatus('loaded');
+            })
+            .catch(error => {
+                console.error(error);
+                setStatus('error');
+            });
+        }
         getDate();
     }, [])
 
@@ -66,8 +67,19 @@ export default function UpdateMessage() {
                     <Icon name='history' size='big' />
                 </div>
                 <div className={content}>
-                    <span className={header}>Data Last Updated:</span><br />
-                    <span className={small}>{dateRef.current} — {dateDifferenceRef.current}</span>
+                    <span className={header}>
+                        Data Last Updated
+                        <HelpIcon>
+                            <p>The data in this dashboard is updated weekly, usually Monday mornings (Pacific Time). There may be some delays, depending on the availability of our staff.</p>
+                        </HelpIcon>
+                    </span><br />
+                    {/* Conditional rendering based on the status of API call */}
+                    <span className={small}>
+                        { status === 'loading' ? 'Loading...' : 
+                        status === 'loaded' ? `${dateRef.current} — ${dateDifferenceRef.current}` : 
+                        status === 'error' ? 'Error getting data' :
+                        'Error' }
+                    </span>
                 </div>
                 <div className={right}>
                     <Icon name='close' link onClick={handleClick} />

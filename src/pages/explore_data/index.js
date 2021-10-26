@@ -38,7 +38,10 @@ export default function Index() {
           <UpdateMessage />
           {/* Controls */}
           <div>
-            <AccordionMenu />
+            <AccordionMenu
+              selectedRegion={region}
+              setRegion={setRegion}
+            />
             <ControlsContainer 
               selectedRegion={region}
               setRegion={setRegion}
