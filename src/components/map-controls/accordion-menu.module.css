@@ -4,7 +4,10 @@
 
 .customTitle {
     font-weight: 500 !important;
-    /* background-color: #f0f1f1 !important; */
+}
+
+.customTitle:hover {
+    background-color: #f0f1f1 !important;
 }
 
 .customAccordion p {
@@ -23,9 +26,19 @@
 
 .pLabel {
     margin: 0.4em 0;
-}
-
-.pLabel span {
     font-size: 0.84rem;
     font-weight: 600;
+}
+
+.customLabel {
+    height: 34px;
+    padding: 6px 10px !important;
+    border-radius: 0 !important;
+    font-size: 0.76rem !important;
+    font-weight: 600 !important;
+}
+
+.analyteWrapper {
+    display: flex;
+    flex-wrap: nowrap;
 }

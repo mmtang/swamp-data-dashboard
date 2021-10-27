@@ -3,7 +3,6 @@ import LayoutMap from '../../components/layout/layout-map';
 import MapIndex from '../../components/map/map-index';
 import UpdateMessage from '../../components/map-controls/update-message';
 import AccordionMenu from '../../components/map-controls/accordion-menu';
-import ControlsContainer from '../../components/map-controls/controls-container';
 import ChartIndex from '../../components/chart-index/chart-index';
 import TableIndex2 from '../../components/table-index/table-index2';
 import FilterByExtent from '../../components/map-controls/filter-by-extent';
@@ -34,20 +33,15 @@ export default function Index() {
       </div>
       <div className={mainContainer}>
         <div className={infoContainer}>
-          <p>Use the controls below to explore SWAMP water quality data for the time period of 2000-{yearRef.current}.</p>
+          <p>Use the controls below to explore SWAMP water quality data for the time period of 2000-{yearRef.current}. Changes are automatically reflected in the map and in the table at the bottom of this page.</p>
           <UpdateMessage />
           {/* Controls */}
           <div>
             <AccordionMenu
               selectedRegion={region}
               setRegion={setRegion}
-            />
-            <ControlsContainer 
-              selectedRegion={region}
-              setRegion={setRegion}
               selectedAnalyte={analyte}
               setAnalyte={setAnalyte}
-              setFilterExtentToggle={setFilterExtentToggle}
             />
             <FilterByExtent setFilterExtentToggle={setFilterExtentToggle} />&nbsp;
             <ChartIndex 
