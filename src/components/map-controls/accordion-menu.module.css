@@ -1,5 +1,6 @@
 .customAccordion {
     border-radius: 0 !important;
+    margin-bottom: 1em;
 }
 
 .customTitle {
@@ -32,6 +33,7 @@
 
 .customLabel {
     height: 34px;
+    background-color: #f0f1f1 !important;
     padding: 6px 10px !important;
     border-radius: 0 !important;
     font-size: 0.76rem !important;

@@ -796,6 +796,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 });
                 layerListRef.current = new LayerList({
                     view: viewRef.current,
+                    container: 'layerListContainer',
                     listItemCreatedFunction: function(event) {
                         const item = event.item;
                         if (item.layer.type !== 'group') {
@@ -807,6 +808,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                         }
                     }
                 });
+                /*
                 expandRef.current = new Expand({
                     expandIconClass: 'esri-icon-layers',
                     view: viewRef.current,
@@ -815,6 +817,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 })
                 //viewRef.current.ui.add(searchRef.current, { position: 'top-right' });
                 viewRef.current.ui.add(expandRef.current, 'bottom-left');
+                */
 
                 // Add Home widget
                 const homeWidget = new Home({ view: viewRef.current });
@@ -831,7 +834,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             .then(([WMSLayer]) => {
                 landUseLayerRef.current = new WMSLayer({
                     id: 'nlcdLayer',
-                    title: 'National Land Cover Database (2016)',
+                    title: 'National Land Cover Database 2016',
                     url: 'https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Land_Cover_L48/wms?service=WMS&request=GetCapabilities',
                     sublayers: [{
                         name: 'NLCD_2016_Land_Cover_L48',

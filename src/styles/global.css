@@ -99,14 +99,70 @@ a {
   padding: 6px 10px;
 }
 
+/* Layer List Styles */
+
 .esri-layer-list {
-  max-width: 267px !important;
-  max-height: 155px !important;
+  background-color: #fff !important;
+  padding: 0 !important;
+}
+
+/* Layer title container */
+.esri-layer-list__item-container {
+  padding: 4px 4px 4px 0 !important;
+}
+
+.esri-layer-list__item-container:hover {
+  background-color: #f0f1f1;
+}
+
+/* Layer title */
+.esri-layer-list__item-title {
+  font-size: 0.9em;
+}
+
+/* Layer list item container, including legend */
+.esri-layer-list__item {
+  border-bottom: 0 !important;
+}
+
+/* 
+Container list item legend contents, when expanded 
+Adds indentation to legend items
+*/
+.esri-layer-list-panel {
+  margin: 0 20px !important;
+}
+
+/* Removes padding at bottom of legend contents */
+.esri-legend__service {
+  padding: 0 !important;
+}
+
+/* Removes padding at bottom of legend contents */
+.esri-legend__layer-table {
+  margin: 0 !important;
+}
+
+/* 
+Icon to the left of each list item
+Replace the default eyeball icon with a checkbox icon. The codes on ESRI's website do not work. I had to remove the 'u' in '\ue610' and '\ue611' to get them to work. Not sure why, maybe a bug?
+https://developers.arcgis.com/javascript/latest/esri-icon-font/#esri-icon-fonts
+https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-layerlist-widget-arcgis-javascript-4-x
+*/
+
+.esri-icon-non-visible::before {
+  content: "\e610" !important;
+}
+
+.esri-icon-visible::before {
+  content: "\e611" !important;
 }
 
 .esri-legend__message {
   display: none;
 }
+
+/* End Layer List Styles */
 
 .esri-search {
   width: auto !important;

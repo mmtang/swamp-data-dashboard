@@ -130,7 +130,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte }
                 </div>
             </Accordion.Title>
             <Accordion.Content active={activeIndex.includes(2)}>
-                <p>A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p>
+                <div id="layerListContainer" />
             </Accordion.Content>
         </Accordion> 
     )
