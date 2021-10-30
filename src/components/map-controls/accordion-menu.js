@@ -87,7 +87,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte }
                 <p className={pLabel}>
                     Regional Water Quality Control Board
                     <HelpIcon wide={true}>
-                        <p>In addition to the State Water Resources Control Board, which sets statewide policy, there are nine semi-autonomous <strong>regional water quality control boards</strong> statewide. Regional boundaries are based on watersheds, and each Regional Board makes critical water quality decisions for its region, including setting standards, issuing waste discharge requirements, determining compliance with those requirements, and taking appropriate enforcement actions.</p>
+                        <p>In addition to the State Water Resources Control Board, which sets statewide policy, there are nine semi-autonomous <strong>regional water quality control boards</strong> statewide. Each Regional Board makes critical water quality decisions for its region, including setting standards, issuing waste discharge requirements, determining compliance with those requirements, and taking appropriate enforcement actions.</p>
                         <img src="\rb_map.jpg" alt='Statewide map of regional water board boundaries' style={{ display: 'block', margin: 'auto', maxWidth: '360px' }} />
                         <p><a href="https://www.waterboards.ca.gov/publications_forms/publications/factsheets/docs/boardoverview.pdf" target="_blank" rel="noreferrer noopener">Source</a></p>
                     </HelpIcon>

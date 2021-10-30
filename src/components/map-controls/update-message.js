@@ -1,25 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import HelpIcon from '../icons/help-icon';
-import { Icon } from 'semantic-ui-react';
-import { message, left, content, header, small, right } from './update-message.module.css';
 import { fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
+import { message } from './update-message.module.css';
 
 // This component shows the data last updated date on the main dashboard page.
 // It calls the open data portal API where the data is hosted and gets the date from the metadata.
 export default function UpdateMessage() {   
     const [status, setStatus] = useState('loading');
-    const [visible, setVisible] = useState(true);
     const dateRef = useRef('');
     const dateDifferenceRef = useRef('');
 
     // d3 functions for parsing and formatting dates.
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S.%f');
     const formatDate = timeFormat('%Y/%m/%d'); // Change this value to change the formatting of the printed date
-
-    const handleClick = () => {
-        setVisible(false);
-    }
 
     const calculateDaysBetween = (date1, date2) => {
         // Calculates the number of days between the two provided dates
@@ -60,35 +54,16 @@ export default function UpdateMessage() {
         getDate();
     }, [])
 
-    if (visible === true) {
-        return (
-            <div className={message}>
-                <div className={left}>
-                    <Icon name='history' size='big' />
-                </div>
-                <div className={content}>
-                    <span className={header}>
-                        Data Last Updated
-                        <HelpIcon>
-                            <p>The data in this dashboard is updated weekly, usually Monday mornings (Pacific Time). There may be some delays, depending on the availability of our staff.</p>
-                        </HelpIcon>
-                    </span><br />
-                    {/* Conditional rendering based on the status of API call */}
-                    <span className={small}>
-                        { status === 'loading' ? 'Loading...' : 
-                        status === 'loaded' ? `${dateRef.current} — ${dateDifferenceRef.current}` : 
-                        status === 'error' ? 'Error getting data' :
-                        'Error' }
-                    </span>
-                </div>
-                <div className={right}>
-                    <Icon name='close' link onClick={handleClick} />
-                </div>
-            </div>
-        )
-    } else {
-        return (
-            <div></div>
-        )
-    }
+    return (
+        <div className={message}>
+            <strong>Data Last Updated:</strong>&nbsp;
+            { status === 'loading' ? 'Loading...' : 
+                status === 'loaded' ? `${dateRef.current} — ${dateDifferenceRef.current}` : 
+                status === 'error' ? 'Error getting data' :
+                'Error' }
+            <HelpIcon position='top center'>
+                <p>The data in this dashboard is updated weekly, usually Monday mornings (Pacific Time). There may be some delays, depending on the availability of our staff.</p>
+            </HelpIcon>
+        </div>
+    )
 }

@@ -117,7 +117,8 @@ a {
 
 /* Layer title */
 .esri-layer-list__item-title {
-  font-size: 0.9em;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 0.98em;
 }
 
 /* Layer list item container, including legend */
@@ -163,6 +164,12 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
 }
 
 /* End Layer List Styles */
+
+/* Data table style for changing styles in header row. Could not find a way to through it through the library styles. */
+.rdt_TableCol_Sortable div {
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
 
 .esri-search {
   width: auto !important;

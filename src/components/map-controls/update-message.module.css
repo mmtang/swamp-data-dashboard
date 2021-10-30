@@ -1,36 +1,7 @@
 .message {
     display: flex;
-    flex-wrap: nowrap;
-    background-color: #f0f1f1;
-    border: 1px solid #c9cacb;
-    border-radius: 0;
-    padding: 0.8em;
-    margin-bottom: 1em;
-}
-
-.left {
-    flex-basis: 11%;
-    display: flex;
     justify-content: center;
-    align-items: center;
-}
-
-.content {
-    flex-basis: 84%;
-    margin: 0 10px;
+    font-size: 0.84em;
     line-height: 1.2;
+    padding-bottom: 0.3em;
 }
-
-.header {
-    font-size: 0.9em;
-    font-weight: 600;
-}
-
-.small {
-    font-size: 0.85em;
-}
-
-.right {
-    flex-basis: 5%;
-}
-

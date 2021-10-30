@@ -14,7 +14,7 @@ export default function FilterByExtent({ setFilterExtentToggle }) {
             onKeyPress={handleClick}
         >
             <Icon name='filter' />
-            Filter by map extent
+            Filter table by map extent
         </Button>
     )
 }

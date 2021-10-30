@@ -4,8 +4,9 @@ import MapIndex from '../../components/map/map-index';
 import UpdateMessage from '../../components/map-controls/update-message';
 import AccordionMenu from '../../components/map-controls/accordion-menu';
 import ChartIndex from '../../components/chart-index/chart-index';
-import TableIndex2 from '../../components/table-index/table-index2';
+import Table from '../../components/table/table';
 import FilterByExtent from '../../components/map-controls/filter-by-extent';
+import { Divider } from 'semantic-ui-react';
 import { mapContainer, mainContainer, infoContainer } from './index.module.css';
 
 export default function Index() {
@@ -33,29 +34,33 @@ export default function Index() {
       </div>
       <div className={mainContainer}>
         <div className={infoContainer}>
-          <p>Use the controls below to explore SWAMP water quality data for the time period of 2000-{yearRef.current}. Changes are automatically reflected in the map and in the table at the bottom of this page.</p>
-          <UpdateMessage />
+          <p>Use the filters and controls below to explore SWAMP water quality data for the time period of 2000-{yearRef.current}. Filters are automatically applied to the map and the table at the bottom of the page.</p>
           {/* Controls */}
-          <div>
+          <section style={{ marginBottom: '40px' }}>
             <AccordionMenu
               selectedRegion={region}
               setRegion={setRegion}
               selectedAnalyte={analyte}
               setAnalyte={setAnalyte}
             />
-            <FilterByExtent setFilterExtentToggle={setFilterExtentToggle} />&nbsp;
-            <ChartIndex 
-              selectedSites={selectedSites}
-              analyte={analyte}
-            />
-            <TableIndex2 
-              selectedAnalyte={analyte}
-              data={tableData}
-              setSelectedSites={setSelectedSites}
-            />
-          </div>
+          </section>
+          <Divider horizontal section>
+            Data Table
+          </Divider>
+          <section>
+            <FilterByExtent setFilterExtentToggle={setFilterExtentToggle} />
+              <ChartIndex 
+                selectedSites={selectedSites}
+                analyte={analyte}
+              />
+              <Table 
+                selectedAnalyte={analyte}
+                data={tableData}
+                setSelectedSites={setSelectedSites}
+              />
+          </section>
+          <UpdateMessage />
         </div>
-        {/*<div id="indexTableContainer" style={{ padding: '0 20px', marginBottom: '100px' }}></div>*/}
       </div>
     </LayoutMap>
   )

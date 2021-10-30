@@ -5,9 +5,6 @@
 
 .customTitle {
     font-weight: 500 !important;
-}
-
-.customTitle:hover {
     background-color: #f0f1f1 !important;
 }
 
