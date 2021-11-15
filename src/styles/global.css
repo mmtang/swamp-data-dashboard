@@ -112,7 +112,7 @@ a {
 }
 
 .esri-layer-list__item-container:hover {
-  background-color: #f0f1f1;
+  background-color: #e2f1fb;
 }
 
 /* Layer title */
@@ -131,7 +131,7 @@ Container list item legend contents, when expanded
 Adds indentation to legend items
 */
 .esri-layer-list-panel {
-  margin: 0 20px !important;
+  margin: 0 0 0 23px !important;
 }
 
 /* Removes padding at bottom of legend contents */
@@ -141,6 +141,7 @@ Adds indentation to legend items
 
 /* Removes padding at bottom of legend contents */
 .esri-legend__layer-table {
+  font-family: 'Source Sans Pro', sans-serif !important;
   margin: 0 !important;
 }
 

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
-import { regionDict, irRegionDict, stationRenderer, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields } from '../../utils/utils';
+import { irLineRenderer, irPolyRenderer, regionRenderer, stationRenderer } from './map-renderer';
+import { regionDict, irRegionDict, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields } from '../../utils/utils';
 import { container } from './map-index.module.css';
 
 
-export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite, setSelectedSites, setTableData, filterExtentToggle, setFilterExtentToggle }) {
+export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProgram, clickedSite, setSelectedSites, setTableData, filterExtentToggle, setFilterExtentToggle }) {
     const [sites, setSites] = useState([]);
     const featuresRef = useRef([]);
 
@@ -29,6 +30,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
     const highlightRegionRef = useRef(null);
     const highlightSiteRef = useRef(null);
     const tableRef = useRef(null);
+
+    console.log(selectedProgram)
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = timeFormat('%Y/%m/%d');
@@ -317,9 +320,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
         initializeMap()
         .then(() => {
             drawLandUse();
-            //drawBasinPlan();
+            drawBasinPlan();
             //drawAttains();
-            //drawIntegratedReportLayers();
+            drawIntegratedReport();
             drawRegions();
             drawStations();
         });
@@ -337,6 +340,85 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             if (mapRef) {
                 loadModules(['esri/layers/FeatureLayer', 'esri/symbols/CIMSymbol', 'esri/symbols/support/cimSymbolUtils'])
                 .then(([FeatureLayer, CIMSymbol, cimSymbolUtils]) => {
+                    const arrowDecreasing = new CIMSymbol({
+                        "data": {
+                          "type": "CIMSymbolReference",
+                          "symbol": {
+                            "type": "CIMPointSymbol",
+                            "symbolLayers": [
+                              {
+                                "type": "CIMVectorMarker",
+                                "enable": true,
+                                "anchorPoint": {
+                                  "x": 0,
+                                  "y": 0,
+                                  "z": 0
+                                },
+                                "anchorPointUnits": "Relative",
+                                "dominantSizeAxis3D": "Y",
+                                "size": 10,
+                                "billboardMode3D": "FaceNearPlane",
+                                "frame": {
+                                  "xmin": 0,
+                                  "ymin": 0,
+                                  "xmax": 17,
+                                  "ymax": 17
+                                },
+                                "markerGraphics": [
+                                  {
+                                    "type": "CIMMarkerGraphic",
+                                    "geometry": {
+                                      "rings": [
+                                        [
+                                          [
+                                            0,
+                                            0
+                                          ],
+                                          [
+                                            8.61,
+                                            14.85
+                                          ],
+                                          [
+                                            17,
+                                            0
+                                          ],
+                                          [
+                                            0,
+                                            0
+                                          ]
+                                        ]
+                                      ]
+                                    },
+                                    "symbol": {
+                                      "type": "CIMPolygonSymbol",
+                                      "symbolLayers": [
+                                        {
+                                          "type": "CIMSolidFill",
+                                          "enable": true,
+                                          "color": [
+                                            0,
+                                            0,
+                                            0,
+                                            255
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                "scaleSymbolsProportionally": true,
+                                "respectFrame": true,
+                                "rotation": 180
+                              }
+                            ],
+                            "haloSize": 1,
+                            "scaleX": 1,
+                            "angleAlignment": "Display",
+                            "version": "2.0.0",
+                            "build": "8933"
+                          }
+                        }
+                    });
                     const arrowIncreasing = new CIMSymbol({
                         "data": {
                           "type": "CIMSymbolReference",
@@ -415,99 +497,20 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                           }
                         }
                     });
-                    const arrowDecreasing = new CIMSymbol({
-                        "data": {
-                          "type": "CIMSymbolReference",
-                          "symbol": {
-                            "type": "CIMPointSymbol",
-                            "symbolLayers": [
-                              {
-                                "type": "CIMVectorMarker",
-                                "enable": true,
-                                "anchorPoint": {
-                                  "x": 0,
-                                  "y": 0,
-                                  "z": 0
-                                },
-                                "anchorPointUnits": "Relative",
-                                "dominantSizeAxis3D": "Y",
-                                "size": 10,
-                                "billboardMode3D": "FaceNearPlane",
-                                "frame": {
-                                  "xmin": 0,
-                                  "ymin": 0,
-                                  "xmax": 17,
-                                  "ymax": 17
-                                },
-                                "markerGraphics": [
-                                  {
-                                    "type": "CIMMarkerGraphic",
-                                    "geometry": {
-                                      "rings": [
-                                        [
-                                          [
-                                            0,
-                                            0
-                                          ],
-                                          [
-                                            8.61,
-                                            14.85
-                                          ],
-                                          [
-                                            17,
-                                            0
-                                          ],
-                                          [
-                                            0,
-                                            0
-                                          ]
-                                        ]
-                                      ]
-                                    },
-                                    "symbol": {
-                                      "type": "CIMPolygonSymbol",
-                                      "symbolLayers": [
-                                        {
-                                          "type": "CIMSolidFill",
-                                          "enable": true,
-                                          "color": [
-                                            0,
-                                            0,
-                                            0,
-                                            255
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ],
-                                "scaleSymbolsProportionally": true,
-                                "respectFrame": true
-                              }
-                            ],
-                            "haloSize": 1,
-                            "scaleX": 1,
-                            "angleAlignment": "Display",
-                            "version": "2.0.0",
-                            "build": "8933"
-                          }
-                        }
-                    });
-                    cimSymbolUtils.applyCIMSymbolRotation(arrowDecreasing, 180)
-                    const noTrendSym = {
-                        type: 'simple-marker',
-                        size: 6,
-                        color: '#828282',
-                        outline: {
-                            color: '#fff'
-                        }
-                    }
                     const notAssessedSym = {
                         type: 'simple-marker',
                         size: 5.5,
                         color: '#fff',
                         outline: {
                             color: '#363636'
+                        }
+                    }
+                    const noTrendSym = {
+                        type: 'simple-marker',
+                        size: 6,
+                        color: '#828282',
+                        outline: {
+                            color: '#fff'
                         }
                     }
                     const analyteRenderer = {
@@ -851,57 +854,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
         }
     }
 
-    const drawIntegratedReportLayers = () => {
-        const irLineRenderer = {
-            type: 'unique-value',
-            field: 'wb_listingstatus',
-            defaultSymbol: { type: 'simple-line' },
-            uniqueValueInfos: [
-                {
-                    value: 'Listed',
-                    symbol: {
-                        type: 'simple-line',
-                        color: '#518f33',
-                        width: '2px'
-                    }
-                },
-                {
-                    value: 'Not Listed',
-                    symbol: {
-                        type: 'simple-line',
-                        color: '#8db933',
-                        width: '2px'
-                    }
-                }   
-            ]
-        }
-        const irPolyRenderer = {
-            type: 'unique-value',
-            field: 'wb_listingstatus',
-            defaultSymbol: { type: 'simple-fill' },
-            uniqueValueInfos: [
-                {
-                    value: 'Listed',
-                    symbol: {
-                        type: 'simple-fill',
-                        color: '#518f33',
-                        outline: {
-                            color: '#518f33'
-                        }
-                    }
-                },
-                {
-                    value: 'Not Listed',
-                    symbol: {
-                        type: 'simple-fill',
-                        color: '#8db933',
-                        outline: {
-                            color: '#8db933'
-                        }
-                    }
-                }
-            ]
-        }
+    const drawIntegratedReport = () => {
         const irTemplate = {
             // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
             outFields: ['wbid', 'wbname', 'rb', 'wbtype', 'wb_category', 'wb_listingstatus', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_', 'fact_sheet'],
@@ -979,6 +932,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
             .then(([FeatureLayer, GroupLayer]) => {
                 irLineRef.current = new FeatureLayer({
                     id: 'irLines',
+                    title: 'Integrated Report Lines 2018',
                     url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/0',
                     outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
                     popupTemplate: irTemplate,
@@ -987,6 +941,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                 });
                 irPolyRef.current = new FeatureLayer({
                     id: 'irPolys',
+                    title: 'Integrated Report Polygons 2018',
                     url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/1',
                     outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
                     popupTemplate: irTemplate,
@@ -995,10 +950,11 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                     opacity: 0.8
                 });
                 irLayerRef.current = new GroupLayer({
-                    title: '2018 Integrated Report',
+                    title: 'Integrated Report 2018',
                     visible: true,
                     layers: [irLineRef.current, irPolyRef.current],
-                    listMode: 'show'
+                    listMode: 'show',
+                    visibilityMode: 'inherited'
                 });
                 // Add grouplayer to map
                 mapRef.current.add(irLayerRef.current);
@@ -1009,7 +965,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                     displayField: 'wbname',
                     exactMatch: false,
                     outFields: ['wbname'],
-                    name: '2018 Integrated Report - Lines',
+                    name: 'Integrated Report Lines 2018',
                     placeholder: 'Example: Burney Creek'
                 });
                 searchRef.current.sources.add({
@@ -1018,94 +974,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
                     displayField: 'wbname',
                     exactMatch: false,
                     outFields: ['wbname'],
-                    name: '2018 Integrated Report - Polygons',
-                    placeholder: 'Example: Folsom Lake'
-                });
-            });
-        }
-    }
-
-    const drawAttains = () => {
-        const buildAttainsPopup = (feature) => {
-            // Manually build the popup (and popup table) so that we can replace the default values coming from ATTAINS
-            const attributes = feature.graphic.attributes;
-            if (attributes.on303dlist === 'Y') {
-                attributes.on303dlist = 'Yes';
-            } else if (attributes.on303dlist === 'N') {
-                attributes.on303dlist = 'No';
-            };
-            // Table for waterbody information
-            let table = '<table class="esri-widget__table"><tbody><tr><th class="esri-feature-fields__field-header">Status</th><td>' + attributes.overallstatus + '</td></tr><tr><th class="esri-feature-fields__field-header">On 303(d) List</th><td>' + attributes.on303dlist  + '</td></tr><tr><th class="esri-feature-fields__field-header">Year Reported</th><td>' + attributes.reportingcycle + '</td></tr><tr><th class="esri-feature-fields__field-header">USEPA Attains Waterbody Report</th><td><a href="' + attributes.waterbodyreportlink + '" target="_blank" style="color: #064e96">Link</a></td></tbody></table>';
-            return table.toString();
-        }
-        const attainsTemplate = {
-            // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
-            outFields: ['overallstatus', 'on303dlist', 'reportingcycle', 'waterbodyreportlink'],
-            title: '{assessmentunitname}<br><span class="map-popup-subtitle" style="color: #247BA0">Assessment waterbody</span>',
-            content: buildAttainsPopup
-        };
-        const attainsLineRenderer = {
-            type: 'simple',
-            symbol: {
-                type: 'simple-line',
-                color: '#247BA0',
-                width: '2px'
-            }
-        }
-        const attainsPolyRenderer = {
-            type: 'simple',
-            symbol: {
-                type: 'simple-fill',
-                color: 'rgba(36,123,160,100)',
-                outline: {
-                    color: '#247BA0'
-                }
-            }
-        };
-        if (mapRef) {
-            loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
-            .then(([FeatureLayer, GroupLayer]) => {
-                attainsLineRef.current = new FeatureLayer({
-                    id: 'attainsLines',
-                    url: 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/1',
-                    outfields: ['reportingcycle', 'assessmentunitname', 'assessmentunitidentifier', 'waterbodyreportlink', 'overallstatus', 'on303dlist'],
-                    definitionExpression: "organizationid='CA_SWRCB'",
-                    popupTemplate: attainsTemplate,
-                    renderer: attainsLineRenderer
-                });
-                attainsPolyRef.current = new FeatureLayer({
-                    id: 'attainsPolys',
-                    url: 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/2',
-                    outfields: ['reportingcycle', 'assessmentunitname', 'assessmentunitidentifier', 'waterbodyreportlink', 'overallstatus', 'on303dlist'],
-                    definitionExpression: "organizationid='CA_SWRCB'",
-                    popupTemplate: attainsTemplate,
-                    renderer: attainsPolyRenderer
-                });
-                attainsLayerRef.current = new GroupLayer({
-                    title: 'ATTAINS Assessment',
-                    visible: false,
-                    visibilityMode: 'inherited',
-                    layers: [attainsLineRef.current, attainsPolyRef.current],
-                });
-                // Add grouplayer to map
-                mapRef.current.add(attainsLayerRef.current);
-                // Add feature layers to search widget
-                searchRef.current.sources.add({
-                    layer: attainsLineRef.current,
-                    searchFields: ['assessmentunitname'],
-                    displayField: 'assessmentunitname',
-                    exactMatch: false,
-                    outFields: ['assessmentunitname'],
-                    name: 'ATTAINS Assessment - Lines',
-                    placeholder: 'Example: Burney Creek'
-                });
-                searchRef.current.sources.add({
-                    layer: attainsPolyRef.current,
-                    searchFields: ['assessmentunitname'],
-                    displayField: 'assessmentunitname',
-                    exactMatch: false,
-                    outFields: ['assessmentunitname'],
-                    name: 'ATTAINS Assessment - Areas',
+                    name: 'Integrated Report Polygons 2018',
                     placeholder: 'Example: Folsom Lake'
                 });
             });
@@ -1207,17 +1076,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, clickedSite,
     }
 
     const drawRegions = () => {
-        const regionRenderer = {
-            type: 'simple',
-            symbol: {
-                type: "simple-fill",
-                color: 'rgba(0,0,0,0)',
-                outline: {
-                    width: 1.4,
-                    color: '#5d5d5d'
-                }
-            }
-        };
         if (mapRef) {
             loadModules(['esri/layers/FeatureLayer'])
             .then(([FeatureLayer]) => {

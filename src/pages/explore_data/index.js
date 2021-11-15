@@ -11,6 +11,7 @@ import { mapContainer, mainContainer, infoContainer } from './index.module.css';
 
 export default function Index() {
   const [analyte, setAnalyte] = useState(null);
+  const [program, setProgram] = useState(null);
   const [region, setRegion] = useState(null);
   const [site, setSite] = useState(null);
   const [selectedSites, setSelectedSites] = useState([]);
@@ -25,6 +26,7 @@ export default function Index() {
         <MapIndex 
           selectedAnalyte={analyte} 
           selectedRegion={region} 
+          selectedProgram={program}
           setSelectedSites={setSelectedSites}
           clickedSite={site} 
           setTableData={setTableData}
@@ -34,18 +36,20 @@ export default function Index() {
       </div>
       <div className={mainContainer}>
         <div className={infoContainer}>
-          <p>Use the filters and controls below to explore SWAMP water quality data for the time period of 2000-{yearRef.current}. Filters are automatically applied to the map and the table at the bottom of the page.</p>
+          <p>Use the search and filter controls below to explore SWAMP water quality data for the time period of 2000-{yearRef.current}. Filters are automatically applied to the map and the table at the bottom of the page.</p>
           {/* Controls */}
           <section style={{ marginBottom: '40px' }}>
             <AccordionMenu
-              selectedRegion={region}
+              region={region}
               setRegion={setRegion}
-              selectedAnalyte={analyte}
+              analyte={analyte}
               setAnalyte={setAnalyte}
+              program={program}
+              setProgram={setProgram}
             />
           </section>
           <Divider horizontal section>
-            Data Table
+            Site Table
           </Divider>
           <section>
             <FilterByExtent setFilterExtentToggle={setFilterExtentToggle} />

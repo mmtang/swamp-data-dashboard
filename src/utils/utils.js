@@ -178,19 +178,6 @@ export const stationSummaryTableFields = [
     }
 ];
 
-export const stationRenderer = {
-    type: 'simple',
-    symbol: {
-        type: 'simple-marker',
-        size: 5.5,
-        color: '#046b99',
-        outline: {
-            color: '#fff',
-            width: 1
-        }
-    }
-}
-
 export const customSelectStyle = {
     control: (base, state) => ({
         ...base,

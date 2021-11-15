@@ -3,13 +3,14 @@ import { Accordion, Icon, Label } from 'semantic-ui-react';
 import HelpIcon from '../icons/help-icon';
 import RegionMenu from '../map-controls/region-menu';
 import AnalyteMenu from '../map-controls/analyte-menu';
+import ProgramMenu from '../map-controls/program-menu';
 import { customAccordion, customTitle, titleWrapper, leadingIcon, panelContent, pLabel, customLabel, analyteWrapper } from './accordion-menu.module.css';
 
 
 // This component generates the structure for the accordion menu on the explore_data index page
 // It calls upon other componenets to fill the content for each panel
 
-export default function AccordionMenu({ region, setRegion, analyte, setAnalyte }) {  
+export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, program, setProgram }) {  
     // Open all three panels upon initial load; keep track of selection and save to state
     const [activeIndex, setActiveIndex] = useState([0, 1, 2]);
 
@@ -84,6 +85,17 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte }
                 </div>
             </Accordion.Title>
             <Accordion.Content active={activeIndex.includes(1)}>
+                <p className={pLabel}>
+                    Statewide Monitoring Program
+                    <HelpIcon wide={true}>
+                        <p>In addition to its regional monitoring efforts, SWAMP oversees and funds four statewide monitoring programs. These statewide programs provide a "big picture" assessment of the overall status and trends of water quality throughout California.</p>
+                        <p><strong>Bioaccumulation Monitoring Program</strong> - Assesses whether fish found in California's streams, lakes, and coastal areas are safe to eat by measuring contaminant concentrations in fish tissue.</p>
+                        <p><strong>Bioassessment Monitoring Program</strong> - Assesses the health of streams and rivers by surveying the aquatic life (insects and algae) living in a waterbody and compares the results to expected reference conditions.</p>
+                        <p><strong>Freshwater and Estuarine Harmful Algal Blooms Program</strong> - Addresses harmful algal blooms, particularly orgiinating from cyanobacteria (blue green algae), in freshwater and estuarine systems throughout California.</p>
+                        <p><strong>Stream Pollution Trends Monitoring Program</strong> - Monitors trends in sediment toxicity and sediment contaminent concentrations, and relates contaminent concentrations to watershed land uses.</p>
+                    </HelpIcon>
+                </p>
+                <ProgramMenu program={program} setProgram={setProgram} />
                 <p className={pLabel}>
                     Regional Water Quality Control Board
                     <HelpIcon wide={true}>
