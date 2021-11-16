@@ -12,7 +12,7 @@ export default function ParametersIndex() {
         <LayoutInfo title="SWAMP Data Dashboard">
             <div>
                 <Hero>
-                    <h1>Water quality parameters</h1>
+                    <h1>Water quality indicators</h1>
                 </Hero>
                 <div className={main}>
                     <p>SWAMP measures a variety of chemical, physical, and biological properties that affect the quality of water in rivers, lakes, and other waterbodies. Chemical parameters include pH and dissolved oxygen, physical parameters include temperature and turbidity, and biological parameters include indicators such as benthic macroinvertebrates (bugs) and algae. Here are some of the main parameters monitored by SWAMP.</p>
