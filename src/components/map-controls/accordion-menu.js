@@ -86,8 +86,8 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
             </Accordion.Title>
             <Accordion.Content active={activeIndex.includes(1)}>
                 <p className={pLabel}>
-                    Statewide Monitoring Program
-                    <HelpIcon wide={true}>
+                    Statewide monitoring program
+                    <HelpIcon wide='very'>
                         <p>In addition to its regional monitoring efforts, SWAMP oversees and funds four statewide monitoring programs. These statewide programs provide a "big picture" assessment of the overall status and trends of water quality throughout California.</p>
                         <p><strong>Bioaccumulation Monitoring Program</strong> - Assesses whether fish found in California's streams, lakes, and coastal areas are safe to eat by measuring contaminant concentrations in fish tissue.</p>
                         <p><strong>Bioassessment Monitoring Program</strong> - Assesses the health of streams and rivers by surveying the aquatic life (insects and algae) living in a waterbody and compares the results to expected reference conditions.</p>
@@ -97,8 +97,8 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 </p>
                 <ProgramMenu program={program} setProgram={setProgram} />
                 <p className={pLabel}>
-                    Regional Water Quality Control Board
-                    <HelpIcon wide={true}>
+                    Regional water quality control board
+                    <HelpIcon wide='very'>
                         <p>In addition to the State Water Resources Control Board, which sets statewide policy, there are nine semi-autonomous <strong>regional water quality control boards</strong> statewide. Each Regional Board makes critical water quality decisions for its region, including setting standards, issuing waste discharge requirements, determining compliance with those requirements, and taking appropriate enforcement actions.</p>
                         <img src="\rb_map.jpg" alt='Statewide map of regional water board boundaries' style={{ display: 'block', margin: 'auto', maxWidth: '360px' }} />
                         <p><a href="https://www.waterboards.ca.gov/publications_forms/publications/factsheets/docs/boardoverview.pdf" target="_blank" rel="noreferrer noopener">Source</a></p>
@@ -106,16 +106,16 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 </p>
                 <RegionMenu region={region} setRegion={setRegion} />
                 <p className={pLabel}>
-                    Water quality parameter
+                    Water quality indicators
                     <HelpIcon wide={true}>
-                        <p>SWAMP measures a variety of <strong>chemical, physical, and biological parameters</strong> that help us determine the quality of water in rivers, lakes, and other waterbodies. Each parameter tells us something different about the condition of the waterbody. Evaluating them together can provide a more complete picture of the waterbody's overall ecology and health.</p>
-                        <p>Selecting a parameter will display the trend data for that parameter on the map and the table.</p>
-                        <p>Learn more about each <a href="/learn/parameters" target="_blank" rel="noreferrer noopener">water quality parameter</a>.</p>
+                        <p>SWAMP measures a variety of <strong>chemical, physical, and biological indicators</strong> that help us determine the quality of water in rivers, lakes, and other waterbodies. Each indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall ecology and health.</p>
+                        <p>Selecting an indicator will display the trend data for that indicator on the map and the table.</p>
+                        <p>Learn more about each <a href="/learn/indicators" target="_blank" rel="noreferrer noopener">water quality indicator</a>.</p>
                     </HelpIcon>
                 </p>
                 <div className={analyteWrapper}>
                     {/* A high value is needed for flex-basis so that the select box doesn't collapse under flexbox. The actual value is seemingly not that important, only that it's a high value. It might be better to set the width of the select. */}
-                    <div style={{ flexBasis: '98%'}}>
+                    <div style={{ flexBasis: '100%'}}>
                         <AnalyteMenu analyte={analyte} setAnalyte={setAnalyte} />
                     </div>
                     {/*
@@ -138,7 +138,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 <div className={titleWrapper}>
                     <div>
                         <Icon className={leadingIcon} name='map' />
-                        Layers
+                        Map Layers
                     </div>
                     { activeIndex.includes(2) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
                 </div>

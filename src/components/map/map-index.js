@@ -882,7 +882,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                 });
                 irLayerRef.current = new GroupLayer({
                     title: 'Integrated Report 2018',
-                    visible: true,
+                    visible: false,
                     layers: [irLineRef.current, irPolyRef.current],
                     listMode: 'show',
                     visibilityMode: 'inherited'
