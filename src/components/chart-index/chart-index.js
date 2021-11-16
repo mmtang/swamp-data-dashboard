@@ -22,8 +22,13 @@ export default function ChartIndex({ selectedSites, analyte }) {
 
     const unitRef = useRef(null);
 
-    const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
+    const parseDate = timeParse('%Y-%m-%d');
     const formatDate = timeFormat('%Y-%m-%d');
+
+    const habitatAnalytes = [
+        'CSCI',
+        'IPI'
+    ]
 
     const handleClick = () => {
         if (modalVisible === false) {
@@ -69,8 +74,15 @@ export default function ChartIndex({ selectedSites, analyte }) {
 
     const getData = (station, analyte) => {
         return new Promise((resolve, reject) => {
-            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
-            url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
+            let url;
+            if (habitatAnalytes.includes(analyte)) {
+                url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=9ce012e2-5fd3-4372-a4dd-63294b0ce0f6&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
+                url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
+            } else {
+                url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
+                url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
+            }
+            console.log(url);
             fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
@@ -79,7 +91,11 @@ export default function ChartIndex({ selectedSites, analyte }) {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.Result = +d.Result;
                         d.timestamp = d.SampleDate.getTime();
+                        if (d.Unit === 'none') {
+                            d.Unit = '';
+                        }
                     });
+                    console.log(records);
                     resolve(records);
                 });
         });
@@ -112,7 +128,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                             name='Result' 
                             dataKey='y'
                             //unit={unitRef.current}
-                            domain={['dataMin', 'dataMax']} 
+                            domain={[0, 'dataMax']} 
                             tickFormatter={val => val.toLocaleString()}
                         />
                         { Object.keys(data.sites)
