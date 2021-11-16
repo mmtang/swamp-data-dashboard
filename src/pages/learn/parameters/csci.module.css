@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 1.4em;
+}
+
+.wrapper {
+    display: inline-flex;
+    flex-direction: column;
+    padding: 0 2em 1.4em 0;
+}
