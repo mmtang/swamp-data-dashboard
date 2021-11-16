@@ -14,14 +14,10 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
     const mapRef = useRef(null);
     const viewRef = useRef(null);
     const searchRef = useRef(null);
-    const expandRef = useRef(null);
     const landUseLayerRef = useRef(null);
     const irLayerRef = useRef(null);
     const irLineRef = useRef(null);
     const irPolyRef = useRef(null);
-    const attainsLayerRef = useRef(null);
-    const attainsLineRef = useRef(null);
-    const attainsPolyRef = useRef(null);
     const bpLayerRef = useRef(null);
     const regionLayerRef = useRef(null);
     const stationLayerRef = useRef(null);
@@ -29,9 +25,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
     const layerListRef = useRef(null);
     const highlightRegionRef = useRef(null);
     const highlightSiteRef = useRef(null);
-    const tableRef = useRef(null);
-
-    console.log(selectedProgram)
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = timeFormat('%Y/%m/%d');
@@ -659,14 +652,12 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
             });
     }
 
+    {/* Runs when the state for selectedRegion changes */}
     useEffect(() => {
         if (mapRef.current) {
             const bpPolys = bpLayerRef.current.findSublayerById(0);
             const bpLines = bpLayerRef.current.findSublayerById(1);
             if (selectedRegion) {
-                // Filter IR Layers
-                irLineRef.current.definitionExpression = `rb = '${irRegionDict[selectedRegion]}'`;
-                irPolyRef.current.definitionExpression = `rb = '${irRegionDict[selectedRegion]}'`
                 // Filter stations and table
                 if (stationLayerRef.current) { 
                     stationLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
@@ -677,31 +668,28 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                     stationSummaryLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
                     updateTableWithStationSummaryData();
                 }
-                // Filter BPMP
+                // Filter IR layers
+                irLineRef.current.definitionExpression = `rb = '${irRegionDict[selectedRegion]}'`;
+                irPolyRef.current.definitionExpression = `rb = '${irRegionDict[selectedRegion]}'`
+                // Filter BPMP layers
                 bpPolys.definitionExpression = `BASINPLANNAME = '${selectedRegion}'`;
                 bpLines.definitionExpression = `BASINPLANNAME = '${selectedRegion}'`;
-                // Highlight region
+                // Zoom to region
                 loadModules(['esri/views/layers/LayerView', 'esri/rest/support/Query'])
                 .then(([LayerView, Query]) => {
                     if (viewRef.current) {
                         viewRef.current.whenLayerView(regionLayerRef.current).then((layerView) => {
-                            // if a feature is already highlighted, then remove the highlight
-                            if (highlightRegionRef.current) {
-                                highlightRegionRef.current.remove();
-                            }
                             const query = regionLayerRef.current.createQuery();
                             query.where = `rb_name = '${selectedRegion}'`;
                             regionLayerRef.current.queryFeatures(query).then(results => {
                                 const feature = results.features[0];
                                 viewRef.current.goTo(feature.geometry);
-                                // set the highlight on the first feature returned by the query
-                                highlightRegionRef.current = layerView.highlight(feature);
                             })
                         })
                     }
                 });
             } else {
-                // Unfilter stations
+                // Unfilter station layers and table
                 if (stationLayerRef.current) {
                     stationLayerRef.current.definitionExpression = '';
                     updateTableWithStationData();
@@ -710,16 +698,12 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                     stationSummaryLayerRef.current.definitionExpression = '';
                     updateTableWithStationSummaryData();
                 }
-                // Unfilter IR Layers
+                // Unfilter IR layers
                 irLineRef.current.definitionExpression = '';
                 irPolyRef.current.definitionExpression = '';
-                // Unfilter BPMP
+                // Unfilter BPMP layers
                 bpPolys.definitionExpression = "BASINPLANNAME = ''";
                 bpLines.definitionExpression = "BASINPLANNAME = ''";
-                // Remove region highlight
-                if (highlightRegionRef.current) {
-                    highlightRegionRef.current.remove();
-                }
             }
         }
     }, [selectedRegion]);
