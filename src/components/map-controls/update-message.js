@@ -43,7 +43,11 @@ export default function UpdateMessage() {
                 const lastDate = parseDate(result['last_modified']);
                 dateRef.current = formatDate(lastDate);
                 const differenceDays = calculateDaysBetween(lastDate, new Date());
-                dateDifferenceRef.current = differenceDays.toString() + ' days ago';
+                if (differenceDays === 0) {
+                    dateDifferenceRef.current = 'Today';
+                } else {
+                    dateDifferenceRef.current = differenceDays.toString() + ' days ago';
+                }
                 setStatus('loaded');
             })
             .catch(error => {

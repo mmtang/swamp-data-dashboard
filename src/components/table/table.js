@@ -13,6 +13,8 @@ export default function Table({ selectedAnalyte, data, setSelectedSites }) {
     const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState(null); 
 
+    console.log(data);
+
     // Documentation of RDT styles that can be overrided or extended
     // https://github.com/jbetancur/react-data-table-component/blob/master/src/DataTable/styles.ts
     const customStyles = {
@@ -122,7 +124,7 @@ export default function Table({ selectedAnalyte, data, setSelectedSites }) {
             if (!selectedAnalyte) {
                 setColumns([d.siteCode, d.siteName, d.region, d.lastSample, d.sitePage]);
             } else {
-                setColumns([d.siteCode, d.siteName, d.region, d.Analyte, d.trend, d.lastSample, d.sitePage]);
+                setColumns([d.siteCode, d.siteName, d.region, d.analyte, d.trend, d.lastSample, d.sitePage]);
             }
         }
     }, [data])

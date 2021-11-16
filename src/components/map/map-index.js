@@ -23,7 +23,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
     const stationLayerRef = useRef(null);
     const stationSummaryLayerRef = useRef(null);
     const layerListRef = useRef(null);
-    const highlightRegionRef = useRef(null);
     const highlightSiteRef = useRef(null);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
@@ -69,7 +68,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                         RegionName: regionDict[d.Region],
                         Analyte: d.Analyte,
                         LastSampleDate: formatDate(parseDate(d.LastSampleDate)),
-                        Trend: d.AllYears_Trend
+                        Trend: d.AllYears_R_Trend
                     }
                 };
             });
@@ -139,13 +138,15 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                 content: buildStationPopup
             };
             loadModules(['esri/layers/FeatureLayer', 'esri/widgets/FeatureTable', 'esri/core/watchUtils'])
-                .then(([FeatureLayer, FeatureTable, watchUtils]) => {
+                .then(([FeatureLayer]) => {
                     if (mapRef) {
                         const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region,LastSampleDate&limit=5000';
                         fetch(url)
                         .then((resp) => resp.json())
                         .then((json) => json.result.records)
                         .then((records) => {
+                            // Filter out duplicates; change so that this is handled in the API call
+
                             convertStationDataToGraphics(records)
                             .then(res => {
                                 stationLayerRef.current = new FeatureLayer({
@@ -160,72 +161,11 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                                     renderer: stationRenderer,
                                     popupTemplate: stationTemplate
                                 });
+                                // Add layer to map
                                 mapRef.current.add(stationLayerRef.current);
-                                /*
-                                tableRef.current = new FeatureTable({
-                                    view: viewRef.current, // The view property must be set for the select/highlight to work
-                                    layer: stationLayerRef.current,
-                                    fieldConfigs: stationDataTableFields,
-                                    pageSize: 10,
-                                    pagination: true,
-                                    container: 'indexTableContainer',
-                                    menuConfig: { // Creates a custom menu to zoom to selected features
-                                        items: [{
-                                            label: 'Zoom to feature(s)',
-                                            iconClass: 'esri-icon-zoom-in-magnifying-glass',
-                                            clickFunction: () => zoomToSelectedFeature()
-                                        }]
-                                    },
-                                    gridOptions: {
-                                        pagination: true
-                                    }
-                                });
-                                // listen for selection changes
-                                tableRef.current.on('selection-change', (changes) => {
-                                    // If the selection is removed, remove the feature from the array
-                                    changes.removed.forEach((item) => {
-                                        // Update sites/features (for ArcGIS)
-                                        featuresRef.current = featuresRef.current.filter(d => {
-                                            return d.feature.attributes.StationCode !== item.feature.attributes.StationCode;
-                                        });
-                                        // Update array of sites
-                                        setSites(sites => sites.filter(d => {
-                                            return d !== item.feature.attributes.StationCode;
-                                        }));
-                                    });
-                                    // If the selection is added, push all added selections to array
-                                    changes.added.forEach((item) => {
-                                        // Update sites/features for ArcGIS
-                                        const feature = item.feature;
-                                        featuresRef.current = [...featuresRef.current, { feature: feature }];
-                                        // Update array of sites
-                                        setSites(sites => [...sites, item.feature.attributes.StationCode]);
-                                    });
-                                });
-                                // Listen for zooming/panning. Pass the new view.extent into the table's filterGeometry
-                                stationLayerRef.current.watch('loaded', () => {
-                                    watchUtils.whenFalse(viewRef.current, 'stationary', (event) => {
-                                        if (!viewRef.current.stationary) {
-                                            watchUtils.whenTrueOnce(viewRef.current, 'stationary', (event) => {
-                                                // Get the new extent of view/map whenever map is updated.
-                                                if (viewRef.current.extent) {
-                                                    // Filter out and show only the visible features in the feature table
-                                                    tableRef.current.filterGeometry = viewRef.current.extent;
-                                                }
-                                            });
-                                        } else {
-                                            watchUtils.whenFalseOnce(viewRef.current, 'interacting', (event) => {
-                                                console.log(event);
-                                            });
-                                        }
-                                    });
-                                });
-                                */
-
-                                // Query features and then update table
+                                // Populate table
                                 updateTableWithStationData();
-                                
-                                // Add station data to search
+                                // Add station layer data to search
                                 searchRef.current.sources.add({
                                     layer: stationLayerRef.current,
                                     searchFields: ['StationName', 'StationCode'],
@@ -236,7 +176,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                                     placeholder: 'Example: Buena Vista Park',
                                     zoomScale: 14000
                                 });
-
+                                /*
                                 // Listener for extent changes
                                 viewRef.current.whenLayerView(stationLayerRef.current).then(layerView => {  
                                     layerView.watch("updating", function (value) {
@@ -259,6 +199,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                                         }
                                     })
                                 })
+                                */
                             });
                         });
                     }
@@ -312,12 +253,11 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
         loadCss();
         initializeMap()
         .then(() => {
+            drawStations();
+            drawRegions();
+            drawIntegratedReport();
             drawLandUse();
             drawBasinPlan();
-            //drawAttains();
-            drawIntegratedReport();
-            drawRegions();
-            drawStations();
         });
     }, [mapRef]);
 
@@ -523,7 +463,11 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                                 symbol: noTrendSym
                             },
                             {
-                                value: 'Not assessed',
+                                value: 'Insufficient data',
+                                symbol: notAssessedSym
+                            },
+                            {
+                                value: 'Error',
                                 symbol: notAssessedSym
                             }
                         ]
@@ -532,7 +476,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                         title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                         content: buildStationPopup
                     }
-                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,AllYears_Trend&limit=5000';
+                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,AllYears_R_Trend&limit=5000';
                     url += '&filters={%22Analyte%22:%22' + encodeURIComponent(selectedAnalyte) + '%22}'
                     fetch(url)
                     .then((resp) => resp.json())
@@ -568,6 +512,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                             */
 
                             // Add listener for extent changes
+                            /*
                             viewRef.current.whenLayerView(stationSummaryLayerRef.current).then(layerView => {  
                                 layerView.watch("updating", function (value) {
                                     if (!value) {
@@ -591,11 +536,13 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                                     }
                                 })
                             })
+                            */
                         })
                     });
                 });
             }
         }
+
         if (mapRef.current) {
             if (selectedAnalyte) {
                 mapRef.current.remove(stationLayerRef.current);
