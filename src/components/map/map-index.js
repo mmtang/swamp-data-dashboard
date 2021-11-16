@@ -26,6 +26,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
     const highlightSiteRef = useRef(null);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
+    const parseDate2 = timeParse('%Y-%m-%d %H:%M:%S');
     const formatDate = timeFormat('%Y/%m/%d');
 
     const convertStationDataToGraphics = (data) => {
@@ -43,7 +44,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                         StationName: d.StationName,
                         Region: d.Region.toString(),
                         RegionName: regionDict[d.Region],
-                        LastSampleDate: formatDate(parseDate(d.LastSampleDate))
+                        LastSampleDate: formatDate(parseDate2(d.LastSampleDate))
                     }
                 };
             });
@@ -145,8 +146,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                         .then((resp) => resp.json())
                         .then((json) => json.result.records)
                         .then((records) => {
-                            // Filter out duplicates; change so that this is handled in the API call
-
+                            console.log(records);
                             convertStationDataToGraphics(records)
                             .then(res => {
                                 stationLayerRef.current = new FeatureLayer({

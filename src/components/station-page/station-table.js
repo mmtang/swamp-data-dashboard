@@ -33,9 +33,9 @@ export default function StationTable({ station, setSelectedAnalytes }) {
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {row['AllYears_Trend'] === 'Increasing' ? <IconTrendingUp size={18} /> : row['AllYears_Trend'] === 'Decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['AllYears_Trend']} /> }
+                    {row['AllYears_R_Trend'] === 'Increasing' ? <IconTrendingUp size={18} /> : row['AllYears_R_Trend'] === 'Decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['AllYears_R_Trend']} /> }
                     &nbsp;&nbsp;&nbsp;
-                    <span>{row['AllYears_Trend']}</span>
+                    <span>{row['AllYears_R_Trend']}</span>
                 </div>
             </div>
         )
@@ -74,8 +74,8 @@ export default function StationTable({ station, setSelectedAnalytes }) {
         },
         {
             name: 'Trend',
-            selector: row => row['AllYears_Trend'],
-            width: '125px',
+            selector: row => row['AllYears_R_Trend'],
+            width: '130px',
             sortable: true,
             format: row => <CustomTrend row={row} />
         },
@@ -120,7 +120,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
 
     useEffect(() => {
         if (station) {
-            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,Analyte,LastSampleDate,LastResult,Unit,AllYears_Min,AllYears_Max,AllYears_Median,AllYears_Mean,AllYears_Trend,AllYears_Tau,AllYears_PValue,AllYears_Slope,AllYears_Intercept,AllYears_n';
+            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,Analyte,LastSampleDate,LastResult,Unit,AllYears_Min,AllYears_Max,AllYears_Median,AllYears_Mean,AllYears_R_Trend,AllYears_R_Tau,AllYears_R_PValue,AllYears_n';
             url += '&filters={%22StationCode%22:%22' + station + '%22}';
             fetchData(url)
             .then(json => json.result.records)
@@ -131,7 +131,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
                     d.AllYears_Mean = +d.AllYears_Mean.toFixed(2);
                     d.AllYears_Median = +d.AllYears_Median.toFixed(2);
                     d.AllYears_Max = +d.AllYears_Max.toFixed(2);
-                    d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
+                    d.Unit = (d.Analyte === 'pH' ? '' : d.Analyte === 'CSCI' ? 'score' : d.Unit);
                     d.LastSampleDate = parseDate(d.LastSampleDate);
                     d.ResultWithUnit = d.LastResult.toString() + ' ' + d.Unit;
                 });
@@ -147,7 +147,6 @@ export default function StationTable({ station, setSelectedAnalytes }) {
                 data={data} 
                 customStyles={customStyles}
                 highlightOnHover
-                pagination
                 selectableRows
                 selectableRowsHighlight
                 defaultSortFieldId={'LastSampleDate'}

@@ -118,11 +118,13 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                     <div style={{ flexBasis: '98%'}}>
                         <AnalyteMenu analyte={analyte} setAnalyte={setAnalyte} />
                     </div>
+                    {/*
                     <div>
                         <Label pointing="left" className={customLabel}>
                             Select to view trend data
                         </Label>
                     </div>
+                    */}
                 </div>
             </Accordion.Content>
 

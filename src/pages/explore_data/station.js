@@ -57,7 +57,7 @@ export default function Station(props) {
         );
     } else if (loading === false && stationObjRef.current) {
         return (
-            <LayoutStation>
+            <LayoutStation title='SWAMP Data Dashboard'>
                 <div className={leftContainer}>
                     <section className={titleContainer}>
                         <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>

@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { event as currentEvent } from 'd3-selection';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { colorPaletteViz } from '../../utils/utils';
+import { colorPaletteViz, habitatAnalytes } from '../../utils/utils';
 import { axisBlue, axisOrange, axisGreen, axisPurple, customTooltip } from './chart-station.module.css';
 
 
@@ -12,7 +12,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S');
+    const parseDate = d3.timeParse('%Y-%m-%d');
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
 
     const responsive = (id) => {
@@ -276,17 +276,26 @@ export default function ChartStation({ station, selectedAnalytes }) {
 
     const getData = (parameter) => {
         return new Promise((resolve, reject) => {
-            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + parameter + '%22}&sort=%22SampleDate%22%20desc';
-            url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
+            let url;
+            if (habitatAnalytes.includes(parameter)) {
+                url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=9ce012e2-5fd3-4372-a4dd-63294b0ce0f6&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + parameter + '%22}&sort=%22SampleDate%22%20desc';
+                url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
+            } else {
+                url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + parameter + '%22}&sort=%22SampleDate%22%20desc';
+                url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
+            }
             fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
+                    console.log(records);
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.Result = +d.Result;
+                        d.Result = parseFloat(d.Result).toFixed(2);
                         if (parameter === 'pH') {
                             d.Unit = '';
+                        } else if (parameter === 'CSCI') {
+                            d.Unit = 'score';
                         }
                     });
                     resolve(records);

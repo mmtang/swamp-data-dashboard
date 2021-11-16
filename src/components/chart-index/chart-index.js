@@ -12,7 +12,7 @@ import {
 import CustomTooltip from './custom-tooltip';
 import { timeParse, timeFormat } from 'd3';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { colorPaletteViz} from '../../utils/utils';
+import { colorPaletteViz, habitatAnalytes } from '../../utils/utils';
 
 
 export default function ChartIndex({ selectedSites, analyte }) {
@@ -24,11 +24,6 @@ export default function ChartIndex({ selectedSites, analyte }) {
 
     const parseDate = timeParse('%Y-%m-%d');
     const formatDate = timeFormat('%Y-%m-%d');
-
-    const habitatAnalytes = [
-        'CSCI',
-        'IPI'
-    ]
 
     const handleClick = () => {
         if (modalVisible === false) {
@@ -95,7 +90,6 @@ export default function ChartIndex({ selectedSites, analyte }) {
                             d.Unit = '';
                         }
                     });
-                    console.log(records);
                     resolve(records);
                 });
         });
