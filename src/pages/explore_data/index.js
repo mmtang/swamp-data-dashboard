@@ -52,17 +52,17 @@ export default function Index() {
             Data Table
           </Divider>
           <section>
-            <p>The table below displays the map data in a tabular format. Any filters applied to the map are also applied to the table. Use the column headers to sort the records by a specific order. Select a site (or multiple sites) to graph and compare time series data.</p>
+            <p>The table below displays the map data in a tabular format. Any filters applied to the map are also applied to the table. Use the column headers to sort the records. Select a site (or multiple sites) to graph time series data.</p>
             <FilterByExtent setFilterExtentToggle={setFilterExtentToggle} />
-              <ChartIndex 
-                selectedSites={selectedSites}
-                analyte={analyte}
-              />
-              <Table 
-                selectedAnalyte={analyte}
-                data={tableData}
-                setSelectedSites={setSelectedSites}
-              />
+            <ChartIndex 
+              selectedSites={selectedSites}
+              analyte={analyte}
+            />
+            <Table 
+              selectedAnalyte={analyte}
+              data={tableData}
+              setSelectedSites={setSelectedSites}
+            />
           </section>
           <UpdateMessage />
         </div>

@@ -1,6 +1,10 @@
-.button {
-    padding: 0.6em 1em;
-    background-color: #e0e1e2;
-    color: #5a5a5a;
-    font-weight: 500;
+.buttonContainer {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.chartWrapper {
+    width: 99%;
+    height: 400px;
 }

@@ -59,7 +59,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                     <HelpIcon wide={true}>
                         <p>Search for a specific location (city, region), landmark, waterbody (river, lake, reservoir), or SWAMP monitoring site (station name or code).</p>
                         <p>This search uses the ArcGIS World Geocoding Service and also searches through the features in the loaded map layers. The results are categorized by source/layer.</p>
-                        <p>By default, this search uses a library of Integrated Report waterbodies. For Basin Plan waterbodies, turn on the Basin Plan layer in the <strong>Layers</strong> section and try searching again once the layer has completely loaded.</p>
+                        <p>By default, this search uses a library of Integrated Report waterbodies. For Basin Plan waterbodies, turn on the Basin Plan layer in the <strong>Map Layers</strong> section and try searching again once the layer has completely loaded.</p>
                     </HelpIcon>
                 </p>
                 {/* Container for the ArcGIS JavaScript search widget */}

@@ -46,6 +46,7 @@ export default function RegionMenu({ program, setProgram }) {
                 onChange={handleChange}
                 styles={customSelectStyle}
                 maxMenuHeight={200}
+                isDisabled={true}
             />
         </React.Fragment>
     )

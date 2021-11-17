@@ -10,9 +10,11 @@ import {
     ResponsiveContainer
 } from 'recharts';
 import CustomTooltip from './custom-tooltip';
+import HelpIcon from '../icons/help-icon';
 import { timeParse, timeFormat } from 'd3';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { colorPaletteViz, habitatAnalytes } from '../../utils/utils';
+import { buttonContainer, chartWrapper } from './chart-index.module.css';
 
 
 export default function ChartIndex({ selectedSites, analyte }) {
@@ -36,10 +38,10 @@ export default function ChartIndex({ selectedSites, analyte }) {
     useEffect(() => {
         if (modalVisible) {
             if (data) { setData(null) };
-            // Limit number of sites graphed to 8
+            // Limit number of sites graphed to 5
             let vizSites;
-            if (selectedSites.length > 8) {
-                vizSites = selectedSites.slice(0, 8);
+            if (selectedSites.length > 5) {
+                vizSites = selectedSites.slice(0, 5);
             } else {
                 vizSites = selectedSites;
             }
@@ -77,7 +79,6 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
                 url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
             }
-            console.log(url);
             fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
@@ -86,9 +87,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.Result = +d.Result;
                         d.timestamp = d.SampleDate.getTime();
-                        if (d.Unit === 'none') {
-                            d.Unit = '';
-                        }
+                        d.Unit = d.Unit === 'none' ? '' : d.Unit;
                     });
                     resolve(records);
                 });
@@ -97,7 +96,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
 
     const chart = () => {
         return (
-            <div style={{ width: '99%', height: '400px' }}>
+            <div className={chartWrapper}>
                 <ResponsiveContainer width='100%' height='100%'>
                     <ScatterChart
                         width={500}
@@ -153,16 +152,21 @@ export default function ChartIndex({ selectedSites, analyte }) {
     }
 
     return (
-        <>
-            <Button compact 
-                size='tiny'
-                disabled={selectedSites.length < 1 || !(analyte)}
-                onClick={handleClick} 
-                onKeyPress={handleClick}
-            >
-                <Icon name='chart bar' />
-                Graph selected sites {selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)' }
-            </Button>
+        <React.Fragment>
+            <div className={buttonContainer}>
+                <Button compact 
+                    size='tiny'
+                    disabled={selectedSites.length < 1 || !(analyte)}
+                    onClick={handleClick} 
+                    onKeyPress={handleClick}
+                >
+                    <Icon name='chart bar' />
+                    Graph selected sites {selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)' }
+                </Button>
+                <HelpIcon>
+                    <p>To use this function, select an indicator from the <strong>Filters</strong> section above and at least one site from the table below. A maximum of five sites can be graphed.</p>
+                </HelpIcon>
+            </div>
             { modalVisible ? 
                 <Modal
                     closeIcon
@@ -175,6 +179,6 @@ export default function ChartIndex({ selectedSites, analyte }) {
                     </Modal.Content>
                 </Modal> 
             : '' }
-        </>
+        </React.Fragment>
     )
 }

@@ -1007,7 +1007,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                 records.forEach(d => {
                     d.SampleDate = parseDate(d.SampleDate);
                     d.Result = +d.Result.toFixed(2);
-                    d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
+                    d.Unit = d.Unit === 'none' ? '' : d.Unit;
                 });
                 // Build popup content
                 let content = '<span class="small">Latest results';
