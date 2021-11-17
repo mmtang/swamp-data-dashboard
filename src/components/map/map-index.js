@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
 import { irLineRenderer, irPolyRenderer, regionRenderer, stationRenderer } from './map-renderer';
-import { regionDict, irRegionDict, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields } from '../../utils/utils';
+import { regionDict, irRegionDict, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields, habitatAnalytes } from '../../utils/utils';
 import { container } from './map-index.module.css';
 
 
@@ -146,7 +146,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                         .then((resp) => resp.json())
                         .then((json) => json.result.records)
                         .then((records) => {
-                            console.log(records);
                             convertStationDataToGraphics(records)
                             .then(res => {
                                 stationLayerRef.current = new FeatureLayer({
@@ -504,39 +503,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
 
                             // Query features and then update table
                             updateTableWithStationSummaryData();
-
-                            // Change table data source
-                            /*
-                            tableRef.current.layer = stationSummaryLayerRef.current;
-                            tableRef.current.fieldConfigs = stationSummaryTableFields;
-                            */
-
-                            // Add listener for extent changes
-                            /*
-                            viewRef.current.whenLayerView(stationSummaryLayerRef.current).then(layerView => {  
-                                layerView.watch("updating", function (value) {
-                                    if (!value) {
-                                        layerView.queryFeatures({
-                                            geometry: viewRef.current.extent
-                                        }).then(results => {
-                                            const features = results.features;
-                                            const featureData = features.map(d => {
-                                                return {
-                                                    StationName: d.attributes.StationName,
-                                                    StationCode: d.attributes.StationCode,
-                                                    RegionName: d.attributes.RegionName,
-                                                    LastSampleDate: d.attributes.LastSampleDate,
-                                                    Trend: d.attributes.Trend,
-                                                    Analyte: d.attributes.Analyte
-                                                }
-                                            });
-                                            setTableData(featureData);
-                                            setFilterExtentToggle(false);
-                                        })
-                                    }
-                                })
-                            })
-                            */
                         })
                     });
                 });
@@ -552,13 +518,10 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                     updateStationAnalyteLayer();
                 }
             } else {
-                //tableRef.current.clearSelection();
                 mapRef.current.remove(stationSummaryLayerRef.current);
                 mapRef.current.add(stationLayerRef.current);
                 // Update table
                 updateTableWithStationData();
-                //tableRef.current.layer = stationLayerRef.current;
-                //tableRef.current.fieldConfigs = stationDataTableFields;
             }
         }
     }, [selectedAnalyte])
@@ -1029,7 +992,11 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
         const stationCode = attributes['StationCode'];
         let url; 
         if (selectedAnalyte) {
-            url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&filters={%22StationCode%22:%22' + stationCode + '%22%2C%22Analyte%22:%22' + selectedAnalyte + '%22}&sort=%22SampleDate%22%20desc&limit=3';
+            if (habitatAnalytes.includes(selectedAnalyte)) {
+                url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=9ce012e2-5fd3-4372-a4dd-63294b0ce0f6&filters={%22StationCode%22:%22' + stationCode + '%22%2C%22Analyte%22:%22' + selectedAnalyte + '%22}&sort=%22SampleDate%22%20desc&limit=3';
+            } else {
+                url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&filters={%22StationCode%22:%22' + stationCode + '%22%2C%22Analyte%22:%22' + selectedAnalyte + '%22}&sort=%22SampleDate%22%20desc&limit=3';
+            }
         } else {
             url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&filters={%22StationCode%22:%22' + stationCode + '%22}&sort=%22SampleDate%22%20desc&limit=3';
         }
@@ -1039,6 +1006,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
             .then(records => {
                 records.forEach(d => {
                     d.SampleDate = parseDate(d.SampleDate);
+                    d.Result = +d.Result.toFixed(2);
+                    d.Unit = d.Analyte === 'pH' ? '' : d.Unit;
                 });
                 // Build popup content
                 let content = '<span class="small">Latest results';

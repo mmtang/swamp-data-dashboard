@@ -13,8 +13,6 @@ export default function Table({ selectedAnalyte, data, setSelectedSites }) {
     const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState(null); 
 
-    console.log(data);
-
     // Documentation of RDT styles that can be overrided or extended
     // https://github.com/jbetancur/react-data-table-component/blob/master/src/DataTable/styles.ts
     const customStyles = {
