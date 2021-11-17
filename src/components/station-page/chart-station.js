@@ -12,7 +12,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const parseDate = d3.timeParse('%Y-%m-%d');
+    const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S');
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
 
     const responsive = (id) => {

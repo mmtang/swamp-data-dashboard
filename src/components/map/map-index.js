@@ -26,7 +26,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
     const highlightSiteRef = useRef(null);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
-    const parseDate2 = timeParse('%Y-%m-%d %H:%M:%S');
     const formatDate = timeFormat('%Y/%m/%d');
 
     const convertStationDataToGraphics = (data) => {
@@ -44,7 +43,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                         StationName: d.StationName,
                         Region: d.Region.toString(),
                         RegionName: regionDict[d.Region],
-                        LastSampleDate: formatDate(parseDate2(d.LastSampleDate))
+                        LastSampleDate: formatDate(parseDate(d.LastSampleDate))
                     }
                 };
             });
