@@ -6,9 +6,8 @@ import { regionDict, irRegionDict, stationDataFields, stationDataTableFields, st
 import { container } from './map-index.module.css';
 
 
-export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProgram, clickedSite, setSelectedSites, setTableData, filteredByExtent, setFilteredByExtent }) {
+export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProgram, clickedSite, selectedSites, setSelectedSites, setTableData, filteredByExtent, setFilteredByExtent, zoomedToSites, setZoomedToSites }) {
     const [sites, setSites] = useState([]);
-    const featuresRef = useRef([]);
 
     const divRef = useRef(null);
     const mapRef = useRef(null);
@@ -139,6 +138,50 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
         }
     }, [filteredByExtent])
 
+    useEffect(() => {
+        // This function queries the selected sites from the current station layer, gets the extent, and then zooms/fits the extent to the map window.
+        const zoomToSelected = () => {
+            // Get the layer ID of the current station layer
+            const layer = selectedAnalyte ? stationSummaryLayerRef.current : stationLayerRef.current;
+            const query = layer.createQuery();
+            // Query all features from the layer and then get the Object ID for features that match the selected site codes
+            layer.queryFeatures(query)
+            .then(response => {
+                const features = response.features;
+                const matches = features.filter(d => selectedSites.includes(d.attributes.StationCode));
+                const featureIds = matches.map(d => d.attributes.ObjectId);
+                // Set the query's objectId
+                query.objectIds = featureIds;
+                // Must get the geometry to be able to determine the extent and zoom
+                query.returnGeometry = true;
+                // Query the station layer with the new query (object ids)
+                layer.queryFeatures(query).then((results) => {
+                    // Zoom to the results
+                    // There are two methods depending on how many sites are selected
+                    if (query.objectIds.length > 1) {
+                        // For multiple selected sites
+                        viewRef.current.goTo(results.features).catch((error) => {
+                            if (error.name != 'AbortError') {
+                                console.error(error);
+                            }
+                        });
+                    } else {
+                        // For one selected site. The operation for multiple sites does not handle single site selections well (don't know why)
+                        const feature = results.features[0];
+                        viewRef.current.goTo({
+                            target: feature.geometry,
+                            zoom: 13
+                        });
+                    }
+                });
+            })
+        }
+        if (zoomedToSites) {
+            zoomToSelected();
+            setZoomedToSites(false);
+        }
+    }, [zoomedToSites])
+
     // Initial load
     useEffect(() => {
         const drawStations = () => {
@@ -189,48 +232,6 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
 
                 });
         };
-        const zoomToSelectedFeature = () => {
-            // Create a query off of the feature layer
-            let activeLayer;
-            const stationLayer = mapRef.current.allLayers.find((layer) => {
-                return layer.id === 'stationLayer';
-            });
-            const summaryLayer = mapRef.current.allLayers.find((layer) => {
-                return layer.id === 'stationSummaryLayer';
-            });
-            if (stationLayer) {
-                activeLayer = stationLayerRef.current;
-            } else if (summaryLayer) {
-                activeLayer = stationSummaryLayerRef.current;
-            }
-            const query = activeLayer.createQuery();
-            // Iterate through the features and grab the feature's objectID
-            const featureIds = featuresRef.current.map((result) => {
-                return result.feature.getAttribute(activeLayer.objectIdField);
-            });
-            // Set the query's objectId
-            query.objectIds = featureIds;
-            // Make sure to return the geometry to zoom to
-            query.returnGeometry = true;
-            // Call queryFeatures on the feature layer and zoom to the resulting features
-            activeLayer.queryFeatures(query).then((results) => {
-                if (query.objectIds.length > 1) {
-                    // Zooming to the extent of multiple selected sites.
-                    viewRef.current.goTo(results.features).catch((error) => {
-                        if (error.name != 'AbortError') {
-                            console.error(error);
-                        }
-                    });
-                } else {
-                    // Zooming to the extent of one selected site. The operation above does not handle single site selections well.
-                    const feature = results.features[0];
-                    viewRef.current.goTo({
-                        target: feature.geometry,
-                        zoom: 13
-                    });
-                }
-            });
-        }
         setDefaultOptions({ version: '4.20' });
         loadCss();
         initializeMap()

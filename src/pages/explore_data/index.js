@@ -6,6 +6,7 @@ import AccordionMenu from '../../components/map-controls/accordion-menu';
 import ChartIndex from '../../components/chart-index/chart-index';
 import Table from '../../components/table/table';
 import FilterByExtent from '../../components/map-controls/filter-by-extent';
+import ZoomToSelected from '../../components/map-controls/zoom-to-selected';
 import { Divider } from 'semantic-ui-react';
 import { mapContainer, mainContainer, infoContainer } from './index.module.css';
 
@@ -17,6 +18,7 @@ export default function Index() {
   const [selectedSites, setSelectedSites] = useState([]);
   const [tableData, setTableData] = useState();
   const [filteredByExtent, setFilteredByExtent] = useState(false);
+  const [zoomedToSites, setZoomedToSites] = useState(false);
 
   const yearRef = useRef(new Date().getFullYear());
 
@@ -27,11 +29,14 @@ export default function Index() {
           selectedAnalyte={analyte} 
           selectedRegion={region} 
           selectedProgram={program}
+          selectedSites={selectedSites}
           setSelectedSites={setSelectedSites}
           clickedSite={site} 
           setTableData={setTableData}
           filteredByExtent={filteredByExtent}
           setFilteredByExtent={setFilteredByExtent}
+          zoomedToSites={zoomedToSites}
+          setZoomedToSites={setZoomedToSites}
         />
       </div>
       <div className={mainContainer}>
@@ -56,6 +61,9 @@ export default function Index() {
             <FilterByExtent 
               filteredByExtent={filteredByExtent}
               setFilteredByExtent={setFilteredByExtent} 
+            />
+            <ZoomToSelected
+              setZoomedToSites={setZoomedToSites}
             />
             <ChartIndex 
               selectedSites={selectedSites}

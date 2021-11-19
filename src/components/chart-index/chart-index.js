@@ -164,7 +164,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                     Graph selected sites {selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)' }
                 </Button>
                 <HelpIcon>
-                    <p>To use this function, select an indicator from the <strong>Filters</strong> section above and at least one site from the table below. A maximum of five sites can be graphed.</p>
+                    <p>To use the graph function, select an indicator from the <strong>Filters</strong> section above and at least one site from the table below. A maximum of five sites can be graphed.</p>
                 </HelpIcon>
             </div>
             { modalVisible ? 

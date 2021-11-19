@@ -2,6 +2,7 @@
     display: inline-flex;
     flex-wrap: nowrap;
     align-items: center;
+    margin-top: 0.25em;
 }
 
 .chartWrapper {
