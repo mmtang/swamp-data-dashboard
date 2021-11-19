@@ -1,20 +1,22 @@
 import React from 'react';
 import { Button, Icon } from 'semantic-ui-react';
+import { active } from './filter-by-extent.module.css';
 
-export default function FilterByExtent({ setFilterExtentToggle }) {   
+export default function FilterByExtent({ filteredByExtent, setFilteredByExtent }) {   
     const handleClick = () => {
-        setFilterExtentToggle(true);
+        setFilteredByExtent(!filteredByExtent);
     }
 
     return (
-        <Button compact 
+        <Button 
+            compact 
+            className={filteredByExtent ? active : null}
             size='tiny'
-            //disabled={selectedSites.length < 1 || !(analyte)}
             onClick={handleClick} 
             onKeyPress={handleClick}
         >
             <Icon name='filter' />
-            Filter table by map extent
+            Filter by map extent
         </Button>
     )
 }

@@ -16,9 +16,9 @@ export default function Index() {
   const [site, setSite] = useState(null);
   const [selectedSites, setSelectedSites] = useState([]);
   const [tableData, setTableData] = useState();
-  const [filterExtentToggle, setFilterExtentToggle] = useState(false);
-  const yearRef = useRef(new Date().getFullYear());
+  const [filteredByExtent, setFilteredByExtent] = useState(false);
 
+  const yearRef = useRef(new Date().getFullYear());
 
   return (
     <LayoutMap title='SWAMP Data Dashboard'>
@@ -30,8 +30,8 @@ export default function Index() {
           setSelectedSites={setSelectedSites}
           clickedSite={site} 
           setTableData={setTableData}
-          filterExtentToggle={filterExtentToggle}
-          setFilterExtentToggle={setFilterExtentToggle}
+          filteredByExtent={filteredByExtent}
+          setFilteredByExtent={setFilteredByExtent}
         />
       </div>
       <div className={mainContainer}>
@@ -52,8 +52,11 @@ export default function Index() {
             Data Table
           </Divider>
           <section>
-            <p>The table below displays the map data in a tabular format. Any filters applied to the map are also applied to the table. Use the column headers to sort the records. Select a site (or multiple sites) to graph time series data.</p>
-            <FilterByExtent setFilterExtentToggle={setFilterExtentToggle} />
+            <p>The table below displays the map data in a tabular format. Any filters applied to the map are also applied to the table. Use the column headers to sort the records. Select a site (or multiple sites) to graph data for the selected indicator.</p>
+            <FilterByExtent 
+              filteredByExtent={filteredByExtent}
+              setFilteredByExtent={setFilteredByExtent} 
+            />
             <ChartIndex 
               selectedSites={selectedSites}
               analyte={analyte}
