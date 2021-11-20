@@ -6,7 +6,7 @@ import { regionDict, irRegionDict, stationDataFields, stationDataTableFields, st
 import { container } from './map-index.module.css';
 
 
-export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProgram, clickedSite, selectedSites, setSelectedSites, setTableData, filteredByExtent, setFilteredByExtent, zoomedToSites, setZoomedToSites }) {
+export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, selectedProgram, clickedSite, selectedSites, setSelectedSites, setTableData, filteredByExtent, setFilteredByExtent, zoomedToSites, setZoomedToSites }) {
     const [sites, setSites] = useState([]);
 
     const divRef = useRef(null);
@@ -189,8 +189,8 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                 title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                 content: buildStationPopup
             };
-            loadModules(['esri/layers/FeatureLayer', 'esri/widgets/FeatureTable'])
-                .then(([FeatureLayer]) => {
+            loadModules(['esri/layers/FeatureLayer', 'esri/core/watchUtils'])
+                .then(([FeatureLayer, watchUtils]) => {
                     if (mapRef) {
                         const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region,LastSampleDate&limit=5000';
                         fetch(url)
@@ -226,10 +226,17 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                                     placeholder: 'Example: Buena Vista Park',
                                     zoomScale: 14000
                                 });
+                                /*
+                                viewRef.current.whenLayerView(stationLayerRef.current)
+                                .then(layerView => {
+                                    watchUtils.whenFalse(layerView, 'updating', () => {
+                                        setLoaded(true);
+                                    });
+                                });
+                                */
                             });
                         });
                     }
-
                 });
         };
         setDefaultOptions({ version: '4.20' });
@@ -241,6 +248,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
             drawIntegratedReport();
             drawLandUse();
             drawBasinPlan();
+            setLoaded(true);
         });
     }, [mapRef]);
 
@@ -648,6 +656,9 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                     map: mapRef.current,
                     center: [-119.3624, 37.5048],
                     zoom: 6,
+                    constraints: {
+                        minZoom: 4
+                    },
                     popup: {
                         dockOptions: {
                             buttonEnabled: false
@@ -829,7 +840,7 @@ export default function MapIndex({ selectedAnalyte, selectedRegion, selectedProg
                 });
                 irLayerRef.current = new GroupLayer({
                     title: 'Integrated Report 2018',
-                    visible: false,
+                    visible: true,
                     layers: [irLineRef.current, irPolyRef.current],
                     listMode: 'show',
                     visibilityMode: 'inherited'

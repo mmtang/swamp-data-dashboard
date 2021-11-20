@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import LayoutMap from '../../components/layout/layout-map';
+import LoaderDashboard from '../../components/common/loader-dashboard';
 import MapIndex from '../../components/map/map-index';
 import UpdateMessage from '../../components/map-controls/update-message';
 import AccordionMenu from '../../components/map-controls/accordion-menu';
@@ -11,6 +12,7 @@ import { Divider } from 'semantic-ui-react';
 import { mapContainer, mainContainer, infoContainer } from './index.module.css';
 
 export default function Index() {
+  const [loaded, setLoaded] = useState(false);
   const [analyte, setAnalyte] = useState(null);
   const [program, setProgram] = useState(null);
   const [region, setRegion] = useState(null);
@@ -26,6 +28,7 @@ export default function Index() {
     <LayoutMap title='SWAMP Data Dashboard'>
       <div className={mapContainer}>
         <MapIndex 
+          setLoaded={setLoaded}
           selectedAnalyte={analyte} 
           selectedRegion={region} 
           selectedProgram={program}
@@ -39,6 +42,7 @@ export default function Index() {
           setZoomedToSites={setZoomedToSites}
         />
       </div>
+      { !loaded ? <LoaderDashboard /> : null }
       <div className={mainContainer}>
         <div className={infoContainer}>
           <p>Use the search and filter controls below to explore SWAMP water quality data for the time period of 2000-{yearRef.current}. Filters are automatically applied to the map and the table at the bottom of the page.</p>

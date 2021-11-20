@@ -5,6 +5,7 @@ import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies'
 import NearbyStations from '../../components/station-page/nearby-stations';
 import ChartStation from '../../components/station-page/chart-station';
 import StationTable from '../../components/station-page/station-table';
+import LoaderDashboard from '../../components/common/loader-dashboard';
 import { regionDict } from '../../utils/utils';
 import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName } from './station.module.css';
 
@@ -50,12 +51,8 @@ export default function Station(props) {
             .then(() => getStationData())
             .then(() => setLoading(false));
     }, []);
-
-    if (loading === true) {
-        return (
-            <div>Loading</div>
-        );
-    } else if (loading === false && stationObjRef.current) {
+    
+    if (loading === false && stationObjRef.current) {
         return (
             <LayoutStation title='SWAMP Data Dashboard'>
                 <div className={leftContainer}>
@@ -96,5 +93,11 @@ export default function Station(props) {
                 </div>
             </LayoutStation>
         );
+    } else {
+        return (
+            <LayoutStation title='SWAMP Data Dashboard'>
+                <LoaderDashboard />
+            </LayoutStation>
+        )
     }
 }

@@ -1,0 +1,10 @@
+.fsContainer {
+    display: block;
+    position: fixed;
+    z-index: 900;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background-color: #20639b;
+}
