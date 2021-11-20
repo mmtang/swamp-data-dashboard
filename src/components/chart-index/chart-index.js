@@ -24,7 +24,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
 
     const unitRef = useRef(null);
 
-    const parseDate = timeParse('%Y-%m-%d');
+    const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = timeFormat('%Y-%m-%d');
 
     const handleClick = () => {
@@ -79,6 +79,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
                 url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
             }
+            console.log(url);
             fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)

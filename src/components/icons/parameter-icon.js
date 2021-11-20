@@ -26,8 +26,6 @@ export default function ParameterIcon(props) {
         stroke
     }
 
-    console.log(newProps);
-
     const getComponent = () => {
         switch(icon) {
             case 'asci':
