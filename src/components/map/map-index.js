@@ -22,7 +22,11 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
     const stationLayerRef = useRef(null);
     const stationSummaryLayerRef = useRef(null);
     const layerListRef = useRef(null);
-    const highlightSiteRef = useRef(null);
+    const highlightSiteRef = useRef([]);
+    // This ref is used to store the returned handlers for removing the map highlight. In dictionary format with station code used as the key
+    const highlightSiteHandlerRef = useRef({});
+    // This ref is used to store the old array of site code strings. Will be compared to the new array.
+    const selectedSitesRef = useRef(null);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = timeFormat('%Y/%m/%d');
@@ -74,10 +78,6 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
             resolve(features);
         })
     }
-
-    useEffect(() => {
-        setSelectedSites(sites);
-    }, [sites]);
 
     useEffect(() => {
         // This function queries the current map extent and returns an array of attributes for those stations found within the extent. The array is used to update the station table on the main dashboard page.
@@ -611,32 +611,101 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
     }, [selectedRegion]);
 
     useEffect(() => {
-        if (viewRef.current) {
-            if (clickedSite) {
-                loadModules(['esri/views/layers/LayerView','esri/tasks/support/Query'])
-                .then(([LayerView, Query]) => {
-                    const layer = selectedAnalyte ? stationSummaryLayerRef : stationLayerRef;
-                    viewRef.current.whenLayerView(layer.current).then((layerView) => {
-                        // if a site is already highlighted, then remove the highlight
-                        if (highlightSiteRef.current) {
-                            highlightSiteRef.current.remove();
-                        }
-                        const query = layer.current.createQuery();
-                        query.where = `StationCode = '${clickedSite.StationCode}'`;
-                        layer.current.queryFeatures(query)
-                            .then(results => {
-                                const feature = results.features[0];
-                                viewRef.current.goTo({
-                                    target: feature.geometry,
-                                    zoom: 13
-                                });
-                                highlightSiteRef.current = layerView.highlight(feature);
-                            })
-                    })
-                })
-            }
+        // This function highlights selected sites on the map and handles any changes (adding/removing sites) initiated by the dashboard table.
+        const addSiteHighlight = (layer, siteCode) => {
+            viewRef.current.whenLayerView(layer.current).then((layerView) => {
+                const query = layer.current.createQuery();
+                query.where = `StationCode = '${siteCode}'`;
+                layer.current.queryFeatures(query)
+                .then(results => {
+                    const feature = results.features[0].attributes.ObjectId;
+                    highlightSiteRef.current = layerView.highlight(feature);
+                    /*highlightSiteRef.current.push(feature); 
+                    const handler = layerView.highlight(highlightSiteRef.current);
+                    highlightSiteHandlerRef.current[siteCode] = handler;
+                    console.log(highlightSiteHandlerRef.current);
+                    */
+                });
+            })
+        };
+        const removeSiteHighlight = (layer, siteCode) => {
+            const query = layer.current.createQuery();
+            query.where = `StationCode = '${siteCode}'`;
+            layer.current.queryFeatures(query)
+            .then(results => {
+                const featureId = results.features[0].attributes.ObjectId;
+                highlightSiteRef.current.remove(featureId);
+                /*
+                const matched = 
+                const index = highlightSiteRef.current.indexOf(feature);
+                console.log(index);
+                if (index > -1) {
+                    highlightSiteRef.current.splice(index, 1);
+                    layerView.highlight(highlightSiteRef.current);
+                }
+                highlightSiteRef.current.remove(feature);
+                */
+            });
+            /*
+            const handler = highlightSiteHandlerRef.current[siteCode];
+            handler.remove();
+            delete highlightSiteHandlerRef.current[siteCode]
+            console.log(highlightSiteHandlerRef.current);
+            */
         }
-    }, [clickedSite, selectedAnalyte])
+        if (viewRef.current) {
+            const layer = selectedAnalyte ? stationSummaryLayerRef : stationLayerRef;
+            viewRef.current.whenLayerView(layer.current).then((layerView) => {
+                if (selectedSitesRef.current) {
+                    const addedSites = selectedSites.filter(d => !selectedSitesRef.current.includes(d));
+                    const removedSites = selectedSitesRef.current.filter(d => !selectedSites.includes(d));
+                    console.log(removedSites);
+                    if (addedSites.length > 0) { 
+                        addSiteHighlight(layer, addedSites[0]); 
+                    } else if (removedSites.length > 0) {
+                        removeSiteHighlight(layer, removedSites[0]);
+                    }
+                    selectedSitesRef.current = selectedSites;
+                } else {
+                    addSiteHighlight(layer, selectedSites[0]);
+                    selectedSitesRef.current = selectedSites;
+                }
+                // if a site is already highlighted, then remove the highlight
+                /*
+                if (highlightSiteRef.current) {
+                    highlightSiteRef.current.remove();
+                }
+
+                // Converts array to string format: "Item1","Item2","Item3"
+                // Removes the parentheses and then replaces the double quotes with single quotes, which is required for the ArcGIS SQL query statement
+                const sitesString = JSON.stringify(selectedSites).slice(1, -1).replaceAll('"', "'");
+                // Query the station layer and get the matched features
+                const query = layer.current.createQuery();
+                query.where = `StationCode in (${sitesString})`;
+                layer.current.queryFeatures(query)
+                .then(results => {
+                    if (selectedSitesRef.current) {
+                        const removedSites = selectedSitesRef.current.filter(d => !selectedSites.includes(d));
+                        console.log(removedSites);
+                        if (removedSites.length > 0) {
+
+                        }
+                    }
+                    highlightSiteRef.current = layerView.highlight(results.features);
+                    selectedSitesRef.current = selectedSites;
+
+                    const feature = results.features[0];
+                    viewRef.current.goTo({
+                        target: feature.geometry,
+                        zoom: 13
+                    });
+                    highlightSiteRef.current = layerView.highlight(feature);
+                
+                });
+                */
+            })
+        }
+    }, [selectedSites])
 
     const initializeMap = () => {
         return new Promise((resolve, reject) => {
@@ -666,7 +735,8 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                         collapseEnabled: false,
                     },
                     highlightOptions: {
-                        fillOpacity: 0.1
+                        fillOpacity: 0.1,
+                        color: [255, 0, 0, 1]
                     }
                 });
                 searchRef.current = new Search({

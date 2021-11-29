@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { event as currentEvent } from 'd3-selection';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { colorPaletteViz, habitatAnalytes } from '../../utils/utils';
@@ -76,7 +75,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
         const analyteKeys = Object.keys(data);
         let allDates = [];
         for (const key in analyteKeys) {
-            const obj = data[analyteKeys[key]];
+            //const obj = data[analyteKeys[key]];
             const dates = data[analyteKeys[key]].data.map(d => d.SampleDate);
             allDates = [...allDates, ...dates];
         }
@@ -117,6 +116,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
         // Draw y-axes
         for (const key in analyteKeys) {
             const analyteName = analyteKeys[key];
+            // Use double equal (value equality), not triple equal (value and type equality); otherwise, y-axes won't show up
             if (key == 0) {
                 chart.append('g')
                     .attr('class', axisBlue)
@@ -139,6 +139,8 @@ export default function ChartStation({ station, selectedAnalytes }) {
                     .call(d3.axisRight().scale(data[analyteName]['yScale']).ticks(5));
             }
         }
+
+        console.log(analyteKeys);
 
         for (const key in analyteKeys) {
             const analyteName = analyteKeys[key];
@@ -177,11 +179,15 @@ export default function ChartStation({ station, selectedAnalytes }) {
                 .attr('stroke', '#fff')
                 .on('mouseover', function(currentEvent, d) {
                     const formatDate = d3.timeFormat('%b %e, %Y');
+                    let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + d.Result + ' ' + d.Unit;
+                    if (d.Censored === true) {
+                        content += '<br><i>Censored</i>';
+                    }
                     return tooltip
                         .style('opacity', 1)
                         .style('left', (currentEvent.pageX) + 'px')
                         .style('top', (currentEvent.pageY - 28) + 'px')
-                        .html('<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + d.Result + ' ' + d.Unit);
+                        .html(content);
                 })
                 .on('mousemove', function(currentEvent, d) {
                     return tooltip
@@ -201,27 +207,26 @@ export default function ChartStation({ station, selectedAnalytes }) {
 
         // Add legend
         const svgLegend = d3.select('#legend-container').append('svg')
-            .attr('width', width)
-            .attr('height', 70);
+            .attr('width', 250)
+            .attr('height', 28 * selectedAnalytes.length);
         svgLegend.append('g')
             .attr('class', 'legendOrdinal')
             .attr('transform', 'translate(40, 20)');
         const ordinal = d3.scaleOrdinal()
             .domain(analyteKeys)
             .range(colorPaletteViz);
-
         const legendOrdinal = legendColor()
             //d3 symbol creates a path-string, for example
             //"M0,-8.059274488676564L9.306048591020996,
             //8.059274488676564 -9.306048591020996,8.059274488676564Z"
             .shape('path', d3.symbol().type(d3.symbolCircle).size(100)())
-            .shapePadding(100)
+            .shapePadding(8)
             //use cellFilter to hide the "e" cell
             .cellFilter(function(d){ return d.label !== 'e' })
             .scale(ordinal)
-            .orient('horizontal')
-            .labelWrap(80)
-            .labelAlign('middle');
+            .orient('vertical')
+            //.labelWrap(80)
+            //.labelAlign('middle');
         svgLegend.select('.legendOrdinal')
             .call(legendOrdinal);
     };
@@ -274,32 +279,63 @@ export default function ChartStation({ station, selectedAnalytes }) {
         }
     }, [loading]);
 
+    const getCensored = (d) => {
+        if (!d.ResultOriginal) {
+            if (d['MDL']) {
+                return [true, d['MDL'] / 2];
+            } else {
+                return [true, null];
+            }
+        } else {
+            return [false, d.ResultOriginal];
+        }
+    }
+
     const getData = (parameter) => {
         return new Promise((resolve, reject) => {
             let url;
+            // Get Habitat data
             if (habitatAnalytes.includes(parameter)) {
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=9ce012e2-5fd3-4372-a4dd-63294b0ce0f6&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + parameter + '%22}&sort=%22SampleDate%22%20desc';
                 url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
-            } else {
-                url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + parameter + '%22}&sort=%22SampleDate%22%20desc';
-                url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
-            }
-            fetch(url)
+                fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
-                    console.log(records);
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.Result = parseFloat(d.Result).toFixed(2);
-                        if (parameter === 'pH') {
-                            d.Unit = '';
-                        } else if (parameter === 'CSCI') {
+                        d.ResultOriginal = parseFloat(d.Result).toFixed(2);
+                        d.Result = parseFloat(d.ResultOriginal).toFixed(2);
+                        d.Censored = false;
+                        if (parameter === 'CSCI') {
                             d.Unit = 'score';
                         }
                     });
                     resolve(records);
                 });
+            } else {
+                // Get chemistry data
+                url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + parameter + '%22}&sort=%22SampleDate%22%20desc';
+                url += '&fields=StationCode,Analyte,SampleDate,Result,Unit,MDL,ResultQualCode';
+                fetch(url)
+                .then(resp => resp.json())
+                .then(json => json.result.records)
+                .then(records => {
+                    records.forEach(d => {
+                        d.SampleDate = parseDate(d.SampleDate);
+                        d.ResultOriginal = d.Result;
+                        d['MDL'] = parseFloat(d['MDL']);
+                        const censored = getCensored(d);
+                        d['Censored'] = censored[0];
+                        d['Result'] = censored[1];
+                        if (parameter === 'pH') {
+                            d.Unit = '';
+                        }
+                    });
+                    records.filter(d => d.Result != null);
+                    resolve(records);
+                });
+            }
         });
     }
 
@@ -322,8 +358,12 @@ export default function ChartStation({ station, selectedAnalytes }) {
                 >
                     <Header icon='chart bar' content={`Selected parameters for ${station}`} />
                     <Modal.Content>
-                        { loading ? 'Loading...' : <div id="station-chart-container"></div> }
-                        <div id="legend-container" style={{ display: 'flex', justifyContent: 'center', margin: '5px 0 15px 0' }}></div>
+                        { loading ? 'Loading...' : 
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div id="station-chart-container"></div>
+                                <div id="legend-container" style={{ display: 'flex', justifyContent: 'center', margin: '5px 0 15px 0' }}></div>
+                            </div>
+                        }
                     </Modal.Content>
                 </Modal> 
             : '' }

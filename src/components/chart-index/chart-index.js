@@ -38,10 +38,10 @@ export default function ChartIndex({ selectedSites, analyte }) {
     useEffect(() => {
         if (modalVisible) {
             if (data) { setData(null) };
-            // Limit number of sites graphed to 5
+            // Limit number of sites graphed to 4
             let vizSites;
             if (selectedSites.length > 5) {
-                vizSites = selectedSites.slice(0, 5);
+                vizSites = selectedSites.slice(0, 4);
             } else {
                 vizSites = selectedSites;
             }
@@ -165,7 +165,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                     Graph selected sites {selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)' }
                 </Button>
                 <HelpIcon>
-                    <p>To use the graph function, select an indicator from the <strong>Filters</strong> section above and at least one site from the table below. A maximum of five sites can be graphed.</p>
+                    <p>To use the graph function, select an indicator from the <strong>Filters</strong> section above and at least one site from the table below. A maximum of four sites can be graphed at one time.</p>
                 </HelpIcon>
             </div>
             { modalVisible ? 
