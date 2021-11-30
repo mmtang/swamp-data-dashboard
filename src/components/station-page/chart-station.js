@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { colorPaletteViz, habitatAnalytes } from '../../utils/utils';
+import { colorPaletteViz, habitatAnalytes, getCensored } from '../../utils/utils';
 import { axisBlue, axisOrange, axisGreen, axisPurple, customTooltip } from './chart-station.module.css';
 
 
-export default function ChartStation({ station, selectedAnalytes }) {
+export default function ChartStation({ station, stationName, selectedAnalytes }) {
     const [data, setData] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -206,7 +206,7 @@ export default function ChartStation({ station, selectedAnalytes }) {
         }
 
         // Add legend
-        const svgLegend = d3.select('#legend-container').append('svg')
+        const svgLegend = d3.select('#station-legend-container').append('svg')
             .attr('width', 250)
             .attr('height', 28 * selectedAnalytes.length);
         svgLegend.append('g')
@@ -279,18 +279,6 @@ export default function ChartStation({ station, selectedAnalytes }) {
         }
     }, [loading]);
 
-    const getCensored = (d) => {
-        if (!d.ResultOriginal) {
-            if (d['MDL']) {
-                return [true, d['MDL'] / 2];
-            } else {
-                return [true, null];
-            }
-        } else {
-            return [false, d.ResultOriginal];
-        }
-    }
-
     const getData = (parameter) => {
         return new Promise((resolve, reject) => {
             let url;
@@ -356,12 +344,12 @@ export default function ChartStation({ station, selectedAnalytes }) {
                     open={modalVisible}
                     onClose={() => setModalVisible(false)}
                 >
-                    <Header icon='chart bar' content={`Selected parameters for ${station}`} />
+                    <Header icon='chart bar' content={`${station} - ${stationName}`} />
                     <Modal.Content>
                         { loading ? 'Loading...' : 
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div id="station-chart-container"></div>
-                                <div id="legend-container" style={{ display: 'flex', justifyContent: 'center', margin: '5px 0 15px 0' }}></div>
+                                <div id="station-legend-container" style={{ display: 'flex', justifyContent: 'center', margin: '5px 0 15px 0' }}></div>
                             </div>
                         }
                     </Modal.Content>

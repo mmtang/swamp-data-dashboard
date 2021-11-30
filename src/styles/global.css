@@ -218,3 +218,7 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
 .ui.button {
   border-radius: 0;
 }
+
+.legendOrdinal text {
+  font-size: 0.9em;
+}

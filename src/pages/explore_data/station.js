@@ -83,6 +83,7 @@ export default function Station(props) {
                     <section>
                         <ChartStation
                             station={stationObjRef.current.StationCode} 
+                            stationName={stationObjRef.current.StationName}
                             selectedAnalytes={selectedAnalytes} 
                         />
                         <StationTable 

@@ -735,8 +735,8 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                         collapseEnabled: false,
                     },
                     highlightOptions: {
-                        fillOpacity: 0.1,
-                        color: [255, 0, 0, 1]
+                        fillOpacity: 0.2,
+                        //color: [255, 0, 0, 1]
                     }
                 });
                 searchRef.current = new Search({
