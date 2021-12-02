@@ -22,9 +22,6 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
     const stationLayerRef = useRef(null);
     const stationSummaryLayerRef = useRef(null);
     const layerListRef = useRef(null);
-    const highlightSiteRef = useRef([]);
-    // This ref is used to store the returned handlers for removing the map highlight. In dictionary format with station code used as the key
-    const highlightSiteHandlerRef = useRef({});
     // This ref is used to store the old array of site code strings. Will be compared to the new array.
     const selectedSitesRef = useRef(null);
 
@@ -200,7 +197,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                             convertStationDataToGraphics(records)
                             .then(res => {
                                 stationLayerRef.current = new FeatureLayer({
-                                    id: 'stationLayer',
+                                    id: 'station-layer',
                                     objectIdField: 'ObjectId',
                                     geometryType: 'point',
                                     spatialReference: 3857,
@@ -476,7 +473,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                         convertStationSummaryDataToGraphics(records)
                         .then(res => {
                             stationSummaryLayerRef.current = new FeatureLayer({
-                                id: 'stationSummaryLayer',
+                                id: 'station-summary-layer',
                                 objectIdField: 'ObjectId',
                                 geometryType: 'point',
                                 spatialReference: 3857,
@@ -611,7 +608,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
     }, [selectedRegion]);
 
     useEffect(() => {
-        // This function highlights selected sites on the map and handles any changes (adding/removing sites) initiated by the dashboard table.
+        // This useEffect highlights selected sites on the map and handles any changes (adding/removing sites) initiated by the dashboard table.
         const addSiteHighlight = (layer, siteCode) => {
             viewRef.current.whenLayerView(layer.current).then((layerView) => {
                 const query = layer.current.createQuery();
@@ -619,12 +616,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                 layer.current.queryFeatures(query)
                 .then(results => {
                     const feature = results.features[0].attributes.ObjectId;
-                    highlightSiteRef.current = layerView.highlight(feature);
-                    /*highlightSiteRef.current.push(feature); 
-                    const handler = layerView.highlight(highlightSiteRef.current);
-                    highlightSiteHandlerRef.current[siteCode] = handler;
-                    console.log(highlightSiteHandlerRef.current);
-                    */
+                    layerView.highlight(feature);
                 });
             })
         };
@@ -633,25 +625,14 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
             query.where = `StationCode = '${siteCode}'`;
             layer.current.queryFeatures(query)
             .then(results => {
+                // Get Object ID of the feature to be removed
                 const featureId = results.features[0].attributes.ObjectId;
-                highlightSiteRef.current.remove(featureId);
-                /*
-                const matched = 
-                const index = highlightSiteRef.current.indexOf(feature);
-                console.log(index);
-                if (index > -1) {
-                    highlightSiteRef.current.splice(index, 1);
-                    layerView.highlight(highlightSiteRef.current);
-                }
-                highlightSiteRef.current.remove(feature);
-                */
+                // Query to get the layer object, which contains a map of all highlighted features
+                const layerId = selectedAnalyte ? 'station-summary-layer' : 'station-layer';
+                const layer = viewRef.current.allLayerViews.items.filter(d => d.layer.id === layerId)[0];
+                layer._highlightIds.delete(featureId);
+                layer._updateHighlight();   
             });
-            /*
-            const handler = highlightSiteHandlerRef.current[siteCode];
-            handler.remove();
-            delete highlightSiteHandlerRef.current[siteCode]
-            console.log(highlightSiteHandlerRef.current);
-            */
         }
         if (viewRef.current) {
             const layer = selectedAnalyte ? stationSummaryLayerRef : stationLayerRef;
@@ -659,7 +640,6 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                 if (selectedSitesRef.current) {
                     const addedSites = selectedSites.filter(d => !selectedSitesRef.current.includes(d));
                     const removedSites = selectedSitesRef.current.filter(d => !selectedSites.includes(d));
-                    console.log(removedSites);
                     if (addedSites.length > 0) { 
                         addSiteHighlight(layer, addedSites[0]); 
                     } else if (removedSites.length > 0) {
@@ -670,39 +650,6 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                     addSiteHighlight(layer, selectedSites[0]);
                     selectedSitesRef.current = selectedSites;
                 }
-                // if a site is already highlighted, then remove the highlight
-                /*
-                if (highlightSiteRef.current) {
-                    highlightSiteRef.current.remove();
-                }
-
-                // Converts array to string format: "Item1","Item2","Item3"
-                // Removes the parentheses and then replaces the double quotes with single quotes, which is required for the ArcGIS SQL query statement
-                const sitesString = JSON.stringify(selectedSites).slice(1, -1).replaceAll('"', "'");
-                // Query the station layer and get the matched features
-                const query = layer.current.createQuery();
-                query.where = `StationCode in (${sitesString})`;
-                layer.current.queryFeatures(query)
-                .then(results => {
-                    if (selectedSitesRef.current) {
-                        const removedSites = selectedSitesRef.current.filter(d => !selectedSites.includes(d));
-                        console.log(removedSites);
-                        if (removedSites.length > 0) {
-
-                        }
-                    }
-                    highlightSiteRef.current = layerView.highlight(results.features);
-                    selectedSitesRef.current = selectedSites;
-
-                    const feature = results.features[0];
-                    viewRef.current.goTo({
-                        target: feature.geometry,
-                        zoom: 13
-                    });
-                    highlightSiteRef.current = layerView.highlight(feature);
-                
-                });
-                */
             })
         }
     }, [selectedSites])
@@ -795,7 +742,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
             loadModules(['esri/layers/WMSLayer'])
             .then(([WMSLayer]) => {
                 landUseLayerRef.current = new WMSLayer({
-                    id: 'nlcdLayer',
+                    id: 'nlcd-layer',
                     title: 'National Land Cover Database 2016',
                     url: 'https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Land_Cover_L48/wms?service=WMS&request=GetCapabilities',
                     sublayers: [{
@@ -890,7 +837,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
             loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
             .then(([FeatureLayer, GroupLayer]) => {
                 irLineRef.current = new FeatureLayer({
-                    id: 'irLines',
+                    id: 'ir-line-layer',
                     title: 'Integrated Report Lines 2018',
                     url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/0',
                     outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
@@ -899,7 +846,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                     renderer: irLineRenderer
                 });
                 irPolyRef.current = new FeatureLayer({
-                    id: 'irPolys',
+                    id: 'ir-poly-layer',
                     title: 'Integrated Report Polygons 2018',
                     url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/1',
                     outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
@@ -909,6 +856,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                     opacity: 0.8
                 });
                 irLayerRef.current = new GroupLayer({
+                    id: 'ir-group-layer',
                     title: 'Integrated Report 2018',
                     visible: true,
                     layers: [irLineRef.current, irPolyRef.current],
@@ -1012,6 +960,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
             loadModules(['esri/layers/MapImageLayer'])
             .then(([MapImageLayer]) => {
                 bpLayerRef.current = new MapImageLayer({
+                    id: 'basin-plan-layer',
                     url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer',
                     sublayers: [
                         {
@@ -1039,7 +988,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
             loadModules(['esri/layers/FeatureLayer'])
             .then(([FeatureLayer]) => {
                 regionLayerRef.current = new FeatureLayer({
-                    id: 'regionLayer',
+                    id: 'region-layer',
                     url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Regional_Board_Boundary_Features/FeatureServer/1',
                     listMode: 'hide',
                     renderer: regionRenderer
