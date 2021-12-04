@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
 import { irLineRenderer, irPolyRenderer, regionRenderer, stationRenderer } from './map-renderer';
-import { regionDict, irRegionDict, stationDataFields, stationDataTableFields, stationSummaryDataFields, stationSummaryTableFields, habitatAnalytes } from '../../utils/utils';
+import { regionDict, irRegionDict, stationDataFields, stationSummaryDataFields, habitatAnalytes } from '../../utils/utils';
 import { container } from './map-index.module.css';
 
 
-export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, selectedProgram, clickedSite, selectedSites, setSelectedSites, setTableData, filteredByExtent, setFilteredByExtent, zoomedToSites, setZoomedToSites }) {
-    const [sites, setSites] = useState([]);
-
+export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, selectedProgram, selectedSites, setSelectedSites, setTableData, filteredByExtent, setFilteredByExtent, zoomedToSites, setZoomedToSites }) {
     const divRef = useRef(null);
     const mapRef = useRef(null);
     const viewRef = useRef(null);
@@ -43,7 +41,11 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                         StationName: d.StationName,
                         Region: d.Region.toString(),
                         RegionName: regionDict[d.Region],
-                        LastSampleDate: formatDate(parseDate(d.LastSampleDate))
+                        LastSampleDate: formatDate(parseDate(d.LastSampleDate)),
+                        bioaccumulation: d.Bioaccumulation,
+                        bioassessment: d.Bioassessment,
+                        fhab: d.Fhab,
+                        spot: d.Spot
                     }
                 };
             });
@@ -68,7 +70,11 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                         RegionName: regionDict[d.Region],
                         Analyte: d.Analyte,
                         LastSampleDate: formatDate(parseDate(d.LastSampleDate)),
-                        Trend: d.AllYears_R_Trend
+                        Trend: d.AllYears_R_Trend,
+                        bioaccumulation: d.Bioaccumulation,
+                        bioassessment: d.Bioassessment,
+                        fhab: d.Fhab,
+                        spot: d.Spot
                     }
                 };
             });
@@ -108,17 +114,6 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                 })
             })
         }
-        // This function resets the filter so that all site records show up in the table
-        const resetTableRecords = () => {
-            if (selectedAnalyte) {
-                updateTableWithStationSummaryData();
-            } else if (!selectedAnalyte) {
-                updateTableWithStationData();
-                setFilteredByExtent(false);
-            } else {
-                console.error();
-            }
-        }
         if (stationLayerRef.current) {
             // Check that the station layer exists
             // This is important for the initial load
@@ -134,6 +129,18 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
             };
         }
     }, [filteredByExtent])
+
+    // This function resets the filter so that all site records show up in the table
+    const resetTableRecords = () => {
+        if (selectedAnalyte) {
+            updateTableWithStationSummaryData();
+        } else if (!selectedAnalyte) {
+            updateTableWithStationData();
+            setFilteredByExtent(false);
+        } else {
+            console.error();
+        }
+    }
 
     useEffect(() => {
         // This function queries the selected sites from the current station layer, gets the extent, and then zooms/fits the extent to the map window.
@@ -189,7 +196,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
             loadModules(['esri/layers/FeatureLayer', 'esri/core/watchUtils'])
                 .then(([FeatureLayer, watchUtils]) => {
                     if (mapRef) {
-                        const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region,LastSampleDate&limit=5000';
+                        const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region,LastSampleDate,Bioassessment,Spot,Fhab,Bioaccumulation&limit=5000';
                         fetch(url)
                         .then((resp) => resp.json())
                         .then((json) => json.result.records)
@@ -208,6 +215,8 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                                     renderer: stationRenderer,
                                     popupTemplate: stationTemplate
                                 });
+                                // Set definition expression
+                                updateStations();
                                 // Add layer to map
                                 mapRef.current.add(stationLayerRef.current);
                                 // Populate table
@@ -216,21 +225,19 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                                 searchRef.current.sources.add({
                                     layer: stationLayerRef.current,
                                     searchFields: ['StationName', 'StationCode'],
-                                    displayField: 'StationName',
+                                    suggestionTemplate: '{StationCode} - {StationName}',
                                     exactMatch: false,
                                     outFields: ['StationName', 'StationCode'],
                                     name: 'SWAMP Monitoring Sites',
                                     placeholder: 'Example: Buena Vista Park',
                                     zoomScale: 14000
                                 });
-                                /*
                                 viewRef.current.whenLayerView(stationLayerRef.current)
                                 .then(layerView => {
                                     watchUtils.whenFalse(layerView, 'updating', () => {
                                         setLoaded(true);
                                     });
                                 });
-                                */
                             });
                         });
                     }
@@ -245,7 +252,6 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
             drawIntegratedReport();
             drawLandUse();
             drawBasinPlan();
-            setLoaded(true);
         });
     }, [mapRef]);
 
@@ -464,8 +470,9 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                         title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                         content: buildStationPopup
                     }
-                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,AllYears_R_Trend&limit=5000';
+                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,AllYears_R_Trend,Bioaccumulation,Bioassessment,Fhab,Spot&limit=5000';
                     url += '&filters={%22Analyte%22:%22' + encodeURIComponent(selectedAnalyte) + '%22}'
+                    console.log(url);
                     fetch(url)
                     .then((resp) => resp.json())
                     .then((json) => json.result.records)
@@ -484,12 +491,10 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                                 renderer: analyteRenderer,
                                 popupTemplate: analyteTemplate
                             });
-                            if (selectedRegion) {
-                                stationSummaryLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
-                            }
+                            updateStations();
                             // Add to map
                             mapRef.current.add(stationSummaryLayerRef.current);
-
+                            clearSelectedSites();
                             // Query features and then update table
                             updateTableWithStationSummaryData();
                         })
@@ -530,6 +535,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                 setTableData(featureData);
             });
     }
+
     const updateTableWithStationSummaryData = () => {
         // Check that the layer exists before trying to query
         if (stationSummaryLayerRef.current) {
@@ -553,59 +559,90 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
     }
 
     useEffect(() => {
+        const zoomToRegion = (regionName) => {
+            if (viewRef.current) {
+                viewRef.current.whenLayerView(regionLayerRef.current).then(() => {
+                    const query = regionLayerRef.current.createQuery();
+                    query.where = `rb_name = '${regionName}'`;
+                    regionLayerRef.current.queryFeatures(query).then(results => {
+                        const feature = results.features[0];
+                        viewRef.current.goTo(feature.geometry);
+                    })
+                })
+            }
+        }
         if (mapRef.current) {
-            const bpPolys = bpLayerRef.current.findSublayerById(0);
-            const bpLines = bpLayerRef.current.findSublayerById(1);
+            refreshBasinPlan();
+            refreshIntegratedReport();
             if (selectedRegion) {
-                // Filter stations and table
-                if (stationLayerRef.current) { 
-                    stationLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
-                    updateTableWithStationData();
-                }
-                if (stationSummaryLayerRef.current) {
-                    console.log(`RegionName = '${selectedRegion}'`);
-                    stationSummaryLayerRef.current.definitionExpression = `RegionName = '${selectedRegion}'`;
-                    updateTableWithStationSummaryData();
-                }
-                // Filter IR layers
-                irLineRef.current.definitionExpression = `rb = '${irRegionDict[selectedRegion]}'`;
-                irPolyRef.current.definitionExpression = `rb = '${irRegionDict[selectedRegion]}'`
-                // Filter BPMP layers
-                bpPolys.definitionExpression = `BASINPLANNAME = '${selectedRegion}'`;
-                bpLines.definitionExpression = `BASINPLANNAME = '${selectedRegion}'`;
-                // Zoom to region
-                loadModules(['esri/views/layers/LayerView', 'esri/rest/support/Query'])
-                .then(([LayerView, Query]) => {
-                    if (viewRef.current) {
-                        viewRef.current.whenLayerView(regionLayerRef.current).then((layerView) => {
-                            const query = regionLayerRef.current.createQuery();
-                            query.where = `rb_name = '${selectedRegion}'`;
-                            regionLayerRef.current.queryFeatures(query).then(results => {
-                                const feature = results.features[0];
-                                viewRef.current.goTo(feature.geometry);
-                            })
-                        })
-                    }
-                });
-            } else {
-                // Unfilter station layers and table
-                if (stationLayerRef.current) {
-                    stationLayerRef.current.definitionExpression = '';
-                    updateTableWithStationData();
-                }
-                if (stationSummaryLayerRef.current) {
-                    stationSummaryLayerRef.current.definitionExpression = '';
-                    updateTableWithStationSummaryData();
-                }
-                // Unfilter IR layers
-                irLineRef.current.definitionExpression = '';
-                irPolyRef.current.definitionExpression = '';
-                // Unfilter BPMP layers
-                bpPolys.definitionExpression = "BASINPLANNAME = ''";
-                bpLines.definitionExpression = "BASINPLANNAME = ''";
+                zoomToRegion(selectedRegion);
             }
         }
     }, [selectedRegion]);
+
+    // Refreshes the Integrated Report layers based on user selection
+    const refreshIntegratedReport = () => {
+        const constructDefExp = () => {
+            if (selectedRegion) {
+                return `rb = '${irRegionDict[selectedRegion]}'`;
+            } else if (!selectedRegion) {
+                return '';
+            }
+        }
+        if (mapRef.current) {
+            // Update filters
+            irLineRef.current.definitionExpression = constructDefExp();
+            irPolyRef.current.definitionExpression = constructDefExp();
+        }
+    }
+
+    const refreshBasinPlan = () => {
+        const constructDefExp = () => {
+            if (selectedRegion) {
+                return `BASINPLANNAME = '${selectedRegion}'`;
+            } else if (!selectedRegion) {
+                return '';
+            }
+        }
+        if (mapRef.current) {
+            const bpPolys = bpLayerRef.current.findSublayerById(0);
+            const bpLines = bpLayerRef.current.findSublayerById(1);
+            bpPolys.definitionExpression = constructDefExp();
+            bpLines.definitionExpression = constructDefExp();
+        }
+    }
+
+    const updateStations = () => {
+        const constructDefExp = () => {
+            if (selectedProgram && selectedRegion) {
+                return `RegionName = '${selectedRegion}' AND ${selectedProgram} = 'True'`;
+            } else if (selectedProgram) {
+                return `${selectedProgram} = 'True'`;
+            } else if (selectedRegion) {
+                return `RegionName = '${selectedRegion}'`;
+            } else if (!selectedProgram && !selectedRegion) {
+                return '';
+            }
+        }
+        // Always update  thestation layer (even if not active on map) in case the user clears the parameter selection
+        // Likewise, update the station summary layer (if it exists) to ensure that any filters applied to the station layer transfer over
+        stationLayerRef.current.definitionExpression = constructDefExp();
+        if (stationSummaryLayerRef.current) {
+            stationSummaryLayerRef.current.definitionExpression = constructDefExp();
+        }
+    }
+
+    const clearSelectedSites = () => {
+        setSelectedSites([]);
+    }
+
+    useEffect(() => {
+        if (mapRef.current) {
+            updateStations();
+            clearSelectedSites();
+            resetTableRecords();
+        }
+    }, [selectedProgram, selectedRegion])
 
     useEffect(() => {
         // This useEffect highlights selected sites on the map and handles any changes (adding/removing sites) initiated by the dashboard table.
@@ -620,35 +657,48 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                 });
             })
         };
-        const removeSiteHighlight = (layer, siteCode) => {
-            const query = layer.current.createQuery();
-            query.where = `StationCode = '${siteCode}'`;
-            layer.current.queryFeatures(query)
-            .then(results => {
-                // Get Object ID of the feature to be removed
-                const featureId = results.features[0].attributes.ObjectId;
-                // Query to get the layer object, which contains a map of all highlighted features
-                const layerId = selectedAnalyte ? 'station-summary-layer' : 'station-layer';
-                const layer = viewRef.current.allLayerViews.items.filter(d => d.layer.id === layerId)[0];
-                layer._highlightIds.delete(featureId);
-                layer._updateHighlight();   
-            });
+        const removeSiteHighlight = (layer, siteCodes) => {
+            const layerId = selectedAnalyte ? 'station-summary-layer' : 'station-layer';
+            const stationLayer = viewRef.current.allLayerViews.items.filter(d => d.layer.id === layerId)[0];    
+            if (siteCodes.length === 1) {
+                // Handling one highlight removal is different than clearing all highlights. We want to remove the one highlight without causing flashing.
+                const query = layer.current.createQuery();
+                query.where = `StationCode = '${siteCodes[0]}'`;
+                layer.current.queryFeatures(query)
+                .then(results => {
+                    // Get Object ID of the feature to be removed
+                    const featureId = results.features[0].attributes.ObjectId;
+                    // Query to get the layer object, which contains a map of all highlighted features
+                    stationLayer._highlightIds.delete(featureId);
+                    stationLayer._updateHighlight();   
+                });
+            } else if (siteCodes.length > 1) {
+                // If there is more than one site code to be removed, remove all elements from the map object
+                stationLayer._highlightIds.clear();
+                stationLayer._updateHighlight(); 
+            }   
         }
         if (viewRef.current) {
             const layer = selectedAnalyte ? stationSummaryLayerRef : stationLayerRef;
             viewRef.current.whenLayerView(layer.current).then((layerView) => {
                 if (selectedSitesRef.current) {
+                    // Compare to previous selection and identify added/removed sites
                     const addedSites = selectedSites.filter(d => !selectedSitesRef.current.includes(d));
                     const removedSites = selectedSitesRef.current.filter(d => !selectedSites.includes(d));
                     if (addedSites.length > 0) { 
                         addSiteHighlight(layer, addedSites[0]); 
                     } else if (removedSites.length > 0) {
-                        removeSiteHighlight(layer, removedSites[0]);
+                        // Can have multiple sites in removedSites array if clearing entire array
+                        removeSiteHighlight(layer, removedSites);
                     }
                     selectedSitesRef.current = selectedSites;
                 } else {
-                    addSiteHighlight(layer, selectedSites[0]);
-                    selectedSitesRef.current = selectedSites;
+                    // Initialize selectedSitesRef
+                    // Should run for first selection only
+                    if (selectedSites.length > 0) {
+                        addSiteHighlight(layer, selectedSites[0]);
+                        selectedSitesRef.current = selectedSites;
+                    }
                 }
             })
         }
@@ -858,7 +908,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                 irLayerRef.current = new GroupLayer({
                     id: 'ir-group-layer',
                     title: 'Integrated Report 2018',
-                    visible: true,
+                    visible: false,
                     layers: [irLineRef.current, irPolyRef.current],
                     listMode: 'show',
                     visibilityMode: 'inherited'

@@ -1,25 +1,25 @@
 import React from 'react';
 import Select from 'react-select';
-import { customSelectStyle } from '../../utils/utils';
+import { customSelectStyle, programDict, programNameDict } from '../../utils/utils';
 
 
 export default function RegionMenu({ program, setProgram }) {   
     const programList = [
         {
-            label: 'Bioaccumulation Monitoring Program',
-            value: 'Bioaccumulation Monitoring Program'
+            label: programDict['bioaccumulation'],
+            value: 'bioaccumulation'
         },
         {
-            label: 'Bioassessment Monitoring Program',
-            value: 'Bioassessment Monitoring Program'
+            label: programDict['bioassessment'],
+            value: 'bioassessment'
         },
         {
-            label: 'Freshwater and Estuarine HABs Program',
-            value: 'Freshwater and Estuarine HABs Program'
+            label: programDict['fhab'],
+            value: 'fhab'
         },
         {
-            label: 'Stream Pollution Trends Monitoring Program',
-            value: 'Stream Pollution Trends Monitoring Program'
+            label: programDict['spot'],
+            value: 'spot'
         }
     ];
 
@@ -30,8 +30,9 @@ export default function RegionMenu({ program, setProgram }) {
                 setProgram(value);
             }
         } else {
+            // Clear the program selection
             if (selection !== program) {
-                setProgram(selection)
+                setProgram(null)
             }
         }
     }
@@ -46,7 +47,7 @@ export default function RegionMenu({ program, setProgram }) {
                 onChange={handleChange}
                 styles={customSelectStyle}
                 maxMenuHeight={200}
-                isDisabled={true}
+                //isDisabled={true}
             />
         </React.Fragment>
     )

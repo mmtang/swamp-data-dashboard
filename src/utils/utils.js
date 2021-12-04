@@ -15,6 +15,20 @@ export const cedenChemistryEndpoint = {
     2010: 'https://data.ca.gov/api/3/action/datastore_search?resource_id=572bf4d2-e83d-490a-9aa5-c1d574e36ae0'
 }
 
+export const programDict = {
+    'bioaccumulation': 'Bioaccumulation Monitoring Program',
+    'bioassessment': 'Bioassessment Monitoring Program',
+    'fhab': 'Freshwater and Estuarine HABs Program',
+    'spot': 'Stream Pollution Trends Monitoring Program'
+}
+
+export const programNameDict = {
+    'Bioaccumulation Monitoring Program': 'bioaccumulation',
+    'Bioassessment Monitoring Program': 'bioassessment',
+    'Freshwater and Estuarine HABs Program': 'fhab',
+    'Stream Pollution Trends Monitoring Program': 'spot'
+}
+
 export const regionDict = {
     1: 'North Coast',
     2: 'San Francisco Bay',
@@ -103,6 +117,26 @@ export const stationDataFields = [
         name: 'LastSampleDate',
         alias: 'Last Sample',
         type: 'string'
+    },
+    {
+        name: 'bioaccumulation',
+        alias: 'Bioaccumulation',
+        type: 'string'
+    },
+    {
+        name: 'bioassessment',
+        alias: 'Bioassessment',
+        type: 'string'
+    },
+    {
+        name: 'fhab',
+        alias: 'Fhab',
+        type: 'string'
+    },
+    {
+        name: 'spot',
+        alias: 'Spot',
+        type: 'string'
     }
 ]
 
@@ -161,6 +195,26 @@ export const stationSummaryDataFields = [
     {
         name: 'Trend',
         alias: 'Trend',
+        type: 'string'
+    },
+    {
+        name: 'bioaccumulation',
+        alias: 'Bioaccumulation',
+        type: 'string'
+    },
+    {
+        name: 'bioassessment',
+        alias: 'Bioassessment',
+        type: 'string'
+    },
+    {
+        name: 'fhab',
+        alias: 'Fhab',
+        type: 'string'
+    },
+    {
+        name: 'spot',
+        alias: 'Spot',
         type: 'string'
     }
 ];

@@ -9,7 +9,7 @@ import { tableWrapper } from './table.module.css';
 // It makes use of the react-data-table-component library
 // https://github.com/jbetancur/react-data-table-component
 
-export default function Table({ selectedAnalyte, data, setSelectedSites }) {
+export default function Table({ selectedAnalyte, data, selectedSites, setSelectedSites }) {
     const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState(null); 
 
@@ -114,18 +114,22 @@ export default function Table({ selectedAnalyte, data, setSelectedSites }) {
 
     useEffect(() => {
         if (data) {
-            if (loading) {
-                setLoading(false);
-            }
             // Render different table columns based on whether or not a parameter is selected
             const d = columnDict;
             if (!selectedAnalyte) {
                 setColumns([d.siteCode, d.siteName, d.region, d.lastSample, d.sitePage]);
-            } else {
+            } else if (selectedAnalyte) {
                 setColumns([d.siteCode, d.siteName, d.region, d.analyte, d.trend, d.lastSample, d.sitePage]);
+            }
+            if (loading) {
+                setLoading(false);
             }
         }
     }, [data])
+
+    const isSelected = (row) => {
+        return selectedSites.includes(row['StationCode']);
+    }
 
     if (!loading) {
         return (
@@ -142,6 +146,7 @@ export default function Table({ selectedAnalyte, data, setSelectedSites }) {
                     defaultSortFieldId={'LastSampleDate'}
                     defaultSortAsc={false}
                     onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
+                    selectableRowSelected={isSelected}
                     dense
                 />
             </div>

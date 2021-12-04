@@ -16,7 +16,7 @@ export default function Index() {
   const [analyte, setAnalyte] = useState(null);
   const [program, setProgram] = useState(null);
   const [region, setRegion] = useState(null);
-  const [site, setSite] = useState(null);
+  // const [site, setSite] = useState(null);
   const [selectedSites, setSelectedSites] = useState([]);
   const [tableData, setTableData] = useState();
   const [filteredByExtent, setFilteredByExtent] = useState(false);
@@ -34,7 +34,6 @@ export default function Index() {
           selectedProgram={program}
           selectedSites={selectedSites}
           setSelectedSites={setSelectedSites}
-          clickedSite={site} 
           setTableData={setTableData}
           filteredByExtent={filteredByExtent}
           setFilteredByExtent={setFilteredByExtent}
@@ -76,6 +75,7 @@ export default function Index() {
             <Table 
               selectedAnalyte={analyte}
               data={tableData}
+              selectedSites={selectedSites}
               setSelectedSites={setSelectedSites}
             />
           </section>

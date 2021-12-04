@@ -262,6 +262,7 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                         const data = results[i];
                         analyteData[analyte] = { data: data };
                     }
+                    console.log(analyteData);
                     setData(analyteData);
                 });
         }
