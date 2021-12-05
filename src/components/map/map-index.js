@@ -472,7 +472,6 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                     }
                     let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,AllYears_R_Trend,Bioaccumulation,Bioassessment,Fhab,Spot&limit=5000';
                     url += '&filters={%22Analyte%22:%22' + encodeURIComponent(selectedAnalyte) + '%22}'
-                    console.log(url);
                     fetch(url)
                     .then((resp) => resp.json())
                     .then((json) => json.result.records)

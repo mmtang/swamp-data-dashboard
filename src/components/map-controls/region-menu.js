@@ -51,6 +51,7 @@ export default function RegionMenu({ region, setRegion }) {
                 setRegion(value);
             }
         } else {
+            // Clear the region selection
             if (selection !== region) {
                 setRegion(selection)
             }

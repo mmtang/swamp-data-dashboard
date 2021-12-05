@@ -116,7 +116,12 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 <div className={analyteWrapper}>
                     {/* A high value is needed for flex-basis so that the select box doesn't collapse under flexbox. The actual value is seemingly not that important, only that it's a high value. It might be better to set the width of the select. */}
                     <div style={{ flexBasis: '100%'}}>
-                        <AnalyteMenu analyte={analyte} setAnalyte={setAnalyte} />
+                        <AnalyteMenu 
+                            analyte={analyte} 
+                            setAnalyte={setAnalyte} 
+                            region={region}
+                            program={program}
+                        />
                     </div>
                     {/*
                     <div>
