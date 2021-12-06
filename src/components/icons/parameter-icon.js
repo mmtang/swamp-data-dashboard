@@ -27,6 +27,7 @@ export default function ParameterIcon(props) {
     }
 
     const getComponent = () => {
+        console.log(icon);
         switch(icon) {
             case 'asci':
                 return <Asci props={newProps} />

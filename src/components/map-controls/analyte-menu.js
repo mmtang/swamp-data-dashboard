@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Select from 'react-select';
 import { customSelectStyle, regionNumDict } from '../../utils/utils';
-//import AnalyteCard from './analyte-card';
+import AnalyteCard from './analyte-card';
 
-export default function AnalyteMenu({ selectedAnalyte, setAnalyte, region, program }) {
+export default function AnalyteMenu({ analyte, setAnalyte, region, program }) {
     const allAnalytes = useRef(null);
     const [analyteList, setAnalyteList] = useState(null);
     const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT%20DISTINCT%20%22Analyte%22%20from%20%22555ee3bf-891f-4ac4-a1fc-c8855cf70e7e%22%20ORDER%20BY%20%22Analyte%22%20ASC';
@@ -28,12 +28,12 @@ export default function AnalyteMenu({ selectedAnalyte, setAnalyte, region, progr
         if (selection) {
             const value = selection.value;
             // Check that the current state and selected value are different before setting the new analyte
-            if (value !== selectedAnalyte) {
+            if (value !== analyte) {
                 setAnalyte(value);
             }
         } else {
             // If selection is null, then check that the current state isn't already null before changing state to null
-            if (selectedAnalyte !== null) {
+            if (analyte !== null) {
                 setAnalyte(null)
             }
         }
@@ -103,14 +103,12 @@ export default function AnalyteMenu({ selectedAnalyte, setAnalyte, region, progr
                     options={analyteList} 
                     isClearable={true}
                     isSearchable={true}
-                    placeholder='Parameter'
+                    placeholder='Indicator'
                     onChange={handleSelectChange}
                     styles={customSelectStyle}
                     maxMenuHeight={200}
                 />
-                {/*
-                { selectedAnalyte ? <AnalyteCard selectedAnalyte={selectedAnalyte} /> : null }
-                */}
+                { analyte ? <AnalyteCard analyte={analyte} /> : null }
             </React.Fragment>
         )
     } else {

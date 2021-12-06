@@ -1,21 +1,28 @@
 import React from 'react';
-import { arrowContainer, arrowUp, cardContainer, cardTitle } from './card.module.css';
+import ParameterIcon from '../icons/parameter-icon';
+import { analyteNameDict, analyteBlurb } from '../../utils/constants';
+import { arrowContainer, arrowUp, cardContainer, iconWrapper } from './card.module.css';
 
-export default function AnalyteCard({ selectedAnalyte }) {
-
-    if (selectedAnalyte) {
+export default function AnalyteCard({ analyte }) {
+    if (analyte) {
         return (
             <React.Fragment>
                 <div className={arrowContainer}>
                     <div className={arrowUp}></div>
                 </div>
                 <div className={cardContainer}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <h3 className={cardTitle}>{selectedAnalyte}</h3>
+                    <div style={{ display: 'flex' }}>
+                        <div className={iconWrapper}>
+                            <ParameterIcon icon={analyteNameDict[analyte]} size={60} />
+                        </div>
+                        <p>{analyteBlurb[analyteNameDict[analyte]]}</p>
                     </div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper.</p>
                 </div>
             </React.Fragment>
+        )
+    } else {
+        return (
+            <div></div>
         )
     }
 }
