@@ -1082,7 +1082,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                     content += '<tr><td>' + formatDate(records[i]['SampleDate']) + '</td><td>' + records[i]['Analyte'] + '</td><td>' + records[i]['Result'] + ' ' + records[i]['Unit'] + '</td></tr>';
                 }
                 content += '</tbody></table>';
-                content += '<div style="margin: 8px 0 2px 0"><a href="/explore_data/station/?q=' + stationCode + '" target="_blank" rel="noopener noreferrer" class="popup-button">View all station data</a></div>'
+                content += '<div style="margin: 8px 0 2px 0"><a href="/stations?id=' + stationCode + '" target="_blank" rel="noopener noreferrer" class="popup-button">View all station data</a></div>'
                 div.innerHTML = content;
                 return div;
             });

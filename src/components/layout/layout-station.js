@@ -3,10 +3,10 @@ import Navbar from '../navbar/navbar.js';
 import { appContainer, mainFlex } from './layout-station.module.css';
 
 
-function LayoutStation({ title, children }) {    
+function LayoutStation({ children }) {    
     return (
         <React.Fragment>
-            <Navbar title={title} />
+            <Navbar />
             <div className={appContainer}>
                 <div className={mainFlex}>
                     {children}

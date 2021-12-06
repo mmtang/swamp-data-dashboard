@@ -1,31 +1,48 @@
-.parent {
-    width: 100vw;
+.mapContainer {
+    height: calc(100% - 60px);
+    top: 60px;
+    order: 1;
+    flex-basis: 50%;
+    z-index: 2;
 }
 
-.hero {
+.mainContainer {
+    height: 100%;
+    background-color: #fff;
+    top: 60px;
+    order: 2;
+    flex-basis: 50%;
+    overflow-y: auto;
+    z-index: 50 !important;
+}
+
+.infoContainer {
+    height: auto;
+    max-width: 823px;
+    background-color: #fff;
+    margin: 0;
+    padding: 20px 20px 12px 20px;
+}
+
+.infoContainer p {
+    font-size: 0.95rem;
+}
+
+.twinContainer {
     display: flex;
-    align-items: center;
-    background-color: #f4f2f2;
+    flex-direction: row;
+    align-items: flex-start;
 }
 
-.hero h1 {
-    font-size: 2.2em;
-    font-weight: 400;
-    margin-bottom: 20px;
+.twin {
+    flex: 1;
 }
 
-.hero p {
-    font-size: 1.1em;
-    margin-bottom: 24px;
-}
-
-.sectionContent {
-    margin: 0 15px;
-    padding: 60px 40px;
-}
-
-.cardGallery {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 2em;
+@media screen and (max-width: 800px) {
+    .mapContainer {
+        flex-basis: 40%;
+    }
+    .mainContainer {
+        flex-basis: 60%;
+    }
 }

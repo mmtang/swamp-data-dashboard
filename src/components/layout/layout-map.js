@@ -3,10 +3,10 @@ import Navbar from '../navbar/navbar.js';
 import { appContainer } from './layout-map.module.css';
 
 
-function LayoutMap({ title, children }) { 
+function LayoutMap({children }) { 
     return (
         <div>
-            <Navbar title={title} />
+            <Navbar />
             <div className={appContainer}>
                 {children}
             </div>

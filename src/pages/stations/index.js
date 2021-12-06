@@ -7,7 +7,7 @@ import ChartStation from '../../components/station-page/chart-station';
 import StationTable from '../../components/station-page/station-table';
 import LoaderDashboard from '../../components/common/loader-dashboard';
 import { regionDict } from '../../utils/utils';
-import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName } from './station.module.css';
+import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName } from './index.module.css';
 
 
 export default function Station(props) {
@@ -21,7 +21,8 @@ export default function Station(props) {
     const getStationCode = () => {
         return new Promise((resolve, reject) => {
             const url = props.location.href;
-            const re = new RegExp(/station\/\?q=([a-z0-9]+)$/i);
+            console.log(url);
+            const re = new RegExp(/stations\?id=([a-z0-9]+)$/i);
             const matches = url.match(re);
             if (matches[1]) {
                 stationCodeRef.current = matches[1];
@@ -78,7 +79,7 @@ export default function Station(props) {
                 <div className={rightContainer}>
                     <section>
                         <h2>Water quality data and trends</h2>
-                        <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring site. For a more detailed view of the data, select a parameter (or multiple parameters) by checking the box to the left of the parameter and then clicking the "Graph selected parameters" button below.</p>
+                        <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring station. For a more detailed view of the data, select a parameter (or multiple parameters) by checking the box to the left of the parameter and then clicking the "Graph selected parameters" button below.</p>
                     </section>
                     <section>
                         <ChartStation
@@ -96,7 +97,7 @@ export default function Station(props) {
         );
     } else {
         return (
-            <LayoutStation title='SWAMP Data Dashboard'>
+            <LayoutStation>
                 <LoaderDashboard />
             </LayoutStation>
         )

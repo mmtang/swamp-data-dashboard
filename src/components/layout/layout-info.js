@@ -4,10 +4,10 @@ import Footer from './footer.js';
 import { mainContainer } from './layout-info.module.css';
 
 
-function LayoutInfo({ title, children }) {    
+function LayoutInfo({ children }) {    
     return (
         <React.Fragment>
-            <Navbar title={title} />
+            <Navbar />
             <div className={mainContainer}>
                 {children}
             </div>

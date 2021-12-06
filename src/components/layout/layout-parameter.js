@@ -9,7 +9,7 @@ import { parent, textContainer, menuContainer } from './layout-parameter.module.
 
 function LayoutParameter({ parameter, children }) {    
     return (
-        <LayoutInfo title='SWAMP Data Dashboard'>
+        <LayoutInfo>
             <Hero>
                 <h1>{parameter.display}</h1>
             </Hero>
