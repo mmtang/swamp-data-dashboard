@@ -6,7 +6,7 @@ import { regionDict, irRegionDict, stationDataFields, stationSummaryDataFields, 
 import { container } from './map-index.module.css';
 
 
-export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, selectedProgram, selectedSites, setSelectedSites, setTableData, filteredByExtent, setFilteredByExtent, zoomedToSites, setZoomedToSites }) {
+export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion, selectedProgram, selectedSites, setSelectedSites, setTableData, filteredByExtent, setFilteredByExtent, zoomedToSites, setZoomedToSites }) {
     const divRef = useRef(null);
     const mapRef = useRef(null);
     const viewRef = useRef(null);
@@ -201,8 +201,10 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                         .then((resp) => resp.json())
                         .then((json) => json.result.records)
                         .then((records) => {
+                            console.log(records);
                             convertStationDataToGraphics(records)
                             .then(res => {
+                                console.log(res);
                                 stationLayerRef.current = new FeatureLayer({
                                     id: 'station-layer',
                                     objectIdField: 'ObjectId',
@@ -219,6 +221,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                                 updateStations();
                                 // Add layer to map
                                 mapRef.current.add(stationLayerRef.current);
+                                console.log('added');
                                 // Populate table
                                 updateTableWithStationData();
                                 // Add station layer data to search
@@ -235,7 +238,7 @@ export default function MapIndex({ setLoaded, selectedAnalyte, selectedRegion, s
                                 viewRef.current.whenLayerView(stationLayerRef.current)
                                 .then(layerView => {
                                     watchUtils.whenFalse(layerView, 'updating', () => {
-                                        setLoaded(true);
+                                        setMapLoaded(true);
                                     });
                                 });
                             });
