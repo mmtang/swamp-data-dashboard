@@ -22,8 +22,9 @@ export default function Station(props) {
         return new Promise((resolve, reject) => {
             const url = props.location.href;
             console.log(url);
-            const re = new RegExp(/stations\?id=([a-z0-9]+)$/i);
+            const re = new RegExp(/stations\/\?id=([a-z0-9]+)$/i);
             const matches = url.match(re);
+            console.log(matches);
             if (matches[1]) {
                 stationCodeRef.current = matches[1];
             } else {

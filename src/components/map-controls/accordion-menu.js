@@ -87,12 +87,9 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
             <Accordion.Content active={activeIndex.includes(1)}>
                 <p className={pLabel}>
                     Statewide monitoring program
-                    <HelpIcon wide='very'>
-                        <p>In addition to its regional monitoring efforts, SWAMP oversees and funds four statewide monitoring programs. These statewide programs provide a "big picture" assessment of the overall status and trends of water quality throughout California.</p>
-                        <p><strong>Bioaccumulation Monitoring Program</strong> - Assesses whether fish found in California's streams, lakes, and coastal areas are safe to eat by measuring contaminant concentrations in fish tissue.</p>
-                        <p><strong>Bioassessment Monitoring Program</strong> - Assesses the health of streams and rivers by surveying the aquatic life (insects and algae) living in a waterbody and compares the results to expected reference conditions.</p>
-                        <p><strong>Freshwater and Estuarine Harmful Algal Blooms Program</strong> - Addresses harmful algal blooms, particularly orgiinating from cyanobacteria (blue green algae), in freshwater and estuarine systems throughout California.</p>
-                        <p><strong>Stream Pollution Trends Monitoring Program</strong> - Monitors trends in sediment toxicity and sediment contaminent concentrations, and relates contaminent concentrations to watershed land uses.</p>
+                    <HelpIcon wide={true}>
+                        <p>In addition to its regional monitoring efforts, SWAMP oversees and funds four statewide monitoring programs: the <strong>Bioaccumulation Monitoring Program</strong>, <strong>Bioassessment Monitoring Program</strong>, <strong>Freshwater and Estuarine Harmful Algal Blooms Program</strong>, and the <strong>Stream Pollution Trends Monitoring Program</strong>.</p>
+                        <p>These statewide programs provide a "big picture" assessment of the overall status and trends of water quality throughout California. For resources and more information about these programs, visit our <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">website</a>.</p>
                     </HelpIcon>
                 </p>
                 <ProgramMenu program={program} setProgram={setProgram} />
@@ -108,9 +105,8 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 <p className={pLabel}>
                     Water quality indicators
                     <HelpIcon wide={true}>
-                        <p>SWAMP measures a variety of <strong>chemical, physical, and biological indicators</strong> that help us determine the quality of water in rivers, lakes, and other waterbodies. Each indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall ecology and health.</p>
-                        <p>Selecting an indicator will display the trend data for that indicator on the map and the table.</p>
-                        <p>Learn more about each <a href="/learn/indicators" target="_blank" rel="noreferrer noopener">water quality indicator</a>.</p>
+                        <p>SWAMP measures a variety of <strong>chemical, physical, and biological indicators</strong> that help us determine the quality of water in rivers, lakes, and other waterbodies. Each indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall ecology and health. See all <a href="/learn/indicators" target="_blank" rel="noreferrer noopener">water quality indicators</a>.</p>
+                        <p>Selecting an indicator will display the trend data for that indicator on the map and table.</p>
                     </HelpIcon>
                 </p>
                 <div className={analyteWrapper}>

@@ -232,12 +232,14 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                                     placeholder: 'Example: Buena Vista Park',
                                     zoomScale: 14000
                                 });
+                                /*
                                 viewRef.current.whenLayerView(stationLayerRef.current)
                                 .then(layerView => {
                                     watchUtils.whenFalse(layerView, 'updating', () => {
                                         setMapLoaded(true);
                                     });
                                 });
+                                */
                             });
                         });
                     }
@@ -252,6 +254,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
             drawIntegratedReport();
             drawLandUse();
             drawBasinPlan();
+            setMapLoaded(true);
         });
     }, [mapRef]);
 
