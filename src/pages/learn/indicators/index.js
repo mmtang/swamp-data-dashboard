@@ -37,6 +37,11 @@ export default function ParametersIndex() {
                             <h4>E. coli</h4>
                             <p>Bacteria found in the environment, food, and the intestines of warm-blooded animals and humans. It is an indicator of sewage or animal waste contamination.</p>
                         </CardSmall></Link>
+                        {/* IPI */}
+                        <Link to="./ipi"><CardSmall leftComponent={<ParameterIcon icon='ipi' size={60} />}>
+                            <h4>Index of Physical Habitat Integrity</h4>
+                            <p>A statewide index for measuring physical habitat integrity based on the physical characteristics of stream and river channels and their proximate riparian zones.</p>
+                        </CardSmall></Link>
                         {/* pH */}
                         <Link to="./ph"><CardSmall leftComponent={<ParameterIcon icon='ph' size={60} />}>
                             <h4>pH</h4>

@@ -26,6 +26,10 @@ const ParameterMenu = ({ activeParameter }) => {
                     <Link to='/learn/indicators/ecoli'><li className={activeParameter === 'ecoli' ? `${item} ${active}` : `${item}`}>
                         E. coli
                     </li></Link>
+                    {/* IPI */}
+                    <Link to='/learn/indicators/ipi'><li className={activeParameter === 'ipi' ? `${item} ${active}` : `${item}`}>
+                        Index of Physical Habitat Integrity
+                    </li></Link>
                     {/* pH */}
                     <Link to='/learn/indicators/ph'><li className={activeParameter === 'ph' ? `${item} ${active}` : `${item}`}>
                         pH

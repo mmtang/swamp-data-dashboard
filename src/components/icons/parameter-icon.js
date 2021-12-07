@@ -4,6 +4,7 @@ import Csci from './parameters/csci';
 import Conductivity from './parameters/conductivity';
 import DissolvedOxygen from './parameters/dissolved_oxygen';
 import Ecoli from './parameters/ecoli';
+import Ipi from './parameters/ipi';
 import Ph from './parameters/ph';
 import Tds from './parameters/tds';
 import Temperature from './parameters/temperature';
@@ -38,6 +39,8 @@ export default function ParameterIcon(props) {
                 return <DissolvedOxygen props={newProps} />
             case 'ecoli':
                 return <Ecoli props={newProps} />
+            case 'ipi':
+                return <Ipi props={newProps} />
             case 'ph':
                 return <Ph props={newProps} />
             case 'tds': 
