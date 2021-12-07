@@ -201,10 +201,8 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         .then((resp) => resp.json())
                         .then((json) => json.result.records)
                         .then((records) => {
-                            console.log(records);
                             convertStationDataToGraphics(records)
                             .then(res => {
-                                console.log(res);
                                 stationLayerRef.current = new FeatureLayer({
                                     id: 'station-layer',
                                     objectIdField: 'ObjectId',
@@ -221,7 +219,6 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                                 updateStations();
                                 // Add layer to map
                                 mapRef.current.add(stationLayerRef.current);
-                                console.log('added');
                                 // Populate table
                                 updateTableWithStationData();
                                 // Add station layer data to search
@@ -672,7 +669,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                     const featureId = results.features[0].attributes.ObjectId;
                     // Query to get the layer object, which contains a map of all highlighted features
                     stationLayer._highlightIds.delete(featureId);
-                    stationLayer._updateHighlight();   
+                    stationLayer._updateHighlight(); 
                 });
             } else if (siteCodes.length > 1) {
                 // If there is more than one site code to be removed, remove all elements from the map object

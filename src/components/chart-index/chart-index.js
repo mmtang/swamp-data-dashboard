@@ -3,6 +3,7 @@ import HelpIcon from '../icons/help-icon';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
+import { analyteNameDict, analyteScoringCategories, analyteYMax } from '../../utils/constants';
 import { colorPaletteViz, habitatAnalytes, getCensored } from '../../utils/utils';
 import { buttonContainer, customTooltip } from './chart-index.module.css';
 
@@ -139,7 +140,14 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 const results = data.sites[siteKeys[i]].map(d => d.Result);
                 allResults = [...allResults, ...results];
             }
-            const yMax = d3.max(allResults);
+            // Get max value
+            // For some analytes (see analyteYMax dictionary), we will want to show the full range and will use a pre-determined max
+            let yMax;
+            if (Object.keys(analyteYMax).includes(analyte)) {
+                yMax = analyteYMax[analyte];
+            } else {
+                yMax = d3.max(allResults);
+            }
             const yScale = d3.scaleLinear()
                 .domain([0, yMax])
                 .range([height - margin.bottom, margin.top]);
@@ -157,6 +165,34 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 .attr('class', 'y axis')
                 .attr('transform', 'translate(' + margin.left + ', 0)')
                 .call(yAxis);
+
+            // Draw reference geometries (scoring categories)
+            const geometries = analyteScoringCategories[analyteNameDict[analyte]] || [];
+            if (geometries.length > 0) {
+                const rects = geometries.filter(d => d['type'] === 'area');
+                if (rects.length > 0) {
+                    const rectGroup = chart.append('g')
+                        .data(rects)
+                        .attr('clip-path', 'url(#clip)');
+                    rectGroup.selectAll('rect')
+                        .data(rects)
+                        .enter().append('rect')
+                        .attr('width', width - margin.left - margin.right)
+                        .attr('height', d => yScale(d.lowerValue) - yScale(d.upperValue))
+                        .attr('x', 0 + margin.left)
+                        .attr('y', d => yScale(d.upperValue))
+                        .attr('fill', d => d['fillColor'])
+                        .attr('opacity', 0.25);
+                    rectGroup.selectAll('text')
+                        .data(rects)
+                        .enter().append('text')
+                        .attr('x', width - margin.right - 5)
+                        .attr('y', d => yScale(d.lowerValue) - 5)
+                        .attr('font-size', '11px')
+                        .attr('text-anchor', 'end')
+                        .text(d => d.label);
+                }
+            }
 
             // Loops through each site and draw points
             for (let i = 0; i < siteKeys.length; i++) {
@@ -210,8 +246,6 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 const combinedName = `${siteKeys[i]} (${siteDictRef.current[siteKeys[i]].name})`;
                 legendLabels.push(combinedName);
             }
-            console.log(siteDictRef.current);
-            console.log(legendLabels);
             // Add legend
             const svgLegend = d3.select('#index-legend-container').append('svg')
                 .attr('width', width)
