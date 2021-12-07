@@ -1,63 +1,21 @@
 import React from 'react';
 import { Link } from 'gatsby';
+import { analytes } from '../../utils/constants';
 import { container, menu, title, item, active } from './parameter-menu.module.css';
 
 
 const ParameterMenu = ({ activeParameter }) => {
+    // Sort ascending by the label property of the analyte dictionary items
+    const analyteItems = Object.values(analytes).sort((a, b) => a['label'].toLowerCase().localeCompare(b['label'].toLowerCase()));
+    // Build the list/menu items
+    const menuItems = analyteItems.map(d => <Link to={`/learn/indicators/${d.page}`}><li className={activeParameter === d.code ? `${item} ${active}` : `${item}`}>{d.label}</li></Link>);
 
     return (
         <div className={container}>
             <nav aria-label='Indicator pages navigation'>
                 <ul className={menu}>
                     <div className={title}>Indicators</div>
-                    {/* CSCI */}
-                    <Link to='/learn/indicators/csci'><li className={activeParameter === 'csci' ? `${item} ${active}` : `${item}`}>
-                        California Stream Condition Index
-                    </li></Link>
-                    {/* Conductivity */}
-                    <Link to='/learn/indicators/conductivity'><li className={activeParameter === 'conductivity' ? `${item} ${active}` : `${item}`}>
-                        Conductivity
-                    </li></Link>
-                    {/* Dissolved Oxygen */}
-                    <Link to='/learn/indicators/dissolved_oxygen'><li className={activeParameter === 'dissolvedOxygen' ? `${item} ${active}` : `${item}`}>
-                        Dissolved Oxygen
-                    </li></Link>
-                    {/* E. coli */}
-                    <Link to='/learn/indicators/ecoli'><li className={activeParameter === 'ecoli' ? `${item} ${active}` : `${item}`}>
-                        E. coli
-                    </li></Link>
-                    {/* IPI */}
-                    <Link to='/learn/indicators/ipi'><li className={activeParameter === 'ipi' ? `${item} ${active}` : `${item}`}>
-                        Index of Physical Habitat Integrity
-                    </li></Link>
-                    {/* pH */}
-                    <Link to='/learn/indicators/ph'><li className={activeParameter === 'ph' ? `${item} ${active}` : `${item}`}>
-                        pH
-                    </li></Link>
-                    {/* Temperature */}
-                    <Link to='/learn/indicators/temperature'><li className={activeParameter === 'temperature' ? `${item} ${active}` : `${item}`}>
-                        Temperature
-                    </li></Link>
-                    {/* Total Dissolved Solids */}
-                    <Link to='/learn/indicators/tds'><li className={activeParameter === 'tds' ? `${item} ${active}` : `${item}`}>
-                        Total Dissolved Solids
-                    </li></Link>
-                    {/* Total Kjeldahl Nitrogen */}
-                    <Link to='/learn/indicators/total_nitrogen'><li className={activeParameter === 'tkn' ? `${item} ${active}` : `${item}`}>
-                        Total Kjeldahl Nitrogen
-                    </li></Link>
-                    {/* Total Nitrogen */}
-                    <Link to='/learn/indicators/total_nitrogen'><li className={activeParameter === 'totalNitrogen' ? `${item} ${active}` : `${item}`}>
-                        Total Nitrogen
-                    </li></Link>
-                    {/* Total Phosphorus */}
-                    <Link to='/learn/indicators/total_phosphorus'><li className={activeParameter === 'totalPhosphorus' ? `${item} ${active}` : `${item}`}>
-                        Total Phosphorus
-                    </li></Link>
-                    {/* Turbidity */}
-                    <Link to='/learn/indicators/turbidity'><li className={activeParameter === 'turbidity' ? `${item} ${active}` : `${item}`}>
-                        Turbidity
-                    </li></Link>
+                    { menuItems }
                 </ul>
             </nav>
         </div>

@@ -1,18 +1,76 @@
-export const analyteNameDict = {
-    'CSCI': 'csci',
-    'IPI': 'ipi',
-    'Oxygen, Dissolved, Total': 'dissolvedOxygen'
-}
-
-export const analytePageDict = {
-    'CSCI': 'csci',
-    'IPI': 'ipi'
-}
-
-export const analyteBlurb = {
-    'csci': 'The California Stream Condition Index (CSCI) translates complex data about benthic macroinvertebrates (bugs) found living in a stream into an overall measure of stream health.',
-    'dissolvedOxygen': "The amount of oxygen present in the water. It is a direct indicator of a waterbody's ability to support aquatic life.",
-    'ipi': 'The Index of Physical Habitat Integrity (IPI) is a statewide index for measuring physical habitat integrity based on the physical characteristics of stream and river channels and their proximate riparian zones.'
+export const analytes = {
+    'CSCI': {
+        code: 'csci',
+        label: 'California Stream Condition Index',
+        page: 'csci',
+        blurb: 'The California Stream Condition Index (CSCI) translates complex data about benthic macroinvertebrates (bugs) found living in a stream into an overall measure of stream health.'
+    },
+    'E. coli': {
+        code: 'ecoli',
+        label: 'E. coli',
+        page: 'ecoli',
+        blurb: 'E. coli bacteria are found in the environment, food, and the intestines of warm-blooded animals and humans. It is an indicator of sewage or animal waste contamination.'
+    },
+    'IPI': {
+        code: 'ipi',
+        label: 'Index of Physical Habitat Integrity',
+        page: 'ipi',
+        blurb: 'The Index of Physical Habitat Integrity (IPI) is a statewide index for measuring physical habitat integrity based on the physical characteristics of stream and river channels and their proximate riparian zones.'
+    },
+    'Oxygen, Dissolved, Total': {
+        code: 'dissolvedOxygen',
+        label: 'Dissolved Oxygen',
+        page: 'dissolved_oxygen',
+        blurb: "Dissolved Oxygen is the amount of oxygen present in water. It is a direct indicator of a waterbody's ability to support aquatic life."
+    },
+    'pH': {
+        code: 'ph',
+        label: 'pH',
+        page: 'ph',
+        blurb: 'pH is a measure of how acidic or basic water is based on the concentration of hydrogen ions. The pH level is crucial for the survival of aquatic organisms and plants.'
+    },
+    'SpecificConductivity, Total': {
+        code: 'conductivity',
+        label: 'Conductivity',
+        page: 'conductivity',
+        blurb: 'Conductivity is a measure of the ability of water to pass an electrical current. Significant changes may indicate that a discharge or source of disturbance has decreased the relative condition of the waterbody.'
+    },
+    'Temperature': {
+        code: 'temperature',
+        label: 'Temperature',
+        page: 'temperature',
+        blurb: 'Temperature is a measure of the average energy (kinetic) of water molecules. It is an important indicator of the general condition of a waterbody and the ecosystem it supports.'
+    },
+    'Total Dissolved Solids, Total': {
+        code: 'tds',
+        label: 'Total Dissolved Solids',
+        page: 'tds',
+        blurb: 'Total Dissolved Solids refers to the total concentration of organic and inorganic substances in water. Most dissolved substances do not pose a health threat, but a high level can indicate potential concerns and a need for further investigation.'
+    },
+    'Nitrogen, Total Kjeldahl, Total': {
+        code: 'tkn',
+        label: 'Total Kjeldahl Nitrogen',
+        page: 'total_kjeldahl_nitrogen',
+        blurb: 'Total Kjeldahl Nitrogen refers to the sum of organic nitrogen, ammonia, and ammonium. High concentrations can indicate sewage manure discharges are present in the water.'
+    },
+    'Nitrogen, Total, Total': {
+        code: 'totalNitrogen',
+        label: 'Total Nitrogen',
+        page: 'total_nitrogen',
+        blurb: 'Nitrogen is an essential plant nutrient, but too much can lead to an excessive growth of plants and algae in the water, which has adverse ecological effects.'
+    },
+    'Phosphorus as P, Total': {
+        code: 'totalPhosphorus',
+        label: 'Total Phosphorus',
+        page: 'total_phosphorus',
+        blurb: 'Phosphorus is an essential plant nutrient, but too much can lead to an excessive growth of plants and algae in the water, which has adverse ecological effects.'
+    },
+    'Turbidity': {
+        code: 'turbidity',
+        label: 'Turbidity',
+        page: 'turbidity',
+        blurb: 'Turbidity is a measure of the clarity or cloudiness of water. It is an important indicator of sediment and erosion levels, which can affect ecological productivity and habitat quality.'
+    }
 }
 
 export const analyteYMax = {

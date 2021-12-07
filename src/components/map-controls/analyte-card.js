@@ -1,7 +1,7 @@
 import React from 'react';
 import ParameterIcon from '../icons/parameter-icon';
 import { Icon } from 'semantic-ui-react';
-import { analyteNameDict, analyteBlurb, analytePageDict } from '../../utils/constants';
+import { analytes } from '../../utils/constants';
 import { arrowContainer, arrowUp, cardContainer, iconWrapper } from './card.module.css';
 
 export default function AnalyteCard({ analyte }) {
@@ -16,11 +16,11 @@ export default function AnalyteCard({ analyte }) {
                 <div className={cardContainer}>
                     <div style={{ display: 'flex' }}>
                         <div className={iconWrapper}>
-                            <ParameterIcon icon={analyteNameDict[analyte]} size={60} />
+                            <ParameterIcon icon={analytes[analyte]['code']} size={60} />
                         </div>
                         <p>
-                            {analyteBlurb[analyteNameDict[analyte]]}
-                            &nbsp;<a href={`/learn/indicators/${analytePageDict[analyte]}`} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a>
+                            { analytes[analyte]['blurb'] }
+                            &nbsp;<a href={`/learn/indicators/${analytes[analyte]['page']}`} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a>
                         </p>
                     </div>
                 </div>

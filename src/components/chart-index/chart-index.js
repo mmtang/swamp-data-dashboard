@@ -4,7 +4,7 @@ import AnalyteCard from '../map-controls/analyte-card';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { analyteNameDict, analyteScoringCategories, analyteYMax } from '../../utils/constants';
+import { analytes, analyteScoringCategories, analyteYMax } from '../../utils/constants';
 import { colorPaletteViz, habitatAnalytes, getCensored } from '../../utils/utils';
 import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper } from './chart-index.module.css';
 
@@ -168,7 +168,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 .call(yAxis);
 
             // Draw reference geometries (scoring categories)
-            const geometries = analyteScoringCategories[analyteNameDict[analyte]] || [];
+            const geometries = analyteScoringCategories[analytes[analyte]['code']] || [];
             if (geometries.length > 0) {
                 const rects = geometries.filter(d => d['type'] === 'area');
                 if (rects.length > 0) {
