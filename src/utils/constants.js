@@ -4,14 +4,20 @@ export const analyteNameDict = {
     'Oxygen, Dissolved, Total': 'dissolvedOxygen'
 }
 
+export const analytePageDict = {
+    'CSCI': 'csci',
+    'IPI': 'ipi'
+}
+
 export const analyteBlurb = {
-    'csci': 'A statewide index for translating complex data about benthic macroinvertebrates (bugs) found living in a stream into an overall measure of stream health.',
-    'dissolvedOxygen': "The amount of oxygen present in the water. It is a direct indicator of a waterbody's ability to support aquatic life."
+    'csci': 'The California Stream Condition Index (CSCI) translates complex data about benthic macroinvertebrates (bugs) found living in a stream into an overall measure of stream health.',
+    'dissolvedOxygen': "The amount of oxygen present in the water. It is a direct indicator of a waterbody's ability to support aquatic life.",
+    'ipi': 'The Index of Physical Habitat Integrity (IPI) is a statewide index for measuring physical habitat integrity based on the physical characteristics of stream and river channels and their proximate riparian zones.'
 }
 
 export const analyteYMax = {
-    'csci': 1.5,
-    'ipi': 1.3
+    'CSCI': 1.5,
+    'IPI': 1.3
 }
 
 export const analyteScoringCategories = {

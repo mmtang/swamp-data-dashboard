@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import HelpIcon from '../icons/help-icon';
+import AnalyteCard from '../map-controls/analyte-card';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { analyteNameDict, analyteScoringCategories, analyteYMax } from '../../utils/constants';
 import { colorPaletteViz, habitatAnalytes, getCensored } from '../../utils/utils';
-import { buttonContainer, customTooltip } from './chart-index.module.css';
+import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper } from './chart-index.module.css';
 
 
 export default function ChartIndex({ selectedSites, analyte }) {
@@ -87,7 +88,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
 
         const drawChart = (data) => {
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 20, right: 40, bottom: 30, left: 40 };
+            const margin = { top: 20, right: 25, bottom: 30, left: 40 };
             const width = 645 + margin.left + margin.right;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 4;
@@ -117,9 +118,9 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 .attr('id', 'index-chart-tooltip')
                 .attr('class', customTooltip)
                 .style('opacity', 0);
-            // Define scales
+            
+                // Define scales
             const siteKeys = Object.keys(data.sites);
-
             // Get sample dates from all sites to define domain for x-axis
             let allDates = [];
             for (let i = 0; i < siteKeys.length; i++) {
@@ -244,15 +245,16 @@ export default function ChartIndex({ selectedSites, analyte }) {
             let legendLabels = [];
             for (let i = 0; i < siteKeys.length; i++) {
                 const combinedName = `${siteKeys[i]} (${siteDictRef.current[siteKeys[i]].name})`;
-                legendLabels.push(combinedName);
+                const shortenedName = combinedName.length > 50 ? combinedName.slice(0, 45) + '...' : combinedName
+                legendLabels.push(shortenedName);
             }
             // Add legend
             const svgLegend = d3.select('#index-legend-container').append('svg')
-                .attr('width', width)
-                .attr('height', 29 * selectedSites.length);
+                .attr('width', 350)
+                .attr('height', 29 * siteKeys.length);
             svgLegend.append('g')
                 .attr('class', 'legendOrdinal')
-                .attr('transform', 'translate(40, 20)');
+                .attr('transform', 'translate(20, 10)');
             const ordinal = d3.scaleOrdinal()
                 .domain(legendLabels)
                 .range(colorPaletteViz);
@@ -360,7 +362,12 @@ export default function ChartIndex({ selectedSites, analyte }) {
                         { loading ? 'Loading...' : 
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div id="index-chart-container"></div>
-                                <div id="index-legend-container" style={{ display: 'flex', justifyContent: 'center', margin: '5px 0 15px 0' }}></div>
+                                <div className={chartFooter}>
+                                    <div className={cardWrapper}>
+                                        <AnalyteCard analyte={analyte} />   
+                                    </div>
+                                    <div id="index-legend-container" className={legendContainer}></div>
+                                </div>
                             </div>
                         }
                     </Modal.Content>

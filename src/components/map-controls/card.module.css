@@ -13,6 +13,7 @@
 }
 
 .cardContainer {
+    width: 100%;
     background-color: #f2f8f9;
     padding: 1em 1.1em;
 }
@@ -29,5 +30,5 @@
 }
 
 .iconWrapper {
-    margin: 4px 12px 0 0;
+    margin: 4px 1.1em 0 0;
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Select from 'react-select';
 import { customSelectStyle, regionNumDict } from '../../utils/utils';
-import AnalyteCard from './analyte-card';
+// import AnalyteCard from './analyte-card';
 
 export default function AnalyteMenu({ analyte, setAnalyte, region, program }) {
     const allAnalytes = useRef(null);
@@ -108,7 +108,7 @@ export default function AnalyteMenu({ analyte, setAnalyte, region, program }) {
                     styles={customSelectStyle}
                     maxMenuHeight={200}
                 />
-                { analyte ? <AnalyteCard analyte={analyte} /> : null }
+                {/* { analyte ? <AnalyteCard analyte={analyte} /> : null } */}
             </React.Fragment>
         )
     } else {
