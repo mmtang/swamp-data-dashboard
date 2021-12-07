@@ -7,7 +7,7 @@ export default function Ipi() {
     return (
         <LayoutParameter parameter={{ name: 'ipi', display: 'Index of Physical Habitat Integrity' }}>
             <div>
-                <h2>What is the IPI?</h2>
+                <h2>What is the Index of Physical Habitat Integrity?</h2>
                 <p>The Index of Physical Habitat Integrity (IPI) is a statewide scoring tool for measuring the condition of a stream or river's physical habitat. It integrates a number of individual habitat attributes (related to substrate, riparian vegetation, flow habitat variability, in-channel cover, and channel morphology) into an overall measure of physical condition. Like the <Link to='/learn/indicators/csci'>California Stream Condition Index (CSCI)</Link>, the IPI is calculated by comparing the expected condition modeled at reference sites with the actual (observed) results.</p>
                 <h2>Why is it important to measure the IPI?</h2>
                 <p>Physical habitat is a fundamental driver of stream ecosystem health and is critical for maintaining the chemical, physical, and biological integrity of a waterbody. It is one of the primary factors that influence the structure and composition of biological assemblages found at a given area. Physical habitat chracteristics such as streambed substrate, channel morphology, flow-microhabitat complexity, in-stream cover-type complexity, and riparian vegetation cover all contribute to the overall physical and biological integrity of a stream.</p>

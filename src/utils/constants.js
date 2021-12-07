@@ -1,4 +1,10 @@
 export const analytes = {
+    'Boron, Dissolved': {
+        code: 'boron',
+        label: 'Boron',
+        page: 'boron',
+        blurb: 'Boron is an essential nutrient for aquatic life and terrestial plants, but at high concentrations it can have toxic effects.'
+    },
     'CSCI': {
         code: 'csci',
         label: 'California Stream Condition Index',

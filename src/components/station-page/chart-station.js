@@ -140,7 +140,6 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
             }
         }
 
-        console.log(analyteKeys);
 
         for (const key in analyteKeys) {
             const analyteName = analyteKeys[key];
@@ -262,7 +261,6 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                         const data = results[i];
                         analyteData[analyte] = { data: data };
                     }
-                    console.log(analyteData);
                     setData(analyteData);
                 });
         }
@@ -294,7 +292,7 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.ResultOriginal = parseFloat(d.Result).toFixed(2);
-                        d.Result = parseFloat(d.ResultOriginal).toFixed(2);
+                        d.Result = parseFloat(d.Result).toFixed(2);
                         d.Censored = false;
                         if (parameter === 'CSCI') {
                             d.Unit = 'score';
@@ -305,18 +303,16 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
             } else {
                 // Get chemistry data
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + parameter + '%22}&sort=%22SampleDate%22%20desc';
-                url += '&fields=StationCode,Analyte,SampleDate,Result,Unit,MDL,ResultQualCode';
+                url += '&fields=StationCode,Analyte,SampleDate,Result,Unit,Censored,Result_Censored_HalfLimit';
                 fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultOriginal = d.Result;
-                        d['MDL'] = parseFloat(d['MDL']);
-                        const censored = getCensored(d);
-                        d['Censored'] = censored[0];
-                        d['Result'] = censored[1];
+                        d.ResultOriginal = d.Result.toFixed(2);
+                        d['Censored'] = d.Censored;
+                        d['Result'] = d['Result_Censored_HalfLimit'].toFixed(2);
                         if (parameter === 'pH') {
                             d.Unit = '';
                         }

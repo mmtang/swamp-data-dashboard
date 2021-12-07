@@ -285,7 +285,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
             if (habitatAnalytes.includes(analyte)) {
                 // Get habitat data
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=9ce012e2-5fd3-4372-a4dd-63294b0ce0f6&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
-                url += '&fields=StationCode,StationName,Analyte,SampleDate,Result,Unit';
+                url += '&fields=StationCode,StationName,Analyte,SampleDate,Result,Censored,Unit';
                 fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
@@ -293,7 +293,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.ResultOriginal = parseFloat(d.Result).toFixed(2);
-                        d.Result = parseFloat(d.ResultOriginal).toFixed(2);
+                        d.Result = parseFloat(d.Result).toFixed(2);
                         d.Censored = false;
                         if (analyte === 'CSCI') {
                             d.Unit = 'score';
@@ -308,18 +308,16 @@ export default function ChartIndex({ selectedSites, analyte }) {
             } else {
                 // Get chemistry data
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
-                url += '&fields=StationCode,StationName,Analyte,SampleDate,Result,Unit,MDL,ResultQualCode';
+                url += '&fields=StationCode,StationName,Analyte,SampleDate,Result,Unit,Result_Censored_HalfLimit,Censored';
                 fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
+                    console.log(records);
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultOriginal = d.Result;
-                        d['MDL'] = parseFloat(d['MDL']);
-                        const censored = getCensored(d);
-                        d['Censored'] = censored[0];
-                        d['Result'] = censored[1];
+                        d.ResultOriginal = d.Result.toFixed(2);
+                        d.Result = d['Result_Censored_HalfLimit'].toFixed(2);
                         if (analyte === 'pH') {
                             d.Unit = '';
                         }

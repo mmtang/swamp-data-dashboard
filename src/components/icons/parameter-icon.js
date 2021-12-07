@@ -1,5 +1,6 @@
 import React from 'react';
 import Asci from './parameters/asci';
+import Boron from './parameters/boron';
 import Csci from './parameters/csci';
 import Conductivity from './parameters/conductivity';
 import DissolvedOxygen from './parameters/dissolved_oxygen';
@@ -31,6 +32,8 @@ export default function ParameterIcon(props) {
         switch(icon) {
             case 'asci':
                 return <Asci props={newProps} />
+            case 'boron':
+                return <Boron props={newProps} />
             case 'conductivity':
                 return <Conductivity props={newProps} />
             case 'csci':

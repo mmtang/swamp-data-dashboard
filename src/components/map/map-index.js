@@ -907,7 +907,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 irLayerRef.current = new GroupLayer({
                     id: 'ir-group-layer',
                     title: 'Integrated Report 2018',
-                    visible: false,
+                    visible: true,
                     layers: [irLineRef.current, irPolyRef.current],
                     listMode: 'show',
                     visibilityMode: 'inherited'

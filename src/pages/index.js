@@ -101,7 +101,7 @@ export default function Index() {
           >
               <Header icon='exclamation circle' content='Disclaimer' />
               <Modal.Content>
-                  <img className={swampIcon} src={`/swamp_logo_black_small.png`} alt='SWAMP logo' />
+                  {/*<img className={swampIcon} src={`/swamp_logo_black_small.png`} alt='SWAMP logo' />*/}
                   <p><strong>The SWAMP Data Dashboard is in early development.</strong> It may change at any time without prior notification. All data provided are provisional and should not be used for any particular purpose other than general reference.</p>
                   <p>
                     For feedback and general inquiries:<br />
