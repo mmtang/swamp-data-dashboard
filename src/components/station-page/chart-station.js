@@ -89,11 +89,13 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
             const analyteName = analyteKeys[key];
             const results = data[analyteName].data.map(d => d.Result);
             const yMax = d3.max(results);
+            console.log(yMax);
             const yMin = d3.min(results);
             // store back in original data object
             data[analyteName]['yMax'] = yMax;
             data[analyteName]['yMin'] = yMin;
         }
+        console.log(data);
         // Create a y-scale and y-axis for each dataset and store in dictionary for later access
         for (const key in analyteKeys) {
             const analyteName = analyteKeys[key];
@@ -292,7 +294,7 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.ResultOriginal = parseFloat(d.Result).toFixed(2);
-                        d.Result = parseFloat(d.Result).toFixed(2);
+                        d.Result = +parseFloat(d.Result).toFixed(2);
                         d.Censored = false;
                         if (parameter === 'CSCI') {
                             d.Unit = 'score';
@@ -310,9 +312,9 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                 .then(records => {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultOriginal = d.Result.toFixed(2);
+                        d.ResultOriginal = +d.Result.toFixed(2);
                         d['Censored'] = d.Censored;
-                        d['Result'] = d['Result_Censored_HalfLimit'].toFixed(2);
+                        d['Result'] = +d['Result_Censored_HalfLimit'].toFixed(2);
                         if (parameter === 'pH') {
                             d.Unit = '';
                         }

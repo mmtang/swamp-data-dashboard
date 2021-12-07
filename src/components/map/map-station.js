@@ -282,6 +282,7 @@ export default function MapStation({ coordinates, stationCode, region, setNearby
                 stationMapRef.current.add(markerLayerRef.current);
             });
         }
+        {/*
         const drawWaterbodies = () => {
             return new Promise((resolve, reject) => {
                 Promise.all([
@@ -342,6 +343,7 @@ export default function MapStation({ coordinates, stationCode, region, setNearby
                 });
             });
         }
+      */}
         const findNearbyStations = () => {
           if (stationViewRef.current) {
             loadModules(['esri/layers/GeoJSONLayer'])
@@ -352,7 +354,6 @@ export default function MapStation({ coordinates, stationCode, region, setNearby
                   .then((json) => json.result.records)
                   .then((records) => {
                     const stationData = convertStationsToGeoJSON(records);
-                    console.log(stationData);
                     const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
                     const url = URL.createObjectURL(blob);
                     stationLayerRef.current = new GeoJSONLayer({
@@ -397,11 +398,8 @@ export default function MapStation({ coordinates, stationCode, region, setNearby
         loadCss();
         initializeMap()
         .then(() => {
-            drawWaterbodies()
-                .then(() => {
-                    drawMarker();
-                    findNearbyStations();
-                });
+          drawMarker();
+          findNearbyStations();
         });
     }, []);
 

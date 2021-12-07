@@ -43,14 +43,16 @@ export default function StationTable({ station, setSelectedAnalytes }) {
 
     const columns = [
         {
-            name: 'Parameter',
+            id: 'indicator',
+            name: 'Indicator',
             selector: row => row['Analyte'],
             width: '180px',
             wrap: true,
             sortable: true
         },
         {
-            name: 'Samples',
+            id: 'results',
+            name: 'Results',
             selector: row => row['AllYears_n'],
             width: '95px',
             sortable: true,
@@ -58,6 +60,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             right: true
         },
         {
+            id: 'lastDate',
             name: 'Last Sample Date',
             selector: row => formatDate(row['LastSampleDate']),
             width: '140px',
@@ -65,6 +68,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             right: true
         },
         {
+            id: 'lastResult',
             name: 'Last Result',
             selector: row => row['LastResult'] + ' ' + row['Unit'],
             width: '145px',
@@ -73,6 +77,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             right: true
         },
         {
+            id: 'trend',
             name: 'Trend',
             selector: row => row['AllYears_R_Trend'],
             width: '130px',
@@ -80,6 +85,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             format: row => <CustomTrend row={row} />
         },
         {
+            id: 'min',
             name: 'Min',
             selector: row => row['AllYears_Min'],
             width: '80px',
@@ -88,6 +94,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             right: true
         },
         {
+            id: 'mean',
             name: 'Mean',
             selector: row => row['AllYears_Mean'],
             width: '80px',
@@ -96,6 +103,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             right: true
         },
         {
+            id: 'median',
             name: 'Median',
             selector: row => row['AllYears_Median'],
             width: '80px',
@@ -104,6 +112,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             right: true
         },
         {
+            id: 'max',
             name: 'Max',
             selector: row => row['AllYears_Max'],
             width: '80px',
@@ -149,7 +158,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
                 highlightOnHover
                 selectableRows
                 selectableRowsHighlight
-                defaultSortFieldId={'LastSampleDate'}
+                defaultSortFieldId={'lastDate'}
                 defaultSortAsc={false}
                 onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
                 dense

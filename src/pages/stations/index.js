@@ -21,10 +21,8 @@ export default function Station(props) {
     const getStationCode = () => {
         return new Promise((resolve, reject) => {
             const url = props.location.href;
-            console.log(url);
             const re = new RegExp(/stations\/\?id=([a-z0-9]+)$/i);
             const matches = url.match(re);
-            console.log(matches);
             if (matches[1]) {
                 stationCodeRef.current = matches[1];
             } else {
@@ -42,6 +40,7 @@ export default function Station(props) {
                 .then(response => response.json())
                 .then(json => {
                     const data = json.result.records[0];
+                    console.log(data);
                     stationObjRef.current = data;
                     resolve();
                 })
