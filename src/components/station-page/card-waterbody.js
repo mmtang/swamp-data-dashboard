@@ -10,12 +10,13 @@ export default function CardWaterbody({ feature }) {
                 <div className={`${leftContainer} ${waterbody}`}><IconRipple size={30} color="#fff" /></div>
                 <div className={cardBody}>
                     <div>
-                        <div><span className={cardTitle}>{feature.assessmentunitname}</span></div>
+                        <div><span className={cardTitle}>{feature.wbname}</span></div>
                         <div style={{ marginTop: '0.5em', fontSize: "0.8em"}}>
-                            { feature.on303dlist === 'Y' ? 'On 303(d) list' : 'Not on 303(d) List' }
+                            {feature.wb_listingstatus}
                             &nbsp;&nbsp;&#9679;&nbsp;&nbsp;
-                            <a href={feature.waterbodyreportlink} target="_blank" rel="noopener noreferrer">USEPA Report</a>
+                            <a href={feature.fact_sheet} target="_blank" rel="noopener noreferrer">Fact Sheet</a>
                         </div>
+                        { feature.wb_listingstatus === 'Listed' ? <div style={{ marginTop: '0.25em', fontSize: "0.8em"}}>Listed pollutants: {feature.listed_pollutants}</div> : null }
                     </div>
                 </div>
             </div>

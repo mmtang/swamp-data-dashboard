@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef  } from 'react';
 import LayoutStation from '../../components/layout/layout-station';
 import MapStation from '../../components/map/map-station';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
-import NearbyStations from '../../components/station-page/nearby-stations';
 import ChartStation from '../../components/station-page/chart-station';
 import StationTable from '../../components/station-page/station-table';
 import LoaderDashboard from '../../components/common/loader-dashboard';
@@ -40,7 +39,6 @@ export default function Station(props) {
                 .then(response => response.json())
                 .then(json => {
                     const data = json.result.records[0];
-                    console.log(data);
                     stationObjRef.current = data;
                     resolve();
                 })
@@ -55,25 +53,17 @@ export default function Station(props) {
     
     if (loading === false && stationObjRef.current) {
         return (
-            <LayoutStation title='SWAMP Data Dashboard'>
+            <LayoutStation>
                 <div className={leftContainer}>
                     <section className={titleContainer}>
                         <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>
                         <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{regionDict[stationObjRef.current.Region]} Region</span>
                     </section>
                     <div className={siteMapContainer}>
-                        <MapStation 
-                            coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} 
-                            stationCode={stationObjRef.current.StationCode}
-                            region={stationObjRef.current.Region}
-                            setNearbyStations={setNearbyStations}
-                        />
+                        <MapStation coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
                     </div>
                     <section style={{ margin: '1.1em 0' }}>
                         <NearbyWaterbodies coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
-                    </section>
-                    <section style={{ margin: '1.1em 0' }}>
-                        <NearbyStations nearbyStations={nearbyStations} />
                     </section>
                 </div>
                 <div className={rightContainer}>

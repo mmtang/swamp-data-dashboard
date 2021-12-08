@@ -1,60 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
-import { convertStationsToGeoJSON } from '../../utils/utils';
 
 
-export default function MapStation({ coordinates, stationCode, region, setNearbyStations}) {
+export default function MapStation({ coordinates }) {
     const stationMapDivRef = useRef(null);
     const stationMapRef = useRef(null);
     const stationViewRef = useRef(null);
     const markerRef = useRef(null);
     const markerLayerRef = useRef(null);
-    const attainsLineLayerRef = useRef(null);
-    const attainsPolyLayerRef = useRef(null);
-    const stationLayerRef = useRef(null);
 
 
     useEffect(() => {
-        const attainsLineRenderer = {
-            type: 'simple',
-            symbol: {
-                type: 'simple-line',
-                color: '#247BA0',
-                width: '2px'
-            }
-        }
-        const attainsPolyRenderer = {
-            type: 'simple',
-            symbol: {
-                type: 'simple-fill',
-                color: 'rgba(36,123,160,100)',
-                outline: {
-                    color: '#247BA0'
-                }
-            }
-        };
-        const getLines = (distance) => {
-            return new Promise((resolve, reject) => {
-                // Input distance is in meters
-                const url = 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/1/query?where=organizationid%3D%27CA_SWRCB%27&text=&objectIds=&time=&geometry=' + coordinates[0] + '%2C' + coordinates[1] + '&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&distance=' + distance + '&units=esriSRUnit_Meter&relationParam=&outFields=assessmentunitname%2creportingcycle%2Cwaterbodyreportlink%2Coverallstatus%2Con303dlist&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson';
-                fetch(url)
-                    .then(response => response.json())
-                    .then(json => {
-                        resolve(json);
-                    })
-            })
-        }
-        const getPolys = (distance) => {
-            return new Promise((resolve, reject) => {
-                // Input distance is in meters
-                const url = 'https://gispub.epa.gov/arcgis/rest/services/OW/ATTAINS_Assessment/MapServer/2/query?where=organizationid%3D%27CA_SWRCB%27&text=&objectIds=&time=&geometry=' + coordinates[0] + '%2C' + coordinates[1] + '&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&distance=' + distance + '&units=esriSRUnit_Meter&relationParam=&outFields=assessmentunitname%2creportingcycle%2Cwaterbodyreportlink%2Coverallstatus%2Con303dlist&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson';
-                fetch(url)
-                    .then(response => response.json())
-                    .then(json => {
-                        resolve(json);
-                    })
-            })
-        } 
         const initializeMap = () => {
             return new Promise((resolve, reject) => {
                 loadModules([
@@ -78,6 +34,7 @@ export default function MapStation({ coordinates, stationCode, region, setNearby
                 });
             })
         }
+
         const drawMarker = () => {
             loadModules([
                 'esri/layers/GraphicsLayer',
@@ -282,133 +239,20 @@ export default function MapStation({ coordinates, stationCode, region, setNearby
                 stationMapRef.current.add(markerLayerRef.current);
             });
         }
-        {/*
-        const drawWaterbodies = () => {
-            return new Promise((resolve, reject) => {
-                Promise.all([
-                    getLines(100),
-                    getPolys(100)
-                ]).then(responses => {
-                    if (stationMapRef) {
-                        loadModules(['esri/layers/GeoJSONLayer'])
-                        .then(([GeoJSONLayer]) => {
-                            const buildAttainsPopup = (feature) => {
-                                // Manually build the popup (and popup table) so that we can replace the default values coming from ATTAINS
-                                const attributes = feature.graphic.attributes;
-                                if (attributes.on303dlist === 'Y') {
-                                    attributes.on303dlist = 'Yes';
-                                } else if (attributes.on303dlist === 'N') {
-                                    attributes.on303dlist = 'No';
-                                };
-                                // Table for waterbody information
-                                let table = '<table class="esri-widget__table"><tbody><tr><th class="esri-feature-fields__field-header">Status</th><td>' + attributes.overallstatus + '</td></tr><tr><th class="esri-feature-fields__field-header">On 303(d) List</th><td>' + attributes.on303dlist  + '</td></tr><tr><th class="esri-feature-fields__field-header">Year Reported</th><td>' + attributes.reportingcycle + '</td></tr><tr><th class="esri-feature-fields__field-header">USEPA Attains Waterbody Report</th><td><a href="' + attributes.waterbodyreportlink + '" target="_blank" style="color: #064e96">Link</a></td></tbody></table>';
-                                return table.toString();
-                            }
-                            const attainsTemplate = {
-                                // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
-                                outFields: ['overallstatus', 'on303dlist', 'reportingcycle', 'waterbodyreportlink'],
-                                title: '{assessmentunitname}<br><span class="map-popup-subtitle" style="color: #247BA0">Assessment waterbody</span>',
-                                content: buildAttainsPopup
-                            };
-                            // Add lines
-                            if (responses[0].features.length > 0) {
-                                const blobLines = new Blob([JSON.stringify(responses[0])], { type: "application/json" });
-                                const urlLines = URL.createObjectURL(blobLines);
-                                attainsLineLayerRef.current = new GeoJSONLayer({
-                                    id: 'nearbyLines',
-                                    url: urlLines,
-                                    outFields: ['assessmentunitname', 'reportingcycle', 'waterbodyreportlink', 'overallstatus', 'on303dlist'],
-                                    renderer: attainsLineRenderer,
-                                    popupTemplate: attainsTemplate
-                                });
-                                stationMapRef.current.add(attainsLineLayerRef.current);
-                            }
-                            // Add polys
-                            if (responses[1].features.length > 0) {
-                                const blobPolys = new Blob([JSON.stringify(responses[1])], { type: "application/json" });
-                                const urlPolys = URL.createObjectURL(blobPolys);
-                                attainsPolyLayerRef.current = new GeoJSONLayer({
-                                    id: 'nearbyPolys',
-                                    geometryType: 'polygon',
-                                    url: urlPolys,
-                                    outFields: ['assessmentunitname', 'reportingcycle', 'waterbodyreportlink', 'overallstatus', 'on303dlist'],
-                                    renderer: attainsPolyRenderer,
-                                    popupTemplate: attainsTemplate
-                                });
-                                stationMapRef.current.add(attainsPolyLayerRef.current);
-                            }
-                            resolve();
-                        });
-                    }
-                });
-            });
-        }
-      */}
-        const findNearbyStations = () => {
-          if (stationViewRef.current) {
-            loadModules(['esri/layers/GeoJSONLayer'])
-              .then(([GeoJSONLayer]) => {
-                const url = `https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=StationName%2CStationCode%2CRegion%2CTargetLatitude%2CTargetLongitude&filters={%22Region%22:%22${region}%22}&limit=2500`;
-                fetch(url)
-                  .then((resp) => resp.json())
-                  .then((json) => json.result.records)
-                  .then((records) => {
-                    const stationData = convertStationsToGeoJSON(records);
-                    const blob = new Blob([JSON.stringify(stationData)], { type: "application/json" });
-                    const url = URL.createObjectURL(blob);
-                    stationLayerRef.current = new GeoJSONLayer({
-                      id: 'stations',
-                      url: url,
-                      outFields: ['StationName', 'StationCode'],
-                      visible: false
-                    });
-                    // Add layer to map
-                    stationMapRef.current.add(stationLayerRef.current);
-                    // Find nearby sites
-                    loadModules(['esri/views/layers/LayerView', 'esri/tasks/support/Query'])
-                      .then(([LayerView, Query]) => {
-                        if (stationViewRef.current) {
-                          stationViewRef.current.whenLayerView(stationLayerRef.current).then((layerView) => {
-                              const query = stationLayerRef.current.createQuery();
-                              query.geometry = {
-                                type: 'point',
-                                longitude: coordinates[0],
-                                latitude: coordinates[1],
-                                spatialReference: { wkid: 4326 }
-                              };
-                              query.distance = 2000;
-                              query.units = 'meters';
-                              query.returnGeometry = false;
-                              query.outfields = ['StationCode', 'StationName', 'Region'];
-                              stationLayerRef.current.queryFeatures(query)
-                                .then(results => {
-                                  const resultsFeatures = results.features.map(d => d.attributes);
-                                  const features = resultsFeatures.filter(d => d.StationCode !== stationCode);
-                                  setNearbyStations(features);
-                                });
-                            })
-                        }
-                      });
-                  });
-              });
-          }
-        }
 
-        setDefaultOptions({ version: '4.16' });
+        setDefaultOptions({ version: '4.21' });
         loadCss();
         initializeMap()
         .then(() => {
           drawMarker();
-          findNearbyStations();
         });
     }, []);
 
-
-
-    return (
-        <div 
-            className="stationMapDiv" 
-            ref={stationMapDivRef}
-            style={{ width: '100%', height: '260px' }} />
-    )
+  return (
+    <div 
+      className="stationMapDiv" 
+      ref={stationMapDivRef}
+      style={{ width: '100%', height: '260px' }} 
+    />
+  )
 }
