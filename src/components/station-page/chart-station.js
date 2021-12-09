@@ -76,6 +76,7 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
             .style('opacity', 0);
         // Define scales
         const analyteKeys = Object.keys(data);
+        // Store units for legend
         let allDates = [];
         for (const key in analyteKeys) {
             //const obj = data[analyteKeys[key]];
@@ -272,15 +273,18 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                 .remove();
         }
 
-        // Add legend
+        // *** Add legend
+        // Append unit to end of analyte name
+        const analytesWithUnit = analyteKeys.map(analyte => `${analyte} (${data[analyte].unit})`);
+        console.log(analytesWithUnit);
         const svgLegend = d3.select('#station-legend-container').append('svg')
-            .attr('width', 250)
+            .attr('width', 300)
             .attr('height', 28 * selectedAnalytes.length);
         svgLegend.append('g')
             .attr('class', 'legendOrdinal')
             .attr('transform', 'translate(20, 10)');
         const ordinal = d3.scaleOrdinal()
-            .domain(analyteKeys)
+            .domain(analytesWithUnit)
             .range(colorPaletteViz);
         const legendOrdinal = legendColor()
             //d3 symbol creates a path-string, for example
@@ -326,8 +330,12 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                     let analyteData = {};
                     for (let i = 0; i < results.length; i++) {
                         const analyte = results[i][0].Analyte;
+                        const unit = results[i][0].Unit;  // Get unit for displaying in the legend
                         const data = results[i];
-                        analyteData[analyte] = { data: data };
+                        analyteData[analyte] = { 
+                            data: data,
+                            unit: unit
+                        };
                     }
                     setData(analyteData);
                 });

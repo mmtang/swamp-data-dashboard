@@ -88,7 +88,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
 
         const drawChart = (data) => {
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 25, right: 25, bottom: 30, left: 40 };
+            const margin = { top: 25, right: 25, bottom: 30, left: 68 };
             const width = 645 + margin.left + margin.right;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 4;
@@ -166,6 +166,17 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 .attr('class', 'y axis')
                 .attr('transform', 'translate(' + margin.left + ', 0)')
                 .call(yAxis);
+
+            // Draw unit on top of y-axis
+            chart.append('text')
+                .attr('class', 'unitLabel')
+                //.attr('x', 10)
+                //.attr('y', margin.top / 2)
+                .attr('transform', `translate(18, ${margin.top}) rotate(-90)`)
+                .attr('font-size', '11px')
+                .attr('fill', '#41464b')
+                .attr('text-anchor', 'end')
+                .text(unitRef.current);
 
             // Draw reference geometries (scoring categories)
             const geometries = analyteScoringCategories[analytes[analyte]['code']] || [];
@@ -245,7 +256,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
             let legendLabels = [];
             for (let i = 0; i < siteKeys.length; i++) {
                 const combinedName = `${siteKeys[i]} (${siteDictRef.current[siteKeys[i]].name})`;
-                const shortenedName = combinedName.length > 50 ? combinedName.slice(0, 45) + '...' : combinedName
+                const shortenedName = combinedName.length > 43 ? combinedName.slice(0, 43) + '...' : combinedName
                 legendLabels.push(shortenedName);
             }
             // Add legend
@@ -292,7 +303,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 .then(records => {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultOriginal = parseFloat(d.Result).toFixed(2);
+                        d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
                         d.Result = parseFloat(d.Result).toFixed(2);
                         d.Censored = false;
                         if (analyte === 'CSCI') {
@@ -313,11 +324,10 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
-                    console.log(records);
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultOriginal = d.Result.toFixed(2);
-                        d.Result = d['Result_Censored_HalfLimit'].toFixed(2);
+                        d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
+                        d.Result = +d['Result_Censored_HalfLimit'].toFixed(2);
                         if (analyte === 'pH') {
                             d.Unit = '';
                         }

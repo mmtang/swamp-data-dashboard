@@ -668,11 +668,13 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 query.where = `StationCode = '${siteCodes[0]}'`;
                 layer.current.queryFeatures(query)
                 .then(results => {
-                    // Get Object ID of the feature to be removed
-                    const featureId = results.features[0].attributes.ObjectId;
-                    // Query to get the layer object, which contains a map of all highlighted features
-                    stationLayer._highlightIds.delete(featureId);
-                    stationLayer._updateHighlight(); 
+                    if (results.features.length > 0) {
+                        // Get Object ID of the feature to be removed
+                        const featureId = results.features[0].attributes.ObjectId;
+                        // Query to get the layer object, which contains a map of all highlighted features
+                        stationLayer._highlightIds.delete(featureId);
+                        stationLayer._updateHighlight(); 
+                    }
                 });
             } else if (siteCodes.length > 1) {
                 // If there is more than one site code to be removed, remove all elements from the map object
