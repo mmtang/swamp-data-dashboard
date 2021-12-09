@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { analytes, analyteScoringCategories, analyteYMax } from '../../utils/constants';
-import { colorPaletteViz, habitatAnalytes, getCensored } from '../../utils/utils';
+import { colorPaletteViz, habitatAnalytes, } from '../../utils/utils';
 import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper } from './chart-index.module.css';
 
 
@@ -88,7 +88,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
 
         const drawChart = (data) => {
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 20, right: 25, bottom: 30, left: 40 };
+            const margin = { top: 25, right: 25, bottom: 30, left: 40 };
             const width = 645 + margin.left + margin.right;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 4;
@@ -119,7 +119,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 .attr('class', customTooltip)
                 .style('opacity', 0);
             
-                // Define scales
+            // Define scales
             const siteKeys = Object.keys(data.sites);
             // Get sample dates from all sites to define domain for x-axis
             let allDates = [];
@@ -361,10 +361,10 @@ export default function ChartIndex({ selectedSites, analyte }) {
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div id="index-chart-container"></div>
                                 <div className={chartFooter}>
+                                    <div id="index-legend-container" className={legendContainer}></div>
                                     <div className={cardWrapper}>
                                         <AnalyteCard analyte={analyte} />   
                                     </div>
-                                    <div id="index-legend-container" className={legendContainer}></div>
                                 </div>
                             </div>
                         }

@@ -89,7 +89,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                     Statewide monitoring program
                     <HelpIcon wide={true}>
                         <p>In addition to its regional monitoring efforts, SWAMP oversees and funds four statewide monitoring programs: the <strong>Bioaccumulation Monitoring Program</strong>, <strong>Bioassessment Monitoring Program</strong>, <strong>Freshwater and Estuarine Harmful Algal Blooms Program</strong>, and the <strong>Stream Pollution Trends Monitoring Program</strong>.</p>
-                        <p>These statewide programs provide a "big picture" assessment of the overall status and trends of water quality throughout California. For resources and more information about these programs, visit our <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">website</a>.</p>
+                        <p>These statewide programs provide a "big picture" assessment of the overall status and trends of water quality throughout California. Visit the SWAMP <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">website</a> for more information about these programs.</p>
                     </HelpIcon>
                 </p>
                 <ProgramMenu program={program} setProgram={setProgram} />

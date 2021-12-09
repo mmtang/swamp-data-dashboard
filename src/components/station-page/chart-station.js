@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import AnalyteCard from '../map-controls/analyte-card';
+import AnalyteIconGrid from './analyte-icon-grid';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { colorPaletteViz, habitatAnalytes, getCensored } from '../../utils/utils';
-import { axisBlue, axisOrange, axisGreen, axisPurple, customTooltip } from './chart-station.module.css';
+import { analyteYMax, analyteScoringCategories, analytes } from '../../utils/constants';
+import { colorPaletteViz, habitatAnalytes } from '../../utils/utils';
+import { axisBlue, axisOrange, axisGreen, axisPurple, customTooltip, legendContainer, chartFooter, analyteSection } from './chart-station.module.css';
 
 
 export default function ChartStation({ station, stationName, selectedAnalytes }) {
@@ -41,7 +44,7 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
 
     const drawChart = () => {
         const chartId = 'chart-' + randomId.current;
-        const margin = { top: 20, right: 40, bottom: 30, left: 40 };
+        const margin = { top: 20, right: 35, bottom: 30, left: 40 };
         const width = 645 + margin.left + margin.right;
         const height = 220 + margin.top + margin.bottom;
         const clipPadding = 4;
@@ -88,14 +91,16 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
         for (const key in analyteKeys) {
             const analyteName = analyteKeys[key];
             const results = data[analyteName].data.map(d => d.Result);
-            const yMax = d3.max(results);
-            console.log(yMax);
+            let yMax = d3.max(results);
             const yMin = d3.min(results);
+
+            if (analyteKeys.length === 1 && Object.keys(analyteYMax).includes(analyteKeys[0])) {
+                yMax = analyteYMax[analyteKeys[0]];
+            }
             // store back in original data object
             data[analyteName]['yMax'] = yMax;
             data[analyteName]['yMin'] = yMin;
         }
-        console.log(data);
         // Create a y-scale and y-axis for each dataset and store in dictionary for later access
         for (const key in analyteKeys) {
             const analyteName = analyteKeys[key];
@@ -141,6 +146,67 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                     .call(d3.axisRight().scale(data[analyteName]['yScale']).ticks(5));
             }
         }
+
+        // Draw reference (scoring) categories, if applicable (only one analyte selected)
+        if (analyteKeys.length === 1 && Object.keys(analyteYMax).includes(analyteKeys[0])) {
+            const analyteName = analyteKeys[0];
+            const yScale = data[analyteName]['yScale'];
+            const categories = analyteScoringCategories[analytes[analyteKeys[0]].code];
+            if (categories.length > 0) {
+                // Rectangles
+                const rects = categories.filter(d => d['type'] === 'area');
+                if (rects.length > 0) {
+                    const rectGroup = chart.append('g')
+                        .data(rects)
+                        .attr('clip-path', 'url(#clip)');
+                    rectGroup.selectAll('rect')
+                        .data(rects)
+                        .enter().append('rect')
+                        .attr('width', width - margin.left - margin.right)
+                        .attr('height', d => yScale(d.lowerValue) - yScale(d.upperValue))
+                        .attr('x', 0 + margin.left)
+                        .attr('y', d => yScale(d.upperValue))
+                        .attr('fill', d => d['fillColor'])
+                        .attr('opacity', 0.25);
+                    rectGroup.selectAll('text')
+                        .data(rects)
+                        .enter().append('text')
+                        .attr('x', width - margin.right - 5)
+                        .attr('y', d => yScale(d.lowerValue) - 5)
+                        .attr('font-size', '11px')
+                        .attr('text-anchor', 'end')
+                        .text(d => d.label);
+                }
+            }
+        }
+        /*
+        const geometries = analyteScoringCategories[analytes[analyte]['code']] || [];
+        if (geometries.length > 0) {
+            const rects = geometries.filter(d => d['type'] === 'area');
+            if (rects.length > 0) {
+                const rectGroup = chart.append('g')
+                    .data(rects)
+                    .attr('clip-path', 'url(#clip)');
+                rectGroup.selectAll('rect')
+                    .data(rects)
+                    .enter().append('rect')
+                    .attr('width', width - margin.left - margin.right)
+                    .attr('height', d => yScale(d.lowerValue) - yScale(d.upperValue))
+                    .attr('x', 0 + margin.left)
+                    .attr('y', d => yScale(d.upperValue))
+                    .attr('fill', d => d['fillColor'])
+                    .attr('opacity', 0.25);
+                rectGroup.selectAll('text')
+                    .data(rects)
+                    .enter().append('text')
+                    .attr('x', width - margin.right - 5)
+                    .attr('y', d => yScale(d.lowerValue) - 5)
+                    .attr('font-size', '11px')
+                    .attr('text-anchor', 'end')
+                    .text(d => d.label);
+            }
+        }
+        */
 
 
         for (const key in analyteKeys) {
@@ -212,7 +278,7 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
             .attr('height', 28 * selectedAnalytes.length);
         svgLegend.append('g')
             .attr('class', 'legendOrdinal')
-            .attr('transform', 'translate(40, 20)');
+            .attr('transform', 'translate(20, 10)');
         const ordinal = d3.scaleOrdinal()
             .domain(analyteKeys)
             .range(colorPaletteViz);
@@ -348,7 +414,17 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                         { loading ? 'Loading...' : 
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div id="station-chart-container"></div>
-                                <div id="station-legend-container" style={{ display: 'flex', justifyContent: 'center', margin: '5px 0 15px 0' }}></div>
+                                <div className={chartFooter}>
+                                    <div id="station-legend-container" className={legendContainer}></div>
+                                    <div className={analyteSection}>
+                                        { selectedAnalytes.length === 1 ? 
+                                            // If one analyte is selected, display the card
+                                            <AnalyteCard analyte={selectedAnalytes[0]} /> 
+                                            // If more than one analyte, build a grid
+                                            : <AnalyteIconGrid selectedAnalytes={selectedAnalytes} />
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         }
                     </Modal.Content>

@@ -14,7 +14,6 @@ export default function Station(props) {
     const stationObjRef = useRef(null);
 
     const [loading, setLoading] = useState(true);
-    const [nearbyStations, setNearbyStations] = useState(null);
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
 
     const getStationCode = () => {

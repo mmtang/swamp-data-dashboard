@@ -71,7 +71,7 @@ export const analytes = {
         page: 'total_phosphorus',
         blurb: 'Phosphorus is an essential plant nutrient, but too much can lead to an excessive growth of plants and algae in the water, which has adverse ecological effects.'
     },
-    'Turbidity': {
+    'Turbidity, Total': {
         code: 'turbidity',
         label: 'Turbidity',
         page: 'turbidity',
