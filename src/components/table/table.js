@@ -102,7 +102,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
     const CustomLink = ({ row }) => {
         return (
             <div>
-                <Icon name='linkify' />&nbsp;<a href={"/stations?id=" + row['StationCode']} target="_blank" rel="noopener noreferrer">Link</a>
+                <a href={"/stations?id=" + row['StationCode']} target="_blank" rel="noopener noreferrer">Link</a>&nbsp;&nbsp;&nbsp;<Icon name='external' />
             </div>
         )
     }

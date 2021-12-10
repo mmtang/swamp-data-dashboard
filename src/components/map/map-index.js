@@ -20,6 +20,8 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
     const stationLayerRef = useRef(null);
     const stationSummaryLayerRef = useRef(null);
     const layerListRef = useRef(null);
+    const expandRef = useRef(null);
+    const basemapGalleryRef = useRef(null);
     // This ref is used to store the old array of site code strings. Will be compared to the new array.
     const selectedSitesRef = useRef(null);
 
@@ -716,8 +718,9 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 'esri/widgets/Search',
                 'esri/widgets/LayerList',
                 'esri/widgets/Expand',
-                'esri/widgets/Home'
-            ]).then(([Map, MapView, Search, LayerList, Expand, Home]) => {
+                'esri/widgets/Home',
+                'esri/widgets/BasemapGallery'
+            ]).then(([Map, MapView, Search, LayerList, Expand, Home, BasemapGallery]) => {
                 mapRef.current = new Map({
                     basemap: 'topo-vector'
                 });
@@ -727,7 +730,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                     center: [-119.3624, 37.5048],
                     zoom: 6,
                     constraints: {
-                        minZoom: 4
+                        minZoom: 5
                     },
                     popup: {
                         dockOptions: {
@@ -736,7 +739,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         collapseEnabled: false,
                     },
                     highlightOptions: {
-                        fillOpacity: 0.2,
+                        fillOpacity: 0.6,
                         //color: [255, 0, 0, 1]
                     }
                 });
@@ -771,16 +774,22 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         }
                     }
                 });
-                /*
+
+                // Define basemap gallery widget
+                basemapGalleryRef.current = new BasemapGallery({
+                    view: viewRef.current
+                });
+                
+                // Define expand widget for basemap gallery
                 expandRef.current = new Expand({
-                    expandIconClass: 'esri-icon-layers',
+                    expandIconClass: 'esri-icon-basemap',
                     view: viewRef.current,
-                    content: layerListRef.current,
+                    content: basemapGalleryRef.current,
                     expanded: false
                 })
-                //viewRef.current.ui.add(searchRef.current, { position: 'top-right' });
-                viewRef.current.ui.add(expandRef.current, 'bottom-left');
-                */
+
+                // Add expand widget
+                viewRef.current.ui.add(expandRef.current, 'top-left');
 
                 // Add Home widget
                 const homeWidget = new Home({ view: viewRef.current });
