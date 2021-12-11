@@ -739,7 +739,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         collapseEnabled: false,
                     },
                     highlightOptions: {
-                        fillOpacity: 0.6,
+                        fillOpacity: 0.5,
                         //color: [255, 0, 0, 1]
                     }
                 });

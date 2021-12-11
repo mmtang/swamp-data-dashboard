@@ -91,7 +91,7 @@ export default function ChartIndex({ selectedSites, analyte }) {
             const margin = { top: 25, right: 25, bottom: 30, left: 68 };
             const width = 645 + margin.left + margin.right;
             const height = 220 + margin.top + margin.bottom;
-            const clipPadding = 4;
+            const clipPadding = 5;
 
             const chart = d3.select('#index-chart-container').append('svg')
                 .attr('id', chartId)
@@ -215,19 +215,17 @@ export default function ChartIndex({ selectedSites, analyte }) {
                     .enter().append('circle')
                     .attr('class', 'circle')
                     .attr('r', 4)
-                    .attr('cx', (d) => { 
-                        return xScale(d.SampleDate); 
-                    })
-                    .attr('cy', (d) => { 
-                        return yScale(d.Result); 
-                    })
-                    .attr('fill', (d) => { return colorPaletteViz[i]; })
-                    .attr('stroke', '#fff')
+                    .attr('cx', d => xScale(d.SampleDate))
+                    .attr('cy', d => yScale(d.Result))
+                    .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[i])
+                    .attr('stroke', d => d.Censored ? colorPaletteViz[i] : '#fff')
+                    .attr('stroke-width', d => d.Censored ? 2 : 1)
+                    .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                     .on('mouseover', function(currentEvent, d) {
                         const formatDate = d3.timeFormat('%b %e, %Y');
                         let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + d.Result + ' ' + d.Unit;
-                        if (d.Censored === true) {
-                            content += '<br><i>Censored</i>';
+                        if (d.Censored) {
+                            content += '<br><i>Non-detect</i>';
                         }
                         return tooltip
                             .style('opacity', 1)
@@ -245,8 +243,8 @@ export default function ChartIndex({ selectedSites, analyte }) {
                         return tooltip.style('opacity', 0);
                     })
                     .merge(points)
-                    .attr('cx', (d) => { return xScale(d.SampleDate); })
-                    .attr('cy', (d) => { return yScale(d.Result); });
+                    .attr('cx', d => xScale(d.SampleDate))
+                    .attr('cy', d => yScale(d.Result));
                 points.exit()
                     .remove();
             }
@@ -326,13 +324,14 @@ export default function ChartIndex({ selectedSites, analyte }) {
                 .then(records => {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
+                        d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                         d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
                         d.Result = +d['Result_Censored_HalfLimit'].toFixed(2);
                         if (analyte === 'pH') {
                             d.Unit = '';
                         }
                     });
-                    records.filter(d => d.Result != null);
+                    console.log(records);
                     // Add station name to station dictionary
                     siteDictRef.current[station] = {
                         name: records[0].StationName,

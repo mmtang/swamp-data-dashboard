@@ -237,19 +237,17 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                 .enter().append('circle')
                 .attr('class', 'circle')
                 .attr('r', 4)
-                .attr('cx', (d) => { 
-                    return xScale(d.SampleDate); 
-                })
-                .attr('cy', (d) => { 
-                    return yScale(d.Result); 
-                })
-                .attr('fill', (d) => { return colorPaletteViz[key]; })
-                .attr('stroke', '#fff')
+                .attr('cx', d => xScale(d.SampleDate))
+                .attr('cy', d => yScale(d.Result))
+                .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[key])
+                .attr('stroke', d => d.Censored ? colorPaletteViz[key] : '#fff')
+                .attr('stroke-width', d => d.Censored ? 2 : 1)
+                .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                 .on('mouseover', function(currentEvent, d) {
                     const formatDate = d3.timeFormat('%b %e, %Y');
                     let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + d.Result + ' ' + d.Unit;
-                    if (d.Censored === true) {
-                        content += '<br><i>Censored</i>';
+                    if (d.Censored) {
+                        content += '<br><i>Non-detect</i>';
                     }
                     return tooltip
                         .style('opacity', 1)
@@ -267,8 +265,8 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                     return tooltip.style('opacity', 0);
                 })
                 .merge(points)
-                .attr('cx', (d) => { return xScale(d.SampleDate); })
-                .attr('cy', (d) => { return yScale(d.Result); });
+                .attr('cx', d => xScale(d.SampleDate))
+                .attr('cy', d => yScale(d.Result));
             points.exit()
                 .remove();
         }
@@ -276,7 +274,6 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
         // *** Add legend
         // Append unit to end of analyte name
         const analytesWithUnit = analyteKeys.map(analyte => `${analyte} (${data[analyte].unit})`);
-        console.log(analytesWithUnit);
         const svgLegend = d3.select('#station-legend-container').append('svg')
             .attr('width', 300)
             .attr('height', 28 * selectedAnalytes.length);
@@ -386,14 +383,14 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                 .then(records => {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultOriginal = +d.Result.toFixed(2);
-                        d['Censored'] = d.Censored;
+                        d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
+                        d['Censored'] = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                         d['Result'] = +d['Result_Censored_HalfLimit'].toFixed(2);
                         if (parameter === 'pH') {
                             d.Unit = '';
                         }
                     });
-                    records.filter(d => d.Result != null);
+                    console.log(records);
                     resolve(records);
                 });
             }
