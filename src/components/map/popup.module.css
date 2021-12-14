@@ -14,3 +14,7 @@
     font-size: 0.90em !important;
     color: #103c68;
 }
+
+.buttonWrapper {
+    margin: 8px 0 2px 0;
+}

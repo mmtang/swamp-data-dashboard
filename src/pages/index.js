@@ -4,12 +4,12 @@ import LoaderDashboard from '../components/common/loader-dashboard';
 import MapIndex from '../components/map/map-index';
 import UpdateMessage from '../components/map-controls/update-message';
 import AccordionMenu from '../components/map-controls/accordion-menu';
-import ChartIndex from '../components/chart-index/chart-index';
+import ChartIndexWrapper from '../components/chart-index/chart-index-wrapper';
 import Table from '../components/table/table';
 import FilterByExtent from '../components/map-controls/filter-by-extent';
 import ZoomToSelected from '../components/map-controls/zoom-to-selected';
 import { Divider, Modal, Header, Button } from 'semantic-ui-react';
-import { mapContainer, mainContainer, infoContainer, swampIcon } from './index.module.css';
+import { mapContainer, mainContainer, infoContainer } from './index.module.css';
 
 export default function Index() {
   const [loaded, setLoaded] = useState(false);
@@ -78,7 +78,8 @@ export default function Index() {
             <ZoomToSelected
               setZoomedToSites={setZoomedToSites}
             />
-            <ChartIndex 
+            <ChartIndexWrapper
+              text={'Graph selected sites ' + (selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)')}
               selectedSites={selectedSites}
               analyte={analyte}
             />

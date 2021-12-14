@@ -1,4 +1,7 @@
 import React, { useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
+import StationPopup from './station-popup';
+import StationAnalytePopup from './station-analyte-popup';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
 import { irLineRenderer, irPolyRenderer, regionRenderer, stationRenderer } from './map-renderer';
@@ -1062,44 +1065,23 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
     }
 
     const buildStationPopup = (feature) => {
+        // Use this element to render React components inside of the map popup
         let div = document.createElement('div');
-        const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
-        const formatDate = timeFormat('%m/%d/%Y');
         const attributes = feature.graphic.attributes;
-        const stationCode = attributes['StationCode'];
-        let url; 
+        // Build popup content
         if (selectedAnalyte) {
-            if (habitatAnalytes.includes(selectedAnalyte)) {
-                url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=9ce012e2-5fd3-4372-a4dd-63294b0ce0f6&filters={%22StationCode%22:%22' + stationCode + '%22%2C%22Analyte%22:%22' + selectedAnalyte + '%22}&sort=%22SampleDate%22%20desc&limit=3';
-            } else {
-                url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&filters={%22StationCode%22:%22' + stationCode + '%22%2C%22Analyte%22:%22' + selectedAnalyte + '%22}&sort=%22SampleDate%22%20desc&limit=3';
-            }
+            ReactDOM.render(
+                <StationAnalytePopup attributes={attributes} analyte={selectedAnalyte} />,
+                div
+            );
+            return div;
         } else {
-            url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&filters={%22StationCode%22:%22' + stationCode + '%22}&sort=%22SampleDate%22%20desc&limit=3';
+            ReactDOM.render(
+                <StationPopup attributes={attributes} />,
+                div
+            );
+            return div;
         }
-        return fetch(url)
-            .then(resp => resp.json())
-            .then(json => json.result.records)
-            .then(records => {
-                records.forEach(d => {
-                    d.SampleDate = parseDate(d.SampleDate);
-                    d.Result = +d.Result.toFixed(2);
-                    d.Unit = d.Unit === 'none' ? '' : d.Unit;
-                });
-                // Build popup content
-                let content = '<span class="small">Latest results';
-                if (selectedAnalyte) {
-                    content += ' for ' + selectedAnalyte
-                }
-                content += ':</span><table class="popup-table"><colgroup><col span="1" style="width: 30%;"></col><col span="1" style="width: 35%;"></col><col span="1" style="width: 35%;"></col></colgroup><tbody>';
-                for (let i = 0; i < records.length; i++) {
-                    content += '<tr><td>' + formatDate(records[i]['SampleDate']) + '</td><td>' + records[i]['Analyte'] + '</td><td>' + records[i]['Result'] + ' ' + records[i]['Unit'] + '</td></tr>';
-                }
-                content += '</tbody></table>';
-                content += '<div style="margin: 8px 0 2px 0"><a href="/stations?id=' + stationCode + '" target="_blank" rel="noopener noreferrer" class="popup-button">View all station data</a></div>'
-                div.innerHTML = content;
-                return div;
-            });
     }
 
     return (

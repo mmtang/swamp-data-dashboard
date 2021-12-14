@@ -1,8 +1,9 @@
 import React from 'react';
+import ChartIndex from '../chart-index/chart-index';
 import { Icon } from 'semantic-ui-react';
 import { buttonWrapper } from './popup.module.css';
 
-export default function StationPopup({ attributes }) {
+export default function StationAnalytePopup({ attributes, analyte }) {
     let programs = '';
     programs += attributes['bioaccumulation'] === 'True' ? 'Bioaccumulation' : '';
     programs += attributes['bioassessment'] === 'True' ? 'Bioassessment' : '';
@@ -33,6 +34,13 @@ export default function StationPopup({ attributes }) {
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div style={{ margin: '0.4em 0'}}>
+                <ChartIndex 
+                    text={`Graph ${analyte} data`}
+                    selectedSites={[attributes['StationCode']]} 
+                    analyte={analyte} 
+                />
             </div>
             <div className={buttonWrapper}><a href={'/stations?id=' + attributes['StationCode']} target="_blank" rel="noopener noreferrer" className="popup-button">View all station data&nbsp;&nbsp;<Icon name='external' /></a></div>
         </div>

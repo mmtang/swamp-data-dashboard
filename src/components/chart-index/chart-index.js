@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import HelpIcon from '../icons/help-icon';
 import AnalyteCard from '../map-controls/analyte-card';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
@@ -9,7 +8,7 @@ import { colorPaletteViz, habitatAnalytes, } from '../../utils/utils';
 import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper } from './chart-index.module.css';
 
 
-export default function ChartIndex({ selectedSites, analyte }) {
+export default function ChartIndex({ text, selectedSites, analyte }) {
     const [data, setData] = useState({});
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -352,11 +351,8 @@ export default function ChartIndex({ selectedSites, analyte }) {
                     onKeyPress={handleClick}
                 >
                     <Icon name='chart bar' />
-                    Graph selected sites {selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)' }
+                    {text}
                 </Button>
-                <HelpIcon>
-                    <p>To use the graph function, select an indicator from the <strong>Filters</strong> section above and at least one site from the table below. A maximum of four sites can be graphed at one time.</p>
-                </HelpIcon>
             </div>
             { modalVisible ? 
                 <Modal
