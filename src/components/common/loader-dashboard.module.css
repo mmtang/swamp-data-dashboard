@@ -2,9 +2,9 @@
     display: block;
     position: fixed;
     z-index: 900;
-    top: 60px;
+    top: 0;
     left: 0;
-    width: 100%;
-    height: calc(100vh - 60px);
-    background-color: #20639b;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
 }

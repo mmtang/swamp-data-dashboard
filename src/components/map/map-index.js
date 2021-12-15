@@ -5,7 +5,7 @@ import StationAnalytePopup from './station-analyte-popup';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
 import { irLineRenderer, irPolyRenderer, regionRenderer, stationRenderer } from './map-renderer';
-import { regionDict, irRegionDict, stationDataFields, stationSummaryDataFields, habitatAnalytes } from '../../utils/utils';
+import { regionDict, irRegionDict, stationDataFields, stationSummaryDataFields } from '../../utils/utils';
 import { container } from './map-index.module.css';
 
 
@@ -198,7 +198,8 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                 content: buildStationPopup
             };
-            loadModules(['esri/layers/FeatureLayer', 'esri/core/watchUtils'])
+            return new Promise((resolve, reject) => {
+                loadModules(['esri/layers/FeatureLayer', 'esri/core/watchUtils'])
                 .then(([FeatureLayer, watchUtils]) => {
                     if (mapRef) {
                         const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region,LastSampleDate,Bioassessment,Spot,Fhab,Bioaccumulation&limit=5000';
@@ -237,11 +238,15 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                                     placeholder: 'Example: Buena Vista Park',
                                     zoomScale: 14000
                                 });
+                                resolve();
                                 /*
                                 viewRef.current.whenLayerView(stationLayerRef.current)
                                 .then(layerView => {
                                     watchUtils.whenFalse(layerView, 'updating', () => {
                                         setMapLoaded(true);
+                                        setTimeout(() => {
+                                            irLayerRef.current.visible = 'true';
+                                        }, 2000);
                                     });
                                 });
                                 */
@@ -249,17 +254,29 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         });
                     }
                 });
+            })
         };
-        setDefaultOptions({ version: '4.20' });
+        setDefaultOptions({ version: '4.21' });
         loadCss();
         initializeMap()
         .then(() => {
-            drawStations();
-            drawRegions();
-            drawIntegratedReport();
-            drawLandUse();
-            drawBasinPlan();
-            setMapLoaded(true);
+            Promise.all([
+                drawStations(),
+                drawRegions(),
+                drawIntegratedReport(),
+                drawLandUse(),
+                drawBasinPlan()
+            ]).then(values => {
+                viewRef.current.whenLayerView(stationLayerRef.current)
+                .then(layerView => {
+                    setMapLoaded(true);
+                    setTimeout(() => {
+                        irLayerRef.current.visible = 'true';
+                    }, 2000);
+                }, (error) => {
+                    console.log(error);
+                })
+            });
         });
     }, [mapRef]);
 
@@ -804,26 +821,29 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
     }
 
     const drawLandUse = () => {
-        if (mapRef) {
-            loadModules(['esri/layers/WMSLayer'])
-            .then(([WMSLayer]) => {
-                landUseLayerRef.current = new WMSLayer({
-                    id: 'nlcd-layer',
-                    title: 'National Land Cover Database 2016',
-                    url: 'https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Land_Cover_L48/wms?service=WMS&request=GetCapabilities',
-                    sublayers: [{
-                        name: 'NLCD_2016_Land_Cover_L48',
-                        title: 'Land Cover',
-                        legendUrl: 'https://www.mrlc.gov/geoserver/mrlc_display/wms?REQUEST=GetLegendGraphic&FORMAT=image/png&WIDTH=12&HEIGHT=12&LAYER=NLCD_2016_Land_Cover_L48&legend_options=fontAntiAliasing:true;fontSize:8;dpi:100'
-                    }],
-                    copyright: 'MRLC NLCD',
-                    listMode: 'hide-children',
-                    opacity: 0.5,
-                    visible: false
+        return new Promise((resolve, reject) => {
+            if (mapRef) {
+                loadModules(['esri/layers/WMSLayer'])
+                .then(([WMSLayer]) => {
+                    landUseLayerRef.current = new WMSLayer({
+                        id: 'nlcd-layer',
+                        title: 'National Land Cover Database 2016',
+                        url: 'https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Land_Cover_L48/wms?service=WMS&request=GetCapabilities',
+                        sublayers: [{
+                            name: 'NLCD_2016_Land_Cover_L48',
+                            title: 'Land Cover',
+                            legendUrl: 'https://www.mrlc.gov/geoserver/mrlc_display/wms?REQUEST=GetLegendGraphic&FORMAT=image/png&WIDTH=12&HEIGHT=12&LAYER=NLCD_2016_Land_Cover_L48&legend_options=fontAntiAliasing:true;fontSize:8;dpi:100'
+                        }],
+                        copyright: 'MRLC NLCD',
+                        listMode: 'hide-children',
+                        opacity: 0.5,
+                        visible: false
+                    });
+                    mapRef.current.add(landUseLayerRef.current);
+                    resolve();
                 });
-                mapRef.current.add(landUseLayerRef.current);
-            });
-        }
+            }
+        })
     }
 
     const drawIntegratedReport = () => {
@@ -899,59 +919,62 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 }
             ]
         };
-        if (mapRef) {
-            loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
-            .then(([FeatureLayer, GroupLayer]) => {
-                irLineRef.current = new FeatureLayer({
-                    id: 'ir-line-layer',
-                    title: 'Integrated Report Lines 2018',
-                    url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/0',
-                    outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
-                    popupTemplate: irTemplate,
-                    listMode: 'show',
-                    renderer: irLineRenderer
+        return new Promise((resolve, reject) => {
+            if (mapRef) {
+                loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
+                .then(([FeatureLayer, GroupLayer]) => {
+                    irLineRef.current = new FeatureLayer({
+                        id: 'ir-line-layer',
+                        title: 'Integrated Report Lines 2018',
+                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/0',
+                        outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
+                        popupTemplate: irTemplate,
+                        listMode: 'show',
+                        renderer: irLineRenderer
+                    });
+                    irPolyRef.current = new FeatureLayer({
+                        id: 'ir-poly-layer',
+                        title: 'Integrated Report Polygons 2018',
+                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/1',
+                        outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
+                        popupTemplate: irTemplate,
+                        renderer: irPolyRenderer,
+                        listMode: 'show',
+                        opacity: 0.8
+                    });
+                    irLayerRef.current = new GroupLayer({
+                        id: 'ir-group-layer',
+                        title: 'Integrated Report 2018',
+                        visible: false,
+                        layers: [irLineRef.current, irPolyRef.current],
+                        listMode: 'show',
+                        visibilityMode: 'inherited'
+                    });
+                    // Add grouplayer to map
+                    mapRef.current.add(irLayerRef.current);
+                    // Add feature layers to search widget
+                    searchRef.current.sources.add({
+                        layer: irLineRef.current,
+                        searchFields: ['wbid', 'wbname'],
+                        displayField: 'wbname',
+                        exactMatch: false,
+                        outFields: ['wbname'],
+                        name: 'Integrated Report Lines 2018',
+                        placeholder: 'Example: Burney Creek'
+                    });
+                    searchRef.current.sources.add({
+                        layer: irPolyRef.current,
+                        searchFields: ['wbid', 'wbname'],
+                        displayField: 'wbname',
+                        exactMatch: false,
+                        outFields: ['wbname'],
+                        name: 'Integrated Report Polygons 2018',
+                        placeholder: 'Example: Folsom Lake'
+                    });
+                    resolve();
                 });
-                irPolyRef.current = new FeatureLayer({
-                    id: 'ir-poly-layer',
-                    title: 'Integrated Report Polygons 2018',
-                    url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/1',
-                    outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
-                    popupTemplate: irTemplate,
-                    renderer: irPolyRenderer,
-                    listMode: 'show',
-                    opacity: 0.8
-                });
-                irLayerRef.current = new GroupLayer({
-                    id: 'ir-group-layer',
-                    title: 'Integrated Report 2018',
-                    visible: true,
-                    layers: [irLineRef.current, irPolyRef.current],
-                    listMode: 'show',
-                    visibilityMode: 'inherited'
-                });
-                // Add grouplayer to map
-                mapRef.current.add(irLayerRef.current);
-                // Add feature layers to search widget
-                searchRef.current.sources.add({
-                    layer: irLineRef.current,
-                    searchFields: ['wbid', 'wbname'],
-                    displayField: 'wbname',
-                    exactMatch: false,
-                    outFields: ['wbname'],
-                    name: 'Integrated Report Lines 2018',
-                    placeholder: 'Example: Burney Creek'
-                });
-                searchRef.current.sources.add({
-                    layer: irPolyRef.current,
-                    searchFields: ['wbid', 'wbname'],
-                    displayField: 'wbname',
-                    exactMatch: false,
-                    outFields: ['wbname'],
-                    name: 'Integrated Report Polygons 2018',
-                    placeholder: 'Example: Folsom Lake'
-                });
-            });
-        }
+            }
+        })
     }
 
     const drawBasinPlan = () => {
@@ -1022,46 +1045,52 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
             title: templateTitle,
             content: buildLinePopup
         }
-        if (mapRef) {
-            loadModules(['esri/layers/MapImageLayer'])
-            .then(([MapImageLayer]) => {
-                bpLayerRef.current = new MapImageLayer({
-                    id: 'basin-plan-layer',
-                    url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer',
-                    sublayers: [
-                        {
-                            id: 0, // polygon sublayer
-                            title: 'Beneficial Uses - Polygons',
-                            popupTemplate: bpPolyTemplate,  
-                        },
-                        {
-                            id: 1, // line sublayer
-                            title: 'Beneficial Uses - Lines',
-                            popupTemplate: bpLineTemplate
-                        }
-                    ],
-                    listMode: 'hide-children',
-                    legendEnabled: true,
-                    visible: false
+        return new Promise((resolve, reject) => {
+            if (mapRef) {
+                loadModules(['esri/layers/MapImageLayer'])
+                .then(([MapImageLayer]) => {
+                    bpLayerRef.current = new MapImageLayer({
+                        id: 'basin-plan-layer',
+                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer',
+                        sublayers: [
+                            {
+                                id: 0, // polygon sublayer
+                                title: 'Beneficial Uses - Polygons',
+                                popupTemplate: bpPolyTemplate,  
+                            },
+                            {
+                                id: 1, // line sublayer
+                                title: 'Beneficial Uses - Lines',
+                                popupTemplate: bpLineTemplate
+                            }
+                        ],
+                        listMode: 'hide-children',
+                        legendEnabled: true,
+                        visible: false
+                    });
+                    mapRef.current.add(bpLayerRef.current);
+                    resolve();
                 });
-                mapRef.current.add(bpLayerRef.current);
-            });
-        }
+            }
+        })
     }
 
     const drawRegions = () => {
-        if (mapRef) {
-            loadModules(['esri/layers/FeatureLayer'])
-            .then(([FeatureLayer]) => {
-                regionLayerRef.current = new FeatureLayer({
-                    id: 'region-layer',
-                    url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Regional_Board_Boundary_Features/FeatureServer/1',
-                    listMode: 'hide',
-                    renderer: regionRenderer
+        return new Promise((resolve, reject) => {
+            if (mapRef) {
+                loadModules(['esri/layers/FeatureLayer'])
+                .then(([FeatureLayer]) => {
+                    regionLayerRef.current = new FeatureLayer({
+                        id: 'region-layer',
+                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Regional_Board_Boundary_Features/FeatureServer/1',
+                        listMode: 'hide',
+                        renderer: regionRenderer
+                    });
+                    mapRef.current.add(regionLayerRef.current);
+                    resolve();
                 });
-                mapRef.current.add(regionLayerRef.current);
-            });
-        }
+            }
+        })
     }
 
     const buildStationPopup = (feature) => {
