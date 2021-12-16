@@ -3,7 +3,7 @@ import LayoutParameter from '../../../components/layout/layout-parameter';
 
 export default function Ecoli() {
     return (
-        <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'ecoli', display: 'E. coli' }}>
+        <LayoutParameter parameter={{ name: 'ecoli', display: 'E. coli' }}>
             <div>
                 <h2>What is E. coli?</h2>
                 

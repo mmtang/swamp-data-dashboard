@@ -9,7 +9,7 @@ export const analytes = {
         code: 'csci',
         label: 'California Stream Condition Index',
         page: 'csci',
-        blurb: 'The California Stream Condition Index (CSCI) translates complex data about benthic macroinvertebrates (bugs) found living in a stream into an overall measure of stream health.'
+        blurb: 'The California Stream Condition Index (CSCI) translates complex data about benthic macroinvertebrates found living in a stream into an overall measure of stream health.'
     },
     'E. coli': {
         code: 'ecoli',
