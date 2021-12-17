@@ -3,7 +3,7 @@ export const analytes = {
         code: 'boron',
         label: 'Boron',
         page: 'boron',
-        blurb: 'Boron is an essential nutrient for aquatic life and terrestial plants, but at high concentrations it can have toxic effects.'
+        blurb: 'Boron is a naturally occurring element found in rocks, soil, and water. It is an essential nutrient for most plants, but at high concentrations it can be toxic to aquatic life.'
     },
     'CSCI': {
         code: 'csci',
