@@ -9,7 +9,7 @@ export const analytes = {
         code: 'csci',
         label: 'California Stream Condition Index',
         page: 'csci',
-        blurb: 'The California Stream Condition Index (CSCI) translates complex data about benthic macroinvertebrates found living in a stream into an overall measure of stream health.'
+        blurb: 'The California Stream Condition Index (CSCI) is a statewide index used to translate complex data about benthic macroinvertebrates found living in a stream into an overall measure of stream health.'
     },
     'E. coli': {
         code: 'ecoli',
@@ -21,7 +21,7 @@ export const analytes = {
         code: 'ipi',
         label: 'Index of Physical Habitat Integrity',
         page: 'ipi',
-        blurb: 'The Index of Physical Habitat Integrity (IPI) is a statewide index for measuring physical habitat integrity based on the physical characteristics of stream and river channels and their proximate riparian zones.'
+        blurb: 'The Index of Physical Habitat Integrity (IPI) is a statewide index used to measure physical habitat integrity based on the physical characteristics of stream and river channels and their proximate riparian zones.'
     },
     'Oxygen, Dissolved, Total': {
         code: 'dissolvedOxygen',
@@ -39,7 +39,7 @@ export const analytes = {
         code: 'conductivity',
         label: 'Conductivity',
         page: 'conductivity',
-        blurb: 'Conductivity is a measure of the ability of water to pass an electrical current. Significant changes may indicate that a discharge or source of disturbance has decreased the relative condition of the waterbody.'
+        blurb: 'Conductivity, or specific conductivity, is a measure of the ability of water to pass an electrical current. It is an indirect measure of the amount of dissolved materials, such as salts and metals, in the water.'
     },
     'Temperature': {
         code: 'temperature',
