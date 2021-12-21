@@ -15,7 +15,7 @@ export const analytes = {
         code: 'ecoli',
         label: 'E. coli',
         page: 'ecoli',
-        blurb: 'E. coli bacteria are found in the environment, food, and the intestines of warm-blooded animals and humans. It is an indicator of sewage or animal waste contamination.'
+        blurb: 'E. coli bacteria are found in the intestines of warm-blooded animals and humans. In water, it is a strong indicator of sewage contamination.'
     },
     'IPI': {
         code: 'ipi',

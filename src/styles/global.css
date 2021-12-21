@@ -7,7 +7,6 @@ html, body {
   height: 100%;
   /*overflow: hidden;*/
   font-size: 15px;
-  line-height: 1.10;
 }
 
 html {
@@ -46,6 +45,10 @@ p {
   color: #5d5d5d;
   line-height: 1.55 !important;
   font-weight: 400;
+}
+
+ul li {
+  line-height: 1.55;
 }
   
 a {
