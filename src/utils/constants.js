@@ -3,7 +3,7 @@ export const analytes = {
         code: 'boron',
         label: 'Boron',
         page: 'boron',
-        blurb: 'Boron is a naturally occurring element found in rocks, soil, and water. It is an essential nutrient for most plants, but at high concentrations it can be toxic to aquatic life.'
+        blurb: 'Boron is a naturally occurring element found in rocks, soil, and water. It is an essential nutrient for most plants, but it can be toxic to aquatic life at high concentrations.'
     },
     'CSCI': {
         code: 'csci',
@@ -27,7 +27,7 @@ export const analytes = {
         code: 'dissolvedOxygen',
         label: 'Dissolved Oxygen',
         page: 'dissolved_oxygen',
-        blurb: "Dissolved Oxygen is the amount of oxygen present in water. It is a direct indicator of a waterbody's ability to support aquatic life."
+        blurb: "Dissolved Oxygen is the amount of oxygen that is present in water. It is an essential element used by all forms of aquatic life."
     },
     'pH': {
         code: 'ph',

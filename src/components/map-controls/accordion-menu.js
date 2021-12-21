@@ -105,7 +105,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 <p className={pLabel}>
                     Water quality indicators
                     <HelpIcon wide={true}>
-                        <p>SWAMP measures a variety of <strong>chemical, physical, and biological indicators</strong> that help us determine the quality of water in rivers, lakes, and other waterbodies. Each indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall ecology and health. See all <a href="/learn/indicators" target="_blank" rel="noreferrer noopener">water quality indicators</a>.</p>
+                        <p>SWAMP measures a variety of <strong>chemical, physical, and biological indicators</strong> that help us determine the quality of water in rivers, lakes, and other waterbodies. Each indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall health. See all <a href="/learn/indicators" target="_blank" rel="noreferrer noopener">water quality indicators</a>.</p>
                         <p>Selecting an indicator will display the trend data for that indicator on the map and table.</p>
                     </HelpIcon>
                 </p>

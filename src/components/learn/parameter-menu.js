@@ -14,7 +14,7 @@ const ParameterMenu = ({ activeParameter }) => {
         <div className={container}>
             <nav aria-label='Indicator pages navigation'>
                 <ul className={menu}>
-                    <div className={title}>Indicators</div>
+                    <div className={title}><Link to='/learn/indicators'>Water quality indicators</Link></div>
                     { menuItems }
                 </ul>
             </nav>
