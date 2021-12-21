@@ -33,7 +33,7 @@ export const analytes = {
         code: 'ph',
         label: 'pH',
         page: 'ph',
-        blurb: 'pH is a measure of how acidic or basic water is based on the concentration of hydrogen ions. The pH level is crucial for the survival of aquatic organisms and plants.'
+        blurb: 'pH is a measure of how acidic or basic water is. It affects most chemical and biological processes in water, and is crucial for the survival of aquatic organisms.'
     },
     'SpecificConductivity, Total': {
         code: 'conductivity',

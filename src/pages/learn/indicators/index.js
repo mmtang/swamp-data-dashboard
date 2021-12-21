@@ -21,7 +21,7 @@ export default function ParametersIndex() {
                     <h1>Water quality indicators</h1>
                 </Hero>
                 <div className={main}>
-                    <p>SWAMP measures a variety of chemical, physical, and biological indicators to assess the quality of water in rivers, lakes, and other waterbodies. Chemical indicators include pH and dissolved oxygen, physical indicators include temperature and turbidity, and biological indicators include benthic macroinvertebrates (bugs) and algae.</p>
+                    <p>SWAMP measures a variety of chemical, physical, and biological indicators to assess the quality of water in rivers, lakes, and other waterbodies. Chemical indicators include pH and dissolved oxygen, physical indicators include temperature and turbidity, and biological indicators include benthic macroinvertebrates and algae.</p>
                     <div className={grid}>
                         { cards }
                     </div>
