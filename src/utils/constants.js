@@ -45,7 +45,7 @@ export const analytes = {
         code: 'temperature',
         label: 'Temperature',
         page: 'temperature',
-        blurb: 'Temperature is a measure of the average energy (kinetic) of water molecules. It is an important indicator of the general condition of a waterbody and the ecosystem it supports.'
+        blurb: 'Water temperature is a measure of the average kinetic energy of water molecules. It is an important indicator of the general condition of a waterbody and the ecosystem it supports.'
     },
     'Total Dissolved Solids, Total': {
         code: 'tds',
