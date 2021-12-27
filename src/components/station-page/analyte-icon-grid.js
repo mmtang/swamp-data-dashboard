@@ -7,7 +7,7 @@ export default function AnayteIconGrid({ selectedAnalytes }) {
     return (
         <div className={grid}>
             { selectedAnalytes.map(analyteName => 
-                <div className={iconContainer}>
+                <div key={analytes[analyteName].code} className={iconContainer}>
                     <div className={iconWrapper}><a href={`/learn/indicators/${analytes[analyteName].page}`} target='_blank' rel='noreferrer noopener'><ParameterIcon icon={analytes[analyteName].code} fill='#e3e4e6' stroke='#5d5d5d' size={55} /></a></div>
                     <div className={label}>{analytes[analyteName].label}</div>
                 </div>

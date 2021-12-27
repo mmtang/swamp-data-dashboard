@@ -273,7 +273,13 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
 
         // *** Add legend
         // Append unit to end of analyte name
-        const analytesWithUnit = analyteKeys.map(analyte => `${analyte} (${data[analyte].unit})`);
+        const analytesWithUnit = analyteKeys.map(analyte => {
+            if (data[analyte].unit === '') {
+                return analyte;
+            } else {
+                return `${analyte} (${data[analyte].unit})`;
+            }
+        });
         const svgLegend = d3.select('#station-legend-container').append('svg')
             .attr('width', 300)
             .attr('height', 28 * selectedAnalytes.length);
@@ -324,6 +330,7 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
             }
             Promise.all(promises)
                 .then((results) => {
+                    console.log(results);
                     let analyteData = {};
                     for (let i = 0; i < results.length; i++) {
                         const analyte = results[i][0].Analyte;
