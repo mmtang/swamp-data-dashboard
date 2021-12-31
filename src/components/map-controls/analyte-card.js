@@ -5,7 +5,7 @@ import { analytes } from '../../utils/constants';
 import { arrowContainer, arrowUp, cardContainer, iconWrapper } from './card.module.css';
 
 export default function AnalyteCard({ analyte }) {
-    if (analyte) {
+    if (analytes[analyte]) {
         return (
             <React.Fragment>
                 {/*
@@ -15,12 +15,18 @@ export default function AnalyteCard({ analyte }) {
                 */}
                 <div className={cardContainer}>
                     <div style={{ display: 'flex' }}>
-                        <div className={iconWrapper}>
-                            <ParameterIcon icon={analytes[analyte]['code']} size={60} />
-                        </div>
+                        {/* Do not display the indicator icon if it does not exist yet */}
+                        { analytes[analyte]['code'] ?
+                            <div className={iconWrapper}>
+                                <ParameterIcon icon={analytes[analyte]['code']} size={60} />
+                            </div>
+                          : null 
+                        } 
                         <p>
                             { analytes[analyte]['blurb'] }
-                            &nbsp;<a href={`/learn/indicators/${analytes[analyte]['page']}`} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a>
+                            &nbsp;
+                            {/* Display the 'Read more' link for those indicators that have an indicator page. Do not display the link if the page does not exist yet */}
+                            { analytes[analyte]['page'] ? <a href={`/learn/indicators/${analytes[analyte]['page']}`} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a> : '' }
                         </p>
                     </div>
                 </div>

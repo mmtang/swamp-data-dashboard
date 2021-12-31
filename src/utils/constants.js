@@ -1,4 +1,22 @@
 export const analytes = {
+    'Alkalinity as CaCO3, Total': {
+        code: null,
+        label: 'Alkalinity',
+        page: null,
+        blurb: ''
+    },
+    'Ammonia as N, Total': {
+        code: null,
+        label: 'Ammonia',
+        page: null,
+        blurb: 'Ammonia is a form of nitrogen that is common in the environment, but an excess amount can be toxic to aquatic life. Total Ammonia Nitrogen is the sum of NH3 (un-ionized ammonia) and NH4+ (ionized ammonia).'
+    },
+    'Ammonia as NH3, Total': {
+        code: null,
+        label: 'Ammonia',
+        page: null,
+        blurb: 'Ammonia is a form of nitrogen that is common in the environment, but an excess amount can be toxic to aquatic life. The neutral, un-ionized form of ammonia (NH3) is highly toxic to fish and other aquatic life.'
+    },
     'Boron, Dissolved': {
         code: 'boron',
         label: 'Boron',
@@ -15,7 +33,19 @@ export const analytes = {
         code: 'ecoli',
         label: 'E. coli',
         page: 'ecoli',
-        blurb: 'E. coli bacteria are found in the intestines of warm-blooded animals and humans. In water, it is a strong indicator of sewage contamination.'
+        blurb: 'E. coli bacteria live in the intestines of warm-blooded animals and humans. In water, they are a strong indicator of sewage contamination.'
+    },
+    'Enterococcus': {
+        code: null,
+        label: 'Enterococcus',
+        page: null,
+        blurb: 'Enterococcus bacteria live in the intestines of warm-blooded animals and humans. They are widely used as a bacterial indicator of health risk in fresh and salt water.'
+    },
+    'Fluoride, Dissolved': {
+        code: 'fluoride',
+        label: 'Fluoride',
+        page: null,
+        blurb: 'Fluoride is a naturally occurring compound found in water, soil, and rocks. Small amounts of fluoride are added to public water supplies and dental products such as toothpaste to prevent tooth decay.'
     },
     'IPI': {
         code: 'ipi',
@@ -51,12 +81,12 @@ export const analytes = {
         code: 'tds',
         label: 'Total Dissolved Solids',
         page: 'tds',
-        blurb: 'Total Dissolved Solids refers to the total concentration of organic and inorganic substances in water. Most dissolved substances do not pose a health threat, but a high level can indicate potential concerns and a need for further investigation.'
+        blurb: 'Total Dissolved Solids refers to the total concentration of organic and inorganic substances dissolved in water. Most dissolved substances do not pose a threat, but a high level can indicate the presence of other pollutants in the water.'
     },
     'Nitrogen, Total Kjeldahl, Total': {
         code: 'tkn',
         label: 'Total Kjeldahl Nitrogen',
-        page: 'total_kjeldahl_nitrogen',
+        page: null,
         blurb: 'Total Kjeldahl Nitrogen refers to the sum of organic nitrogen, ammonia, and ammonium. High concentrations can indicate sewage manure discharges are present in the water.'
     },
     'Nitrogen, Total, Total': {

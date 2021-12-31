@@ -148,35 +148,42 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
             }
         }
 
-        // Draw reference (scoring) categories, if applicable (only one analyte selected)
+        // *** Draw reference (scoring) categories
+        // Check that only one site is selected and has a y-max for the axis
+        // Don't draw any reference elements if one or more analytes are selected
+        // Revisit later and change if we decide to draw multiple graphs (one for each analyte)
         if (analyteKeys.length === 1 && Object.keys(analyteYMax).includes(analyteKeys[0])) {
             const analyteName = analyteKeys[0];
             const yScale = data[analyteName]['yScale'];
-            const categories = analyteScoringCategories[analytes[analyteKeys[0]].code];
-            if (categories.length > 0) {
-                // Rectangles
-                const rects = categories.filter(d => d['type'] === 'area');
-                if (rects.length > 0) {
-                    const rectGroup = chart.append('g')
-                        .data(rects)
-                        .attr('clip-path', 'url(#clip)');
-                    rectGroup.selectAll('rect')
-                        .data(rects)
-                        .enter().append('rect')
-                        .attr('width', width - margin.left - margin.right)
-                        .attr('height', d => yScale(d.lowerValue) - yScale(d.upperValue))
-                        .attr('x', 0 + margin.left)
-                        .attr('y', d => yScale(d.upperValue))
-                        .attr('fill', d => d['fillColor'])
-                        .attr('opacity', 0.25);
-                    rectGroup.selectAll('text')
-                        .data(rects)
-                        .enter().append('text')
-                        .attr('x', width - margin.right - 5)
-                        .attr('y', d => yScale(d.lowerValue) - 5)
-                        .attr('font-size', '11px')
-                        .attr('text-anchor', 'end')
-                        .text(d => d.label);
+            // Check that the analyte has a code within the app. The code is used to access the reference values stored in the file, constants.js.
+            // If it doesn't have a code, skip and don't draw reference elements.
+            if (analytes[analyteName]) {
+                const categories = analyteScoringCategories[analytes[analyteName.code]];
+                if (categories.length > 0) {
+                    // Rectangles
+                    const rects = categories.filter(d => d['type'] === 'area');
+                    if (rects.length > 0) {
+                        const rectGroup = chart.append('g')
+                            .data(rects)
+                            .attr('clip-path', 'url(#clip)');
+                        rectGroup.selectAll('rect')
+                            .data(rects)
+                            .enter().append('rect')
+                            .attr('width', width - margin.left - margin.right)
+                            .attr('height', d => yScale(d.lowerValue) - yScale(d.upperValue))
+                            .attr('x', 0 + margin.left)
+                            .attr('y', d => yScale(d.upperValue))
+                            .attr('fill', d => d['fillColor'])
+                            .attr('opacity', 0.25);
+                        rectGroup.selectAll('text')
+                            .data(rects)
+                            .enter().append('text')
+                            .attr('x', width - margin.right - 5)
+                            .attr('y', d => yScale(d.lowerValue) - 5)
+                            .attr('font-size', '11px')
+                            .attr('text-anchor', 'end')
+                            .text(d => d.label);
+                    }
                 }
             }
         }
@@ -413,7 +420,7 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                 onKeyPress={handleClick}
             >
                 <Icon name='chart bar' />
-                Graph selected parameters {selectedAnalytes.length > 0 ? `(${selectedAnalytes.length})` : '(0)' }
+                Graph data for selected indicators {selectedAnalytes.length > 0 ? `(${selectedAnalytes.length})` : '(0)' }
             </Button>
             { modalVisible ? 
                 <Modal

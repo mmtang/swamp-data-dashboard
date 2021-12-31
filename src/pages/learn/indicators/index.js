@@ -8,11 +8,20 @@ import { analytes } from '../../../utils/constants';
 import { main } from '../../pages.module.css';
 import { grid } from './index.module.css';
 
+// This component renders the content of the indicators page and programmatically generates the cards in the indicator grid
 export default function ParametersIndex() {
-    // Sort ascending by the label property of the analyte dictionary items
+    // List the indicators in alphabetical order: sort ascending by the label property
     const items = Object.values(analytes).sort((a, b) => a['label'].toLowerCase().localeCompare(b['label'].toLowerCase()));
-    // Build the cards
-    const cards = items.map(d => <Link to={d.page}><CardSmall leftComponent={<ParameterIcon icon={d.code} size={60} key={d.code} />}><h4>{d.label}</h4><p>{d.blurb}</p></CardSmall></Link>);
+
+    // Generate the cards to be displayed on the indicator index page
+    // Some indicators do not have pages yet, skip over these
+    const cards = items.map(d => {
+        if (d.page) {
+            return (
+                <Link to={d.page}><CardSmall leftComponent={<ParameterIcon icon={d.code} size={60} key={d.code} />}><h4>{d.label}</h4><p>{d.blurb}</p></CardSmall></Link>
+            )
+        }
+    });
 
     return (
         <LayoutInfo>

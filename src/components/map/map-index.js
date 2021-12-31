@@ -1069,6 +1069,14 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         visible: false
                     });
                     mapRef.current.add(bpLayerRef.current);
+                    searchRef.current.sources.add({
+                        layer: bpLayerRef.current,
+                        searchFields: ['WB_NAME'],
+                        displayField: 'WB_NAME',
+                        exactMatch: false,
+                        outFields: ['WB_NAME'],
+                        name: 'Basin Plan Benficial Uses - Waterbodies'
+                    });
                     resolve();
                 });
             }

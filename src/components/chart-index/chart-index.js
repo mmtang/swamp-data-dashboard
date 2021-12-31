@@ -178,33 +178,35 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .text(unitRef.current);
 
             // Draw reference geometries (scoring categories)
-            const geometries = analyteScoringCategories[analytes[analyte]['code']] || [];
-            if (geometries.length > 0) {
-                const rects = geometries.filter(d => d['type'] === 'area');
-                if (rects.length > 0) {
-                    const rectGroup = chart.append('g')
-                        .data(rects)
-                        .attr('clip-path', 'url(#clip)');
-                    rectGroup.selectAll('rect')
-                        .data(rects)
-                        .enter().append('rect')
-                        .attr('width', width - margin.left - margin.right)
-                        .attr('height', d => yScale(d.lowerValue) - yScale(d.upperValue))
-                        .attr('x', 0 + margin.left)
-                        .attr('y', d => yScale(d.upperValue))
-                        .attr('fill', d => d['fillColor'])
-                        .attr('opacity', 0.25);
-                    rectGroup.selectAll('text')
-                        .data(rects)
-                        .enter().append('text')
-                        .attr('x', width - margin.right - 5)
-                        .attr('y', d => yScale(d.lowerValue) - 5)
-                        .attr('font-size', '11px')
-                        .attr('text-anchor', 'end')
-                        .text(d => d.label);
+            if (analytes[analyte]) {
+                const geometries = analyteScoringCategories[analytes[analyte]['code']] || [];
+                if (geometries.length > 0) {
+                    const rects = geometries.filter(d => d['type'] === 'area');
+                    if (rects.length > 0) {
+                        const rectGroup = chart.append('g')
+                            .data(rects)
+                            .attr('clip-path', 'url(#clip)');
+                        rectGroup.selectAll('rect')
+                            .data(rects)
+                            .enter().append('rect')
+                            .attr('width', width - margin.left - margin.right)
+                            .attr('height', d => yScale(d.lowerValue) - yScale(d.upperValue))
+                            .attr('x', 0 + margin.left)
+                            .attr('y', d => yScale(d.upperValue))
+                            .attr('fill', d => d['fillColor'])
+                            .attr('opacity', 0.25);
+                        rectGroup.selectAll('text')
+                            .data(rects)
+                            .enter().append('text')
+                            .attr('x', width - margin.right - 5)
+                            .attr('y', d => yScale(d.lowerValue) - 5)
+                            .attr('font-size', '11px')
+                            .attr('text-anchor', 'end')
+                            .text(d => d.label);
+                    }
                 }
             }
-
+        
             // Loops through each site and draw points
             for (let i = 0; i < siteKeys.length; i++) {
                 const points = chart.append('g')
