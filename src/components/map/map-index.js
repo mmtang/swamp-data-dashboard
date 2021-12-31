@@ -424,14 +424,17 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                                       "type": "CIMPolygonSymbol",
                                       "symbolLayers": [
                                         {
+                                            "type": "CIMSolidStroke",
+                                            "enable": true,
+                                            "capStyle": "Round",
+                                            "joinStyle": "Round",
+                                            "width": 0.6,
+                                            "color": [0, 0, 0, 255]
+                                        },
+                                        {
                                           "type": "CIMSolidFill",
                                           "enable": true,
-                                          "color": [
-                                            230,
-                                            0,
-                                            0,
-                                            255
-                                          ]
+                                          "color": [255, 105, 10, 255]
                                         }
                                       ]
                                     }

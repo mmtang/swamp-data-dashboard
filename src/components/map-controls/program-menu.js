@@ -1,13 +1,14 @@
 import React from 'react';
 import Select from 'react-select';
-import { customSelectStyle, programDict, programNameDict } from '../../utils/utils';
+import { customSelectStyle, programDict } from '../../utils/utils';
 
 
 export default function RegionMenu({ program, setProgram }) {   
     const programList = [
         {
             label: programDict['bioaccumulation'],
-            value: 'bioaccumulation'
+            value: 'bioaccumulation',
+            isDisabled: true
         },
         {
             label: programDict['bioassessment'],
@@ -15,7 +16,8 @@ export default function RegionMenu({ program, setProgram }) {
         },
         {
             label: programDict['fhab'],
-            value: 'fhab'
+            value: 'fhab',
+            isDisabled: true
         },
         {
             label: programDict['spot'],

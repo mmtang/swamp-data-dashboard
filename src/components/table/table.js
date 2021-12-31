@@ -39,14 +39,14 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
     // Define dictionary of data columns to pass to table
     const columnDict = {
         siteCode: {
-            name: 'Site Code',
+            name: 'Station Code',
             selector: row => row['StationCode'],
             width: '105px',
             sortable: true,
             wrap: true
         },
         siteName: {
-            name: 'Site Name',
+            name: 'Station Name',
             selector: row => row['StationName'],
             width: '220px',
             sortable: true,
@@ -59,14 +59,14 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
             sortable: true
         },
         lastSample: {
-            name: 'Last Sample',
+            name: 'Last Sample Date',
             id: 'LastSampleDate',
             selector: row => row['LastSampleDate'],
             width: '115px',
             sortable: true
         },
         sitePage: {
-            name: 'Site Page',
+            name: 'Station Page',
             selector: row => 'Link',
             width: '100px',
             sortable: false,
@@ -81,7 +81,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
         trend: {
             name: 'Trend',
             selector: row => row['Trend'],
-            width: '140px',
+            width: '145px',
             sortable: true,
             format: row => <CustomTrend row={row} />
         }

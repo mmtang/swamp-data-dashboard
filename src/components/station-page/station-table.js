@@ -80,7 +80,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             id: 'trend',
             name: 'Trend',
             selector: row => row['AllYears_R_Trend'],
-            width: '130px',
+            width: '145px',
             sortable: true,
             format: row => <CustomTrend row={row} />
         },
