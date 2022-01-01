@@ -41,7 +41,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
         siteCode: {
             name: 'Station Code',
             selector: row => row['StationCode'],
-            width: '105px',
+            width: '110px',
             sortable: true,
             wrap: true
         },

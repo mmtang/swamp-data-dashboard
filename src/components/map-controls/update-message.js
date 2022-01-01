@@ -9,25 +9,10 @@ import { message } from './update-message.module.css';
 export default function UpdateMessage() {   
     const [status, setStatus] = useState('loading');
     const dateRef = useRef('');
-    const dateDifferenceRef = useRef('');
 
     // d3 functions for parsing and formatting dates.
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S.%f');
     const formatDate = timeFormat('%Y/%m/%d'); // Change this value to change the formatting of the printed date
-
-    const calculateDaysBetween = (date1, date2) => {
-        // Calculates the number of days between the two provided dates
-        // Parameter dates should be in JS date object format
-        // The order of the dates does not matter
-
-        // The number of milliseconds in one day
-        const ONE_DAY = 1000 * 60 * 60 * 24;
-        // Calculate the difference in milliseconds
-        const differenceMs = Math.abs(date1 - date2);
-        // Convert back to days and return
-        const differenceDays = Math.round(differenceMs / ONE_DAY);
-        return differenceDays;
-    }
 
     useEffect(() => {
         const getDate = () => {
@@ -42,16 +27,6 @@ export default function UpdateMessage() {
                 // This will automatically update the value in the renderer.
                 const lastDate = parseDate(result['last_modified']);
                 dateRef.current = formatDate(lastDate);
-                const differenceDays = calculateDaysBetween(lastDate, new Date());
-                if (differenceDays > 1) {
-                    dateDifferenceRef.current = differenceDays.toString() + ' days ago';
-                } else if (differenceDays === 1) {
-                    dateDifferenceRef.current = '1 day ago';
-                } else if (differenceDays === 0) {
-                    dateDifferenceRef.current = 'Today';
-                } else {
-                    dateDifferenceRef.current = 'Error';
-                }
                 setStatus('loaded');
             })
             .catch(error => {
@@ -66,11 +41,11 @@ export default function UpdateMessage() {
         <div className={message}>
             <strong>Data Last Updated:</strong>&nbsp;
             { status === 'loading' ? 'Loading...' : 
-                status === 'loaded' ? `${dateRef.current} — ${dateDifferenceRef.current}` : 
+                status === 'loaded' ? dateRef.current : 
                 status === 'error' ? 'Error getting data' :
                 'Error' }
             <HelpIcon position='top center'>
-                <p>The data in this dashboard is updated weekly, usually Monday mornings (Pacific Time). There may be some delays, depending on the availability of our staff.</p>
+                <p>Updated weekly, usually Monday morning (Pacific Time).</p>
             </HelpIcon>
         </div>
     )

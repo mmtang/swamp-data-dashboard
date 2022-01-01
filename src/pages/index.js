@@ -8,8 +8,8 @@ import ChartIndexWrapper from '../components/chart-index/chart-index-wrapper';
 import Table from '../components/table/table';
 import FilterByExtent from '../components/map-controls/filter-by-extent';
 import ZoomToSelected from '../components/map-controls/zoom-to-selected';
-import { Divider, Modal, Header, Button } from 'semantic-ui-react';
-import { mapContainer, mainContainer, infoContainer } from './index.module.css';
+import { Divider, Modal, Icon } from 'semantic-ui-react';
+import { mapContainer, mainContainer, infoContainer, modalContent, swampIcon, modalButton } from './index.module.css';
 
 export default function Index() {
   const [loaded, setLoaded] = useState(false);
@@ -53,8 +53,7 @@ export default function Index() {
       { !loaded ? <LoaderDashboard /> : null }
       <div className={mainContainer}>
         <div className={infoContainer}>
-          <p>The Surface Water Ambient Monitoring Program (SWAMP) mission is to generate  high quality, accessible, and usable data and information that is used to protect and restore California’s watersheds, and to inform California communities about local conditions of waterbodies monitored by SWAMP. To learn more about SWAMP and the work we do, check out our <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">website</a>.</p>
-          <p>Use the search and filter controls below to explore SWAMP data for the time period of 2000-{yearRef.current}. Filters are automatically applied to the map and the table at the bottom of the page.</p>
+          <p>The <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">Surface Water Ambient Monitoring Program</a> (SWAMP) mission is to generate  high quality, accessible, and usable data and information that is used to protect and restore California’s watersheds, and to inform California communities about local conditions of waterbodies monitored by SWAMP. Explore SWAMP data for the time period of 2000-{yearRef.current}.</p>
           {/* Controls */}
           <section style={{ marginBottom: '40px' }}>
             <AccordionMenu
@@ -90,7 +89,6 @@ export default function Index() {
               setSelectedSites={setSelectedSites}
             />
           </section>
-          <UpdateMessage />
         </div>
       </div>
       { disclaimerVisible ? 
@@ -100,23 +98,17 @@ export default function Index() {
               onClose={() => setDisclaimerVisible(false)}
               closeOnDimmerClick={false}
           >
-              <Header icon='exclamation circle' content='Disclaimer' />
               <Modal.Content>
-                  {/*<img className={swampIcon} src={`/swamp_logo_black_small.png`} alt='SWAMP logo' />*/}
-                  <p><strong>The SWAMP Data Dashboard is in early development.</strong> It may change at any time without prior notification. All data provided are provisional and should not be used for any particular purpose other than general reference.</p>
-                  <p>
-                    For feedback and general inquiries:<br />
-                    <a href='mailto:swamp@waterboards.ca.gov'>swamp@waterboards.ca.gov</a>
-                  </p>
+                  <div className={modalContent}>
+                    <img className={swampIcon} src={`/swamp_logo_black_small.png`} alt='SWAMP logo' />
+                    <p>Welcome to the <strong>SWAMP Data Dashboard</strong>, an interactive tool for exploring and downloading water quality data collected by the <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">Surface Water Ambient Monitoring Program</a> (SWAMP).</p>
+                    <p><Icon name='exclamation circle' />This dashboard is in <strong>public beta</strong> and may change at any time without prior notification. All data are provisional and should not be used for any particular purpose other than general reference. Feedback and general inquiries: <a href="mailto:swamp@waterboards.ca.gov">swamp@waterboards.ca.gov</a>.</p>
+                    <p>
+                      <button className={modalButton} onClick={() => setDisclaimerVisible(false)} onKeyPress={() => setDisclaimerVisible(false)}>Go to the dashboard</button>
+                    </p>
+                    <UpdateMessage />
+                  </div>
               </Modal.Content>
-              <Modal.Actions>
-                <Button 
-                  content='Close'
-                  labelPosition='right'
-                  onClick={() => setDisclaimerVisible(false)}
-                  onKeyPress={() => setDisclaimerVisible(false)}
-                />
-              </Modal.Actions>
           </Modal> 
       : '' }
     </LayoutMap>

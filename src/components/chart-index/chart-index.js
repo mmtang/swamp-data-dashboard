@@ -332,7 +332,6 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                             d.Unit = '';
                         }
                     });
-                    console.log(records);
                     // Add station name to station dictionary
                     siteDictRef.current[station] = {
                         name: records[0].StationName,

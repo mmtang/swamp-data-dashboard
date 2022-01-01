@@ -57,9 +57,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 <p className={pLabel}>
                     Location, waterbody, monitoring site 
                     <HelpIcon wide={true}>
-                        <p>Search for a specific location (city, region), landmark, waterbody (river, lake, reservoir), or SWAMP monitoring site (station name or code).</p>
-                        <p>This search uses the ArcGIS World Geocoding Service and also searches through the features in the loaded map layers. The results are categorized by source/layer.</p>
-                        <p>By default, this search uses a library of Integrated Report waterbodies. For Basin Plan waterbodies, turn on the Basin Plan layer in the <strong>Map Layers</strong> section and try searching again once the layer has completely loaded.</p>
+                        <p>Search for a specific location (city, region), landmark, waterbody (river, lake, reservoir), or SWAMP monitoring site (station name or code). The results are categorized by source/layer. By default, this search uses a library of Integrated Report 2018 waterbodies.</p>
                     </HelpIcon>
                 </p>
                 {/* Container for the ArcGIS JavaScript search widget */}
@@ -88,15 +86,14 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 <p className={pLabel}>
                     Statewide monitoring program
                     <HelpIcon wide={true}>
-                        <p>In addition to its regional monitoring efforts, SWAMP oversees and funds four statewide monitoring programs: the <strong>Bioaccumulation Monitoring Program</strong>, <strong>Bioassessment Monitoring Program</strong>, <strong>Freshwater and Estuarine Harmful Algal Blooms Program</strong>, and the <strong>Stream Pollution Trends Monitoring Program</strong>.</p>
-                        <p>These statewide programs provide a "big picture" assessment of the overall status and trends of water quality throughout California. Visit the SWAMP <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">website</a> to learm more about these programs.</p>
+                        <p>In addition to its regional monitoring efforts, SWAMP oversees and funds four statewide monitoring programs: the <strong><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/bioaccumulation_monitoring.html" target="_blank" rel="noopener noreferrer">Bioaccumulation Monitoring Program</a></strong>, <strong><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/bioassessment/" target="_blank" rel="noopener noreferrer">Bioassessment Program</a></strong>, <strong><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/freshwater_cyanobacteria.html" target="_blank" rel="noopener noreferrer">Freshwater and Estuarine Harmful Algal Blooms Program</a></strong>, and <strong><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/spot/" target="_blank" rel="noopener noreferrer">Stream Pollution Trends Monitoring Program</a></strong>. These statewide programs provide a "big picture" assessment of the overall status and trends of water quality throughout California.</p>
                     </HelpIcon>
                 </p>
                 <ProgramMenu program={program} setProgram={setProgram} />
                 <p className={pLabel}>
                     Regional water quality control board
                     <HelpIcon wide='very'>
-                        <p>In addition to the State Water Resources Control Board, which sets statewide policy, there are nine semi-autonomous <strong>regional water quality control boards</strong> statewide. Each Regional Board makes critical water quality decisions for its region, including setting standards, issuing waste discharge requirements, determining compliance with those requirements, and taking appropriate enforcement actions.</p>
+                        <p>SWAMP’s regional assessments are planned and executed by each of the nine Regional Water Quality Control Boards. Each region identifies its own ambient monitoring priorities and designs assessments to answer specific monitoring questions. SWAMP’s regional assessments complement the statewide assessments by allowing the flexibility needed to address the highest priority ambient monitoring needs at each region.</p>
                         <img src="\rb_map.jpg" alt='Statewide map of regional water board boundaries' style={{ display: 'block', margin: 'auto', maxWidth: '360px' }} />
                         <p><a href="https://www.waterboards.ca.gov/publications_forms/publications/factsheets/docs/boardoverview.pdf" target="_blank" rel="noreferrer noopener">Source</a></p>
                     </HelpIcon>
@@ -105,7 +102,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 <p className={pLabel}>
                     Water quality indicators
                     <HelpIcon wide={true}>
-                        <p>SWAMP measures a variety of <strong>chemical, physical, and biological indicators</strong> that help us determine the quality of water in rivers, lakes, and other waterbodies. Each indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall health. See all <a href="/learn/indicators" target="_blank" rel="noreferrer noopener">water quality indicators</a>.</p>
+                        <p>SWAMP measures a variety of <strong><a href="/learn/indicators" target="_blank" rel="noreferrer noopener">chemical, physical, and biological indicators</a></strong> that help us determine the quality of water in rivers, lakes, and other waterbodies. Each indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall health.</p>
                         <p>Selecting an indicator will display the trend data for that indicator on the map and table.</p>
                     </HelpIcon>
                 </p>
