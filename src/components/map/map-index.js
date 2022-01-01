@@ -345,14 +345,17 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                                       "type": "CIMPolygonSymbol",
                                       "symbolLayers": [
                                         {
+                                            "type": "CIMSolidStroke",
+                                            "enable": true,
+                                            "capStyle": "Round",
+                                            "joinStyle": "Round",
+                                            "width": 0.5,
+                                            "color": [0, 0, 0, 255]
+                                        },
+                                        {
                                           "type": "CIMSolidFill",
                                           "enable": true,
-                                          "color": [
-                                            0,
-                                            0,
-                                            0,
-                                            255
-                                          ]
+                                          "color": [30, 142, 227, 255]
                                         }
                                       ]
                                     }
@@ -428,13 +431,13 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                                             "enable": true,
                                             "capStyle": "Round",
                                             "joinStyle": "Round",
-                                            "width": 0.6,
+                                            "width": 0.5,
                                             "color": [0, 0, 0, 255]
                                         },
                                         {
                                           "type": "CIMSolidFill",
                                           "enable": true,
-                                          "color": [255, 105, 10, 255]
+                                          "color": [255, 127, 0, 255]
                                         }
                                       ]
                                     }
@@ -473,15 +476,15 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         field: 'Trend',
                         uniqueValueInfos: [
                             {
-                                value: 'Increasing',
+                                value: 'Possibly increasing',
                                 symbol: arrowIncreasing,
                             },
                             {
-                                value: 'Decreasing',
+                                value: 'Possibly decreasing',
                                 symbol: arrowDecreasing
                             },
                             {
-                                value: 'No trend',
+                                value: 'No significant trend',
                                 symbol: noTrendSym
                             },
                             {
@@ -498,12 +501,14 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                         content: buildStationPopup
                     }
-                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,AllYears_R_Trend,Bioaccumulation,Bioassessment,Fhab,Spot&limit=5000';
+                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,AllYears_R_Trend,Bioaccumulation,Bioassessment,Fhab,Spot,SortOrder&limit=5000';
                     url += '&filters={%22Analyte%22:%22' + encodeURIComponent(selectedAnalyte) + '%22}'
                     fetch(url)
                     .then((resp) => resp.json())
                     .then((json) => json.result.records)
                     .then((records) => {
+                        // Sort records by descending order on SortOrder. This will change the rendering order of the stations so that the stations with trends are drawn on top of other stations without trends
+                        records.sort((a, b) => b.SortOrder - a.SortOrder);
                         convertStationSummaryDataToGraphics(records)
                         .then(res => {
                             stationSummaryLayerRef.current = new FeatureLayer({

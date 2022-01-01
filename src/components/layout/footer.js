@@ -12,7 +12,7 @@ function Footer() {
                 </div>
                 <div>
                     <h4>Contact</h4>
-                    <span>Website and general inquiries:<br />
+                    <span>Feedback and general inquiries:<br />
                     <a href="mailto:swamp@waterboards.ca.gov">swamp@waterboards.ca.gov</a></span>
                 </div>
             </div>

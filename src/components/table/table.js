@@ -81,7 +81,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
         trend: {
             name: 'Trend',
             selector: row => row['Trend'],
-            width: '145px',
+            width: '165px',
             sortable: true,
             format: row => <CustomTrend row={row} />
         }
@@ -91,7 +91,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    { row['Trend'] === 'Increasing' ? <IconTrendingUp size={18} /> : row['Trend'] === 'Decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['Trend']} /> }
+                    { row['Trend'] === 'Possibly increasing' ? <IconTrendingUp size={18} /> : row['Trend'] === 'Possibly decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['Trend']} /> }
                     &nbsp;&nbsp;&nbsp;
                     <span>{row['Trend']}</span>
                 </div>

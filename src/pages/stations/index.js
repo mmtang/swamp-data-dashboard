@@ -5,6 +5,7 @@ import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies'
 import ChartStation from '../../components/station-page/chart-station';
 import StationTable from '../../components/station-page/station-table';
 import LoaderDashboard from '../../components/common/loader-dashboard';
+import ErrorFullscreen from '../../components/common/error-fullscreen';
 import { regionDict } from '../../utils/utils';
 import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName } from './index.module.css';
 
@@ -20,7 +21,7 @@ export default function Station(props) {
         return new Promise((resolve, reject) => {
             const url = props.location.href;
             // Use regex to get the station ID from the page URL
-            const re = new RegExp(/stations\/\?id=([a-zA-Z0-9-_]+)$/i);
+            const re = new RegExp(/stations\/\?id=([a-zA-Z0-9]+)$/i);
             const matches = url.match(re);
             // Match returns null if no matches are found
             // If a match is found, get the second array item [1] (capturing group), not the first [0] array item (complete matching regular expression))
@@ -93,7 +94,7 @@ export default function Station(props) {
     return (
         <LayoutStation>
             { loading === 'true' ? <LoaderDashboard /> :
-              loading === 'error' ? <LoaderDashboard /> :
+              loading === 'error' ? <ErrorFullscreen /> :
               loading === 'false' && stationObjRef.current ? pageContent() :
               <LoaderDashboard /> // Catch all other values
             }

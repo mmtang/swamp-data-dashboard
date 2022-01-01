@@ -33,7 +33,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {row['AllYears_R_Trend'] === 'Increasing' ? <IconTrendingUp size={18} /> : row['AllYears_R_Trend'] === 'Decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['AllYears_R_Trend']} /> }
+                    {row['AllYears_R_Trend'] === 'Possibly increasing' ? <IconTrendingUp size={18} /> : row['AllYears_R_Trend'] === 'Possibly decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['AllYears_R_Trend']} /> }
                     &nbsp;&nbsp;&nbsp;
                     <span>{row['AllYears_R_Trend']}</span>
                 </div>
@@ -80,7 +80,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             id: 'trend',
             name: 'Trend',
             selector: row => row['AllYears_R_Trend'],
-            width: '145px',
+            width: '165px',
             sortable: true,
             format: row => <CustomTrend row={row} />
         },

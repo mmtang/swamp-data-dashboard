@@ -25,7 +25,7 @@ export default function HelpIcon({ wide = false, position = 'left center', child
     
     return (
         <Popup
-            trigger={<Icon className={inlineIcon} name='question circle' color='blue' />}
+            trigger={<Icon className={inlineIcon} name='info circle' color='blue' />}
             content={popupWrapper}
             hoverable={true}
             position={position}

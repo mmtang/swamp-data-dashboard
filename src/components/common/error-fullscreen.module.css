@@ -1,0 +1,25 @@
+.fsContainer {
+    display: block;
+    position: fixed;
+    z-index: 900;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.loadText {
+    font-size: 1em;
+    font-weight: 400;
+    color: #fff;
+}
