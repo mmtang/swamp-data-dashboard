@@ -18,6 +18,8 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
 
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
     const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S');
+    const formatDate = d3.timeFormat('%b %e, %Y');
+    const formatNumber = d3.format(',');
 
     const handleClick = () => {
         if (modalVisible === false) {
@@ -223,8 +225,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     .attr('stroke-width', d => d.Censored ? 2 : 1)
                     .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                     .on('mouseover', function(currentEvent, d) {
-                        const formatDate = d3.timeFormat('%b %e, %Y');
-                        let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + d.Result + ' ' + d.Unit;
+                        let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + formatNumber(d.Result) + ' ' + d.Unit;
                         if (d.Censored) {
                             content += '<br><i>Non-detect</i>';
                         }

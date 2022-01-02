@@ -16,9 +16,14 @@
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
+    color: #fff;
 }
 
-.loadText {
+.iconWrapper {
+    margin: 1.4em;
+}
+
+.textWrapper {
     font-size: 1em;
     font-weight: 400;
     color: #fff;

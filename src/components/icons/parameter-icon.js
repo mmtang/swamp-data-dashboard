@@ -1,4 +1,6 @@
 import React from 'react';
+import Aluminum from './parameters/aluminum';
+import Arsenic from './parameters/arsenic';
 import Asci from './parameters/asci';
 import Boron from './parameters/boron';
 import Csci from './parameters/csci';
@@ -31,6 +33,10 @@ export default function ParameterIcon(props) {
 
     const getComponent = () => {
         switch(icon) {
+            case 'aluminum':
+                return <Aluminum props={newProps} />
+            case 'arsenic': 
+                return <Arsenic props={newProps} />
             case 'asci':
                 return <Asci props={newProps} />
             case 'boron':

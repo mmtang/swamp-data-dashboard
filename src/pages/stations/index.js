@@ -13,6 +13,7 @@ import { leftContainer, titleContainer, siteMapContainer, rightContainer, statio
 export default function Station(props) {
     const stationCodeRef = useRef(null);
     const stationObjRef = useRef(null);
+    const errorRef = useRef(null);
 
     const [loading, setLoading] = useState('true');
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
@@ -27,11 +28,12 @@ export default function Station(props) {
             // If a match is found, get the second array item [1] (capturing group), not the first [0] array item (complete matching regular expression))
             if (matches) {
                 stationCodeRef.current = matches[1];
+                resolve();
             } else {
-                console.error('Could not parse station code');
+                console.error('Error parsing station code');
+                errorRef.current = 'Error: Not a valid station code.'
                 setLoading('error');
             }
-            resolve();
         })
     }
 
@@ -46,6 +48,11 @@ export default function Station(props) {
                     stationObjRef.current = data;
                     resolve();
                 })
+                .catch(error => {
+                    console.error('Error getting table data');
+                    errorRef.current = 'Error getting station data. Reload or try again later.'
+                    setLoading('error');
+                });
         })
     }
 
@@ -91,10 +98,12 @@ export default function Station(props) {
         )
     }
 
+    console.log(loading);
+
     return (
         <LayoutStation>
             { loading === 'true' ? <LoaderDashboard /> :
-              loading === 'error' ? <ErrorFullscreen /> :
+              loading === 'error' ? <ErrorFullscreen>{errorRef.current}</ErrorFullscreen> :
               loading === 'false' && stationObjRef.current ? pageContent() :
               <LoaderDashboard /> // Catch all other values
             }

@@ -3,19 +3,31 @@ export const analytes = {
         code: null,
         label: 'Alkalinity',
         page: null,
-        blurb: ''
+        blurb: 'Alkalinity, also called acid-buffering capacity, refers to the ability of a waterbody to neutralize acidity and maintain a relatively stable pH level. Higher alkalinity levels protect a waterbody against rapid changes in pH.'
+    },
+    'Aluminum, Total': {
+        code: 'aluminum',
+        label: 'Aluminum',
+        page: null,
+        blurb: "Aluminum is a naturally occurring metal found in the earth's crust. It can enter a waterbody via natural processes and human-based activities. High concentrations of aluminum can be toxic to aquatic life."
     },
     'Ammonia as N, Total': {
         code: null,
         label: 'Ammonia',
         page: null,
-        blurb: 'Ammonia is a form of nitrogen that is common in the environment, but an excess amount can be toxic to aquatic life. Total Ammonia Nitrogen is the sum of NH3 (un-ionized ammonia) and NH4+ (ionized ammonia).'
+        blurb: 'Ammonia is a form of nitrogen that is common in the environment. It is an essential nutrient for plants, but high levels of it can be toxic to fish and other aquatic life.'
     },
     'Ammonia as NH3, Total': {
         code: null,
         label: 'Ammonia',
         page: null,
-        blurb: 'Ammonia is a form of nitrogen that is common in the environment, but an excess amount can be toxic to aquatic life. The neutral, un-ionized form of ammonia (NH3) is highly toxic to fish and other aquatic life.'
+        blurb: 'Ammonia is a form of nitrogen that is common in the environment. It is an essential nutrient for plants, but high levels of it can be toxic to fish and other aquatic life. The neutral, un-ionized form of ammonia (NH3) is highly toxic.'
+    },
+    'Arsenic, Total': {
+        code: 'arsenic',
+        label: 'Arsenic',
+        page: null,
+        blurb: 'Arsenic is a semi-metallic element that occurs naturally in the environment and as a by-product of agricultural and industrial activites. Inorganic arsenic is the more toxic form of arsenic and a known human carcinogen.'
     },
     'Boron, Dissolved': {
         code: 'boron',
