@@ -7,7 +7,8 @@ import ChartStation from '../../components/station-page/chart-station';
 import StationTable from '../../components/station-page/station-table';
 import LoaderDashboard from '../../components/common/loader-dashboard';
 import ErrorFullscreen from '../../components/common/error-fullscreen';
-import { regionDict } from '../../utils/utils';
+import { regionDict, fetchData } from '../../utils/utils';
+import { timeParse, timeFormat } from 'd3';
 import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName, buttonContainer } from './index.module.css';
 
 export default function Station(props) {
@@ -19,10 +20,13 @@ export default function Station(props) {
     const [tableData, setTableData] = useState([]);
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
 
+    const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
+    const formatDate = timeFormat('%Y/%m/%d');
+
     const parseStationCode = () => {
         return new Promise((resolve, reject) => {
             const url = props.location.href;
-            // Use regex to get the station ID from the page URL
+            // Use regex to get the station code from the page URL
             const re = new RegExp(/stations\/\?id=([a-zA-Z0-9]+)$/i);
             const matches = url.match(re);
             // Match returns null if no matches are found
@@ -38,15 +42,29 @@ export default function Station(props) {
         })
     }
 
-    const getStationData = () => {
+    const getTableData = () => {
         return new Promise((resolve, reject) => {
-            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&limit=5';
-            url += '&filters={%22StationCode%22:%22' + stationCodeRef.current + '%22}';
-            fetch(url)
-                .then(response => response.json())
-                .then(json => {
-                    const data = json.result.records[0];
-                    stationObjRef.current = data;
+            if (stationCodeRef.current) {
+                let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,StationName,Region,Analyte,LastSampleDate,LastResult,Unit,AllYears_Min,AllYears_Max,AllYears_Median,AllYears_Mean,AllYears_R_Trend,AllYears_n,TargetLatitude,TargetLongitude';
+                url += '&filters={%22StationCode%22:%22' + stationCodeRef.current + '%22}';
+                fetchData(url)
+                .then(json => json.result.records)
+                .then(records => {
+                    records.forEach(d => {
+                        d.AllYears_n = +d.AllYears_n;
+                        d.AllYears_Min = +d.AllYears_Min.toFixed(2);
+                        d.AllYears_Mean = +d.AllYears_Mean.toFixed(2);
+                        d.AllYears_Median = +d.AllYears_Median.toFixed(2);
+                        d.AllYears_Max = +d.AllYears_Max.toFixed(2);
+                        d.Unit = (d.Analyte === 'pH' ? '' : d.Analyte === 'CSCI' ? 'score' : d.Unit);
+                        d.LastSampleDate = formatDate(parseDate(d.LastSampleDate));
+                        d.TargetLatitude = +d.TargetLatitude;
+                        d.TargetLongitude = +d.TargetLongitude;
+                        d.RegionName = regionDict[d.Region];
+                    });
+                    // Define stationObjRef to populate station values on page
+                    stationObjRef.current = records[0];
+                    setTableData(records);
                     resolve();
                 })
                 .catch(error => {
@@ -55,12 +73,13 @@ export default function Station(props) {
                     setLoading('error');
                     reject();
                 });
+            }
         })
     }
 
     useEffect(() => {
         parseStationCode()
-            .then(() => getStationData())
+            .then(() => getTableData())
             .then(() => setLoading('false'));
     }, []);
 
@@ -70,7 +89,7 @@ export default function Station(props) {
                 <div className={leftContainer}>
                     <section className={titleContainer}>
                         <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>
-                        <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{regionDict[stationObjRef.current.Region]} Region</span>
+                        <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{stationObjRef.current.RegionName} Region</span>
                     </section>
                     <div className={siteMapContainer}>
                         <MapStation coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
@@ -91,13 +110,16 @@ export default function Station(props) {
                                 stationName={stationObjRef.current.StationName}
                                 selectedAnalytes={selectedAnalytes} 
                             />
-                            <DownloadData data={tableData}>
+                            <DownloadData 
+                                data={tableData}
+                                fields={['StationCode', 'StationName', 'RegionName', 'TargetLatitude', 'TargetLongitude', 'Analyte', 'AllYears_n', 'LastSampleDate', 'LastResult', 'Unit', 'AllYears_R_Trend', 'AllYears_Min', 'AllYears_Mean', 'AllYears_Median', 'AllYears_Max']}
+                            >
                                 Download table data
                             </DownloadData>
                         </div>
                         <StationTable 
                             station={stationObjRef.current.StationCode} 
-                            setTableData={setTableData}
+                            data={tableData}
                             setSelectedAnalytes={setSelectedAnalytes}
                         />
                     </section>
@@ -115,60 +137,4 @@ export default function Station(props) {
             }
         </LayoutStation>
     )
-    
-    {/*
-    if (loading === 'true') {
-        return (
-            <LayoutStation>
-                <LoaderDashboard />
-            </LayoutStation>
-        )
-    } else if (loading === 'false' && stationObjRef.current) {
-        return (
-            <LayoutStation>
-                <div className={leftContainer}>
-                    <section className={titleContainer}>
-                        <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>
-                        <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{regionDict[stationObjRef.current.Region]} Region</span>
-                    </section>
-                    <div className={siteMapContainer}>
-                        <MapStation coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
-                    </div>
-                    <section style={{ margin: '1.1em 0' }}>
-                        <NearbyWaterbodies coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
-                    </section>
-                </div>
-                <div className={rightContainer}>
-                    <section>
-                        <h2>Water quality data and trends</h2>
-                        <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring station. For a more detailed view of the data, select a parameter (or multiple parameters) by checking the box to the left of the parameter and then clicking the "Graph selected parameters" button below.</p>
-                    </section>
-                    <section>
-                        <ChartStation
-                            station={stationObjRef.current.StationCode} 
-                            stationName={stationObjRef.current.StationName}
-                            selectedAnalytes={selectedAnalytes} 
-                        />
-                        <StationTable 
-                            station={stationObjRef.current.StationCode} 
-                            setSelectedAnalytes={setSelectedAnalytes}
-                        />
-                    </section>
-                </div>
-            </LayoutStation>
-        );
-    } else if (loading === 'error') {
-        return (
-            <LayoutStation>
-                <LoaderDashboard />
-            </LayoutStation>
-        )
-    } else {
-        return (
-            <LayoutStation>
-                <LoaderDashboard />
-            </LayoutStation>
-        )
-    }
-    */}
 }

@@ -24,10 +24,6 @@
     padding: 20px 20px 12px 20px;
 }
 
-.infoContainer p {
-    font-size: 0.95rem;
-}
-
 .modalContent {
     display: flex;
     flex-direction: column;

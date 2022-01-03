@@ -4,7 +4,7 @@ import { rowButton } from './download-data.module.css';
 
 // This component renders a button. When the button is clicked, the array of JavaScript objects passed to the component is converted to a TSV file and downloaded in the browser.
 // I chose tabs over commas because there are a lot of commas in the station names, and I did not want to add quotes around the string values (which is the common way of dealing with this issue).
-export default function DownloadData({ children, data }) {   
+export default function DownloadData({ children, data, fields }) {   
     const columnDelimiter = '\t';
 	
     // This function converts an array of JavaScript objects to a tab delimited string.
@@ -13,10 +13,12 @@ export default function DownloadData({ children, data }) {
             // Initialize empty string variable
             // Convert data records to strings and append them
             let dataString = '';
-            const header = Object.keys(array[0]).join(columnDelimiter);
+            const tsvFields = fields ? fields : Object.keys(array[0]);
+            const header = tsvFields.join(columnDelimiter);
             const rows = data.map(obj => {
-                return Object.keys(obj)
-                    .map(e => { return obj[e]; })
+                return tsvFields.map(fieldName => { 
+                        return obj[fieldName]; 
+                    })
                     .join(columnDelimiter);
             });
             const body = rows.join('\r\n');
