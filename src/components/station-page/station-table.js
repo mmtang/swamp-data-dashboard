@@ -62,7 +62,7 @@ export default function StationTable({ station, setTableData, setSelectedAnalyte
         {
             id: 'lastDate',
             name: 'Last Sample Date',
-            selector: row => formatDate(row['LastSampleDate']),
+            selector: row => row['LastSampleDate'],
             width: '140px',
             sortable: true,
             right: true
@@ -141,7 +141,7 @@ export default function StationTable({ station, setTableData, setSelectedAnalyte
                     d.AllYears_Median = +d.AllYears_Median.toFixed(2);
                     d.AllYears_Max = +d.AllYears_Max.toFixed(2);
                     d.Unit = (d.Analyte === 'pH' ? '' : d.Analyte === 'CSCI' ? 'score' : d.Unit);
-                    d.LastSampleDate = parseDate(d.LastSampleDate);
+                    d.LastSampleDate = formatDate(parseDate(d.LastSampleDate));
                 });
                 setData(records);
                 setTableData(records);

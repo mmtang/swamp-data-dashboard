@@ -35,6 +35,13 @@
     width: 100%;
 }
 
+.headerContainer {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
 @media screen and (max-width: 700px) {
     .chartFooter {
         flex-wrap: wrap-reverse;

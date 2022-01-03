@@ -12,7 +12,8 @@ export default function AnalyteMenu({ analyte, setAnalyte, region, program }) {
         .then(response => response.json())
         .then(json => json.result.records)
         .then(records => {
-            const data = records.map(d => ({ label: d.Analyte, value: d.Analyte }));
+            const analytes = records.sort((a, b) => a.Analyte.toLowerCase().localeCompare(b.Analyte.toLowerCase()));
+            const data = analytes.map(d => ({ label: d.Analyte, value: d.Analyte }));
             allAnalytes.current = data;
             setAnalyteList(data);
         })

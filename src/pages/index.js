@@ -78,14 +78,14 @@ export default function Index() {
             <ZoomToSelected
               setZoomedToSites={setZoomedToSites}
             />
+            <DownloadData data={tableData}>
+              Download table data
+            </DownloadData>
             <ChartIndexWrapper
               text={'Graph selected sites ' + (selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)')}
               selectedSites={selectedSites}
               analyte={analyte}
             />
-            <DownloadData data={tableData}>
-              Download table data
-            </DownloadData>
             <Table 
               selectedAnalyte={analyte}
               data={tableData}

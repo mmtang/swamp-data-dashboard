@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AnalyteCard from '../map-controls/analyte-card';
+import DownloadData from '../common/download-data';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { analytes, analyteScoringCategories, analyteYMax } from '../../utils/constants';
 import { colorPaletteViz, habitatAnalytes, } from '../../utils/utils';
-import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper } from './chart-index.module.css';
+import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, headerContainer } from './chart-index.module.css';
 
 
 export default function ChartIndex({ text, selectedSites, analyte }) {
     const [data, setData] = useState({});
+    const [downloadData, setDownloadData] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -20,6 +22,17 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
     const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
+
+    const getModalHeader = () => {
+        return (
+            <div className={headerContainer}>
+                {analyte}
+                <DownloadData data={data}>
+                    Download data
+                </DownloadData>
+            </div>
+        )
+    }
 
     const handleClick = () => {
         if (modalVisible === false) {
@@ -55,11 +68,25 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                         obj.sites[station] = data;
                     }
                     setData(obj);
+                    processDataForDownload(obj);
                     unitRef.current = results[0][0].Unit;
                     setLoading(false);
                 });
         }
     }, [modalVisible]);
+
+    const processDataForDownload = (obj) => {
+        console.log(obj.sites);
+        if (obj && obj.sites.length > 0) {
+            const siteDicts = obj.sites;
+            const siteData = siteDicts.map(d => d.value);
+            console.log(siteData);
+            const mergedData = [];
+            for (let i = 0; i < obj.sites.length; i++) {
+                console.log('test');
+            }
+        }
+    }
 
     useEffect(() => {
         const responsive = (id) => {
@@ -296,7 +323,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
             if (habitatAnalytes.includes(analyte)) {
                 // Get habitat data
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=9ce012e2-5fd3-4372-a4dd-63294b0ce0f6&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
-                url += '&fields=StationCode,StationName,Analyte,SampleDate,Result,Censored,Unit';
+                //url += '&fields=StationCode,StationName,Analyte,SampleDate,Result,Censored,Unit';
                 fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
@@ -319,7 +346,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
             } else {
                 // Get chemistry data
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
-                url += '&fields=StationCode,StationName,Analyte,SampleDate,Result,Unit,Result_Censored_HalfLimit,Censored';
+                //url += '&fields=StationCode,StationName,Analyte,SampleDate,Result,Unit,Result_Censored_HalfLimit,Censored';
                 fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
@@ -362,7 +389,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     open={modalVisible}
                     onClose={() => setModalVisible(false)}
                 >
-                    <Header icon='chart bar' content={analyte} />
+                    <Header content={getModalHeader()} />
                     <Modal.Content>
                         { loading ? 'Loading...' : 
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
