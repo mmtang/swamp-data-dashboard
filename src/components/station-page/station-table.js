@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import styled from 'styled-components';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
+import { tableWrapper } from './station-table.module.css';
 
-
-export default function StationTable({ station, setSelectedAnalytes }) {
+// This component renders the data on the station page. It gets the data from the portal and passes it back to the parent component (to go to DownloadData). I had thought about getting the table data in the parent component and passing it to the table component but decided against it for various reasons. One, I prefer to keep table-related tasks in the table component. Two, could later add table-specific error messages for when the data doesn't load.
+export default function StationTable({ station, setTableData, setSelectedAnalytes }) {
     const [data, setData] = useState([])
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
@@ -52,7 +52,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
         },
         {
             id: 'results',
-            name: 'Results',
+            name: '# Results',
             selector: row => row['AllYears_n'],
             width: '95px',
             sortable: true,
@@ -88,7 +88,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             id: 'min',
             name: 'Min',
             selector: row => row['AllYears_Min'],
-            width: '80px',
+            width: '84px',
             sortable: false,
             format: row => row['AllYears_Min'].toLocaleString(),
             right: true
@@ -97,7 +97,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             id: 'mean',
             name: 'Mean',
             selector: row => row['AllYears_Mean'],
-            width: '80px',
+            width: '84px',
             sortable: false,
             format: row => row['AllYears_Mean'].toLocaleString(),
             right: true
@@ -106,7 +106,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             id: 'median',
             name: 'Median',
             selector: row => row['AllYears_Median'],
-            width: '80px',
+            width: '84px',
             sortable: false,
             format: row => row['AllYears_Median'].toLocaleString(),
             right: true
@@ -115,7 +115,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
             id: 'max',
             name: 'Max',
             selector: row => row['AllYears_Max'],
-            width: '80px',
+            width: '84px',
             sortable: false,
             format: row => row['AllYears_Max'].toLocaleString(),
             right: true
@@ -129,7 +129,7 @@ export default function StationTable({ station, setSelectedAnalytes }) {
 
     useEffect(() => {
         if (station) {
-            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,Analyte,LastSampleDate,LastResult,Unit,AllYears_Min,AllYears_Max,AllYears_Median,AllYears_Mean,AllYears_R_Trend,AllYears_R_Tau,AllYears_R_PValue,AllYears_n';
+            let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,Analyte,LastSampleDate,LastResult,Unit,AllYears_Min,AllYears_Max,AllYears_Median,AllYears_Mean,AllYears_R_Trend,AllYears_n';
             url += '&filters={%22StationCode%22:%22' + station + '%22}';
             fetchData(url)
             .then(json => json.result.records)
@@ -142,15 +142,15 @@ export default function StationTable({ station, setSelectedAnalytes }) {
                     d.AllYears_Max = +d.AllYears_Max.toFixed(2);
                     d.Unit = (d.Analyte === 'pH' ? '' : d.Analyte === 'CSCI' ? 'score' : d.Unit);
                     d.LastSampleDate = parseDate(d.LastSampleDate);
-                    d.ResultWithUnit = d.LastResult.toString() + ' ' + d.Unit;
                 });
                 setData(records);
+                setTableData(records);
             });
         }
     }, [station])
     
     return (
-        <div style={{ marginTop: '1.4em', marginBottom: '100px' }}>
+        <div className={tableWrapper}>
             <DataTable 
                 columns={columns} 
                 data={data} 

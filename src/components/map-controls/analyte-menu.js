@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Select from 'react-select';
 import { customSelectStyle, regionNumDict } from '../../utils/utils';
-// import AnalyteCard from './analyte-card';
 
 export default function AnalyteMenu({ analyte, setAnalyte, region, program }) {
     const allAnalytes = useRef(null);
@@ -79,7 +78,7 @@ export default function AnalyteMenu({ analyte, setAnalyte, region, program }) {
             .then(records => {
                 if (records.length > 0) {
                     const analytes = records.map(d => d.Analyte);
-                    const uniqueAnalytes = [... new Set(analytes)].sort();
+                    const uniqueAnalytes = [... new Set(analytes)].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
                     const data = uniqueAnalytes.map(d => ({ label: d, value: d }));
                     setAnalyteList(data);
                 } else {
@@ -108,7 +107,6 @@ export default function AnalyteMenu({ analyte, setAnalyte, region, program }) {
                     styles={customSelectStyle}
                     maxMenuHeight={200}
                 />
-                {/* { analyte ? <AnalyteCard analyte={analyte} /> : null } */}
             </React.Fragment>
         )
     } else {

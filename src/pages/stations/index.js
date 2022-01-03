@@ -2,23 +2,24 @@ import React, { useEffect, useState, useRef  } from 'react';
 import LayoutStation from '../../components/layout/layout-station';
 import MapStation from '../../components/map/map-station';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
+import DownloadData from '../../components/common/download-data';
 import ChartStation from '../../components/station-page/chart-station';
 import StationTable from '../../components/station-page/station-table';
 import LoaderDashboard from '../../components/common/loader-dashboard';
 import ErrorFullscreen from '../../components/common/error-fullscreen';
 import { regionDict } from '../../utils/utils';
-import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName } from './index.module.css';
+import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName, buttonContainer } from './index.module.css';
 
-// This componenet renders the content for the station page and keeps track of state passed to all related components
 export default function Station(props) {
     const stationCodeRef = useRef(null);
     const stationObjRef = useRef(null);
     const errorRef = useRef(null);
 
     const [loading, setLoading] = useState('true');
+    const [tableData, setTableData] = useState([]);
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
 
-    const getStationCode = () => {
+    const parseStationCode = () => {
         return new Promise((resolve, reject) => {
             const url = props.location.href;
             // Use regex to get the station ID from the page URL
@@ -37,7 +38,7 @@ export default function Station(props) {
         })
     }
 
-    const getTableData = () => {
+    const getStationData = () => {
         return new Promise((resolve, reject) => {
             let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&limit=5';
             url += '&filters={%22StationCode%22:%22' + stationCodeRef.current + '%22}';
@@ -49,16 +50,17 @@ export default function Station(props) {
                     resolve();
                 })
                 .catch(error => {
-                    console.error('Error getting table data');
+                    console.error('Error getting station data');
                     errorRef.current = 'Error getting station data. Reload or try again later.'
                     setLoading('error');
+                    reject();
                 });
         })
     }
 
     useEffect(() => {
-        getStationCode()
-            .then(() => getTableData())
+        parseStationCode()
+            .then(() => getStationData())
             .then(() => setLoading('false'));
     }, []);
 
@@ -80,16 +82,22 @@ export default function Station(props) {
                 <div className={rightContainer}>
                     <section>
                         <h2>Water quality data and trends</h2>
-                        <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring station. For a more detailed view of the data, select a parameter (or multiple parameters) by checking the box to the left of the parameter and then clicking the "Graph data for selected indicators" button below.</p>
+                        <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring station. For a more detailed view of the data, select an indicator (or multiple indicators) and click the "Graph data for selected indicators" button below.</p>
                     </section>
                     <section>
-                        <ChartStation
-                            station={stationObjRef.current.StationCode} 
-                            stationName={stationObjRef.current.StationName}
-                            selectedAnalytes={selectedAnalytes} 
-                        />
+                        <div className={buttonContainer}>
+                            <ChartStation
+                                station={stationObjRef.current.StationCode} 
+                                stationName={stationObjRef.current.StationName}
+                                selectedAnalytes={selectedAnalytes} 
+                            />
+                            <DownloadData data={tableData}>
+                                Download table data
+                            </DownloadData>
+                        </div>
                         <StationTable 
                             station={stationObjRef.current.StationCode} 
+                            setTableData={setTableData}
                             setSelectedAnalytes={setSelectedAnalytes}
                         />
                     </section>
@@ -97,8 +105,6 @@ export default function Station(props) {
             </React.Fragment>
         )
     }
-
-    console.log(loading);
 
     return (
         <LayoutStation>

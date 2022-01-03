@@ -16,17 +16,19 @@
     overflow-x: auto;
 }
 
-.titleContainer {
-    margin-bottom: 20px;
-}
-
 .siteMapContainer {
-    margin: 1.5em 0 1.5em 0;
+    margin: 1em 0 1.8em 0;
 }
 
 .stationName {
-    margin: 10px 0 8px 0;
+    margin: 10px 0 4px 0;
     font-size: 1.2em !important;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1.4em;
 }
 
 .leftContainer h2 {

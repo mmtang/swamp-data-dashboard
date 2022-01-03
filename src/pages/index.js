@@ -8,6 +8,7 @@ import ChartIndexWrapper from '../components/chart-index/chart-index-wrapper';
 import Table from '../components/table/table';
 import FilterByExtent from '../components/map-controls/filter-by-extent';
 import ZoomToSelected from '../components/map-controls/zoom-to-selected';
+import DownloadData from '../components/common/download-data';
 import { Divider, Modal, Icon } from 'semantic-ui-react';
 import { mapContainer, mainContainer, infoContainer, modalContent, swampIcon, modalButton } from './index.module.css';
 
@@ -82,6 +83,9 @@ export default function Index() {
               selectedSites={selectedSites}
               analyte={analyte}
             />
+            <DownloadData data={tableData}>
+              Download table data
+            </DownloadData>
             <Table 
               selectedAnalyte={analyte}
               data={tableData}

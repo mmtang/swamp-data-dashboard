@@ -6,7 +6,7 @@ import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { analyteYMax, analyteScoringCategories, analytes } from '../../utils/constants';
 import { colorPaletteViz, habitatAnalytes } from '../../utils/utils';
-import { axisBlue, axisOrange, axisGreen, axisPurple, customTooltip, legendContainer, chartFooter, analyteSection } from './chart-station.module.css';
+import { axisBlue, axisOrange, axisGreen, axisPurple, customTooltip, legendContainer, chartFooter, analyteSection, rowButton } from './chart-station.module.css';
 
 
 export default function ChartStation({ station, stationName, selectedAnalytes }) {
@@ -413,8 +413,10 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
     }
 
     return (
-        <div style={{ marginTop: '2em'}}>
-            <Button compact 
+        <div>
+            <Button 
+                className={rowButton}
+                compact 
                 size='tiny'
                 disabled={selectedAnalytes.length < 1}
                 onClick={handleClick} 

@@ -10,11 +10,12 @@ export default function UpdateMessage() {
     const [status, setStatus] = useState('loading');
     const dateRef = useRef('');
 
-    // d3 functions for parsing and formatting dates.
-    const parseDate = timeParse('%Y-%m-%dT%H:%M:%S.%f');
-    const formatDate = timeFormat('%Y/%m/%d'); // Change this value to change the formatting of the printed date
-
     useEffect(() => {
+        // d3 functions for parsing and formatting dates.
+        // Placed these in the useEffect to avoid missing dependency warning
+        const parseDate = timeParse('%Y-%m-%dT%H:%M:%S.%f');
+        const formatDate = timeFormat('%Y/%m/%d'); // Change this value to change the formatting of the printed date
+
         const getDate = () => {
             // Fetch metadata of resource and extract the last modified value
             // This URL points to the SWAMP Stations - Summary dataset on the portal. Any of the other SWAMP datasets could be used with the same result.
@@ -34,6 +35,7 @@ export default function UpdateMessage() {
                 setStatus('error');
             });
         }
+
         getDate();
     }, [])
 
