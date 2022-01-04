@@ -4,9 +4,9 @@ import DownloadData from '../common/download-data';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { analytes, analyteScoringCategories, analyteYMax } from '../../utils/constants';
+import { analytes, analyteScoringCategories, analyteYMax, chemDataFields, habitatDataFields } from '../../utils/constants';
 import { colorPaletteViz, habitatAnalytes, } from '../../utils/utils';
-import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, headerContainer } from './chart-index.module.css';
+import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, modalContent, downloadWrapper } from './chart-index.module.css';
 
 
 export default function ChartIndex({ text, selectedSites, analyte }) {
@@ -22,17 +22,6 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
     const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
-
-    const getModalHeader = () => {
-        return (
-            <div className={headerContainer}>
-                {analyte}
-                <DownloadData data={data}>
-                    Download data
-                </DownloadData>
-            </div>
-        )
-    }
 
     const handleClick = () => {
         if (modalVisible === false) {
@@ -75,16 +64,17 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
         }
     }, [modalVisible]);
 
+    // This function packages the chart data into a form that is ready for download.
+    // It combines multiple sites' data into one array. No need to worry about different data structures because all sites under the same analyte should have the same structure.
     const processDataForDownload = (obj) => {
-        console.log(obj.sites);
-        if (obj && obj.sites.length > 0) {
+        if (obj.sites) {
             const siteDicts = obj.sites;
-            const siteData = siteDicts.map(d => d.value);
-            console.log(siteData);
-            const mergedData = [];
-            for (let i = 0; i < obj.sites.length; i++) {
-                console.log('test');
-            }
+            let dictValues = [];
+            Object.keys(siteDicts).forEach(key => {
+                dictValues.push(siteDicts[key]);
+            });
+            const mergedData = [].concat(...dictValues);
+            setDownloadData(mergedData);
         }
     }
 
@@ -116,7 +106,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
 
         const drawChart = (data) => {
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 25, right: 25, bottom: 30, left: 68 };
+            const margin = { top: 20, right: 25, bottom: 30, left: 68 };
             const width = 645 + margin.left + margin.right;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 5;
@@ -247,13 +237,13 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     .attr('r', 4)
                     .attr('cx', d => xScale(d.SampleDate))
                     .attr('cy', d => yScale(d.Result))
-                    .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[i])
-                    .attr('stroke', d => d.Censored ? colorPaletteViz[i] : '#fff')
-                    .attr('stroke-width', d => d.Censored ? 2 : 1)
-                    .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
+                    .attr('fill', d => d.NonDetect ? '#e3e4e6' : colorPaletteViz[i])
+                    .attr('stroke', d => d.NonDetect ? colorPaletteViz[i] : '#fff')
+                    .attr('stroke-width', d => d.NonDetect ? 2 : 1)
+                    .attr('stroke-dasharray', d => d.NonDetect ? ('2,1') : 0)
                     .on('mouseover', function(currentEvent, d) {
                         let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + formatNumber(d.Result) + ' ' + d.Unit;
-                        if (d.Censored) {
+                        if (d.NonDetect) {
                             content += '<br><i>Non-detect</i>';
                         }
                         return tooltip
@@ -332,7 +322,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
                         d.Result = parseFloat(d.Result).toFixed(2);
-                        d.Censored = false;
+                        d.NonDetect = false;
                         if (analyte === 'CSCI') {
                             d.Unit = 'score';
                         }
@@ -353,9 +343,9 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .then(records => {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
+                        d.NonDetect = d.NonDetect.toLowerCase() === 'true';  // Convert string to boolean
                         d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
-                        d.Result = +d['Result_Censored_HalfLimit'].toFixed(2);
+                        d.Result = +d['ResultDisplay'].toFixed(2);
                         if (analyte === 'pH') {
                             d.Unit = '';
                         }
@@ -389,10 +379,18 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     open={modalVisible}
                     onClose={() => setModalVisible(false)}
                 >
-                    <Header content={getModalHeader()} />
+                    <Header content={analyte} />
                     <Modal.Content>
                         { loading ? 'Loading...' : 
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <div className={modalContent}>
+                                <div className={downloadWrapper}>
+                                    <DownloadData 
+                                        data={downloadData}
+                                        fields={ habitatAnalytes.includes(analyte) ? habitatDataFields : chemDataFields }
+                                    >
+                                        Download data
+                                    </DownloadData>
+                                </div>
                                 <div id="index-chart-container"></div>
                                 <div className={chartFooter}>
                                     <div id="index-legend-container" className={legendContainer}></div>
