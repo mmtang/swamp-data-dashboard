@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconRipple } from '@tabler/icons';
-import { card, leftContainer, cardBody, cardTitle, waterbody } from './card.module.css';
+import { card, leftContainer, cardBody, cardTitle, waterbody, smallText, listingWrapper } from './card.module.css';
 
 export default function CardWaterbody({ feature }) {
 
@@ -10,13 +10,13 @@ export default function CardWaterbody({ feature }) {
                 <div className={`${leftContainer} ${waterbody}`}><IconRipple size={30} color="#fff" /></div>
                 <div className={cardBody}>
                     <div>
-                        <div><span className={cardTitle}>{feature.wbname}</span></div>
-                        <div style={{ marginTop: '0.5em', fontSize: "0.8em", lineHeight: '1.46em' }}>
+                        <div className={cardTitle}>{feature.wbname}</div>
+                        <div className={listingWrapper}>
                             {feature.wb_listingstatus}
                             &nbsp;&nbsp;&#9679;&nbsp;&nbsp;
                             <a href={feature.fact_sheet} target="_blank" rel="noopener noreferrer">Fact Sheet</a>
                         </div>
-                        { feature.wb_listingstatus === 'Listed' ? <div style={{ fontSize: "0.8em", lineHeight: '1.46em' }}>Listed pollutants: {feature.listed_pollutants}</div> : null }
+                        { feature.wb_listingstatus === 'Listed' ? <div className={smallText}>Listed pollutants: {feature.listed_pollutants}</div> : null }
                     </div>
                 </div>
             </div>

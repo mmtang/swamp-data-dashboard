@@ -36,4 +36,16 @@
 .cardTitle {
     font-size: 0.9em;
     font-weight: 600;
+    line-height: 1.35em;
+}
+
+.listingWrapper {
+    margin-top: 0.5em;
+    font-size: 0.8em;
+    line-height: 1.46em;
+}
+
+.smallText {
+    font-size: 0.8em;
+    line-height: 1.46em;
 }

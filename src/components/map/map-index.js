@@ -75,7 +75,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         RegionName: regionDict[d.Region],
                         Analyte: d.Analyte,
                         LastSampleDate: formatDate(parseDate(d.LastSampleDate)),
-                        Trend: d.AllYears_R_Trend,
+                        Trend: d.Trend,
                         bioaccumulation: d.Bioaccumulation,
                         bioassessment: d.Bioassessment,
                         fhab: d.Fhab,
@@ -501,7 +501,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                         content: buildStationPopup
                     }
-                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,AllYears_R_Trend,Bioaccumulation,Bioassessment,Fhab,Spot,SortOrder&limit=5000';
+                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,Trend,Bioaccumulation,Bioassessment,Fhab,Spot,SortOrder&limit=5000';
                     url += '&filters={%22Analyte%22:%22' + encodeURIComponent(selectedAnalyte) + '%22}'
                     fetch(url)
                     .then((resp) => resp.json())

@@ -45,17 +45,16 @@ export default function Station(props) {
     const getTableData = () => {
         return new Promise((resolve, reject) => {
             if (stationCodeRef.current) {
-                let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,StationName,Region,Analyte,LastSampleDate,LastResult,Unit,AllYears_Min,AllYears_Max,AllYears_Median,AllYears_Mean,AllYears_R_Trend,AllYears_n,TargetLatitude,TargetLongitude';
+                let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,StationName,Region,Analyte,LastSampleDate,LastResult,Unit,Min,Max,Median,Mean,Trend,NumResults,TargetLatitude,TargetLongitude';
                 url += '&filters={%22StationCode%22:%22' + stationCodeRef.current + '%22}';
                 fetchData(url)
                 .then(json => json.result.records)
                 .then(records => {
                     records.forEach(d => {
-                        d.AllYears_n = +d.AllYears_n;
-                        d.AllYears_Min = +d.AllYears_Min.toFixed(2);
-                        d.AllYears_Mean = +d.AllYears_Mean.toFixed(2);
-                        d.AllYears_Median = +d.AllYears_Median.toFixed(2);
-                        d.AllYears_Max = +d.AllYears_Max.toFixed(2);
+                        d.Min = +d.Min.toFixed(2);
+                        d.Mean = +d.Mean.toFixed(2);
+                        d.Median = +d.Median.toFixed(2);
+                        d.Max = +d.Max.toFixed(2);
                         d.Unit = (d.Analyte === 'pH' ? '' : d.Analyte === 'CSCI' ? 'score' : d.Unit);
                         d.LastSampleDate = formatDate(parseDate(d.LastSampleDate));
                         d.TargetLatitude = +d.TargetLatitude;
@@ -68,7 +67,7 @@ export default function Station(props) {
                     resolve();
                 })
                 .catch(error => {
-                    console.error('Error getting station data');
+                    console.error(error);
                     errorRef.current = 'Error getting station data. Reload or try again later.'
                     setLoading('error');
                     reject();
@@ -112,7 +111,7 @@ export default function Station(props) {
                             />
                             <DownloadData 
                                 data={tableData}
-                                fields={['StationCode', 'StationName', 'RegionName', 'TargetLatitude', 'TargetLongitude', 'Analyte', 'AllYears_n', 'LastSampleDate', 'LastResult', 'Unit', 'AllYears_R_Trend', 'AllYears_Min', 'AllYears_Mean', 'AllYears_Median', 'AllYears_Max']}
+                                fields={['StationCode', 'StationName', 'RegionName', 'TargetLatitude', 'TargetLongitude', 'Analyte', 'NumResults', 'LastSampleDate', 'LastResult', 'Unit', 'Trend', 'Min', 'Mean', 'Median', 'Max']}
                             >
                                 Download table data
                             </DownloadData>

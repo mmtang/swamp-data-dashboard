@@ -27,9 +27,9 @@ export default function StationTable({ data, setSelectedAnalytes }) {
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {row['AllYears_R_Trend'] === 'Possibly increasing' ? <IconTrendingUp size={18} /> : row['AllYears_R_Trend'] === 'Possibly decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['AllYears_R_Trend']} /> }
+                    {row['Trend'] === 'Possibly increasing' ? <IconTrendingUp size={18} /> : row['Trend'] === 'Possibly decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['Trend']} /> }
                     &nbsp;&nbsp;&nbsp;
-                    <span>{row['AllYears_R_Trend']}</span>
+                    <span>{row['Trend']}</span>
                 </div>
             </div>
         )
@@ -47,10 +47,10 @@ export default function StationTable({ data, setSelectedAnalytes }) {
         {
             id: 'results',
             name: '# Results',
-            selector: row => row['AllYears_n'],
+            selector: row => row['NumResults'],
             width: '95px',
             sortable: true,
-            format: row => row['AllYears_n'].toLocaleString(),
+            format: row => row['NumResults'].toLocaleString(),
             right: true
         },
         {
@@ -73,7 +73,7 @@ export default function StationTable({ data, setSelectedAnalytes }) {
         {
             id: 'trend',
             name: 'Trend',
-            selector: row => row['AllYears_R_Trend'],
+            selector: row => row['Trend'],
             width: '165px',
             sortable: true,
             format: row => <CustomTrend row={row} />
@@ -81,37 +81,37 @@ export default function StationTable({ data, setSelectedAnalytes }) {
         {
             id: 'min',
             name: 'Min',
-            selector: row => row['AllYears_Min'],
+            selector: row => row['Min'],
             width: '84px',
             sortable: false,
-            format: row => row['AllYears_Min'].toLocaleString(),
+            format: row => row['Min'].toLocaleString(),
             right: true
         },
         {
             id: 'mean',
             name: 'Mean',
-            selector: row => row['AllYears_Mean'],
+            selector: row => row['Mean'],
             width: '84px',
             sortable: false,
-            format: row => row['AllYears_Mean'].toLocaleString(),
+            format: row => row['Mean'].toLocaleString(),
             right: true
         },
         {
             id: 'median',
             name: 'Median',
-            selector: row => row['AllYears_Median'],
+            selector: row => row['Median'],
             width: '84px',
             sortable: false,
-            format: row => row['AllYears_Median'].toLocaleString(),
+            format: row => row['Median'].toLocaleString(),
             right: true
         },
         {
             id: 'max',
             name: 'Max',
-            selector: row => row['AllYears_Max'],
+            selector: row => row['Max'],
             width: '84px',
             sortable: false,
-            format: row => row['AllYears_Max'].toLocaleString(),
+            format: row => row['Max'].toLocaleString(),
             right: true
         }
     ];
