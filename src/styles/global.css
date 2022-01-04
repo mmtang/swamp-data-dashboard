@@ -102,6 +102,10 @@ a {
   padding: 6px 10px;
 }
 
+.ui.modal > .header {
+  color: #5d5d5d !important;
+}
+
 /* To position download button to the right on modal header using flexbox */
 .ui.header > .icon + .content {
   width: 100%;

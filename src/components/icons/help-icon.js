@@ -8,7 +8,7 @@ import { inlineIcon, wrapper } from './help-icon.module.css';
 // The 'wide' parameter accepts boolean (false, true) and 'very' for a very wide popup. 
 // Documentation: https://react.semantic-ui.com/modules/popup/#variations-wide
 
-export default function HelpIcon({ wide = false, position = 'left center', children }) {
+export default function HelpIcon({ wide = false, position = 'left center', color = 'teal', children }) {
     const popupStyle = {
         borderRadius: 0,
         opacity: 1,
@@ -25,7 +25,7 @@ export default function HelpIcon({ wide = false, position = 'left center', child
     
     return (
         <Popup
-            trigger={<Icon className={inlineIcon} name='info circle' color='blue' />}
+            trigger={<Icon className={inlineIcon} name='info circle' color={color} />}
             content={popupWrapper}
             hoverable={true}
             position={position}

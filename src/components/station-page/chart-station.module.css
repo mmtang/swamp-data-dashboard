@@ -51,6 +51,19 @@
     margin: 0.25em 0.25em 0 0 !important;
 }
 
+.modalContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.downloadWrapper {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    padding-right: 24px;
+}
+
 @media screen and (max-width: 700px) {
     .chartFooter {
         flex-wrap: wrap;

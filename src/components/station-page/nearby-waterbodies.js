@@ -62,7 +62,7 @@ export default function NearbyWaterbodies({ coordinates }) {
         <div>
             <h3 className={title}>
                 Nearby waterbodies
-                <HelpIcon>Waterbodies located within {distance} meters of the station. Queried from the <a href="https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer" target="_blank" rel="noreferrer noopener">Integrated Report 2018 dataset</a>.</HelpIcon>
+                <HelpIcon position='right center' color='grey'>Waterbodies located within {distance} meters of the station. Queried from the <a href="https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer" target="_blank" rel="noreferrer noopener">Integrated Report 2018 dataset</a>.</HelpIcon>
             </h3>
             { 
               loading === 'true' ? <i className="light">Loading...</i> : 

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AnalyteCard from '../map-controls/analyte-card';
 import AnalyteIconGrid from './analyte-icon-grid';
+import DownloadData from '../common/download-data';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { analyteYMax, analyteScoringCategories, analytes } from '../../utils/constants';
+import { analyteYMax, analyteScoringCategories, analytes, chemDataFields, habitatDataFields } from '../../utils/constants';
 import { colorPaletteViz, habitatAnalytes } from '../../utils/utils';
-import { axisBlue, axisOrange, axisGreen, axisPurple, customTooltip, legendContainer, chartFooter, analyteSection, rowButton } from './chart-station.module.css';
+import { axisBlue, axisOrange, axisGreen, axisPurple, customTooltip, legendContainer, chartFooter, analyteSection, rowButton, downloadWrapper, modalContent } from './chart-station.module.css';
 
 
 export default function ChartStation({ station, stationName, selectedAnalytes }) {
@@ -247,14 +248,14 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                 .attr('class', 'circle')
                 .attr('r', 4)
                 .attr('cx', d => xScale(d.SampleDate))
-                .attr('cy', d => yScale(d.Result))
-                .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[key])
-                .attr('stroke', d => d.Censored ? colorPaletteViz[key] : '#fff')
-                .attr('stroke-width', d => d.Censored ? 2 : 1)
-                .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
+                .attr('cy', d => yScale(d.ResultDisplay))
+                .attr('fill', d => d.NonDetect ? '#e3e4e6' : colorPaletteViz[key])
+                .attr('stroke', d => d.NonDetect ? colorPaletteViz[key] : '#fff')
+                .attr('stroke-width', d => d.NonDetect ? 2 : 1)
+                .attr('stroke-dasharray', d => d.NonDetect ? ('2,1') : 0)
                 .on('mouseover', function(currentEvent, d) {
-                    let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + formatNumber(d.Result) + ' ' + d.Unit;
-                    if (d.Censored) {
+                    let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + formatNumber(d.ResultDisplay) + ' ' + d.Unit;
+                    if (d.NonDetect) {
                         content += '<br><i>Non-detect</i>';
                     }
                     return tooltip
@@ -274,7 +275,7 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                 })
                 .merge(points)
                 .attr('cx', d => xScale(d.SampleDate))
-                .attr('cy', d => yScale(d.Result));
+                .attr('cy', d => yScale(d.ResultDisplay));
             points.exit()
                 .remove();
         }
@@ -372,16 +373,15 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
             // Get Habitat data
             if (habitatAnalytes.includes(parameter)) {
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=9ce012e2-5fd3-4372-a4dd-63294b0ce0f6&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + parameter + '%22}&sort=%22SampleDate%22%20desc';
-                url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
+                //url += '&fields=StationCode,Analyte,SampleDate,Result,Unit';
                 fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultOriginal = parseFloat(d.Result).toFixed(2);
-                        d.Result = +parseFloat(d.Result).toFixed(2);
-                        d.Censored = false;
+                        d.ResultDisplay = +parseFloat(d.Result).toFixed(2);
+                        d.NonDetect = false;
                         if (parameter === 'CSCI') {
                             d.Unit = 'score';
                         }
@@ -391,21 +391,20 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
             } else {
                 // Get chemistry data
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + parameter + '%22}&sort=%22SampleDate%22%20desc';
-                url += '&fields=StationCode,Analyte,SampleDate,Result,Unit,Censored,Result_Censored_HalfLimit';
+                //url += '&fields=StationCode,Analyte,SampleDate,Result,Unit,NonDetect,ResultDisplay';
                 fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
-                        d['Censored'] = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
-                        d['Result'] = +d['Result_Censored_HalfLimit'].toFixed(2);
+                        d.Result = +d.Result.toFixed(2);
+                        d.ResultDisplay = +d.ResultDisplay.toFixed(2);
+                        d['NonDetect'] = d['NonDetect'].toLowerCase() === 'true';  // Convert string to boolean
                         if (parameter === 'pH') {
                             d.Unit = '';
                         }
                     });
-                    console.log(records);
                     resolve(records);
                 });
             }
@@ -434,7 +433,10 @@ export default function ChartStation({ station, stationName, selectedAnalytes })
                     <Header icon='chart bar' content={`${station} - ${stationName}`} />
                     <Modal.Content>
                         { loading ? 'Loading...' : 
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <div className={modalContent}>
+                                <div className={downloadWrapper}>
+                                    <Button>Test</Button>
+                                </div>
                                 <div id="station-chart-container"></div>
                                 <div className={chartFooter}>
                                     <div id="station-legend-container" className={legendContainer}></div>

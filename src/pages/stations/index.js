@@ -3,7 +3,7 @@ import LayoutStation from '../../components/layout/layout-station';
 import MapStation from '../../components/map/map-station';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
 import DownloadData from '../../components/common/download-data';
-import ChartStation from '../../components/station-page/chart-station';
+import GraphModal from '../../components/station-page/graph-modal';
 import StationTable from '../../components/station-page/station-table';
 import LoaderDashboard from '../../components/common/loader-dashboard';
 import ErrorFullscreen from '../../components/common/error-fullscreen';
@@ -104,7 +104,7 @@ export default function Station(props) {
                     </section>
                     <section>
                         <div className={buttonContainer}>
-                            <ChartStation
+                            <GraphModal
                                 station={stationObjRef.current.StationCode} 
                                 stationName={stationObjRef.current.StationName}
                                 selectedAnalytes={selectedAnalytes} 

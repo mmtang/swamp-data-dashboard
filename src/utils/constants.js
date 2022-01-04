@@ -1,6 +1,6 @@
 export const analytes = {
     'Alkalinity as CaCO3, Total': {
-        code: null,
+        code: 'alkalinity',
         label: 'Alkalinity',
         page: null,
         blurb: 'Alkalinity, also called acid-buffering capacity, refers to the ability of a waterbody to neutralize acidity and maintain a relatively stable pH level. Higher alkalinity levels protect a waterbody against rapid changes in pH.'
@@ -12,13 +12,13 @@ export const analytes = {
         blurb: "Aluminum is a naturally occurring metal found in the earth's crust. It can enter a waterbody via natural processes and human-based activities. High concentrations of aluminum can be toxic to aquatic life."
     },
     'Ammonia as N, Total': {
-        code: null,
+        code: 'ammoniaN',
         label: 'Ammonia',
         page: null,
         blurb: 'Ammonia is a form of nitrogen that is common in the environment. It is an essential nutrient for plants, but high levels of it can be toxic to fish and other aquatic life.'
     },
     'Ammonia as NH3, Total': {
-        code: null,
+        code: 'ammoniaNH3',
         label: 'Ammonia',
         page: null,
         blurb: 'Ammonia is a form of nitrogen that is common in the environment. It is an essential nutrient for plants, but high levels of it can be toxic to fish and other aquatic life. The neutral, un-ionized form of ammonia (NH3) is highly toxic.'
@@ -48,7 +48,7 @@ export const analytes = {
         blurb: 'E. coli bacteria live in the intestines of warm-blooded animals and humans. In water, they are a strong indicator of sewage contamination.'
     },
     'Enterococcus': {
-        code: null,
+        code: 'enterococcus',
         label: 'Enterococcus',
         page: null,
         blurb: 'Enterococcus bacteria live in the intestines of warm-blooded animals and humans. They are widely used as a bacterial indicator of health risk in fresh and salt water.'

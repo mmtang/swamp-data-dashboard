@@ -93,8 +93,8 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 <p className={pLabel}>
                     Regional water quality control board
                     <HelpIcon wide='very'>
-                        <p>SWAMP’s regional assessments are planned and executed by each of the nine Regional Water Quality Control Boards. Each region identifies its own ambient monitoring priorities and designs assessments to answer specific monitoring questions. SWAMP’s regional assessments complement the statewide assessments by allowing the flexibility needed to address the highest priority ambient monitoring needs at each region.</p>
-                        <img src="\rb_map.jpg" alt='Statewide map of regional water board boundaries' style={{ display: 'block', margin: 'auto', maxWidth: '360px' }} />
+                        <p>SWAMP’s regional assessments are planned and executed by each of the nine Regional Water Quality Control Boards. Each region identifies its own monitoring priorities and designs assessments to answer specific monitoring questions. SWAMP’s regional assessments complement the statewide assessments by allowing the flexibility needed to address the highest priority monitoring needs at each region.</p>
+                        <img src="\rb_map.jpg" alt='Statewide map of regional water board boundaries' style={{ display: 'block', margin: 'auto', maxWidth: '300px' }} />
                         <p><a href="https://www.waterboards.ca.gov/publications_forms/publications/factsheets/docs/boardoverview.pdf" target="_blank" rel="noreferrer noopener">Source</a></p>
                     </HelpIcon>
                 </p>
