@@ -36,7 +36,7 @@ export default function ChartModal({ station, stationName, selectedAnalytes }) {
                     onClose={() => setModalVisible(false)}
                     closeOnDimmerClick={false}
                 >
-                    <Header content={`${station} - ${stationName}`} />
+                    <Header content={`${stationName} (${station})`} />
                     <Modal.Content image scrolling>
                         { loading ? 'Loading...' : 
                             <div style={{ width: '100%' }}>

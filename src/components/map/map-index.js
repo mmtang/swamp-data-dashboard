@@ -858,7 +858,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
         const irTemplate = {
             // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
             outFields: ['wbid', 'wbname', 'rb', 'wbtype', 'wb_category', 'wb_listingstatus', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_', 'fact_sheet'],
-            title: '{wbname}<br><span class="map-popup-subtitle" style="color: #518f33">2018 Integrated Report</span>',
+            title: '{wbname}<br><span class="map-popup-subtitle" style="color: #518f33">2018 Integrated Report waterbody</span>',
             content: [
                 {
                     type: 'fields',
@@ -1023,7 +1023,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
         const buildPolyPopup = (feature) => {
             const attributes = feature.graphic.attributes;
             const waterbodyID = attributes['OBJECTID'];
-            const url = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/0/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=0&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
+            const url = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/0/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=1&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
             return fetch(url)
                 .then((resp) => resp.json())
                 .then((json) => {

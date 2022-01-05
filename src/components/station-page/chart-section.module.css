@@ -4,10 +4,6 @@
     flex-direction: column;
 }
 
-.analyteContainer {
-    margin-bottom: 0.2em;
-}
-
 .analyteHeader {
     display: flex;
     flex-direction: row;

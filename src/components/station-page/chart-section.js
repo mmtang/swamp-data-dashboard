@@ -112,6 +112,9 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     <div className={analyteHeader}>
                         <h4 className={analyteTitle}>
                             {analyteName}
+                            { analyteName === 'pH' ? null : 
+                              data ? ` (${data[analyteName].unit})` :
+                              null }
                             <HelpIcon position='right center' color='grey'>
                                 { analytes[analyteName]['blurb'] }
                                 &nbsp;
