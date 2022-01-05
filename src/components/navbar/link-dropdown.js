@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import { navItem, navText } from './dropdown.module.css';
+import { navItem, navItemActive, navText } from './dropdown.module.css';
 
 
-const LinkDropdown = ({ path, children }) => {
+const LinkDropdown = ({ path, active, children }) => {
     return (
-        <li className={navItem}>
+        <li className={active ? navItemActive : navItem}>
             {/* apply the padding to navText so that the dropdown aligns with the li element */}
             <Link to={path}>
                 <div className={navText}>

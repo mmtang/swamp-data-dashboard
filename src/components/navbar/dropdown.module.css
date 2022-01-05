@@ -1,8 +1,10 @@
-/* navItem's default properties are in nav-bar.module.css */
-
 .navItem:hover {
-    background-color: #20639b;
+    background-color: #20639b; 
     cursor: pointer;
+}
+
+.navItemActive {
+    background-color: #20639b;
 }
 
 .navItem:hover .subMenu {

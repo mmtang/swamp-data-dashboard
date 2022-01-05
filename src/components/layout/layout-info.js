@@ -1,18 +1,23 @@
 import React from 'react';
 import Navbar from '../navbar/navbar.js';
 import Footer from './footer.js';
-import { mainContainer } from './layout-info.module.css';
+import { appContainer, header, mainContainer, footer, lineAccent } from './layout-info.module.css';
 
 
-function LayoutInfo({ children }) {    
+function LayoutInfo({ active, children }) {    
     return (
-        <React.Fragment>
-            <Navbar />
+        <div className={appContainer}>
+            <div className={header}>
+                <Navbar active={active} />
+            </div>
             <div className={mainContainer}>
+                <div className={lineAccent}></div>
                 {children}
             </div>
-            <Footer />
-        </React.Fragment>
+            <div className={footer}>
+                <Footer />
+            </div>
+        </div>
     )
 }
 

@@ -1,5 +1,28 @@
-.mainContiner {
-    position: absolute;
-    top: 60px;
-    overflow-y: auto;
+.appContainer {
+    display: grid;
+    grid-template-areas:
+        'header'
+        'main'
+        'footer';
+    grid-template-rows: 60px auto auto;
+    grid-template-columns: 1fr;
+    height: auto;
+    font-size: 0.95rem;
+}
+
+.header {
+    grid-area: header;
+}
+
+.mainContainer {
+    grid-area: main;
+}
+
+.footer {
+    grid-area: footer;
+}
+
+.lineAccent {
+    height: 25px;
+    background-color: #20639b;
 }

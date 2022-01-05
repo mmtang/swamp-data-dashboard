@@ -9,7 +9,7 @@ import { parent, textContainer, menuContainer } from './layout-parameter.module.
 
 function LayoutParameter({ parameter, children }) {    
     return (
-        <LayoutInfo>
+        <LayoutInfo active='learn'>
             <div className={main}>
                 <div className={parent}>
                     <div>

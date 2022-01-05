@@ -20,7 +20,7 @@ import Turbidity from './parameters/turbidity';
 export default function ParameterIcon(props) {
     const icon = props.icon;
     const size = props.size || 40;  // 40px is the default/fallback value
-    const fill = props.fill || '#2185d0';
+    const fill = props.fill || '#20639b';
     const stroke = props.stroke || '#ffffff';
 
     // Apply default props if needed
