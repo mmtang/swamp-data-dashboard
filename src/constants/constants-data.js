@@ -3,7 +3,7 @@ export const analytes = {
         code: 'alkalinity',
         label: 'Alkalinity',
         page: null,
-        blurb: 'Alkalinity, also called acid-buffering capacity, refers to the ability of a waterbody to neutralize acidity and maintain a relatively stable pH level. Higher alkalinity levels protect a waterbody against rapid changes in pH.'
+        blurb: 'Alkalinity refers to the ability of a waterbody to neutralize acidity and maintain a relatively stable pH level. Higher alkalinity levels protect a waterbody against rapid changes in pH.'
     },
     'Aluminum, Total': {
         code: 'aluminum',

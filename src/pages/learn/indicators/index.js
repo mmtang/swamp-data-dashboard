@@ -4,7 +4,7 @@ import LayoutInfo from '../../../components/layout/layout-info';
 import Hero from '../../../components/common/hero';
 import CardSmall from '../../../components/common/card-small';
 import ParameterIcon from '../../../components/icons/parameter-icon';
-import { analytes } from '../../../utils/constants';
+import { analytes } from '../../../constants/constants-data';
 import { main } from '../../pages.module.css';
 import { grid } from './index.module.css';
 

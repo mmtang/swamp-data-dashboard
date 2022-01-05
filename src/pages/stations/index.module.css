@@ -21,8 +21,9 @@
 }
 
 .stationName {
-    margin: 10px 0 4px 0;
+    margin-bottom: 8px;
     font-size: 1.2em !important;
+    line-height: 1.35;
 }
 
 .buttonContainer {

@@ -1,7 +1,7 @@
 import React from 'react';
 import ParameterIcon from '../icons/parameter-icon';
 import { Icon } from 'semantic-ui-react';
-import { analytes } from '../../utils/constants';
+import { analytes } from '../../constants/constants-data';
 import { arrowContainer, arrowUp, cardContainer, iconWrapper } from './card.module.css';
 
 export default function AnalyteCard({ analyte }) {

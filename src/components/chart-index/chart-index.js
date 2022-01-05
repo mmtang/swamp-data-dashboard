@@ -4,8 +4,8 @@ import DownloadData from '../common/download-data';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { analytes, analyteScoringCategories, analyteYMax, chemDataFields, habitatDataFields  } from '../../utils/constants';
-import { colorPaletteViz, habitatAnalytes, } from '../../utils/utils';
+import { analytes, analyteScoringCategories, habitatAnalytes, analyteYMax, chemDataFields, habitatDataFields  } from '../../constants/constants-data';
+import { colorPaletteViz } from '../../constants/constants-app';
 import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, modalContent, downloadWrapper } from './chart-index.module.css';
 
 

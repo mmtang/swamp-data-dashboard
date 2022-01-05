@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import ChartSection from './chart-section';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { rowButton } from './graph-modal.module.css';
+import { rowButton } from './chart-modal.module.css';
 
 
-export default function GraphModal({ station, stationName, selectedAnalytes }) {
+export default function ChartModal({ station, stationName, selectedAnalytes }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -37,14 +37,26 @@ export default function GraphModal({ station, stationName, selectedAnalytes }) {
                     closeOnDimmerClick={false}
                 >
                     <Header content={`${station} - ${stationName}`} />
-                    <Modal.Content>
+                    <Modal.Content image scrolling>
                         { loading ? 'Loading...' : 
-                            <ChartSection
-                                station={station}
-                                selectedAnalytes={selectedAnalytes}
-                            />
+                            <div style={{ width: '100%' }}>
+                                <ChartSection
+                                    station={station}
+                                    selectedAnalytes={selectedAnalytes}
+                                />
+                            </div>
                         }
                     </Modal.Content>
+                    <Modal.Actions>
+                        <Button
+                            compact 
+                            size='small'
+                            onClick={() => setModalVisible(false)} 
+                            onKeyPress={() => setModalVisible(false)}
+                        >
+                            Close
+                        </Button>
+                    </Modal.Actions>
                 </Modal> 
             : '' }
         </div>

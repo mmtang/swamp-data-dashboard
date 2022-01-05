@@ -1,0 +1,18 @@
+.chartContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 1em 0;
+}
+
+.customTooltip {
+    position: absolute;
+    background-color: #1a252f;
+    color: #fff;
+    font-size: 0.8em;
+    border: 1px solid #5d5d5d;
+    padding: 0.6em 1em;
+    line-height: 1.4;
+    z-index: 9000;
+    pointer-events: none;
+}

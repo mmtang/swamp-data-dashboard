@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Icon } from 'semantic-ui-react';
 import { rowButton } from './download-data.module.css';
 
 // This component renders a button. When the button is clicked, the array of JavaScript objects passed to the component is converted to a TSV file and downloaded in the browser.
 // I chose tabs over commas because there are a lot of commas in the station names, and I did not want to add quotes around the string values (which is the common way of dealing with this issue).
 export default function DownloadData({ children, data, fields, color = null }) {   	
+    const [dataLoaded, setDataLoaded] = useState(false);
+
     // This function converts an array of JavaScript objects to a tab delimited string.
     const convertArrayOfObjectsToTSV = (array, fields, columnDelimiter = '\t') => {
         if (array.length > 0) {
@@ -54,6 +56,10 @@ export default function DownloadData({ children, data, fields, color = null }) {
         }
     }
 
+    useEffect(() => {
+        if (data) { setDataLoaded(true) };
+    }, [data])
+
     return (
         <Button 
             className={rowButton}
@@ -62,6 +68,7 @@ export default function DownloadData({ children, data, fields, color = null }) {
             onClick={handleClick} 
             onKeyPress={handleClick}
             color={color}
+            disabled={!dataLoaded}
         >
             <Icon name='download' />
             {children}

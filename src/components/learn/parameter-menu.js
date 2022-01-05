@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import { analytes } from '../../utils/constants';
+import { analytes } from '../../constants/constants-data';
 import { container, menu, title, item, active } from './parameter-menu.module.css';
 
 

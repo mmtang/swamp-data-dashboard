@@ -1,6 +1,6 @@
 import React from 'react';
 import ParameterIcon from '../icons/parameter-icon';
-import { analytes } from '../../utils/constants';
+import { analytes } from '../../constants/constants-app';
 import { grid, iconContainer, iconWrapper, label } from './analyte-icon-grid.module.css';
 
 export default function AnayteIconGrid({ selectedAnalytes }) {    
