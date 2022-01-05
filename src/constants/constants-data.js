@@ -121,6 +121,11 @@ export const analytes = {
     }
 }
 
+export const habitatAnalytes = [
+    'CSCI',
+    'IPI'
+]
+
 export const analyteYMax = {
     'CSCI': 1.5,
     'IPI': 1.3

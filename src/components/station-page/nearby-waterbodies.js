@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import HelpIcon from '../../components/icons/help-icon';
 import CardWaterbody from './card-waterbody';
+import LoaderBlock from '../common/loader-block';
 import { title } from './nearby.module.css';
 
 // This component queries for the nearby waterbodies of a given set of coordinates (representing a monitoring station). It uses the REST API on the Water Boards ArcGIS Portal to perform a spatial query on the Integrated Report 2018 line and polygon layers. It renders the subcomponent CardWaterbody based on the number of nearby waterbody features returned from the API queries
@@ -62,10 +63,14 @@ export default function NearbyWaterbodies({ coordinates }) {
         <div>
             <h3 className={title}>
                 Nearby waterbodies
-                <HelpIcon position='right center' color='grey'>Waterbodies located within {distance} meters of the station. Queried from the <a href="https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer" target="_blank" rel="noreferrer noopener">Integrated Report 2018 dataset</a>.</HelpIcon>
+                <HelpIcon position='right center' color='grey'>
+                    <div style={{ fontSize: '13px' }}>
+                        Waterbodies located within {distance} meters of the station. Queried from the <a href="https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer" target="_blank" rel="noreferrer noopener">Integrated Report 2018 dataset</a>.
+                    </div>
+                </HelpIcon>
             </h3>
             { 
-              loading === 'true' ? <i className="light">Loading...</i> : 
+              loading === 'true' ? <LoaderBlock /> : 
               loading === 'error' ? <div>Error fetching data. Refresh the page or try again later.</div> :
               loading === 'false' && features.length > 0 ? features.map(d => <CardWaterbody key={d.wbid} feature={d} />) : 
               loading === 'false' && features.length === 0 ? <i className="light">No waterbodies found within {distance} meters.</i> :

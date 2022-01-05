@@ -4,8 +4,7 @@ import DownloadData from '../common/download-data';
 import Chart from './chart';
 import { Icon } from 'semantic-ui-react';
 import { timeParse, extent } from 'd3';
-import { habitatAnalytes } from '../../utils/utils';
-import { analytes, chemDataFields, habitatDataFields } from '../../constants/constants-data';
+import { analytes, chemDataFields, habitatDataFields, habitatAnalytes } from '../../constants/constants-data';
 import { sectionContainer, analyteContainer, analyteHeader, analyteTitle } from './chart-section.module.css';
 
 
@@ -116,10 +115,12 @@ export default function ChartSection({ station, selectedAnalytes }) {
                               data ? ` (${data[analyteName].unit})` :
                               null }
                             <HelpIcon position='right center' color='grey'>
-                                { analytes[analyteName]['blurb'] }
-                                &nbsp;
-                                { /* Display the 'Read more' link for those indicators that have an indicator page. Do not display the link if the page does not exist yet */ }
-                                { analytes[analyteName]['page'] ? <a href={`/learn/indicators/${analytes[analyteName]['page']}`} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a> : '' }
+                                <div style={{ fontSize: '13px' }}>
+                                    { analytes[analyteName]['blurb'] }
+                                    &nbsp;
+                                    { /* Display the 'Read more' link for those indicators that have an indicator page. Do not display the link if the page does not exist yet */ }
+                                    { analytes[analyteName]['page'] ? <a href={`/learn/indicators/${analytes[analyteName]['page']}`} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a> : '' }
+                                </div>
                             </HelpIcon>
                         </h4>
                         <DownloadData 

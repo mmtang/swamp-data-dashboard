@@ -1,7 +1,7 @@
 import React from 'react';
-import { container, loader, loadText } from './loader.module.css';
+import { container, loader, loadText } from './loader-dark.module.css';
 
-export default function Loader() {
+export default function LoaderDark() {
     return (
         <div className={container}>
             <div className={loader}></div>

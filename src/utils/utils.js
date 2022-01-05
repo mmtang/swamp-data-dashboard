@@ -65,11 +65,6 @@ export const irRegionDict = {
     'San Diego': 'Regional Board 9 - San Diego Region'
 }
 
-export const habitatAnalytes = [
-    'CSCI',
-    'IPI'
-]
-
 export const fetchData = (url) => {
     return new Promise((resolve, reject) => {
         fetch(url)

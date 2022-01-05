@@ -42,7 +42,7 @@ export default function UpdateMessage() {
     return (
         <div className={message}>
             <strong>Data Last Updated:</strong>&nbsp;
-            { status === 'loading' ? 'Loading...' : 
+            { status === 'loading' ? 'Loading': 
                 status === 'loaded' ? dateRef.current : 
                 status === 'error' ? 'Error getting data' :
                 'Error' }

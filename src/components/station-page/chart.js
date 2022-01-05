@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import LoaderBlock from '../common/loader-block';
 import * as d3 from 'd3';
 import { analyteYMax, analyteScoringCategories, analytes } from '../../constants/constants-data';
 import { colorPaletteViz } from '../../constants/constants-app';
@@ -186,7 +187,7 @@ export default function Chart({ analyte, data, dateExtent }) {
 
     return (
         <div className={chartContainer}>
-            { loading ? 'Loading...' : null }
+            { loading ? <LoaderBlock /> : null }
             <div id={chartId} />
         </div>
     )

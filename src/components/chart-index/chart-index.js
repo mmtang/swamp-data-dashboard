@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AnalyteCard from '../map-controls/analyte-card';
 import DownloadData from '../common/download-data';
+import LoaderBlock from '../common/loader-block';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
@@ -56,10 +57,10 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                         const data = results[i];
                         obj.sites[station] = data;
                     }
-                    setData(obj);
-                    processDataForDownload(obj);
                     unitRef.current = results[0][0].Unit;
                     setLoading(false);
+                    setData(obj);
+                    processDataForDownload(obj);
                 });
         }
     }, [modalVisible]);
@@ -106,7 +107,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
 
         const drawChart = (data) => {
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 20, right: 25, bottom: 30, left: 68 };
+            const margin = { top: 20, right: 35, bottom: 30, left: 50 };
             const width = 645 + margin.left + margin.right;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 5;
@@ -184,7 +185,8 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .attr('class', 'y axis')
                 .attr('transform', 'translate(' + margin.left + ', 0)')
                 .call(yAxis);
-
+            
+            /* Taking this out and putting unit in the modal header (consistent with station charts)
             // Draw unit on top of y-axis
             chart.append('text')
                 .attr('class', 'unitLabel')
@@ -195,6 +197,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .attr('fill', '#41464b')
                 .attr('text-anchor', 'end')
                 .text(unitRef.current);
+            */
 
             // Draw reference geometries (scoring categories)
             if (analytes[analyte]) {
@@ -302,10 +305,10 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .call(legendOrdinal);
         };
 
-        if (modalVisible && !loading) {
+        if (!loading && data) {
             drawChart(data);
         }
-    }, [modalVisible, loading])
+    }, [loading, data])
 
     const getData = (station, analyte) => {
         return new Promise((resolve, reject) => {
@@ -378,10 +381,15 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     closeIcon
                     open={modalVisible}
                     onClose={() => setModalVisible(false)}
+                    closeOnDimmerClick={false}
                 >
-                    <Header content={analyte} />
+                    <Header content={
+                        analyte === 'pH' ? 'pH' :
+                        unitRef.current ? `${analyte} (${unitRef.current})` :
+                        analyte
+                    } />
                     <Modal.Content>
-                        { loading ? 'Loading...' : 
+                        { loading ? <LoaderBlock /> : 
                             <div className={modalContent}>
                                 <div className={downloadWrapper}>
                                     <DownloadData 
@@ -393,10 +401,10 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                                 </div>
                                 <div id="index-chart-container"></div>
                                 <div className={chartFooter}>
-                                    <div id="index-legend-container" className={legendContainer}></div>
                                     <div className={cardWrapper}>
                                         <AnalyteCard analyte={analyte} />   
                                     </div>
+                                    <div id="index-legend-container" className={legendContainer}></div>
                                 </div>
                             </div>
                         }
