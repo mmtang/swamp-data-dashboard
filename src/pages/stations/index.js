@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef  } from 'react';
-import LayoutStation from '../../components/layout/layout-station';
+import Navbar from '../../components/navbar/navbar';
 import MapStation from '../../components/map/map-station';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
 import DownloadData from '../../components/common/download-data';
@@ -9,7 +9,7 @@ import LoaderDashboard from '../../components/common/loader-dashboard';
 import ErrorFullscreen from '../../components/common/error-fullscreen';
 import { regionDict, fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
-import { leftContainer, titleContainer, siteMapContainer, rightContainer, stationName, buttonContainer } from './index.module.css';
+import { appContainer, mainGrid, header, leftContainer, titleContainer, siteMapContainer, rightContainer, stationName, buttonContainer } from './index.module.css';
 
 export default function Station(props) {
     const stationCodeRef = useRef(null);
@@ -84,7 +84,10 @@ export default function Station(props) {
 
     const pageContent = () => {
         return (
-            <React.Fragment>
+            <div className={mainGrid}>
+                <div className={header}>
+                    <Navbar />
+                </div>
                 <div className={leftContainer}>
                     <section className={titleContainer}>
                         <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>
@@ -123,17 +126,17 @@ export default function Station(props) {
                         />
                     </section>
                 </div>
-            </React.Fragment>
+            </div>
         )
     }
 
     return (
-        <LayoutStation>
+        <div className={appContainer}>
             { loading === 'true' ? <LoaderDashboard /> :
               loading === 'error' ? <ErrorFullscreen>{errorRef.current}</ErrorFullscreen> :
               loading === 'false' && stationObjRef.current ? pageContent() :
               <LoaderDashboard /> // Catch all other values
             }
-        </LayoutStation>
+        </div>
     )
 }

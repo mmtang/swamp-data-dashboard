@@ -1,6 +1,6 @@
 .navBar {
     display: flex;
-    position: fixed;
+    position: absolute;
     width: 100vw;
     left: 0;
     top: 0;

@@ -10,9 +10,6 @@ import { parent, textContainer, menuContainer } from './layout-parameter.module.
 function LayoutParameter({ parameter, children }) {    
     return (
         <LayoutInfo>
-            <Hero>
-                <h1>{parameter.display}</h1>
-            </Hero>
             <div className={main}>
                 <div className={parent}>
                     <div>

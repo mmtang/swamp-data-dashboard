@@ -17,23 +17,61 @@ export const analytes = {
         page: null,
         blurb: 'Ammonia is a form of nitrogen that is common in the environment. It is an essential nutrient for plants, but high levels of it can be toxic to fish and other aquatic life.'
     },
+    /*
     'Ammonia as NH3, Total': {
         code: 'ammoniaNH3',
         label: 'Ammonia',
         page: null,
         blurb: 'Ammonia is a form of nitrogen that is common in the environment. It is an essential nutrient for plants, but high levels of it can be toxic to fish and other aquatic life. The neutral, un-ionized form of ammonia (NH3) is highly toxic.'
     },
+    */
     'Arsenic, Total': {
         code: 'arsenic',
         label: 'Arsenic',
         page: null,
         blurb: 'Arsenic is a semi-metallic element that occurs naturally in the environment and as a by-product of agricultural and industrial activites. Inorganic arsenic is the more toxic form of arsenic and a known human carcinogen.'
     },
+    'Barium, Total': {
+        code: 'barium',
+        label: 'Barium',
+        page: null,
+        blurb: ''
+    },
+    'Beryllium, Total': {
+        code: 'beryllium',
+        label: 'Beryllium',
+        page: null,
+        blurb: ''
+    },
     'Boron, Dissolved': {
         code: 'boron',
         label: 'Boron',
         page: 'boron',
         blurb: 'Boron is a naturally occurring element found in rocks, soil, and water. It is an essential nutrient for most plants, but it can be toxic to aquatic life at high concentrations.'
+    },
+    'Cadmium, Total': {
+        code: 'cadmium',
+        label: 'Cadmium',
+        page: null,
+        blurb: ''
+    },
+    'Chloride, Dissolved': {
+        code: 'chloride',
+        label: 'Chloride',
+        page: null,
+        blurb: ''
+    },
+    'Chromium, Total': {
+        code: 'chromium',
+        label: 'chromium',
+        page: null,
+        blurb: ''
+    },
+    'Copper, Total': {
+        code: 'copper',
+        label: 'Copper',
+        page: null,
+        blurb: ''
     },
     'CSCI': {
         code: 'csci',
@@ -47,17 +85,31 @@ export const analytes = {
         page: 'ecoli',
         blurb: 'E. coli bacteria live in the intestines of warm-blooded animals and humans. In water, they are a strong indicator of sewage contamination.'
     },
+    'ElectricalConductivity, Total': {
+        code: 'electricalConductivity',
+        label: 'Electrical Conductivity',
+        page: null,
+        blurb: ''
+    },
+    /*
     'Enterococcus': {
         code: 'enterococcus',
         label: 'Enterococcus',
         page: null,
         blurb: 'Enterococcus bacteria live in the intestines of warm-blooded animals and humans. They are widely used as a bacterial indicator of health risk in fresh and salt water.'
     },
+    */
     'Fluoride, Dissolved': {
         code: 'fluoride',
         label: 'Fluoride',
         page: null,
         blurb: 'Fluoride is a naturally occurring compound found in water, soil, and rocks. Small amounts of fluoride are added to public water supplies and dental products such as toothpaste to prevent tooth decay.'
+    },
+    'Hardness as CaCO3, Total': {
+        code: 'hardness',
+        label: 'Hardness',
+        page: null,
+        blurb: ''
     },
     'IPI': {
         code: 'ipi',
@@ -65,35 +117,41 @@ export const analytes = {
         page: 'ipi',
         blurb: 'The Index of Physical Habitat Integrity (IPI) is a statewide index used to measure physical habitat integrity based on the physical characteristics of stream and river channels and their proximate riparian zones.'
     },
-    'Oxygen, Dissolved, Total': {
-        code: 'dissolvedOxygen',
-        label: 'Dissolved Oxygen',
-        page: 'dissolved_oxygen',
-        blurb: "Dissolved Oxygen is the amount of oxygen that is present in water. It is an essential element used by all forms of aquatic life."
+    'Iron, Total': {
+        code: 'iron',
+        label: 'iron',
+        page: null,
+        blurb: ''
     },
-    'pH': {
-        code: 'ph',
-        label: 'pH',
-        page: 'ph',
-        blurb: 'pH is a measure of how acidic or basic water is. It affects most chemical and biological processes in water, and is crucial for the survival of aquatic organisms.'
+    'Lead, Total': {
+        code: 'lead',
+        label: 'lead',
+        page: null,
+        blurb: ''
     },
-    'SpecificConductivity, Total': {
-        code: 'conductivity',
-        label: 'Conductivity',
-        page: 'conductivity',
-        blurb: 'Conductivity, or specific conductivity, is a measure of the ability of water to pass an electrical current. It is an indirect measure of the amount of dissolved materials, such as salts and metals, in the water.'
+    'Manganese, Total': {
+        code: 'manganese',
+        label: 'Manganese',
+        page: null,
+        blurb: ''
     },
-    'Temperature': {
-        code: 'temperature',
-        label: 'Temperature',
-        page: 'temperature',
-        blurb: 'Water temperature is a measure of the average kinetic energy of water molecules. It is an important indicator of the general condition of a waterbody and the ecosystem it supports.'
+    'Nickel, Total': {
+        code: 'nickel',
+        label: 'Nickel',
+        page: null,
+        blurb: ''
     },
-    'Total Dissolved Solids, Total': {
-        code: 'tds',
-        label: 'Total Dissolved Solids',
-        page: 'tds',
-        blurb: 'Total Dissolved Solids refers to the total concentration of organic and inorganic substances dissolved in water. Most dissolved substances do not pose a threat, but a high level can indicate the presence of other pollutants in the water.'
+    'Nitrate + Nitrite as N, Total': {
+        code: 'nitratePlusNitrite',
+        label: 'Nitrate + Nitrite as N',
+        page: null,
+        blurb: ''
+    },
+    'Nitrate as N, Total': {
+        code: 'nitrate',
+        label: 'Nitrate as N',
+        page: null,
+        blurb: ''
     },
     'Nitrogen, Total Kjeldahl, Total': {
         code: 'tkn',
@@ -107,18 +165,78 @@ export const analytes = {
         page: 'total_nitrogen',
         blurb: 'Nitrogen is an essential plant nutrient, but too much can lead to an excessive growth of plants and algae in the water, which has adverse ecological effects.'
     },
+    'Oxygen, Dissolved, Total': {
+        code: 'dissolvedOxygen',
+        label: 'Dissolved Oxygen',
+        page: 'dissolved_oxygen',
+        blurb: "Dissolved Oxygen is the amount of oxygen that is present in water. It is an essential element used by all forms of aquatic life."
+    },
+    'Oxygen, Saturation, Total': {
+        code: 'oxygenSaturation',
+        label: 'Oxygen saturation',
+        page: null,
+        blurb: ''
+    },
+    'pH': {
+        code: 'ph',
+        label: 'pH',
+        page: 'ph',
+        blurb: 'pH is a measure of how acidic or basic water is. It affects most chemical and biological processes in water, and is crucial for the survival of aquatic organisms.'
+    },
     'Phosphorus as P, Total': {
         code: 'totalPhosphorus',
         label: 'Total Phosphorus',
         page: 'total_phosphorus',
         blurb: 'Phosphorus is an essential plant nutrient, but too much can lead to an excessive growth of plants and algae in the water, which has adverse ecological effects.'
     },
+    'Selenium, Total': {
+        code: 'selenium',
+        label: 'Selenium',
+        page: null,
+        blurb: ''
+    },
+    'Silver, Total': {
+        code: 'silver',
+        label: 'Silver',
+        page: null,
+        blurb: ''
+    },
+    'SpecificConductivity, Total': {
+        code: 'conductivity',
+        label: 'Conductivity',
+        page: 'conductivity',
+        blurb: 'Conductivity, or specific conductivity, is a measure of the ability of water to pass an electrical current. It is an indirect measure of the amount of dissolved materials, such as salts and metals, in the water.'
+    },
+    'Sulfate, Dissolved': {
+        code: 'sulfate',
+        label: 'Sulfate',
+        page: null,
+        blurb: ''
+    },
+    'Temperature': {
+        code: 'temperature',
+        label: 'Temperature',
+        page: 'temperature',
+        blurb: 'Water temperature is a measure of the average kinetic energy of water molecules. It is an important indicator of the general condition of a waterbody and the ecosystem it supports.'
+    },
+    'Total Dissolved Solids, Total': {
+        code: 'tds',
+        label: 'Total Dissolved Solids',
+        page: 'tds',
+        blurb: 'Total Dissolved Solids refers to the total concentration of organic and inorganic substances dissolved in water. Most dissolved substances do not pose a threat, but a high level can indicate the presence of other pollutants in the water.'
+    },
     'Turbidity, Total': {
         code: 'turbidity',
         label: 'Turbidity',
         page: 'turbidity',
         blurb: 'Turbidity is a measure of the clarity or cloudiness of water. It is an important indicator of sediment and erosion levels, which can affect ecological productivity and habitat quality.'
-    }
+    },
+    'Zinc, Total': {
+        code: 'zinc',
+        label: 'Zinc',
+        page: null,
+        blurb: ''
+    },
 }
 
 export const habitatAnalytes = [

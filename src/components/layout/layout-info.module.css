@@ -1,3 +1,5 @@
 .mainContiner {
+    position: absolute;
+    top: 60px;
     overflow-y: auto;
 }
