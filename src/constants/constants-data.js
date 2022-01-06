@@ -35,43 +35,43 @@ export const analytes = {
         code: 'barium',
         label: 'Barium',
         page: null,
-        blurb: ''
+        blurb: 'Barium is a naturally occurring metallic element only found in combination with other elements. The more soluble barium compounds are considered more toxic than their less soluble counterparts. Potential sources of pollution include erosion and discharges from manufacturing and drilling operations.'
     },
     'Beryllium, Total': {
         code: 'beryllium',
         label: 'Beryllium',
         page: null,
-        blurb: ''
+        blurb: 'Beryllium is a naturally occurring metal that is used in a variety of industries. It can enter surface water through weathering processes, the combustion of fossil fuels, and discharges from industrial and municipal operations.'
     },
     'Boron, Dissolved': {
         code: 'boron',
         label: 'Boron',
         page: 'boron',
-        blurb: 'Boron is a naturally occurring element found in rocks, soil, and water. It is an essential nutrient for most plants, but it can be toxic to aquatic life at high concentrations.'
+        blurb: 'Boron is a naturally occurring element found in rocks, soil, and water. It is an essential nutrient for most plants but can be toxic to aquatic life at high concentrations.'
     },
     'Cadmium, Total': {
         code: 'cadmium',
         label: 'Cadmium',
         page: null,
-        blurb: ''
+        blurb: 'Cadmium is a naturally occurring metal that can be harmful to humans and aquatic organisms in high concentrations. It is commonly used for the manufacturing of batteries, pigments, metal coatings, and other industrial products.'
     },
     'Chloride, Dissolved': {
         code: 'chloride',
         label: 'Chloride',
         page: null,
-        blurb: ''
+        blurb: 'Chlorides are salts that are present in most natural waters. Although an essential nutrient for plant and animal life, elevated levels can be toxic to fish and other aquatic organisms. Common sources of chloride pollution include de-icing salt and fertilizers.'
     },
     'Chromium, Total': {
         code: 'chromium',
         label: 'chromium',
         page: null,
-        blurb: ''
+        blurb: "Chromium is a metallic element found in rocks, plants, and soil, and also produced by industrial processes. Chromium-3 is a trace nutrient and not harmful to humans and animals. The more soluble form, chromium-6, is a known carcinogen."
     },
     'Copper, Total': {
         code: 'copper',
         label: 'Copper',
         page: null,
-        blurb: ''
+        blurb: "Copper is a naturally occurring metal that is found in the earth's crust. It is a trace mineral that is essential for aquatic life, but excess amounts can impair biological function and lead to death."
     },
     'CSCI': {
         code: 'csci',
@@ -85,12 +85,14 @@ export const analytes = {
         page: 'ecoli',
         blurb: 'E. coli bacteria live in the intestines of warm-blooded animals and humans. In water, they are a strong indicator of sewage contamination.'
     },
+    /*
     'ElectricalConductivity, Total': {
         code: 'electricalConductivity',
         label: 'Electrical Conductivity',
         page: null,
         blurb: ''
     },
+    */
     /*
     'Enterococcus': {
         code: 'enterococcus',
@@ -106,10 +108,10 @@ export const analytes = {
         blurb: 'Fluoride is a naturally occurring compound found in water, soil, and rocks. Small amounts of fluoride are added to public water supplies and dental products such as toothpaste to prevent tooth decay.'
     },
     'Hardness as CaCO3, Total': {
-        code: 'hardness',
+        code: null,
         label: 'Hardness',
         page: null,
-        blurb: ''
+        blurb: 'Hardness refers to the amount of dissolved calcium, magnesium, and other minerals present in water. The hardness of a waterbody is determined primarily by the geology of the area and the rate of erosion.'
     },
     'IPI': {
         code: 'ipi',
@@ -117,41 +119,23 @@ export const analytes = {
         page: 'ipi',
         blurb: 'The Index of Physical Habitat Integrity (IPI) is a statewide index used to measure physical habitat integrity based on the physical characteristics of stream and river channels and their proximate riparian zones.'
     },
-    'Iron, Total': {
-        code: 'iron',
-        label: 'iron',
-        page: null,
-        blurb: ''
-    },
     'Lead, Total': {
         code: 'lead',
         label: 'lead',
         page: null,
-        blurb: ''
+        blurb: 'Lead is a metal that is naturally found in low levels in the environment. It is a known toxin that can bioaccumulate in the food chain and in individuals.'
     },
     'Manganese, Total': {
         code: 'manganese',
         label: 'Manganese',
         page: null,
-        blurb: ''
+        blurb: 'Manganese is a common and naturally-occurring mineral found in rocks, soil, and water. It is an essential nutrient important for the growth of plants and animals, but high concentrations can negatively impact sensitive aquatic populations.'
     },
     'Nickel, Total': {
         code: 'nickel',
         label: 'Nickel',
         page: null,
-        blurb: ''
-    },
-    'Nitrate + Nitrite as N, Total': {
-        code: 'nitratePlusNitrite',
-        label: 'Nitrate + Nitrite as N',
-        page: null,
-        blurb: ''
-    },
-    'Nitrate as N, Total': {
-        code: 'nitrate',
-        label: 'Nitrate as N',
-        page: null,
-        blurb: ''
+        blurb: 'Nickel is a naturally-occurring metal found in trace amounts in the environment. It can enter surface water through natural and human-driven processes. In high concentrations, it can be toxic to humans and aquatic organisms.'
     },
     'Nitrogen, Total Kjeldahl, Total': {
         code: 'tkn',
@@ -161,7 +145,7 @@ export const analytes = {
     },
     'Nitrogen, Total, Total': {
         code: 'totalNitrogen',
-        label: 'Total Nitrogen',
+        label: 'Nitrogen',
         page: 'total_nitrogen',
         blurb: 'Nitrogen is an essential plant nutrient, but too much can lead to an excessive growth of plants and algae in the water, which has adverse ecological effects.'
     },
@@ -172,10 +156,10 @@ export const analytes = {
         blurb: "Dissolved Oxygen is the amount of oxygen that is present in water. It is an essential element used by all forms of aquatic life."
     },
     'Oxygen, Saturation, Total': {
-        code: 'oxygenSaturation',
+        code: null,
         label: 'Oxygen saturation',
         page: null,
-        blurb: ''
+        blurb: 'Oxygen saturation is the amount of dissolved oxygen in water relative to the total amount possible. It is expressed as a percentage.'
     },
     'pH': {
         code: 'ph',
@@ -185,7 +169,7 @@ export const analytes = {
     },
     'Phosphorus as P, Total': {
         code: 'totalPhosphorus',
-        label: 'Total Phosphorus',
+        label: 'Phosphorus',
         page: 'total_phosphorus',
         blurb: 'Phosphorus is an essential plant nutrient, but too much can lead to an excessive growth of plants and algae in the water, which has adverse ecological effects.'
     },
@@ -193,13 +177,13 @@ export const analytes = {
         code: 'selenium',
         label: 'Selenium',
         page: null,
-        blurb: ''
+        blurb: 'Selenium is a naturally-occurring element commonly found in rocks and soil. It is used to manufacture many products, including pigments, phamaceuticals, and electronics. Selenium can enter surface water through natural processes and industrial discharges.'
     },
     'Silver, Total': {
         code: 'silver',
         label: 'Silver',
         page: null,
-        blurb: ''
+        blurb: 'Silver is a metallic element that occurs naturally in the environment.  It is commonly used in many consumer products and commercial water filters.'
     },
     'SpecificConductivity, Total': {
         code: 'conductivity',
@@ -208,10 +192,10 @@ export const analytes = {
         blurb: 'Conductivity, or specific conductivity, is a measure of the ability of water to pass an electrical current. It is an indirect measure of the amount of dissolved materials, such as salts and metals, in the water.'
     },
     'Sulfate, Dissolved': {
-        code: 'sulfate',
+        code: '',
         label: 'Sulfate',
         page: null,
-        blurb: ''
+        blurb: 'Sulfate is a naturally occurring mineral found in water, air, and soil. It is an essential plant nutrient, but in high concentrations it can be toxic to sensitive aquatic organisms.'
     },
     'Temperature': {
         code: 'temperature',
@@ -235,7 +219,7 @@ export const analytes = {
         code: 'zinc',
         label: 'Zinc',
         page: null,
-        blurb: ''
+        blurb: 'Zinc is a naturally-occurring element and an essential micronutrient for many aquatic organisms. The toxicity of zinc is dependent on other environmental conditions in the waterbody, such as hardness and pH.'
     },
 }
 

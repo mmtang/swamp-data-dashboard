@@ -7,7 +7,6 @@
     grid-template-rows: 60px auto auto;
     grid-template-columns: 1fr;
     height: auto;
-    font-size: 0.95rem;
 }
 
 .header {
@@ -16,6 +15,7 @@
 
 .mainContainer {
     grid-area: main;
+    font-size: 0.95rem;
 }
 
 .footer {
