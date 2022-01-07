@@ -11,7 +11,7 @@ const Navbar = ({ active }) => {
             <div className={navMenu}>
                 <ul>
                     <LinkDropdown path='/learn' active={active === 'learn' ? true : false}>Learn</LinkDropdown>
-                    <LinkDropdown path='/learn' active={active === 'data' ? true : false}>Data</LinkDropdown>
+                    <LinkDropdown path='/data' active={active === 'data' ? true : false}>Data</LinkDropdown>
                 </ul>
             </div>
         </div>

@@ -381,7 +381,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     closeIcon
                     open={modalVisible}
                     onClose={() => setModalVisible(false)}
-                    closeOnDimmerClick={false}
+                    closeOnDimmerClick={true}
                 >
                     <Header content={
                         analyte === 'pH' ? 'pH' :
