@@ -1,0 +1,17 @@
+.imageSetContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin: 2em 0;
+}
+
+.imageSetContainer img {
+    max-width: 600px;
+    width: auto;
+}
+
+@media screen and (max-width: 800px) {
+    .imageSetContainer img {
+        width: 100%; 
+    }
+}
