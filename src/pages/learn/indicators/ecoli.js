@@ -7,7 +7,7 @@ export default function Ecoli() {
             <div>
                 <h2>What is E. coli?</h2>
                 <p><i>Escherichia coli</i>, or <i>E. coli</i>, is a type of bacteria found in the intestines and fecal waste of animals and humans. It is a member of the fecal coliform group of bacteria, which is a subgroup of total coliform bacteria. Most strains of <i>E. coli</i> bacteria are harmless; however, some strains can cause illness  in humans.</p>
-                <h2>Why is it important to measure E. coli?</h2>
+                <h2>Why is it important?</h2>
                 <p><i>E. coli</i> is widely used as an indicator of water quality. The presence of <i>E. coli</i> bacteria in surface waters strongly indicates recent contamination from animal and/or human fecal waste. Possible sources of contamination include wastewater treatment plants, septic systems, sewer pipe breaks/leaks, and storm runoff. High numbers of <i>E. coli</i> also indicate the presence of other harmful bacteria and disease-causing organisms, such as viruses and protozoans.</p>
                 <p><i>E. coli</i> is one of the most reliable indicators of health risk from water contact in recreational waters. Ingestion of or contact with contaminated water can cause gastrointestinal illness, nausea, or infections of the eye, ear, nose, or throat. Most healthy individuals can recover on their own, but those with compromised immune systems are at higher risk and can develop severe illnesses.</p>
                 <h2>How do I interpret the data?</h2>

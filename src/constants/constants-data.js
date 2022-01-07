@@ -145,15 +145,15 @@ export const analytes = {
     },
     'Nitrogen, Total, Total': {
         code: 'totalNitrogen',
-        label: 'Nitrogen',
+        label: 'Total Nitrogen',
         page: 'total_nitrogen',
-        blurb: 'Nitrogen is an essential plant nutrient, but too much can lead to an excessive growth of plants and algae in the water, which has adverse ecological effects.'
+        blurb: 'Nitrogen is an essential nutrient, but too much of it can lead to an excessive growth of plants and algae in a waterbody, which can have adverse ecological effects.'
     },
     'Oxygen, Dissolved, Total': {
         code: 'dissolvedOxygen',
         label: 'Dissolved Oxygen',
         page: 'dissolved_oxygen',
-        blurb: "Dissolved Oxygen is the amount of oxygen that is present in water. It is an essential element used by all forms of aquatic life."
+        blurb: "Dissolved Oxygen is the amount of oxygen that is present in water. Oxygen is an essential element used by all forms of aquatic life for survival."
     },
     'Oxygen, Saturation, Total': {
         code: null,
@@ -165,13 +165,13 @@ export const analytes = {
         code: 'ph',
         label: 'pH',
         page: 'ph',
-        blurb: 'pH is a measure of how acidic or basic water is. It affects most chemical and biological processes in water, and is crucial for the survival of aquatic organisms.'
+        blurb: 'pH is a measure of how acidic or basic water is. It affects most chemical and biological processes in water, and is important to the survival and growth of aquatic organisms.'
     },
     'Phosphorus as P, Total': {
         code: 'totalPhosphorus',
-        label: 'Phosphorus',
+        label: 'Total Phosphorus',
         page: 'total_phosphorus',
-        blurb: 'Phosphorus is an essential plant nutrient, but too much can lead to an excessive growth of plants and algae in the water, which has adverse ecological effects.'
+        blurb: 'Phosphorus is an essential nutrient that occurs naturally at low levels. High levels of phosphorus, usually from contamination, can have adverse ecological effects on a waterbody and its inhabitants.'
     },
     'Selenium, Total': {
         code: 'selenium',

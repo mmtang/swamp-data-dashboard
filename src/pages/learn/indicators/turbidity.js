@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'gatsby';
 import LayoutParameter from '../../../components/layout/layout-parameter';
 
 export default function Turbidity() {
@@ -6,19 +7,16 @@ export default function Turbidity() {
         <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'turbidity', display: 'Turbidity' }}>
             <div>
                 <h2>What is Turbidity?</h2>
-                <p>Turbidity is a measure of water clarity; specifically, how cloudy (or opaque) the water is. Water looks cloudy when there is more material, such as silt, sand, algae, and plankton, suspended in the water. These suspended particles scatter light, which gives the water a murky appearance. Sources of turbidity include:
-                    <ul>
-                        <li>Soil erosion</li>
-                        <li>Waste discharge</li>
-                        <li>Urban runoff</li>
-                        <li>Eroding stream banks</li>
-                        <li>Large numbers of bottom feeders (such as carp), which stir up bottom sediments</li>
-                        <li>Excessive algal growth.</li>
-                    </ul>
-                </p>
-                <h2>Why is it important to measure Turbidity?</h2>
-                <p>Higher turbidity increases water temperatures because suspended particles absorb more heat. This, in turn, reduces the concentration of dissolved oxygen (DO) because warm water holds less DO than cold. Higher turbidity also reduces the amount of light penetrating the water, which reduces photosynthesis and the production of DO. Suspended materials can clog fish gills, reducing resistance to disease in fish, lowering growth rates, and affecting egg and larval development. As the particles settle, they can blanket the stream bottom, especially in slower waters, and smother fish eggs and benthic macroinvertebrates.</p>
-                <p>Turbidity can be useful as an indicator of the effects of runoff from construction, agricultural practices, logging activity, discharges, and other sources. Turbidity often increases sharply during a rainfall, especially in developed watersheds, which typically have relatively high proportions of impervious surfaces. Regular monitoring of turbidity can help detect trends that might indicate increasing erosion in developing watersheds.</p>
+                <p>Turbidity is a measure of water clarity; specifically, how cloudy (or opaque) water is. Water looks cloudy when there is more material, such as silt, sand, and algae, suspended in the water. These suspended particles scatter light, which gives the water a murky appearance. Turbidity is an important indicator of sediment, erosion, and pollution levels in a waterbody.</p>
+                <h2>Why is it important?</h2>
+                <p>Turbidity can have a wide range of effects on a waterbody and its inhabitants. For example, high turbidity can increase the <Link to='../temperature'>temperature</Link> of water because suspended particles absorb more heat. This has a domino effect in reducing the amount of <Link to='../dissolved_oxygen'>dissolved oxygen</Link> (DO) in water because warm water holds less DO than cold water. Turbidity also affects photosynthesis by reducing the amount of sunlight that can penetrate the water column. Less photosynthesis results in even lower DO levels, which is stressful to aquatic life.</p>
+                <p>High turbidity can also have a direct effect on the health of fish and other aquatic organisms living in a waterbody. An increase in suspended particles can degrade habitat, affect reproduction and spawning, and impair vision and gill function. More obviously, turbidity changes the appearance and aesthetic quality of water. Highly turbid waters are less appealing to be around, which can impact recreation and tourism.</p>
+                <p>Turbidity can be caused by both natural and human-driven prosses. Some common sources of turbidity include erosion, wastewater discharges, and surface runoff. The amount of turbidity caused by human-driven activities is much greater than that caused by natural processes.  Turbidity often increases sharply during and right after a storm event, when the moving water transports waste and materials from impervious services into the local waterbody.</p>
+                <h2>How do I interpret the data?</h2>
+                <p>There are no statewide water quality objectives for turbidity. A Regional Water Quality Control Board (Regional Water Board) may have region, waterbody, or site-specific water quality objectives for turbidity and other parameters. These objectives are outlined in each Regional Water Board's Water Quality Control Plan (Basin Plan).</p> 
+                <h2>References</h2>
+                <p><a href="https://archive.epa.gov/water/archive/web/html/vms55.html" target="_blank" rel="noreferrer noopener">U.S. Environmental Protection Agency. 2012. Turbidity. In Water: Monitoring & Assessment.</a></p>
+                <p><a href="https://www.usgs.gov/special-topics/water-science-school/science/turbidity-and-water" target="_blank" rel="noreferrer noopener">U.S. Geological Survey, Water Science School. 2018. Turbidity and Water.</a></p>
             </div>
         </LayoutParameter>
     )
