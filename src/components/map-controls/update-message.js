@@ -46,9 +46,6 @@ export default function UpdateMessage() {
                 status === 'loaded' ? dateRef.current : 
                 status === 'error' ? 'Error getting data' :
                 'Error' }
-            <HelpIcon position='top center'>
-                <p>Updated weekly, usually Monday mornings (Pacific Time).</p>
-            </HelpIcon>
         </div>
     )
 }

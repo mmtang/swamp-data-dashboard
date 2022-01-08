@@ -1,0 +1,15 @@
+.trendContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin: 0 0.2em;
+}
+
+.iconWrapper {
+    margin-right: 1em;
+}
+
+.textWrapper {
+    display: flex;
+    align-items: center;
+}
