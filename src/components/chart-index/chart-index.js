@@ -7,7 +7,7 @@ import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { analytes, analyteScoringCategories, habitatAnalytes, analyteYMax, chemDataFields, habitatDataFields  } from '../../constants/constants-data';
 import { colorPaletteViz } from '../../constants/constants-app';
-import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, modalContent, downloadWrapper } from './chart-index.module.css';
+import { chart, buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, modalContent, downloadWrapper } from './chart-index.module.css';
 
 
 export default function ChartIndex({ text, selectedSites, analyte }) {
@@ -97,6 +97,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
             // necessary if you call invoke this function for multiple svgs
             // api docs: https://github.com/mbostock/d3/wiki/Selections#on
             d3.select(window).on('resize.' + container.id, resize);
+            
             // get width of container and resize svg to fit it
             function resize() {
                 const targetWidth = parseInt(container.offsetWidth);
@@ -106,9 +107,20 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
         }
 
         const drawChart = (data) => {
+
+            const margin = { top: 20, right: 40, bottom: 30, left: 55 };
+            
+            // get container + svg aspect ratio
+            const aspect = 645 / 220;  // arbitrary numbers based on hard-coded size used previously, can change
+            const container = d3.select('#index-chart-container').node();
+            const targetWidth = parseInt(container.getBoundingClientRect().width);
+            const targetHeight = parseInt(targetWidth / aspect);
+            console.log(targetWidth, targetHeight);
+
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 20, right: 35, bottom: 30, left: 50 };
-            const width = 645 + margin.left + margin.right;
+            //const width = 645 + margin.left + margin.right;
+            //const height = 220 + margin.top + margin.bottom;
+            const width = targetWidth;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 5;
 
@@ -152,7 +164,8 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .range([margin.left, width - margin.right]);
             // Define x-axis
             const xAxis = d3.axisBottom()
-                .scale(xScale);
+                .scale(xScale)
+                .ticks(5);
 
             // Get results from all sites to define domain for y-axis
             let allResults = [];
@@ -173,10 +186,12 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .range([height - margin.bottom, margin.top]);
             // Define y-axis
             const yAxis = d3.axisLeft()
-                .scale(yScale);
+                .scale(yScale)
+                .ticks(5);
 
             // Draw x-axis
             chart.append('g')
+                .attr('class', 'x axis')
                 .attr('transform', 'translate(0,' + (height - margin.bottom) + ')')
                 .call(xAxis);
     
@@ -185,6 +200,11 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .attr('class', 'y axis')
                 .attr('transform', 'translate(' + margin.left + ', 0)')
                 .call(yAxis);
+
+            // Restyle axis text elements
+            d3.selectAll('.axis > .tick > text')
+                    .style("font-size",'1.3em')
+                    .style('font-family', 'Source Sans Pro');
             
             /* Taking this out and putting unit in the modal header (consistent with station charts)
             // Draw unit on top of y-axis
@@ -399,7 +419,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                                         Download data
                                     </DownloadData>
                                 </div>
-                                <div id="index-chart-container"></div>
+                                <div id="index-chart-container" className={chart}></div>
                                 <div className={chartFooter}>
                                     <div className={cardWrapper}>
                                         <AnalyteCard analyte={analyte} />   

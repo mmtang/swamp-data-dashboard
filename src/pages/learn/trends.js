@@ -16,7 +16,7 @@ export default function Trends() {
                 <p>The SWAMP Data Dashboard shows trends in two areas of the dashboard, the map and data tables.</p>
                 <h2>Methodology</h2>
                 <Message compact>
-                    <Icon name='exclamation triangle' />The methodology described on this page is currently in draft form. We welcome your feedback: <a href="mailto:swamp@waterboards.ca.gov">swamp@waterboards.ca.gov</a>.
+                    <Icon name='exclamation triangle' />The methodology described on this page is in draft form. We welcome your feedback: <a href="mailto:swamp@waterboards.ca.gov">swamp@waterboards.ca.gov</a>.
                 </Message>
                 <h3>General approach</h3>
                 <p>Trends are calculated for all indicators using the seasonal Kendall test. The seasonal Kendall test is a statistical test used to analyze time series data for monotonic trends (i.e., as one variable increases, the other seems to increase or decrease). The seasonal Kendall test is a non-parametric test, meaning that it makes no underlying assumptions about the normality of the data. It can also handle missing data and censored data.</p>
