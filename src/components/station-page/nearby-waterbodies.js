@@ -71,7 +71,7 @@ export default function NearbyWaterbodies({ coordinates }) {
             </h3>
             { 
               loading === 'true' ? <LoaderBlock /> : 
-              loading === 'error' ? <div>Error fetching data. Refresh the page or try again later.</div> :
+              loading === 'error' ? <div><p>Error fetching data. Refresh the page or try again later.</p></div> :
               loading === 'false' && features.length > 0 ? features.map(d => <CardWaterbody key={d.wbid} feature={d} />) : 
               loading === 'false' && features.length === 0 ? <i className="light">No waterbodies found within {distance} meters.</i> :
               <div></div> // Return an empty div for all other cases

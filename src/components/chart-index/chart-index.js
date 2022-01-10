@@ -7,7 +7,7 @@ import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { analytes, analyteScoringCategories, habitatAnalytes, analyteYMax, chemDataFields, habitatDataFields  } from '../../constants/constants-data';
 import { colorPaletteViz } from '../../constants/constants-app';
-import { chart, buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, modalContent, downloadWrapper } from './chart-index.module.css';
+import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, modalContent, downloadWrapper } from './chart-index.module.css';
 
 
 export default function ChartIndex({ text, selectedSites, analyte }) {
@@ -107,17 +107,13 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
         }
 
         const drawChart = (data) => {
-
-            const margin = { top: 20, right: 40, bottom: 30, left: 55 };
-            
             // get container + svg aspect ratio
             const aspect = 645 / 220;  // arbitrary numbers based on hard-coded size used previously, can change
             const container = d3.select('#index-chart-container').node();
             const targetWidth = parseInt(container.getBoundingClientRect().width);
-            const targetHeight = parseInt(targetWidth / aspect);
-            console.log(targetWidth, targetHeight);
 
             const chartId = 'chart-' + randomId.current;
+            const margin = { top: 20, right: 35, bottom: 30, left: 55 };
             //const width = 645 + margin.left + margin.right;
             //const height = 220 + margin.top + margin.bottom;
             const width = targetWidth;
@@ -150,8 +146,9 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .attr('class', customTooltip)
                 .style('opacity', 0);
             
-            // Define scales
+            // --- Define scales
             const siteKeys = Object.keys(data.sites);
+
             // Get sample dates from all sites to define domain for x-axis
             let allDates = [];
             for (let i = 0; i < siteKeys.length; i++) {
@@ -162,10 +159,14 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
             const xScale = d3.scaleTime()
                 .domain(xExtent)
                 .range([margin.left, width - margin.right]);
+
+            // Limit number of ticks based on width of chart (screen size)
+            const numTicks = targetWidth < 600 ? 5 : null;
+
             // Define x-axis
             const xAxis = d3.axisBottom()
                 .scale(xScale)
-                .ticks(5);
+                .ticks(numTicks);
 
             // Get results from all sites to define domain for y-axis
             let allResults = [];
@@ -203,8 +204,8 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
 
             // Restyle axis text elements
             d3.selectAll('.axis > .tick > text')
-                    .style("font-size",'1.3em')
-                    .style('font-family', 'Source Sans Pro');
+                .style('font-size', '1.3em')
+                .style('font-family', 'Source Sans Pro');
             
             /* Taking this out and putting unit in the modal header (consistent with station charts)
             // Draw unit on top of y-axis
@@ -242,6 +243,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                             .enter().append('text')
                             .attr('x', width - margin.right - 5)
                             .attr('y', d => yScale(d.lowerValue) - 5)
+                            .attr('font-family', 'Source Sans Pro')
                             .attr('font-size', '11px')
                             .attr('text-anchor', 'end')
                             .text(d => d.label);
@@ -296,16 +298,16 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
             let legendLabels = [];
             for (let i = 0; i < siteKeys.length; i++) {
                 const combinedName = `${siteKeys[i]} (${siteDictRef.current[siteKeys[i]].name})`;
-                const shortenedName = combinedName.length > 43 ? combinedName.slice(0, 43) + '...' : combinedName
+                const shortenedName = combinedName.length > 40 ? combinedName.slice(0, 40) + '...' : combinedName
                 legendLabels.push(shortenedName);
             }
             // Add legend
             const svgLegend = d3.select('#index-legend-container').append('svg')
-                .attr('width', 350)
+                .attr('width', 300)
                 .attr('height', 29 * siteKeys.length);
             svgLegend.append('g')
                 .attr('class', 'legendOrdinal')
-                .attr('transform', 'translate(20, 10)');
+                .attr('transform', 'translate(10, 10)');
             const ordinal = d3.scaleOrdinal()
                 .domain(legendLabels)
                 .range(colorPaletteViz);
@@ -419,12 +421,12 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                                         Download data
                                     </DownloadData>
                                 </div>
-                                <div id="index-chart-container" className={chart}></div>
+                                <div id="index-chart-container"></div>
                                 <div className={chartFooter}>
+                                    <div id="index-legend-container" className={legendContainer}></div>
                                     <div className={cardWrapper}>
                                         <AnalyteCard analyte={analyte} />   
                                     </div>
-                                    <div id="index-legend-container" className={legendContainer}></div>
                                 </div>
                             </div>
                         }

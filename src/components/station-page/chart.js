@@ -3,7 +3,7 @@ import LoaderBlock from '../common/loader-block';
 import * as d3 from 'd3';
 import { analyteYMax, analyteScoringCategories, analytes } from '../../constants/constants-data';
 import { colorPaletteViz } from '../../constants/constants-app';
-import { chartContainer, customTooltip } from './chart.module.css';
+import { chartContainer, customTooltip, chart } from './chart.module.css';
 
 export default function Chart({ analyte, data, dateExtent }) {
     const [loading, setLoading] = useState(true);
@@ -38,17 +38,23 @@ export default function Chart({ analyte, data, dateExtent }) {
     }
 
     const drawChart = () => {
-        const margin = { top: 20, right: 15, bottom: 30, left: 45 };
-        const width = 645 + margin.left + margin.right;
+        const margin = { top: 20, right: 40, bottom: 30, left: 55 };
+        // get container + svg aspect ratio
+        const container = d3.select('#' + chartId).node();
+        const targetWidth = parseInt(container.getBoundingClientRect().width);
+
+        //const width = 645 + margin.left + margin.right;
+        //const height = 220 + margin.top + margin.bottom;
+        const width = targetWidth;
         const height = 220 + margin.top + margin.bottom;
         const clipPadding = 4;
 
         const chart = d3.select('#' + chartId).append('svg')
-            .attr('id', chartId)
+            .attr('id', chartId + '-svg')
             .attr('className', 'chart')
             .attr('width', width)
             .attr('height', height)
-            .call(() => { responsive(chartId); });
+            .call(() => { responsive(chartId + '-svg'); });
         chart.append('clipPath')
             .attr('id', 'clip')
             .append('rect')
@@ -88,19 +94,29 @@ export default function Chart({ analyte, data, dateExtent }) {
             .range([height - margin.bottom, margin.top]);
         
         // Draw x-axis
+        // Limit number of ticks based on width of chart (screen size)
+        const numTicks = targetWidth < 600 ? 5 : null;
         const xAxis = d3.axisBottom()
-            .scale(xScale);
+            .scale(xScale)
+            .ticks(numTicks);
         chart.append('g')
+            .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + (height - margin.bottom) + ')')
             .call(xAxis);
         
         // Draw y-axis
         const yAxis = d3.axisLeft()
-            .scale(yScale);
+            .scale(yScale)
+            .ticks(5);
         chart.append('g')
-        .attr('class', 'y axis')
-        .attr('transform', 'translate(' + margin.left + ', 0)')
-        .call(yAxis);
+            .attr('class', 'y axis')
+            .attr('transform', 'translate(' + margin.left + ', 0)')
+            .call(yAxis);
+
+        // Restyle axis text elements
+        d3.selectAll('.axis > .tick > text')
+            .style('font-size', '1.3em')
+            .style('font-family', 'Source Sans Pro');
 
         // Draw reference geometries
         if (Object.keys(analyteScoringCategories).includes(analytes[analyte].code)) {
@@ -130,6 +146,7 @@ export default function Chart({ analyte, data, dateExtent }) {
                         .enter().append('text')
                         .attr('x', width - margin.right - 5)
                         .attr('y', d => yScale(d.lowerValue) - 5)
+                        .attr('font-family', 'Source Sans Pro')
                         .attr('font-size', '11px')
                         .attr('text-anchor', 'end')
                         .text(d => d.label);
@@ -188,7 +205,7 @@ export default function Chart({ analyte, data, dateExtent }) {
     return (
         <div className={chartContainer}>
             { loading ? <LoaderBlock /> : null }
-            <div id={chartId} />
+            <div id={chartId} className={chart} />
         </div>
     )
 }

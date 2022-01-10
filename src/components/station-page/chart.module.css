@@ -1,8 +1,10 @@
 .chartContainer {
     width: 100%;
-    display: flex;
-    justify-content: center;
     margin: 1em 0;
+}
+
+.chart {
+    width: 100%;
 }
 
 .customTooltip {

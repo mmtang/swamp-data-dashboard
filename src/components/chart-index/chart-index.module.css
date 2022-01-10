@@ -21,12 +21,12 @@
     display: flex;
     flex-direction: row;
     flex-wrap: no-wrap;
-    flex-basis: 60%;
+    flex-basis: 40%;
     padding: 1.1em;
 }
 
 .legendContainer {
-    margin: 0 0 10px 10px;
+    margin: 0 0 10px 0;
 }
 
 .cardWrapper {
@@ -45,13 +45,13 @@
     display: flex;
     flex-wrap: nowrap;
     justify-content: flex-end;
-    padding-right: 38px;
+    padding-right: 30px;
     margin-bottom: 0.4em;
 }
 
 @media screen and (max-width: 700px) {
     .chartFooter {
-        flex-wrap: wrap-reverse;
+        flex-wrap: wrap;
 
     }
 }
