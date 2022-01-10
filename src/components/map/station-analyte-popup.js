@@ -37,7 +37,7 @@ export default function StationAnalytePopup({ attributes, analyte }) {
             </div>
             <div style={{ margin: '0.4em 0'}}>
                 <ChartIndex 
-                    text={`Graph ${analyte} data`}
+                    text='Graph data'
                     selectedSites={[attributes['StationCode']]} 
                     analyte={analyte} 
                 />

@@ -303,7 +303,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
             }
             // Add legend
             const svgLegend = d3.select('#index-legend-container').append('svg')
-                .attr('width', 300)
+                .attr('width', 350)
                 .attr('height', 29 * siteKeys.length);
             svgLegend.append('g')
                 .attr('class', 'legendOrdinal')

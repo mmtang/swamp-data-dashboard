@@ -355,7 +355,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                                         {
                                           "type": "CIMSolidFill",
                                           "enable": true,
-                                          "color": [30, 142, 227, 255]
+                                          "color": [68, 201, 245, 255]
                                         }
                                       ]
                                     }
@@ -437,7 +437,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                                         {
                                           "type": "CIMSolidFill",
                                           "enable": true,
-                                          "color": [255, 127, 0, 255]
+                                          "color": [0, 113, 188, 255]
                                         }
                                       ]
                                     }

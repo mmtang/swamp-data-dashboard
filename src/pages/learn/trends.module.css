@@ -13,3 +13,21 @@
     display: flex;
     align-items: center;
 }
+
+.imageSetContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin: 1.6em 0;
+}
+
+.imageSet {
+    max-width: 700px;
+    width: auto;
+}
+
+@media screen and (max-width: 800px) {
+    .imageSetContainer img {
+        width: 100%; 
+    }
+}
