@@ -13,7 +13,7 @@ export default function Tds() {
                 <p>TDS has a number of different sources, both natural and human-driven. Rock weathering is a natural process that can increase the concentration of dissolved solids at a regional or local scale. Some sedimentary rocks, such as shales and carbonate rocks, are easily weathered and release more substances into the environment. Human-driven sources of dissolved solids include irrigation, runoff (agricultural and urban), and wastewater discharges. Widely-used commercial products such as detergents, water softeners, fertilizers, and road salt all contain elevated concentrations of dissolved solids that can enter groundwater and/or surface water.</p>
                 <h2>How do I interpret the data?</h2>
                 <p>There are no statewide water quality objectives for TDS. A Regional Water Quality Control Board (Regional Water Board) may have region, waterbody, or site-specific water quality objectives for TDS and other parameters. These objectives are outlined in each Regional Water Board's Water Quality Control Plan (Basin Plan).</p> 
-                <h2>Sources</h2>
+                <h2>References</h2>
                 <p><a href="https://www.usgs.gov/mission-areas/water-resources/science/chloride-salinity-and-dissolved-solids" target="_blank" rel="noreferrer noopener">U.S. Geological Survey. 2019. Chloride, Salinity, and Dissolved Solids.</a></p>
             </div>
         </LayoutParameter>

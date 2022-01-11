@@ -8,7 +8,7 @@ const LinkDropdown = ({ path, active, children }) => {
         <li className={active ? navItemActive : navItem}>
             {/* apply the padding to navText so that the dropdown aligns with the li element */}
             <Link to={path}>
-                <div className={navText}>
+                <div className={navText} tabIndex={0} role='link'>
                     {children}
                 </div>
             </Link>

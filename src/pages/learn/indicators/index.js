@@ -17,7 +17,12 @@ export default function ParametersIndex() {
     const cards = items.map(d => {
         if (d.page) {
             return (
-                <Link to={d.page}><CardSmall leftComponent={<ParameterIcon icon={d.code} size={60} key={d.code} />}><h4>{d.label}</h4><p>{d.blurb}</p></CardSmall></Link>
+                <Link to={d.page}>
+                    <CardSmall leftComponent={<ParameterIcon icon={d.code} size={60} key={d.code} />}>
+                        <h4>{d.label}</h4>
+                        <p>{d.blurb}</p>
+                    </CardSmall>
+                </Link>
             )
         }
     });
