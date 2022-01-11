@@ -52,12 +52,22 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                         analyte: analyte,
                         sites: {}
                     };
+                    const unitArray = [];
                     for (let i = 0; i < results.length; i++) {
                         const station = results[i][0].StationCode;
                         const data = results[i];
+                        const units = results[i].map(d => d.Unit);
+                        unitArray.push(...units);
                         obj.sites[station] = data;
                     }
-                    unitRef.current = results[0][0].Unit;
+                    // Get unique units for display in modal header
+                    // Can have multiple (equivalent) units in one dataset
+                    const unitSet = new Set(unitArray);
+                    // Back to an array
+                    const uniqueUnits = Array.from(unitSet);
+                    const unitString = uniqueUnits.join(', ');
+                    unitRef.current = unitString;
+
                     setLoading(false);
                     setData(obj);
                     processDataForDownload(obj);

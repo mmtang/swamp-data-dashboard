@@ -87,6 +87,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                     Statewide monitoring program
                     <HelpIcon wide={true}>
                         <p>In addition to its regional monitoring efforts, SWAMP oversees and funds four statewide monitoring programs: the <strong><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/bioaccumulation_monitoring.html" target="_blank" rel="noopener noreferrer">Bioaccumulation Monitoring Program</a></strong>, <strong><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/bioassessment/" target="_blank" rel="noopener noreferrer">Bioassessment Program</a></strong>, <strong><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/freshwater_cyanobacteria.html" target="_blank" rel="noopener noreferrer">Freshwater and Estuarine Harmful Algal Blooms Program</a></strong>, and <strong><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/spot/" target="_blank" rel="noopener noreferrer">Stream Pollution Trends Monitoring Program</a></strong>. These statewide programs provide a "big picture" assessment of the overall status and trends of water quality throughout California.</p>
+                        <p>Programs that are not yet selectable will be added at a future date.</p>
                     </HelpIcon>
                 </p>
                 <ProgramMenu program={program} setProgram={setProgram} />
@@ -102,7 +103,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 <p className={pLabel}>
                     Water quality indicators
                     <HelpIcon wide={true}>
-                        <p>SWAMP measures a variety of <strong><a href="/learn/indicators" target="_blank" rel="noreferrer noopener">chemical, physical, and biological indicators</a></strong> that help us determine the quality of water in rivers, lakes, and other waterbodies. Each indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall health.</p>
+                        <p>SWAMP measures a variety of <a href="/learn/indicators" target="_blank" rel="noreferrer noopener">chemical, physical, and biological parameters</a> to assess the quality of water in rivers, lakes, and other waterbodies. Each parameter or indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall health.</p>
                         <p>Selecting an indicator will display the trend data for that indicator on the map and table.</p>
                     </HelpIcon>
                 </p>

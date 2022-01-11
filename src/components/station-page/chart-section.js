@@ -48,11 +48,14 @@ export default function ChartSection({ station, selectedAnalytes }) {
                 let analyteData = {};
                 for (let i = 0; i < results.length; i++) {
                     const analyte = results[i][0].Analyte;
-                    const unit = results[i][0].Unit;  // Get unit for displaying in the legend
+                    // Get unique units for display in modal header
+                    // Can have multiple (equivalent) units in one dataset
+                    const units = [...new Set(results[i].map(d => d.Unit))];
+                    const unitString = units.join(', ');
                     const data = results[i];
                     analyteData[analyte] = { 
                         data: data,
-                        unit: unit
+                        unit: unitString
                     };
                 }
                 setData(analyteData);

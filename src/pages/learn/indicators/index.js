@@ -26,7 +26,7 @@ export default function ParametersIndex() {
         <LayoutInfo active='learn'>
             <div className={main}>
                 <h1>Water quality indicators</h1>
-                <p>SWAMP measures a variety of chemical, physical, and biological indicators to assess the quality of water in rivers, lakes, and other waterbodies throughout California.</p>
+                <p>SWAMP measures a variety of chemical, physical, and biological parameters to assess the quality of water in rivers, lakes, and other waterbodies throughout California. Each parameter or indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall health.</p>
                 <div className={grid}>
                     { cards }
                 </div>

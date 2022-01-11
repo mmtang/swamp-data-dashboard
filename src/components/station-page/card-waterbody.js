@@ -14,7 +14,7 @@ export default function CardWaterbody({ feature }) {
                         <div className={listingWrapper}>
                             {feature.wb_listingstatus}
                             &nbsp;&nbsp;&#9679;&nbsp;&nbsp;
-                            <a href={feature.fact_sheet} target="_blank" rel="noopener noreferrer">Fact Sheet</a>
+                            <a href={feature.fact_sheet} target="_blank" rel="noopener noreferrer">Fact sheet</a>
                         </div>
                         { feature.wb_listingstatus === 'Listed' ? <div className={smallText}>Listed pollutants: {feature.listed_pollutants}</div> : null }
                     </div>
