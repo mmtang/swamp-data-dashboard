@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import HelpIcon from '../icons/help-icon';
 import { fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 import { message } from './update-message.module.css';

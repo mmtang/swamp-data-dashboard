@@ -9,7 +9,7 @@ import { analytes, analyteScoringCategories, habitatAnalytes, analyteYMax, chemD
 import { colorPaletteViz } from '../../constants/constants-app';
 import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, modalContent, downloadWrapper } from './chart-index.module.css';
 
-
+// Component for rendering graph on the dashboard index page (from map and dashboard)
 export default function ChartIndex({ text, selectedSites, analyte }) {
     const [data, setData] = useState({});
     const [downloadData, setDownloadData] = useState([]);
@@ -118,7 +118,6 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
 
         const drawChart = (data) => {
             // get container + svg aspect ratio
-            const aspect = 645 / 220;  // arbitrary numbers based on hard-coded size used previously, can change
             const container = d3.select('#index-chart-container').node();
             const targetWidth = parseInt(container.getBoundingClientRect().width);
 
@@ -272,14 +271,14 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     .attr('r', 4)
                     .attr('cx', d => xScale(d.SampleDate))
                     .attr('cy', d => yScale(d.Result))
-                    .attr('fill', d => d.NonDetect ? '#e3e4e6' : colorPaletteViz[i])
-                    .attr('stroke', d => d.NonDetect ? colorPaletteViz[i] : '#fff')
-                    .attr('stroke-width', d => d.NonDetect ? 2 : 1)
-                    .attr('stroke-dasharray', d => d.NonDetect ? ('2,1') : 0)
+                    .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[i])
+                    .attr('stroke', d => d.Censored ? colorPaletteViz[i] : '#fff')
+                    .attr('stroke-width', d => d.Censored ? 2 : 1)
+                    .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                     .on('mouseover', function(currentEvent, d) {
                         let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + formatNumber(d.Result) + ' ' + d.Unit;
-                        if (d.NonDetect) {
-                            content += '<br><i>Non-detect</i>';
+                        if (d.Censored) {
+                            content += '<br><i>Censored</i>';
                         }
                         return tooltip
                             .style('opacity', 1)
@@ -348,7 +347,6 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
             if (habitatAnalytes.includes(analyte)) {
                 // Get habitat data
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=9ce012e2-5fd3-4372-a4dd-63294b0ce0f6&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
-                //url += '&fields=StationCode,StationName,Analyte,SampleDate,Result,Censored,Unit';
                 fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
@@ -357,7 +355,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
                         d.Result = parseFloat(d.Result).toFixed(2);
-                        d.NonDetect = false;
+                        d.Censored = false;
                         if (analyte === 'CSCI') {
                             d.Unit = 'score';
                         }
@@ -371,14 +369,13 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
             } else {
                 // Get chemistry data
                 url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4&limit=500&filters={%22StationCode%22:%22' + station + '%22%2C%22Analyte%22:%22' + analyte + '%22}&sort=%22SampleDate%22%20desc';
-                //url += '&fields=StationCode,StationName,Analyte,SampleDate,Result,Unit,Result_Censored_HalfLimit,Censored';
                 fetch(url)
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.NonDetect = d.NonDetect.toLowerCase() === 'true';  // Convert string to boolean
+                        d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                         d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
                         d.Result = +d['ResultDisplay'].toFixed(2);
                         if (analyte === 'pH') {

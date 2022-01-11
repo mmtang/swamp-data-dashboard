@@ -2,17 +2,12 @@ import React from 'react';
 import ParameterIcon from '../icons/parameter-icon';
 import { Icon } from 'semantic-ui-react';
 import { analytes } from '../../constants/constants-data';
-import { arrowContainer, arrowUp, cardContainer, iconWrapper } from './card.module.css';
+import { cardContainer, iconWrapper } from './card.module.css';
 
 export default function AnalyteCard({ analyte }) {
     if (analytes[analyte]) {
         return (
             <React.Fragment>
-                {/*
-                <div className={arrowContainer}>
-                    <div className={arrowUp}></div>
-                </div>
-                */}
                 <div className={cardContainer}>
                     <div style={{ display: 'flex' }}>
                         {/* Do not display the indicator icon if it does not exist yet */}

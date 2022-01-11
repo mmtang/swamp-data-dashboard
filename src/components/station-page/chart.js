@@ -164,14 +164,14 @@ export default function Chart({ analyte, data, dateExtent }) {
             .attr('r', 4)
             .attr('cx', d => xScale(d.SampleDate))
             .attr('cy', d => yScale(d.ResultDisplay))
-            .attr('fill', d => d.NonDetect ? '#e3e4e6' : colorPaletteViz[0])
-            .attr('stroke', d => d.NonDetect ? colorPaletteViz[0] : '#fff')
-            .attr('stroke-width', d => d.NonDetect ? 2 : 1)
-            .attr('stroke-dasharray', d => d.NonDetect ? ('2,1') : 0)
+            .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[0])
+            .attr('stroke', d => d.Censored ? colorPaletteViz[0] : '#fff')
+            .attr('stroke-width', d => d.Censored ? 2 : 1)
+            .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
             .on('mouseover', function(currentEvent, d) {
                 let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + formatNumber(d.ResultDisplay) + ' ' + d.Unit;
-                if (d.NonDetect) {
-                    content += '<br><i>Non-detect</i>';
+                if (d.Censored) {
+                    content += '<br><i>Censored</i>';
                 }
                 return tooltip
                     .style('opacity', 1)

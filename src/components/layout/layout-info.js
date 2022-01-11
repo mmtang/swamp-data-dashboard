@@ -1,6 +1,6 @@
 import React from 'react';
-import Navbar from '../navbar/navbar.js';
 import Footer from './footer.js';
+import Navbar from '../navbar/navbar.js';
 import { appContainer, header, mainContainer, footer, lineAccent } from './layout-info.module.css';
 
 

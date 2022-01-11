@@ -2,6 +2,7 @@ import React from 'react';
 import ChartIndex from './chart-index';
 import HelpIcon from '../icons/help-icon';
 
+// Component for wrapping chart button and help icon to keep the two together
 export default function ChartIndexWrapper({ text, selectedSites, analyte }) {
     return (
         <div style={{ display: 'inline-block' }}>

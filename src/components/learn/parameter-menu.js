@@ -11,7 +11,7 @@ const ParameterMenu = ({ activeParameter }) => {
     const menuItems = analyteItems.map(d => {
         if (d.page) {
             return (
-                <Link to={`/learn/indicators/${d.page}`}><li className={activeParameter === d.code ? `${item} ${active}` : `${item}`} tabIndex={0}>{d.label}</li></Link>
+                <Link to={`/learn/indicators/${d.page}`}><li className={activeParameter === d.code ? `${item} ${active}` : `${item}`}>{d.label}</li></Link>
             );
         }
     });

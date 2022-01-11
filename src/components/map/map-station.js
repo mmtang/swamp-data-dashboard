@@ -240,13 +240,13 @@ export default function MapStation({ coordinates }) {
             });
         }
 
-        setDefaultOptions({ version: '4.21' });
+        setDefaultOptions({ version: '4.22' });
         loadCss();
         initializeMap()
         .then(() => {
           drawMarker();
         });
-    }, []);
+    }, []);  // Leave dependency array empty, adding coordinates will create infinite loop
 
   return (
     <div 

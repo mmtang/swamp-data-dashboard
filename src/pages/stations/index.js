@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useRef  } from 'react';
-import Navbar from '../../components/navbar/navbar';
-import MapStation from '../../components/map/map-station';
-import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
 import DownloadData from '../../components/common/download-data';
 import ChartModal from '../../components/station-page/chart-modal';
-import StationTable from '../../components/station-page/station-table';
-import LoaderDashboard from '../../components/common/loader-dashboard';
 import ErrorFullscreen from '../../components/common/error-fullscreen';
+import LayoutMap from '../../components/layout/layout-map';
+import LoaderDashboard from '../../components/common/loader-dashboard';
+import MapStation from '../../components/map/map-station';
+import Navbar from '../../components/navbar/navbar';
+import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
+import StationTable from '../../components/station-page/station-table';
 import { regionDict, fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
-import { appContainer, mainGrid, header, leftContainer, titleContainer, siteMapContainer, rightContainer, stationName, buttonContainer } from './index.module.css';
+import { appContainer, mainGrid, header, leftContainer, siteMapContainer, rightContainer, stationName, buttonContainer } from './index.module.css';
 
 export default function Station(props) {
     const stationCodeRef = useRef(null);
@@ -27,7 +28,7 @@ export default function Station(props) {
         return new Promise((resolve, reject) => {
             const url = props.location.href;
             // Use regex to get the station code from the page URL
-            const re = new RegExp(/stations\/\?id=([a-zA-Z0-9]+)$/i);
+            const re = new RegExp(/stations\/\?id=([a-zA-Z0-9-_]+)$/i);
             const matches = url.match(re);
             // Match returns null if no matches are found
             // If a match is found, get the second array item [1] (capturing group), not the first [0] array item (complete matching regular expression))
@@ -89,7 +90,7 @@ export default function Station(props) {
                     <Navbar />
                 </div>
                 <div className={leftContainer}>
-                    <section className={titleContainer}>
+                    <section>
                         <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>
                         <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{stationObjRef.current.RegionName} Region</span>
                     </section>
@@ -132,8 +133,8 @@ export default function Station(props) {
 
     return (
         <div className={appContainer}>
-            { loading === 'true' ? <LoaderDashboard /> :
-              loading === 'error' ? <ErrorFullscreen>{errorRef.current}</ErrorFullscreen> :
+            { loading === 'true' ? <LayoutMap><LoaderDashboard /></LayoutMap> :
+              loading === 'error' ? <LayoutMap><ErrorFullscreen>{errorRef.current}</ErrorFullscreen></LayoutMap> :
               loading === 'false' && stationObjRef.current ? pageContent() :
               <LoaderDashboard /> // Catch all other values
             }

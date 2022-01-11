@@ -1,7 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
 import { customSelectStyle } from '../../utils/utils';
-//import RegionCard from './region-card';
 
 
 export default function RegionMenu({ region, setRegion }) {   

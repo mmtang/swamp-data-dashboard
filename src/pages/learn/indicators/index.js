@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import LayoutInfo from '../../../components/layout/layout-info';
 import CardSmall from '../../../components/common/card-small';
+import LayoutInfo from '../../../components/layout/layout-info';
 import ParameterIcon from '../../../components/icons/parameter-icon';
 import { analytes } from '../../../constants/constants-data';
 import { main } from '../../pages.module.css';

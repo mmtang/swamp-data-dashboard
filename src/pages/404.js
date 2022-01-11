@@ -1,6 +1,6 @@
 import React from 'react';
-import LayoutMap from '../components/layout/layout-map';
 import ErrorFullscreen from '../components/common/error-fullscreen';
+import LayoutMap from '../components/layout/layout-map';
 
 const NotFound = () => (
     <LayoutMap>

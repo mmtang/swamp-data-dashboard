@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
+import AccordionMenu from '../components/map-controls/accordion-menu';
+import DownloadData from '../components/common/download-data';
+import ChartIndexWrapper from '../components/chart-index/chart-index-wrapper';
+import FilterByExtent from '../components/map-controls/filter-by-extent';
 import LayoutMap from '../components/layout/layout-map';
 import LoaderDashboard from '../components/common/loader-dashboard';
 import MapIndex from '../components/map/map-index';
-import UpdateMessage from '../components/map-controls/update-message';
-import AccordionMenu from '../components/map-controls/accordion-menu';
-import ChartIndexWrapper from '../components/chart-index/chart-index-wrapper';
 import Table from '../components/table/table';
-import FilterByExtent from '../components/map-controls/filter-by-extent';
+import UpdateMessage from '../components/common/update-message';
 import ZoomToSelected from '../components/map-controls/zoom-to-selected';
-import DownloadData from '../components/common/download-data';
 import { Divider, Modal, Icon } from 'semantic-ui-react';
 import { mapContainer, mainContainer, infoContainer, modalContent, swampIcon, modalButton } from './index.module.css';
 

@@ -46,7 +46,7 @@ export default function AnalyteMenu({ analyte, setAnalyte, region, program }) {
         } else {
             // Construct a new URL that will query the open data portal with a filter based on user selection
             // This enables crossfiltering of the analytes for when a program or region is selected
-            let newUrl = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=100&fields=Analyte,Region,Bioaccumulation,Bioassessment,Fhab,Spot'  + '&filters={';
+            let newUrl = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=100&fields=Analyte,Region,Bioaccumulation,Bioassessment,Fhab,Spot&filters={';
             // This array will hold the url strings for filtering program and region
             const urlStrings = [];
             // Create the url strings
@@ -79,7 +79,7 @@ export default function AnalyteMenu({ analyte, setAnalyte, region, program }) {
             .then(records => {
                 if (records.length > 0) {
                     const analytes = records.map(d => d.Analyte);
-                    const uniqueAnalytes = [... new Set(analytes)].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+                    const uniqueAnalytes = [...new Set(analytes)].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
                     const data = uniqueAnalytes.map(d => ({ label: d, value: d }));
                     setAnalyteList(data);
                 } else {

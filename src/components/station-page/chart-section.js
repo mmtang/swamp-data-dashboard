@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import HelpIcon from '../icons/help-icon';
-import DownloadData from '../common/download-data';
 import Chart from './chart';
+import DownloadData from '../common/download-data';
+import HelpIcon from '../icons/help-icon';
 import { Icon } from 'semantic-ui-react';
 import { timeParse, extent } from 'd3';
 import { analytes, chemDataFields, habitatDataFields, habitatAnalytes } from '../../constants/constants-data';
-import { sectionContainer, analyteContainer, analyteHeader, analyteTitle } from './chart-section.module.css';
+import { sectionContainer, analyteHeader, analyteTitle } from './chart-section.module.css';
 
 
 export default function ChartSection({ station, selectedAnalytes }) {
@@ -79,7 +79,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.ResultDisplay = +parseFloat(d.Result).toFixed(2);
-                        d.NonDetect = false;
+                        d.Censored = false;
                         if (analyte === 'CSCI') {
                             d.Unit = 'score';
                         }
@@ -96,7 +96,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     records.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.ResultDisplay = +d.ResultDisplay.toFixed(2);
-                        d['NonDetect'] = d['NonDetect'].toLowerCase() === 'true';  // Convert string to boolean
+                        d['Censored'] = d['Censored'].toLowerCase() === 'true';  // Convert string to boolean
                         if (analyte === 'pH') {
                             d.Unit = '';
                         }
@@ -110,7 +110,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
     return (
         <div className={sectionContainer}>
             { selectedAnalytes.map(analyteName => 
-                <div className={analyteContainer} key={analytes[analyteName].code}>
+                <div key={analytes[analyteName].code}>
                     <div className={analyteHeader}>
                         <h4 className={analyteTitle}>
                             {analyteName}

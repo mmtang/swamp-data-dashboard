@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import HelpIcon from '../../components/icons/help-icon';
 import CardWaterbody from './card-waterbody';
+import HelpIcon from '../../components/icons/help-icon';
 import LoaderBlock from '../common/loader-block';
 import { title } from './nearby.module.css';
 

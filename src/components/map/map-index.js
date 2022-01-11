@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import StationPopup from './station-popup';
 import StationAnalytePopup from './station-analyte-popup';
+import StationPopup from './station-popup';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 import { timeParse, timeFormat } from 'd3';
 import { irLineRenderer, irPolyRenderer, regionRenderer, stationRenderer } from './map-renderer';
@@ -256,7 +256,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 });
             })
         };
-        setDefaultOptions({ version: '4.21' });
+        setDefaultOptions({ version: '4.22' });
         loadCss();
         initializeMap()
         .then(() => {

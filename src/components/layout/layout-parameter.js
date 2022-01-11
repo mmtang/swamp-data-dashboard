@@ -1,6 +1,5 @@
 import React from 'react';
 import LayoutInfo from './layout-info';
-import Hero from '../common/hero';
 import ParameterIcon from '../icons/parameter-icon';
 import ParameterMenu from '../learn/parameter-menu';
 import { main } from '../../pages/pages.module.css';

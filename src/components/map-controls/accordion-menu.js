@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Accordion, Icon, Label } from 'semantic-ui-react';
-import HelpIcon from '../icons/help-icon';
-import RegionMenu from '../map-controls/region-menu';
 import AnalyteMenu from '../map-controls/analyte-menu';
+import HelpIcon from '../icons/help-icon';
 import ProgramMenu from '../map-controls/program-menu';
-import { customAccordion, customTitle, titleWrapper, leadingIcon, panelContent, pLabel, customLabel, analyteWrapper } from './accordion-menu.module.css';
+import RegionMenu from '../map-controls/region-menu';
+import { Accordion, Icon } from 'semantic-ui-react';
+import { customAccordion, customTitle, titleWrapper, leadingIcon, pLabel, analyteWrapper } from './accordion-menu.module.css';
 
 
 // This component generates the structure for the accordion menu on the explore_data index page
@@ -53,7 +53,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                     { activeIndex.includes(0) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
                 </div>
             </Accordion.Title>
-            <Accordion.Content active={activeIndex.includes(0)} className={panelContent}>
+            <Accordion.Content active={activeIndex.includes(0)}>
                 <p className={pLabel}>
                     Location, waterbody, monitoring site 
                     <HelpIcon wide={true}>
