@@ -1,9 +1,13 @@
-import React from "react"
+import React from 'react';
+import LayoutMap from '../components/layout/layout-map';
+import ErrorFullscreen from '../components/common/error-fullscreen';
 
 const NotFound = () => (
-    <div>
-        <h1>404 - Page not found! <span role="img" aria-label="emoji-crying">😢</span></h1>
-    </div>
+    <LayoutMap>
+        <ErrorFullscreen>
+            404: Page not found!
+        </ErrorFullscreen>
+    </LayoutMap>
 )
 
 export default NotFound;

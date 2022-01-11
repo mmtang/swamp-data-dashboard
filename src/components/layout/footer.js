@@ -8,7 +8,7 @@ function Footer() {
         <div className={container}>
             <div className={contactContainer}>
                 <div className={logoContainer}>
-                    <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" rel="noopener noreferrer" target="_blank"><img className={logo} src={`/swamp_logo_black_small.png`} alt='SWAMP logo' tabIndex={0} /></a>
+                    <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" rel="noopener noreferrer" target="_blank"><img className={logo} src={`/swamp-logo-black-small.png`} alt='SWAMP logo' tabIndex={0} /></a>
                 </div>
                 <div>
                     <h4>Contact</h4>

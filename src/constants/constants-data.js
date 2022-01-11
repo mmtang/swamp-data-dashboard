@@ -17,14 +17,6 @@ export const analytes = {
         page: null,
         blurb: 'Ammonia is a form of nitrogen that is common in the environment. It is an essential nutrient for plants, but high levels of it can be toxic to fish and other aquatic life.'
     },
-    /*
-    'Ammonia as NH3, Total': {
-        code: 'ammoniaNH3',
-        label: 'Ammonia',
-        page: null,
-        blurb: 'Ammonia is a form of nitrogen that is common in the environment. It is an essential nutrient for plants, but high levels of it can be toxic to fish and other aquatic life. The neutral, un-ionized form of ammonia (NH3) is highly toxic.'
-    },
-    */
     'Arsenic, Total': {
         code: 'arsenic',
         label: 'Arsenic',
@@ -86,14 +78,6 @@ export const analytes = {
         blurb: 'E. coli bacteria live in the intestines of warm-blooded animals and humans. In water, they are a strong indicator of sewage contamination.'
     },
     /*
-    'ElectricalConductivity, Total': {
-        code: 'electricalConductivity',
-        label: 'Electrical Conductivity',
-        page: null,
-        blurb: ''
-    },
-    */
-    /*
     'Enterococcus': {
         code: 'enterococcus',
         label: 'Enterococcus',
@@ -146,13 +130,13 @@ export const analytes = {
     'Nitrogen, Total, Total': {
         code: 'totalNitrogen',
         label: 'Total Nitrogen',
-        page: 'total_nitrogen',
+        page: 'total-nitrogen',
         blurb: 'Nitrogen is an essential nutrient, but too much of it can lead to an excessive growth of plants and algae in a waterbody, which can have adverse ecological effects.'
     },
     'Oxygen, Dissolved, Total': {
         code: 'dissolvedOxygen',
         label: 'Dissolved Oxygen',
-        page: 'dissolved_oxygen',
+        page: 'dissolved-oxygen',
         blurb: "Dissolved Oxygen is the amount of oxygen that is present in water. Oxygen is an essential element used by all forms of aquatic life for survival."
     },
     'Oxygen, Saturation, Total': {
@@ -170,7 +154,7 @@ export const analytes = {
     'Phosphorus as P, Total': {
         code: 'totalPhosphorus',
         label: 'Total Phosphorus',
-        page: 'total_phosphorus',
+        page: 'total-phosphorus',
         blurb: 'Phosphorus is an essential nutrient that occurs naturally at low levels. High levels of phosphorus, usually from contamination, can have adverse ecological effects on a waterbody and its inhabitants.'
     },
     'Selenium, Total': {
