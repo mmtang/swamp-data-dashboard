@@ -31,7 +31,7 @@ export default function DownloadData({ children, data, fields, color = null }) {
         const link = document.createElement('a');
         let tsv = convertArrayOfObjectsToTSV(array, fields);
         if (tsv == null) return;
-        const filename = 'SWAMP_Data_Dashboard_' + Date.now() + '.tsv';
+        const filename = 'SWAMP_Data_Dashboard_' + Date.now() + '.txt';
 
         // Two lines below are the old way. Doesn't work anymore. Cuts the file off at around 100 lines.
         // tsv = `data:text/tsv;charset=utf-8,${tsv}`;
@@ -39,7 +39,7 @@ export default function DownloadData({ children, data, fields, color = null }) {
 
         // Two lines below are the new way. Required to export ALL rows in the file.
         // https://stackoverflow.com/questions/24610694/export-html-table-to-csv-in-google-chrome-browser/24611096#24611096
-        var tsvData = new Blob([tsv], { type: 'text/tsv' }); 
+        var tsvData = new Blob([tsv], { type: 'text/plain' }); 
         link.setAttribute('href', URL.createObjectURL(tsvData));
 
         link.setAttribute('download', filename);

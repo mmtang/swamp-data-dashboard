@@ -86,7 +86,7 @@ export default function Chart({ analyte, data, dateExtent }) {
         if (Object.keys(analyteYMax).includes(analyte)) {
             yMax = analyteYMax[analyte];
         } else {
-            const results = data.map(d => d.ResultDisplay);
+            const results = data.map(d => d.Result);
             yMax = d3.max(results);
         }
         const yScale = d3.scaleLinear()
@@ -163,13 +163,17 @@ export default function Chart({ analyte, data, dateExtent }) {
             .attr('class', 'circle')
             .attr('r', 4)
             .attr('cx', d => xScale(d.SampleDate))
-            .attr('cy', d => yScale(d.ResultDisplay))
+            .attr('cy', d => yScale(d.Result))
             .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[0])
             .attr('stroke', d => d.Censored ? colorPaletteViz[0] : '#fff')
             .attr('stroke-width', d => d.Censored ? 2 : 1)
             .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
             .on('mouseover', function(currentEvent, d) {
-                let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + formatNumber(d.ResultDisplay) + ' ' + d.Unit;
+                let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": ";
+                if (['<', '>', '<=', '>='].includes(d.ResultQualCode)) {
+                    content += d.ResultQualCode + ' ';
+                }
+                content += formatNumber(d.Result) + ' ' + d.Unit;
                 if (d.Censored) {
                     content += '<br><i>Censored</i>';
                 }
@@ -190,7 +194,7 @@ export default function Chart({ analyte, data, dateExtent }) {
             })
             .merge(points)
             .attr('cx', d => xScale(d.SampleDate))
-            .attr('cy', d => yScale(d.ResultDisplay));
+            .attr('cy', d => yScale(d.Result));
         points.exit()
             .remove();
     };

@@ -534,9 +534,17 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 });
             }
         }
+        const hideStationLayer = () => {
+            stationLayerRef.current.visible = false;
+            stationLayerRef.current.listMode = 'hide';
+        }
+        const showStationLayer = () => {
+            stationLayerRef.current.visible = true;
+            stationLayerRef.current.listMode = 'show';
+        }
         if (mapRef.current) {
             if (selectedAnalyte) {
-                    mapRef.current.remove(stationLayerRef.current);
+                    hideStationLayer();
                 if (!stationSummaryLayerRef.current) {
                     drawStationSummaryLayer();
                 } else {
@@ -544,7 +552,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 }
             } else {
                 mapRef.current.remove(stationSummaryLayerRef.current);
-                mapRef.current.add(stationLayerRef.current);
+                showStationLayer();
                 updateTableWithStationData();
             }
         }

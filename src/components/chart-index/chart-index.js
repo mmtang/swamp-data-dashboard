@@ -276,7 +276,11 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     .attr('stroke-width', d => d.Censored ? 2 : 1)
                     .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                     .on('mouseover', function(currentEvent, d) {
-                        let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": " + formatNumber(d.Result) + ' ' + d.Unit;
+                        let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": ";
+                        if (['<', '>', '<=', '>='].includes(d.ResultQualCode)) {
+                            content += d.ResultQualCode + ' ';
+                        }
+                        content += formatNumber(d.Result) + ' ' + d.Unit;
                         if (d.Censored) {
                             content += '<br><i>Censored</i>';
                         }
@@ -377,7 +381,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                         d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
-                        d.Result = +d['ResultDisplay'].toFixed(2);
+                        d.Result = +d['Result'].toFixed(2);
                         if (analyte === 'pH') {
                             d.Unit = '';
                         }
