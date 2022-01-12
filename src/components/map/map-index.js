@@ -614,17 +614,24 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
 
     // Refreshes the Integrated Report layers based on user selection
     const refreshIntegratedReport = () => {
-        const constructDefExp = () => {
+        const constructDefExpLine = () => {
             if (selectedRegion) {
                 return `rb = '${irRegionDict[selectedRegion]}'`;
             } else if (!selectedRegion) {
                 return '';
             }
         }
+        const constructDefExpPoly = () => {
+            if (selectedRegion) {
+                return `rb_1 = '${irRegionDict[selectedRegion]}'`;
+            } else if (!selectedRegion) {
+                return '';
+            }
+        }
         if (mapRef.current) {
             // Update filters
-            irLineRef.current.definitionExpression = constructDefExp();
-            irPolyRef.current.definitionExpression = constructDefExp();
+            irLineRef.current.definitionExpression = constructDefExpLine();
+            irPolyRef.current.definitionExpression = constructDefExpPoly();
         }
     }
 
