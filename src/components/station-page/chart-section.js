@@ -4,7 +4,7 @@ import DownloadData from '../common/download-data';
 import HelpIcon from '../icons/help-icon';
 import { Icon } from 'semantic-ui-react';
 import { timeParse, extent } from 'd3';
-import { analytes, chemDataFields, habitatDataFields, habitatAnalytes } from '../../constants/constants-data';
+import { analytes, chemDataFields, habitatDataFields, habitatAnalytes, dataQualityCategories } from '../../constants/constants-data';
 import { sectionContainer, analyteHeader, analyteTitle } from './chart-section.module.css';
 
 
@@ -76,15 +76,17 @@ export default function ChartSection({ station, selectedAnalytes }) {
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
-                    records.forEach(d => {
+                    // Filter for records that meet data quality requirements
+                    const data = records.filter(d => dataQualityCategories.includes(d['DataQuality']))
+                    data.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultDisplay = +parseFloat(d.Result).toFixed(2);
+                        d.ResultDisplay = +parseFloat(d.Result).toFixed(3);
                         d.Censored = false;
                         if (analyte === 'CSCI') {
                             d.Unit = 'score';
                         }
                     });
-                    resolve(records);
+                    resolve(data);
                 });
             } else {
                 // Get chemistry data
@@ -93,15 +95,17 @@ export default function ChartSection({ station, selectedAnalytes }) {
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
-                    records.forEach(d => {
+                    // Filter for records that meet data quality requirements
+                    const data = records.filter(d => dataQualityCategories.includes(d['DataQuality']))
+                    data.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultDisplay = +d.ResultDisplay.toFixed(2);
+                        d.ResultDisplay = +d.ResultDisplay.toFixed(3);
                         d['Censored'] = d['Censored'].toLowerCase() === 'true';  // Convert string to boolean
                         if (analyte === 'pH') {
                             d.Unit = '';
                         }
                     });
-                    resolve(records);
+                    resolve(data);
                 });
             }
         });

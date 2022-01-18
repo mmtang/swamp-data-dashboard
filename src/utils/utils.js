@@ -73,18 +73,6 @@ export const fetchData = (url) => {
     });
 }
 
-export const getCensored = (d) => {
-    if (!d.ResultOriginal) {
-        if (d['MDL']) {
-            return [true, d['MDL'] / 2];
-        } else {
-            return [true, null];
-        }
-    } else {
-        return [false, d.ResultOriginal];
-    }
-}
-
 export const stationDataFields = [
     {
         name: 'ObjectId',

@@ -47,7 +47,7 @@ export default function Chart({ analyte, data, dateExtent }) {
         //const height = 220 + margin.top + margin.bottom;
         const width = targetWidth;
         const height = 220 + margin.top + margin.bottom;
-        const clipPadding = 4;
+        const clipPadding = 5;
 
         const chart = d3.select('#' + chartId).append('svg')
             .attr('id', chartId + '-svg')
@@ -86,7 +86,7 @@ export default function Chart({ analyte, data, dateExtent }) {
         if (Object.keys(analyteYMax).includes(analyte)) {
             yMax = analyteYMax[analyte];
         } else {
-            const results = data.map(d => d.Result);
+            const results = data.map(d => d.ResultDisplay);
             yMax = d3.max(results);
         }
         const yScale = d3.scaleLinear()
@@ -163,7 +163,7 @@ export default function Chart({ analyte, data, dateExtent }) {
             .attr('class', 'circle')
             .attr('r', 4)
             .attr('cx', d => xScale(d.SampleDate))
-            .attr('cy', d => yScale(d.Result))
+            .attr('cy', d => yScale(d.ResultDisplay))
             .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[0])
             .attr('stroke', d => d.Censored ? colorPaletteViz[0] : '#fff')
             .attr('stroke-width', d => d.Censored ? 2 : 1)
@@ -173,7 +173,7 @@ export default function Chart({ analyte, data, dateExtent }) {
                 if (['<', '>', '<=', '>='].includes(d.ResultQualCode)) {
                     content += d.ResultQualCode + ' ';
                 }
-                content += formatNumber(d.Result) + ' ' + d.Unit;
+                content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
                 if (d.Censored) {
                     content += '<br><i>Censored</i>';
                 }
@@ -194,7 +194,7 @@ export default function Chart({ analyte, data, dateExtent }) {
             })
             .merge(points)
             .attr('cx', d => xScale(d.SampleDate))
-            .attr('cy', d => yScale(d.Result));
+            .attr('cy', d => yScale(d.ResultDisplay));
         points.exit()
             .remove();
     };

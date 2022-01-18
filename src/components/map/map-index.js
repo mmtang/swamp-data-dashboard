@@ -490,10 +490,6 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                             {
                                 value: 'Insufficient data',
                                 symbol: notAssessedSym
-                            },
-                            {
-                                value: 'Error',
-                                symbol: notAssessedSym
                             }
                         ]
                     };

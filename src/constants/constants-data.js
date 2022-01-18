@@ -301,9 +301,11 @@ export const chemDataFields = [
     'Analyte',
     'Unit',
     'Result',
+    'ResultDisplay',
     'Observation',
     'MDL',
     'RL',
+    'Censored',
     'ResultQualCode',
     'QACode',
     'BatchVerification',
@@ -350,8 +352,9 @@ export const chemDataFields = [
     'LocationDetailBAComments',
     'SampleID',
     'DW_AnalyteName',
-    'ResultDisplay',
-    'NonDetect'
+    'Datum',
+    'DataQuality',
+    'DataQualityIndicator'
 ];
 
 export const habitatDataFields = [
@@ -370,6 +373,8 @@ export const habitatDataFields = [
     'Analyte',
     'Unit',
     'Result',
+    'ResultDisplay',
+    'Censored',
     'ResultQualCode',
     'VariableResult',
     'QACode',
@@ -393,5 +398,15 @@ export const habitatDataFields = [
     'StationWaterDepth',
     'UnitStationWaterDepth',
     'LocationDetailWQComments',
-    'DW_AnalyteName'
+    'DW_AnalyteName',
+    'Datum',
+    'DataQuality',
+    'DataQualityIndicator'
 ];
+
+// Data categories to use in app
+export const dataQualityCategories = [
+    'Passed',
+    'Some review needed',
+    'Spatial accuracy unknown'
+]

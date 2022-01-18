@@ -5,7 +5,7 @@ import LoaderBlock from '../common/loader-block';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { analytes, analyteScoringCategories, habitatAnalytes, analyteYMax, chemDataFields, habitatDataFields  } from '../../constants/constants-data';
+import { analytes, analyteScoringCategories, habitatAnalytes, analyteYMax, chemDataFields, habitatDataFields, dataQualityCategories  } from '../../constants/constants-data';
 import { colorPaletteViz } from '../../constants/constants-app';
 import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, modalContent, downloadWrapper } from './chart-index.module.css';
 
@@ -180,7 +180,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
             // Get results from all sites to define domain for y-axis
             let allResults = [];
             for (let i = 0; i < siteKeys.length; i++) {
-                const results = data.sites[siteKeys[i]].map(d => d.Result);
+                const results = data.sites[siteKeys[i]].map(d => d.ResultDisplay);
                 allResults = [...allResults, ...results];
             }
             // Get max value
@@ -270,7 +270,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     .attr('class', 'circle')
                     .attr('r', 4)
                     .attr('cx', d => xScale(d.SampleDate))
-                    .attr('cy', d => yScale(d.Result))
+                    .attr('cy', d => yScale(d.ResultDisplay))
                     .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[i])
                     .attr('stroke', d => d.Censored ? colorPaletteViz[i] : '#fff')
                     .attr('stroke-width', d => d.Censored ? 2 : 1)
@@ -280,7 +280,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                         if (['<', '>', '<=', '>='].includes(d.ResultQualCode)) {
                             content += d.ResultQualCode + ' ';
                         }
-                        content += formatNumber(d.Result) + ' ' + d.Unit;
+                        content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
                         if (d.Censored) {
                             content += '<br><i>Censored</i>';
                         }
@@ -301,7 +301,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     })
                     .merge(points)
                     .attr('cx', d => xScale(d.SampleDate))
-                    .attr('cy', d => yScale(d.Result));
+                    .attr('cy', d => yScale(d.ResultDisplay));
                 points.exit()
                     .remove();
             }
@@ -355,10 +355,11 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
-                    records.forEach(d => {
+                    // Filter for records that meet data quality requirements
+                    const data = records.filter(d => dataQualityCategories.includes(d['DataQuality']))
+                    data.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
-                        d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
-                        d.Result = parseFloat(d.Result).toFixed(2);
+                        d.ResultDisplay = +parseFloat(d.Result).toFixed(3);
                         d.Censored = false;
                         if (analyte === 'CSCI') {
                             d.Unit = 'score';
@@ -366,9 +367,9 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     });
                     // Add station name to station dictionary
                     siteDictRef.current[station] = {
-                        name: records[0].StationName,
+                        name: data[0].StationName,
                     }
-                    resolve(records);
+                    resolve(data);
                 });
             } else {
                 // Get chemistry data
@@ -377,20 +378,21 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                 .then(resp => resp.json())
                 .then(json => json.result.records)
                 .then(records => {
-                    records.forEach(d => {
+                    // Filter for records that meet data quality requirements
+                    const data = records.filter(d => dataQualityCategories.includes(d['DataQuality']))
+                    data.forEach(d => {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
-                        d.ResultOriginal = d.Result ? +d.Result.toFixed(2) : d.Result;
-                        d.Result = +d['Result'].toFixed(2);
+                        d.ResultDisplay = +d['ResultDisplay'].toFixed(3);
                         if (analyte === 'pH') {
                             d.Unit = '';
                         }
                     });
                     // Add station name to station dictionary
                     siteDictRef.current[station] = {
-                        name: records[0].StationName,
+                        name: data[0].StationName,
                     }
-                    resolve(records);
+                    resolve(data);
                 });
             }
         });
