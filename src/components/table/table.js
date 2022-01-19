@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import TrendHelpIcon from '../common/trend-help-icon';
 import DataTable from 'react-data-table-component';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { Icon } from 'semantic-ui-react';
@@ -41,7 +42,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
         siteCode: {
             name: 'Station Code',
             selector: row => row['StationCode'],
-            width: '110px',
+            width: '115px',
             sortable: true,
             wrap: true
         },
@@ -62,7 +63,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
             name: 'Last Sample Date',
             id: 'LastSampleDate',
             selector: row => row['LastSampleDate'],
-            width: '115px',
+            width: '140px',
             sortable: true
         },
         sitePage: {
@@ -79,7 +80,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
             sortable: false
         },
         trend: {
-            name: 'Trend',
+            name: <TrendHelpIcon />,
             selector: row => row['Trend'],
             width: '165px',
             sortable: true,

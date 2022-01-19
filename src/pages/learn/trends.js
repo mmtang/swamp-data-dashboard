@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'gatsby';
 import LayoutInfo from '../../components/layout/layout-info';
 import { Icon, Message, Table } from 'semantic-ui-react';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
@@ -20,12 +21,14 @@ export default function Trends() {
                     <Icon name='exclamation triangle' />The methodology described on this page is currently in draft form. We welcome your feedback: <a href="mailto:swamp@waterboards.ca.gov">swamp@waterboards.ca.gov</a>.
                 </Message>
                 <h3>Data requirements</h3>
-                <p>Data are evaluated for trends at the station-indicator level. The body of SWAMP data is filtered by station code and then again by indicator. Station-indicator datasets that meet the three criteria below are included in the analysis. Station-indicator datasets that do not meet the criteria are assigned the "Insufficient data" trend category. In general, the more data points that are available, the more statistical power there is for identifying a trend in the dataset.</p>
+                <p>SWAMP data are analyzed for trends at the station-indicator level. The records are filtered by station code and then again by indicator. Only those records assigned a <Link to='../../data'>data quality category</Link> of "Passed", "Some review needed", or "Spatial accuracy unknown" are used in the analysis.</p>
+                <p>Station-indicator datasets that meet the three criteria below are analyzed for trends. Station-indicator datasets that do not meet the criteria are assigned the "Insufficient data" trend category. In general, the more data points that are available, the more statistical power there is for identifying a trend in the dataset.</p>
                 <ul>
                     <li>Must have at least five observations spanning five years</li>
                     <li>At least three of those observations must be non-censored</li>
                     <li>At least one observation must be dated within the last five years</li>
                 </ul>
+                <p></p>
                 <h3>General approach</h3>
                 <p>Trends are calculated for all water quality indicators using the seasonal Kendall test. The seasonal Kendall test is a statistical test used to analyze data for monotonic trends (i.e., as one variable increases, the other seems to increase or decrease). It evaluates all pairwise combinations of the data, determining if the latter observation is greater than, less than, or equal to the earlier observation. The seasonal Kendall test is a non-parametric test, meaning that missing values are allowed and the data do not need to conform to any particular distribution.</p>
                 <p>The seasonal Kendall test is a special case of the Mann-Kendall test. It runs a separate Mann-Kendall test on each season separately, which helps account for seasonal differences that might be present in the data. Many water quality parameters, including those featured in this dashboard, exhibit seasonality due to normal changes in weather, hydrology, land use, and other factors. In this analysis, we define the seasons in the seasonal Kendall test to be the 12 months of the year. In other words, January data are compared only to other January data, February data are compared only to other February data, etc.

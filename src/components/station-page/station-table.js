@@ -1,4 +1,5 @@
 import React from 'react';
+import TrendHelpIcon from '../common/trend-help-icon';
 import DataTable from 'react-data-table-component';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { tableWrapper } from './station-table.module.css';
@@ -72,7 +73,7 @@ export default function StationTable({ data, setSelectedAnalytes }) {
         },
         {
             id: 'trend',
-            name: 'Trend',
+            name: <TrendHelpIcon />,
             selector: row => row['Trend'],
             width: '165px',
             sortable: true,
