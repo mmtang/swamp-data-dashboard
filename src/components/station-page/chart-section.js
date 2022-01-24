@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { withPrefix } from 'gatsby';
 import Chart from './chart';
 import DownloadData from '../common/download-data';
 import HelpIcon from '../icons/help-icon';
@@ -126,7 +127,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                                     { analytes[analyteName]['blurb'] }
                                     &nbsp;
                                     { /* Display the 'Read more' link for those indicators that have an indicator page. Do not display the link if the page does not exist yet */ }
-                                    { analytes[analyteName]['page'] ? <a href={`/learn/indicators/${analytes[analyteName]['page']}`} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a> : '' }
+                                    { analytes[analyteName]['page'] ? <a href={withPrefix(`/learn/indicators/${analytes[analyteName]['page']}`)} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a> : '' }
                                 </div>
                             </HelpIcon>
                         </h4>

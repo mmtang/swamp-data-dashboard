@@ -1,4 +1,5 @@
 import React from 'react';
+import { withPrefix } from 'gatsby';
 import ParameterIcon from '../icons/parameter-icon';
 import { Icon } from 'semantic-ui-react';
 import { analytes } from '../../constants/constants-data';
@@ -21,7 +22,7 @@ export default function AnalyteCard({ analyte }) {
                             { analytes[analyte]['blurb'] }
                             &nbsp;
                             {/* Display the 'Read more' link for those indicators that have an indicator page. Do not display the link if the page does not exist yet */}
-                            { analytes[analyte]['page'] ? <a href={`/learn/indicators/${analytes[analyte]['page']}`} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a> : '' }
+                            { analytes[analyte]['page'] ? <a href={withPrefix(`/learn/indicators/${analytes[analyte]['page']}`)} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a> : '' }
                         </p>
                     </div>
                 </div>

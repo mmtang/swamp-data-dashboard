@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { withPrefix } from 'gatsby';
 import { container, contactContainer, logoContainer, logo, copyright } from './footer.module.css';
 
 function Footer() {
@@ -8,7 +9,7 @@ function Footer() {
         <div className={container}>
             <div className={contactContainer}>
                 <div className={logoContainer}>
-                    <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" rel="noopener noreferrer" target="_blank"><img className={logo} src={`/swamp-logo-black-small.png`} alt='SWAMP logo' /></a>
+                    <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" rel="noopener noreferrer" target="_blank"><img className={logo} src={withPrefix('/swamp-logo-black-small.png')} alt='SWAMP logo' /></a>
                 </div>
                 <div>
                     <h4>Contact</h4>

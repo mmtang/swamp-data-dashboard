@@ -1,4 +1,5 @@
 import React from 'react';
+import { withPrefix } from 'gatsby';
 import LayoutParameter from '../../../components/layout/layout-parameter';
 import { container, wrapper } from './csci.module.css';
 
@@ -62,7 +63,7 @@ export default function Csci() {
                     </div>
                 </div>
                 <p>The above thresholds and categories were established based on the 30th, 10th, and 1st percentiles of CSCI scores at reference sites.</p>
-                <img src="\csci-scores-distribution.png" alt='Bar graph showing the distribution of CSCI scores for reference sites' style={{ display: 'block', margin: 'auto', maxWidth: '87%' }} />
+                <img src={withPrefix("csci-scores-distribution.png")} alt='Bar graph showing the distribution of CSCI scores for reference sites' style={{ display: 'block', margin: 'auto', maxWidth: '87%' }} />
                 <h2>References</h2>
                 <p><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/bioassessment/docs/csci_factsheet.pdf" target="_blank" rel="noreferrer noopener">California State Water Resources Control Board. 2015. The California Stream Condition Index [Fact sheet].</a></p>
                 <p><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/bioassessment/docs/csci_tech_memo.pdf" target="_blank" rel="noreferrer noopener">Rehn, A.C., R.D. Mazor and P.R. Ode. 2015. The California Stream Condition Index (CSCI): A New Statewide Biological Scoring Tool for Assessing the Health of Freshwater Streams. SWAMP Technical Memorandum SWAMP-TM-2015-0002.</a></p>

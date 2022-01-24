@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { withPrefix } from 'gatsby';
 import TrendHelpIcon from '../common/trend-help-icon';
 import DataTable from 'react-data-table-component';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
@@ -103,7 +104,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
     const CustomLink = ({ row }) => {
         return (
             <div>
-                <a href={"/stations?id=" + encodeURIComponent(row['StationCode'])} target="_blank" rel="noopener noreferrer">Link</a>&nbsp;&nbsp;&nbsp;<Icon name='external' />
+                <a href={withPrefix("/stations?id=" + encodeURIComponent(row['StationCode']))} target="_blank" rel="noopener noreferrer">Link</a>&nbsp;&nbsp;&nbsp;<Icon name='external' />
             </div>
         )
     }

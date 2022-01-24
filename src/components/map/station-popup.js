@@ -1,4 +1,5 @@
 import React from 'react';
+import { withPrefix } from 'gatsby';
 import { Icon } from 'semantic-ui-react';
 import { buttonWrapper } from './popup.module.css';
 
@@ -34,7 +35,7 @@ export default function StationPopup({ attributes }) {
                     </tbody>
                 </table>
             </div>
-            <div className={buttonWrapper}><a href={'/stations?id=' + attributes['StationCode']} target="_blank" rel="noopener noreferrer" className="popup-button">View all station data&nbsp;&nbsp;<Icon name='external' /></a></div>
+            <div className={buttonWrapper}><a href={withPrefix('/stations?id=' + attributes['StationCode'])} target="_blank" rel="noopener noreferrer" className="popup-button">View all station data&nbsp;&nbsp;<Icon name='external' /></a></div>
         </div>
     )
 };

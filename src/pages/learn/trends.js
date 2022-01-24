@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'gatsby';
+import { Link, withPrefix } from 'gatsby';
 import LayoutInfo from '../../components/layout/layout-info';
 import { Icon, Message, Table } from 'semantic-ui-react';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
@@ -14,7 +14,7 @@ export default function Trends() {
                 <h1>Calculating trends</h1>
                 <p>The SWAMP Data Dashboard displays trends for a suite of water quality parameters at the station level. Tracking water quality trends allows the Water Boards and others (i.e., water resource managers, the Legislature, and the public-at-large) to prioritize management actions, evaluate the effectiveness of Water Board programs, and identify emerging or previously unknown threats.</p>
                 <div className={imageSetContainer}>
-                    <img className={imageSet} src="\trends-dashboard.png" alt='Screenshot of dashboard showing trends' />
+                    <img className={imageSet} src={withPrefix("trends-dashboard.png")} alt='Screenshot of dashboard showing trends' />
                 </div>
                 <h2>Methodology</h2>
                 <Message compact>

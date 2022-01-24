@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withPrefix } from 'gatsby';
 import AnalyteMenu from '../map-controls/analyte-menu';
 import HelpIcon from '../icons/help-icon';
 import ProgramMenu from '../map-controls/program-menu';
@@ -95,7 +96,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                     Regional water quality control board
                     <HelpIcon wide='very'>
                         <p>SWAMP’s regional assessments are planned and executed by each of the nine Regional Water Quality Control Boards. Each region identifies its own monitoring priorities and designs assessments to answer specific monitoring questions. SWAMP’s regional assessments complement the statewide assessments by allowing the flexibility needed to address the highest priority monitoring needs at each region.</p>
-                        <img src="\rb-map.jpg" alt='Statewide map of regional water board boundaries' style={{ display: 'block', margin: 'auto', maxWidth: '300px' }} />
+                        <img src=".\rb-map.jpg" alt='Statewide map of regional water board boundaries' style={{ display: 'block', margin: 'auto', maxWidth: '300px' }} />
                         <p><a href="https://www.waterboards.ca.gov/publications_forms/publications/factsheets/docs/boardoverview.pdf" target="_blank" rel="noreferrer noopener">Source</a></p>
                     </HelpIcon>
                 </p>
@@ -103,7 +104,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                 <p className={pLabel}>
                     Water quality indicators
                     <HelpIcon wide={true}>
-                        <p>SWAMP measures a variety of <a href="/learn/indicators" target="_blank" rel="noreferrer noopener">chemical, physical, and biological parameters</a> to assess the quality of water in rivers, lakes, and other waterbodies. Each parameter or indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall health.</p>
+                        <p>SWAMP measures a variety of <a href={withPrefix("/learn/indicators")} target="_blank" rel="noreferrer noopener">chemical, physical, and biological parameters</a> to assess the quality of water in rivers, lakes, and other waterbodies. Each parameter or indicator tells us something different about the condition of the waterbody. Evaluating them together provides a more complete picture of the waterbody's overall health.</p>
                         <p>Selecting an indicator will display the trend data for that indicator on the map and table.</p>
                     </HelpIcon>
                 </p>
