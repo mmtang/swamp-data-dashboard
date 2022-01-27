@@ -12,7 +12,8 @@ import { regionDict, fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 import { appContainer, mainGrid, header, leftContainer, siteMapContainer, rightContainer, stationName, buttonContainer } from './index.module.css';
 
-export default function Station({ id } ) {
+export default function Station(props) {
+    const stationCodeRef = useRef(null);
     const stationObjRef = useRef(null);
     const errorRef = useRef(null);
 
@@ -23,11 +24,30 @@ export default function Station({ id } ) {
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = timeFormat('%Y/%m/%d');
 
-    const getTableData = (id) => {
+    const parseStationCode = () => {
         return new Promise((resolve, reject) => {
-            if (id) {
+            const url = props.location.href;
+            // Use regex to get the station code from the page URL
+            const re = new RegExp(/stations\/\?id=([a-zA-Z0-9-_]+)$/i);
+            const matches = url.match(re);
+            // Match returns null if no matches are found
+            // If a match is found, get the second array item [1] (capturing group), not the first [0] array item (complete matching regular expression))
+            if (matches) {
+                stationCodeRef.current = matches[1];
+                resolve();
+            } else {
+                console.error('Error parsing station code');
+                errorRef.current = 'Error: Not a valid station code.'
+                setLoading('error');
+            }
+        })
+    }
+
+    const getTableData = () => {
+        return new Promise((resolve, reject) => {
+            if (stationCodeRef.current) {
                 let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,StationName,Region,Analyte,LastSampleDate,LastResult,Unit,Min,Max,Median,Mean,Trend,NumResults,TargetLatitude,TargetLongitude';
-                url += '&filters={%22StationCode%22:%22' + encodeURIComponent(id) + '%22}';
+                url += '&filters={%22StationCode%22:%22' + encodeURIComponent(stationCodeRef.current) + '%22}';
                 fetchData(url)
                 .then(json => json.result.records)
                 .then(records => {
@@ -48,7 +68,7 @@ export default function Station({ id } ) {
                         setTableData(records);
                         resolve();
                     } else {
-                        errorRef.current = `Station not found. Check the Station ID or try again later.`;
+                        errorRef.current = `No data available. Check the Station ID or try again later.`;
                         setLoading('error');
                     }
                 })
@@ -56,17 +76,16 @@ export default function Station({ id } ) {
                     console.error(error);
                     errorRef.current = 'Error getting station data. Reload or try again later.'
                     setLoading('error');
-                    reject();
                 });
             }
         })
     }
 
     useEffect(() => {
-        console.log(id);
-        getTableData(id)
+        parseStationCode()
+            .then(() => getTableData())
             .then(() => setLoading('false'));
-    }, [id]);
+    }, []);
 
     const pageContent = () => {
         return (

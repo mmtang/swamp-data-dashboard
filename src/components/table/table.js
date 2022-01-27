@@ -104,7 +104,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
     const CustomLink = ({ row }) => {
         return (
             <div>
-                <a href={withPrefix("/stations/" + encodeURIComponent(row['StationCode']))} target="_blank" rel="noopener noreferrer">Link</a>&nbsp;&nbsp;&nbsp;<Icon name='external' />
+                <a href={withPrefix("/stations?id=" + encodeURIComponent(row['StationCode']))} target="_blank" rel="noopener noreferrer">Link</a>&nbsp;&nbsp;&nbsp;<Icon name='external' />
             </div>
         )
     }

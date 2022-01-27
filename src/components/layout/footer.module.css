@@ -35,15 +35,6 @@
     -ms-filter: opacity(65%);
     -o-filter: opacity(65%);
     filter: opacity(65%);
-    transition: 0.25s all ease-in-out;
-}
-
-.logo:hover {
-    -webkit-filter: opacity(90%);
-    -moz-filter: opacity(90%);
-    -ms-filter: opacity(90%);
-    -o-filter: opacity(90%);
-    filter: opacity(90%);
 }
 
 .copyright {

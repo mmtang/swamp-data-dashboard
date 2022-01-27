@@ -19,8 +19,8 @@ function Footer() {
             </div>
             <div className={copyright}>
                 <div>
-                    <span>Copyright © {yearRef.current} State of California<br/></span>
-                    <span><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" rel="noopener noreferrer" target="_blank">Surface Water Ambient Monitoring Program</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://www.waterboards.ca.gov/" rel="noopener noreferrer" target="_blank">California Water Boards</a></span>
+                    <span><a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" rel="noopener noreferrer" target="_blank">Surface Water Ambient Monitoring Program</a>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://www.waterboards.ca.gov/" rel="noopener noreferrer" target="_blank">California Water Boards</a></span>
                 </div>
             </div>
         </div>

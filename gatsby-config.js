@@ -12,6 +12,6 @@ module.exports = {
   siteMetadata: {
     title: 'SWAMP Data Dashboard',
   },
-  pathPrefix: '/swamp-dash',
+  pathPrefix: '/swamp-data',
   plugins: [],
 }

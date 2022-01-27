@@ -43,7 +43,7 @@ export default function StationAnalytePopup({ attributes, analyte }) {
                     analyte={analyte} 
                 />
             </div>
-            <div className={buttonWrapper}><a href={withPrefix('/stations/' + attributes['StationCode'])} target="_blank" rel="noopener noreferrer" className="popup-button">View all station data&nbsp;&nbsp;<Icon name='external' /></a></div>
+            <div className={buttonWrapper}><a href={withPrefix('/stations?id=' + encodeURIComponent(attributes['StationCode']))} target="_blank" rel="noopener noreferrer" className="popup-button">View all station data&nbsp;&nbsp;<Icon name='external' /></a></div>
         </div>
     )
 };

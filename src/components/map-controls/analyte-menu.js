@@ -71,7 +71,6 @@ export default function AnalyteMenu({ analyte, setAnalyte, region, program }) {
                 newUrl += urlStrings[0];
             }
             newUrl += '}';
-            console.log(newUrl);
             // Get the data with the new url
             fetch(newUrl)
             .then(response => response.json())
