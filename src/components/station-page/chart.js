@@ -175,7 +175,11 @@ export default function Chart({ analyte, data, dateExtent }) {
                 }
                 content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
                 if (d.Censored) {
-                    content += '<br><i>Censored</i>';
+                    if (d.ResultQualCode === 'ND') {
+                        content += '<br><i>Non-detect</i>';
+                    } else if (d.ResultQualCode === 'DNQ') {
+                        content += '<br><i>Detected not quantified</i>';
+                    }
                 }
                 return tooltip
                     .style('opacity', 1)

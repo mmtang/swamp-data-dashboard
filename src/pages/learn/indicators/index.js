@@ -24,6 +24,8 @@ export default function ParametersIndex() {
                     </CardSmall>
                 </Link>
             )
+        } else {
+            return null;
         }
     });
 

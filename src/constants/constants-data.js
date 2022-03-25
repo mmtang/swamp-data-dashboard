@@ -408,5 +408,6 @@ export const habitatDataFields = [
 export const dataQualityCategories = [
     'Passed',
     'Some review needed',
-    'Spatial accuracy unknown'
+    'Spatial accuracy unknown',
+    'Unknown data quality'
 ]
