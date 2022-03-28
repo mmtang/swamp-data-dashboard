@@ -8,9 +8,9 @@
 // Use `gatsby build --prefix-paths` for this to work. Otherwise, Gatsby will ignore the pathPrefix and build the site as if hosted from the root domain.
 
 module.exports = {
-  /* Your site config here */
   siteMetadata: {
     title: 'SWAMP Data Dashboard',
+    description: 'Explore water quality monitoring data collected by the Surface Water Ambient Monitoring Program (SWAMP)'
   },
   pathPrefix: '/swamp-data',
   plugins: [],
