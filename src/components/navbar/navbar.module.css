@@ -16,7 +16,7 @@
     color: #ffffff;
     font-size: 1.2em;
     font-weight: 600;
-    margin: 26px;
+    margin-left: 2px;
 }
 
 .navMenu > ul {
@@ -39,13 +39,26 @@
     padding: 0;
 }
 
+.titleContainer {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    margin: 0 26px;
+}
+.logo {
+    vertical-align: middle;
+    height: 34px;
+    margin: auto 16px auto 0;
+}
+
 @media screen and (max-width: 800px) {
     .navMenu {
         display: none;
     }
-    .navTitle {
-        /* font-weight: 400; */
+    .titleContainer {
         margin: 17px;
     }
+    .logo {
+        height: 30px;
+    }
 }
-

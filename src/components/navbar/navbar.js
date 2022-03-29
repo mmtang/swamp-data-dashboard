@@ -1,13 +1,18 @@
 import React from 'react';
 import { Link } from 'gatsby';
+import { withPrefix } from 'gatsby';
 import LinkDropdown from './link-dropdown';
-import { navBar, navTitle, navMenu } from './navbar.module.css';
+import { navBar, navTitle, navMenu, titleContainer, logo } from './navbar.module.css';
 
 const Navbar = ({ active }) => {
     return (
         <div className={navBar}>
             {/* Wrap navbar header text in span */}
-            <Link to="/"><span className={navTitle}>SWAMP Data Dashboard</span></Link>
+            <div className={titleContainer}>
+                <a href='https://www.waterboards.ca.gov/' target='_blank' rel='noreferrer noopener'><img className={logo} src={withPrefix('/wb-logo-white-small.png')} /></a>
+                <a href='https://www.waterboards.ca.gov/water_issues/programs/swamp/' target='_blank' rel='noreferrer noopener'><img className={logo} src={withPrefix('/swamp-logo-white-small.png')} /></a>
+                <Link to="/"><span className={navTitle}>SWAMP Data Dashboard</span></Link>
+            </div>
             <div className={navMenu}>
                 <ul>
                     <LinkDropdown path='/learn' active={active === 'learn' ? true : false}>Learn</LinkDropdown>
