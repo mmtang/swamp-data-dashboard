@@ -11,6 +11,7 @@ import UpdateMessage from '../components/common/update-message';
 import ZoomToSelected from '../components/map-controls/zoom-to-selected';
 import { Divider, Modal, Icon } from 'semantic-ui-react';
 import { mapContainer, mainContainer, infoContainer, modalContent, swampIcon, modalButton } from './index.module.css';
+import Metadata from '../components/layout/metadata';
 
 export default function Index() {
   const [loaded, setLoaded] = useState(false);
@@ -36,6 +37,7 @@ export default function Index() {
 
   return (
     <LayoutMap>
+      <Metadata />
       <div className={mapContainer}>
         <MapIndex 
           setMapLoaded={setMapLoaded}

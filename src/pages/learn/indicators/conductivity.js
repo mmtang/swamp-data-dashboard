@@ -1,9 +1,11 @@
 import React from 'react';
 import LayoutParameter from '../../../components/layout/layout-parameter';
+import Metadata from '../../../components/layout/metadata';
 
 export default function Conductivity() {
     return (
         <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'conductivity', display: 'Conductivity' }}>
+            <Metadata title='Conductivity' />
             <div>
                 <h2>What is Conductivity?</h2>
                 <p>Conductivity, or specific conductivity, is a measure of the ability of water to pass an electrical current. It is directly related to the amount and activity of ions in the water. In general, the more dissolved materials (such as salts) in water, the higher its ionic content (conductivity). Temperature also affects conductivity. Warmer temperatures increase ionic activity, which increases conductivity.</p>

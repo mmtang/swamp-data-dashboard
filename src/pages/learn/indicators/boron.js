@@ -1,9 +1,11 @@
 import React from 'react';
 import LayoutParameter from '../../../components/layout/layout-parameter';
+import Metadata from '../../../components/layout/metadata';
 
 export default function Boron() {
     return (
         <LayoutParameter parameter={{ name: 'boron', display: 'Boron' }}>
+            <Metadata title='Boron' />
             <div>
                 <h2>What is Boron?</h2>
                 <p>Boron is a widely occurring element found in rocks, soil, and water. It does not exist in the environment as a pure element but is often combined with oxygen to form a group of compounds called borates. These compounds are widely used as whitening agents and in the manufacturing of many different commercial products, including fiberglass, ceramics, washing agents, and fire retardants. Other common boron compounds include boric acid, sodium borate (borax), and boron oxide.</p>

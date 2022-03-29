@@ -2,10 +2,12 @@ import React from 'react';
 import { Link } from 'gatsby';
 import LayoutParameter from '../../../components/layout/layout-parameter';
 import { container, wrapper } from './ipi.module.css';
+import Metadata from '../../../components/layout/metadata';
 
 export default function Ipi() {
     return (
         <LayoutParameter parameter={{ name: 'ipi', display: 'Index of Physical Habitat Integrity' }}>
+            <Metadata title='Index of Physical Habitat Integrity' />
             <div>
                 <h2>What is the Index of Physical Habitat Integrity?</h2>
                 <p>The Index of Physical Habitat Integrity (IPI) is a statewide scoring tool for measuring the condition of a stream or river's physical habitat. It integrates the condition of a number of individual habitat attributes (related to substrate, riparian vegetation, flow habitat variability, in-channel cover, and channel morphology) into an overall measure of physical condition.</p>

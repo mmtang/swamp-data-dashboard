@@ -1,9 +1,11 @@
 import React from 'react';
 import LayoutParameter from '../../../components/layout/layout-parameter';
+import Metadata from '../../../components/layout/metadata';
 
 export default function DissolvedOxygen() {
     return (
         <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'dissolvedOxygen', display: 'Dissolved Oxygen' }}>
+            <Metadata title='Dissolved Oxygen' />
             <div>
                 <h2>What is Dissolved Oxygen?</h2>
                 <p>Dissolved oxygen (DO) is the amount of oxygen in water that is available to aquatic organisms. This form of oxygen is free oxygen (i.e., not bonded to any other element) and is essential for the survival of fish and other aquatic organisms. The major sources of DO in water include the direct absorption of oxygen from the atmosphere, aeration, and photosynthesis. DO is an important indicator of the overall health of a waterbody and its ability to support aquatic life.</p>

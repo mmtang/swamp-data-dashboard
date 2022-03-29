@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'gatsby';
 import LayoutParameter from '../../../components/layout/layout-parameter';
+import Metadata from '../../../components/layout/metadata';
 
 export default function TotalNitrogen() {
     return (
         <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'totalNitrogen', display: 'Total Nitrogen' }}>
+            <Metadata title='Total Nitrogen' />
             <div>
                 <h2>What is Total Nitrogen?</h2>
                 <p>Nitrogen is a chemical element that is ubiquitous in the environment. It is an essential nutrient for plants and animals, but too much of it can have adverse ecological effects on a waterbody. Total nitrogen refers to the sum of nitrate, nitrite, and total kjeldahl nitrogen (combined organic nitrogen and ammonia + ammonium). Nitrate is a form of nitrogen that is more available to plants and dominant in most surface waters. Nitrite is a less stable form of nitrogen and a by-product of ammonium transformed into nitrate. </p>

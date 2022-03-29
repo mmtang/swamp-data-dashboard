@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'gatsby';
 import LayoutParameter from '../../../components/layout/layout-parameter';
+import Metadata from '../../../components/layout/metadata';
 
 export default function Temperature() {
     return (
         <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'temperature', display: 'Temperature' }}>
+            <Metadata title='Temperature' />
             <div>
                 <h2>What is Temperature?</h2>
                 <p>Water temperature is a measure of the average kinetic energy of water molecules. It refers to how hot or cold water is, and can be expressed using different scales (e.g., Celsius, Fahrenheit). Temperature is an important water quality indicator that directly affects water chemistry and the health of aquatic organisms.</p>

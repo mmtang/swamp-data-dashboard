@@ -5,11 +5,13 @@ import { Icon, Message, Table } from 'semantic-ui-react';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { main } from '../pages.module.css';
 import { trendContainer, iconWrapper, textWrapper, imageSetContainer, imageSet } from './trends.module.css';
+import Metadata from '../../components/layout/metadata';
 
 
 export default function Trends() {
     return (
         <LayoutInfo active='learn'>
+            <Metadata title='Trends' />
             <div className={main}>
                 <h1>Calculating trends</h1>
                 <p>The SWAMP Data Dashboard displays trends for a suite of water quality parameters at the station level. Tracking water quality trends allows the Water Boards and others (i.e., water resource managers, the Legislature, and the public-at-large) to prioritize management actions, evaluate the effectiveness of Water Board programs, and identify emerging or previously unknown threats.</p>

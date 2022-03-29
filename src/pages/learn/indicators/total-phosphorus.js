@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'gatsby';
 import LayoutParameter from '../../../components/layout/layout-parameter';
+import Metadata from '../../../components/layout/metadata';
 
 export default function TotalPhosphorus() {
     return (
         <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'totalPhosphorus', display: 'Total Phosphorus' }}>
+            <Metadata title='Total Phosphorus' />
             <div>
                 <h2>What is Total Phosphorus?</h2>
                 <p>Phosphorus is a naturally-occurring element and an essential nutrient for plants and animals. Pure, elemental phosphorus is rare. It mostly exists in the form of phosphate. In surface waters, phosphorus is usually measured as orthophosphate and total phosphorus. Orthophosphate is a form of phosphorus that is more available to plants. Total phosphorus refers to the sum of orthophosphate, condensed (inorganic) phosphate, and organic phosphate. Total phosphorus is an important indicator of nutrient pollution in a waterbody.</p>

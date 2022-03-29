@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'gatsby';
 import LayoutParameter from '../../../components/layout/layout-parameter';
+import Metadata from '../../../components/layout/metadata';
 
 export default function Tds() {
     return (
         <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'tds', display: 'Total Dissolved Solids' }}>
+            <Metadata title='Total Dissolved Solids' />
             <div>
                 <h2>What is Total Dissolved Solids?</h2>
                 <p>Total dissolved solids (TDS) is the total concentration of all organic and inorganic substances, including minerals, salts, and metals, in water. These substances mostly consist of calcium, magnesium, sulfur, and other materials that are small enough to pass through a 2-micron (0.002 cm) filter. TDS is closely related to <Link to='../conductivity'>conductivity</Link>, salinity, alkalinity, and hardness measures.</p>

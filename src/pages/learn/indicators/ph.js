@@ -1,9 +1,11 @@
 import React from 'react';
 import LayoutParameter from '../../../components/layout/layout-parameter';
+import Metadata from '../../../components/layout/metadata';
 
 export default function Ph() {
     return (
         <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'ph', display: 'pH' }}>
+            <Metadata title='pH' />
             <div>
                 <h2>What is pH?</h2>
                 <p>pH is a measure of how acidic or basic water is, based on the amount of free hydrogen and hydroxyl ions in the water. It is measured on a scale of 0 to 14, with 7 being neutral. Substances with a pH of less than 7 are considered acidic, and substances with a pH of greater than 7 are considered basic. The pH scale is logarithmic, meaning that a change of one point represents a ten-fold increase in acidity or alkalinity. The pH level affects the chemical and biological processes in water, and is important to the survival and growth of aquatic life in a waterbody.</p> 

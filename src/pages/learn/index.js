@@ -4,10 +4,12 @@ import LayoutInfo from '../../components/layout/layout-info';
 import { Icon } from 'semantic-ui-react';
 import { main } from '../pages.module.css';
 import { linkWrapper, linkHeader } from './index.module.css';
+import Metadata from '../../components/layout/metadata';
 
 export default function LearnIndex() {
     return (
-        <LayoutInfo active="learn">
+        <LayoutInfo active='learn'>
+            <Metadata title='Learn' />
             <div className={main}>
                 <h1>Learn more</h1>
                 { /* Wrap links in div to prevent breaking between the text and icon */ }

@@ -13,5 +13,5 @@ module.exports = {
     description: 'Explore water quality monitoring data collected by the Surface Water Ambient Monitoring Program (SWAMP)'
   },
   pathPrefix: '/swamp-data',
-  plugins: [],
+  plugins: ['gatsby-plugin-react-helmet'],
 }

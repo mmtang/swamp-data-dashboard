@@ -11,6 +11,8 @@ import StationTable from '../../components/station-page/station-table';
 import { regionDict, fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 import { appContainer, mainGrid, header, leftContainer, siteMapContainer, rightContainer, stationName, buttonContainer } from './index.module.css';
+import Metadata from '../../components/layout/metadata';
+
 
 export default function Station(props) {
     const stationCodeRef = useRef(null);
@@ -137,6 +139,7 @@ export default function Station(props) {
 
     return (
         <div className={appContainer}>
+            <Metadata title='Monitoring Station' />
             { loading === 'true' ? <LayoutMap><LoaderDashboard /></LayoutMap> :
             loading === 'error' ? <LayoutMap><ErrorFullscreen>{errorRef.current}</ErrorFullscreen></LayoutMap> :
             loading === 'false' && stationObjRef.current ? pageContent() :

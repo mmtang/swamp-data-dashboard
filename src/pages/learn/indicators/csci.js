@@ -2,10 +2,12 @@ import React from 'react';
 import { withPrefix } from 'gatsby';
 import LayoutParameter from '../../../components/layout/layout-parameter';
 import { container, wrapper } from './csci.module.css';
+import Metadata from '../../../components/layout/metadata';
 
 export default function Csci() {
     return (
         <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'csci', display: 'California Stream Condition Index' }}>
+            <Metadata title='California Stream Condition Index' />
             <div>
                 <h2>What is the California Stream Condition Index?</h2>
                 <p>The California Stream Condition Index (CSCI) is a biological scoring tool that helps aquatic resource managers translate complex data about benthic macroinvertebrates found living in a stream into an overall measure of stream health. It is a measure of whether, and to what degree, the ecology of a stream is altered from a healthy state.</p>

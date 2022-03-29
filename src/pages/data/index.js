@@ -3,11 +3,13 @@ import { Link, withPrefix } from 'gatsby';
 import LayoutInfo from '../../components/layout/layout-info';
 import { main } from '../pages.module.css';
 import { imageSetContainer } from './index.module.css';
+import Metadata from '../../components/layout/metadata';
 
 
 export default function DataIndex() {
     return (
         <LayoutInfo active='data'>
+            <Metadata title='Data' />
             <div className={main}>
                 <h1>Accessing the data</h1>
                 <h2>About</h2>

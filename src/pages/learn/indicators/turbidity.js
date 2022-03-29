@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'gatsby';
 import LayoutParameter from '../../../components/layout/layout-parameter';
+import Metadata from '../../../components/layout/metadata';
 
 export default function Turbidity() {
     return (
         <LayoutParameter title="SWAMP Data Dashboard" parameter={{ name: 'turbidity', display: 'Turbidity' }}>
+            <Metadata title='Turbidity' />
             <div>
                 <h2>What is Turbidity?</h2>
                 <p>Turbidity is a measure of water clarity; specifically, how cloudy (or opaque) water is. Water looks cloudy when there is more material, such as silt, sand, and algae, suspended in the water. These suspended particles scatter light, which gives the water a murky appearance. Turbidity is an important indicator of sediment, erosion, and pollution levels in a waterbody.</p>

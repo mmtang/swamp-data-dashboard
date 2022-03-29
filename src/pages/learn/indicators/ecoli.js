@@ -1,9 +1,11 @@
 import React from 'react';
 import LayoutParameter from '../../../components/layout/layout-parameter';
+import Metadata from '../../../components/layout/metadata';
 
 export default function Ecoli() {
     return (
         <LayoutParameter parameter={{ name: 'ecoli', display: 'E. coli' }}>
+            <Metadata title='E. coli' />
             <div>
                 <h2>What is E. coli?</h2>
                 <p><i>Escherichia coli</i>, or <i>E. coli</i>, is a type of bacteria found in the intestines and fecal waste of animals and humans. It is a member of the fecal coliform group of bacteria, which is a subgroup of total coliform bacteria. Most strains of <i>E. coli</i> bacteria are harmless; however, some strains can cause illness  in humans.</p>
