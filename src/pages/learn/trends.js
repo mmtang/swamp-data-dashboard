@@ -23,7 +23,7 @@ export default function Trends() {
                     <Icon name='exclamation triangle' />The methodology described on this page is currently in draft form. We welcome your feedback: <a href="mailto:swamp@waterboards.ca.gov">swamp@waterboards.ca.gov</a>.
                 </Message>
                 <h3>Data requirements</h3>
-                <p>SWAMP data are analyzed for trends at the station-indicator level. The records are filtered by station code and then again by indicator. Only those records assigned a <Link to='../../data'>data quality category</Link> of "Passed", "Some review needed", or "Spatial accuracy unknown" are used in the analysis.</p>
+                <p>SWAMP data are analyzed for trends at the station-indicator level. The records are filtered by station code and then again by indicator. Only those records assigned a <Link to='../../data'>data quality category</Link> of "Passed", "Some review needed", "Spatial accuracy unknown", or "Unknown data quality" are used in the analysis.</p>
                 <p>Station-indicator datasets that meet the three criteria below are analyzed for trends. Station-indicator datasets that do not meet the criteria are assigned the "Insufficient data" trend category. In general, the more data points that are available, the more statistical power there is for identifying a trend in the dataset.</p>
                 <ul>
                     <li>Must have at least five observations spanning five years</li>

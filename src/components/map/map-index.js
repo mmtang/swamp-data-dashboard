@@ -684,6 +684,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
             updateStations();
             clearSelectedSites();
             resetTableRecords();
+            setFilteredByExtent(false);
         }
     }, [selectedProgram, selectedRegion])
 
