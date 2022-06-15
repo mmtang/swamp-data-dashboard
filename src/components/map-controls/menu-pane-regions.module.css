@@ -1,0 +1,12 @@
+.card {
+    background-color: #e0e1e2;
+    padding: 1em;
+    margin: 0.6em 0;
+}
+
+.regionName {
+    font-weight: 600;
+    font-size: 1em;
+    margin-bottom: 0.4em;
+    color: #103c68;
+}
