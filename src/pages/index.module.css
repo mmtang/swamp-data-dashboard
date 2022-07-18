@@ -1,19 +1,19 @@
+.mapContainer {
+    height: calc(100% - 60px);
+    top: 60px;
+    order: 1;
+    flex-basis: 50%;
+    z-index: 2;
+}
+
 .mainContainer {
     height: 100%;
     background-color: #fff;
     top: 60px;
-    order: 1;
-    flex-basis: 35%;
+    order: 2;
+    flex-basis: 50%;
     overflow-y: auto;
     z-index: 50 !important;
-}
-
-.mapContainer {
-    height: calc(100% - 60px);
-    top: 65px;
-    order: 2;
-    flex-basis: 60%;
-    z-index: 2;
 }
 
 .infoContainer {

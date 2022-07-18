@@ -767,7 +767,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 viewRef.current = new MapView({
                     container: divRef.current,
                     map: mapRef.current,
-                    center: [-119.3624, 37.4204],
+                    center: [-119.3624, 37.5048],
                     zoom: 6,
                     constraints: {
                         minZoom: 5
@@ -783,11 +783,10 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         //color: [255, 0, 0, 1]
                     }
                 });
-                // Define Search widget
                 searchRef.current = new Search({
                     view: viewRef.current,
-                    //container: 'searchContainer',
-                    allPlaceholder: 'Search location, waterbody, or station',
+                    container: 'searchContainer',
+                    allPlaceholder: ' ',
                     label: 'Search for a location, waterbody, or monitoring site',
                     includeDefaultSources: true,
                     locationEnabled: false,
@@ -801,11 +800,6 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         }
                     ]
                 });
-                // Add Search widget
-                viewRef.current.ui.add(searchRef.current, {
-                    position: 'top-right'
-                });
-
                 layerListRef.current = new LayerList({
                     view: viewRef.current,
                     container: 'layerListContainer',
@@ -977,7 +971,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         visibilityMode: 'inherited'
                     });
                     // Add grouplayer to map
-                    // mapRef.current.add(irLayerRef.current);
+                    mapRef.current.add(irLayerRef.current);
                     // Add feature layers to search widget
                     searchRef.current.sources.add({
                         layer: irLineRef.current,

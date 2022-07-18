@@ -62,7 +62,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                     </HelpIcon>
                 </p>
                 {/* Container for the ArcGIS JavaScript search widget */}
-                {/*<div id="searchContainer" style={{ border: '1px solid #6e6e6e', marginBottom: '0.4em' }} />*/}
+                <div id="searchContainer" style={{ border: '1px solid #6e6e6e', marginBottom: '0.4em' }} />
                 <p className={pLabel}>
                     <span>Example: Lagunitas Creek, 201LAG195, or Nicasio, CA</span>
                 </p>

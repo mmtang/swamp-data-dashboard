@@ -5,13 +5,12 @@ import ChartIndexWrapper from '../components/chart-index/chart-index-wrapper';
 import FilterByExtent from '../components/map-controls/filter-by-extent';
 import LayoutMap from '../components/layout/layout-map';
 import LoaderDashboard from '../components/common/loader-dashboard';
-import MenuIndex from '../components/map-controls/menu-index';
 import MapIndex from '../components/map/map-index';
 import Table from '../components/table/table';
 import UpdateMessage from '../components/common/update-message';
 import ZoomToSelected from '../components/map-controls/zoom-to-selected';
 import { Divider, Modal, Icon } from 'semantic-ui-react';
-import { mapContainer, mainContainer, mapHeader, mapMain, infoContainer, modalContent, swampIcon, modalButton } from './index.module.css';
+import { mapContainer, mainContainer, infoContainer, modalContent, swampIcon, modalButton } from './index.module.css';
 import Metadata from '../components/layout/metadata';
 
 export default function Index() {
@@ -39,17 +38,27 @@ export default function Index() {
   return (
     <LayoutMap>
       <Metadata />
+      <div className={mapContainer}>
+        <MapIndex 
+          setMapLoaded={setMapLoaded}
+          selectedAnalyte={analyte} 
+          selectedRegion={region} 
+          selectedProgram={program}
+          selectedSites={selectedSites}
+          setSelectedSites={setSelectedSites}
+          setTableData={setTableData}
+          filteredByExtent={filteredByExtent}
+          setFilteredByExtent={setFilteredByExtent}
+          zoomedToSites={zoomedToSites}
+          setZoomedToSites={setZoomedToSites}
+        />
+      </div>
       { !loaded ? <LoaderDashboard /> : null }
       <div className={mainContainer}>
         <div className={infoContainer}>
           <p>The <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">Surface Water Ambient Monitoring Program</a> (SWAMP) mission is to generate  high quality, accessible, and usable data and information that is used to protect and restore California’s watersheds, and to inform California communities about local conditions of waterbodies monitored by SWAMP. Explore SWAMP data for the time period of 2000-{yearRef.current}.</p>
           {/* Controls */}
-          <section>
-            <MenuIndex />
-          </section>
           <section style={{ marginBottom: '40px' }}>
-            
-            {/*
             <AccordionMenu
               region={region}
               setRegion={setRegion}
@@ -58,7 +67,6 @@ export default function Index() {
               program={program}
               setProgram={setProgram}
             />
-            */}
           </section>
           <Divider horizontal section>
             Data Table
@@ -89,24 +97,6 @@ export default function Index() {
           </section>
         </div>
       </div>
-      <div className={mapContainer}>
-        <div className={mapMain}>
-          <MapIndex 
-            setMapLoaded={setMapLoaded}
-            selectedAnalyte={analyte} 
-            selectedRegion={region} 
-            selectedProgram={program}
-            selectedSites={selectedSites}
-            setSelectedSites={setSelectedSites}
-            setTableData={setTableData}
-            filteredByExtent={filteredByExtent}
-            setFilteredByExtent={setFilteredByExtent}
-            zoomedToSites={zoomedToSites}
-            setZoomedToSites={setZoomedToSites}
-          />
-        </div>
-      </div>
-      {/* Control for the disclaimer modal */}
       { disclaimerVisible ? 
           <Modal
               size='tiny'

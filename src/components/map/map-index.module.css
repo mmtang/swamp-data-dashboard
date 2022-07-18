@@ -1,6 +1,5 @@
 .container {
-    width: 65vw;
-    /* Subtract 60px for the main navbar */
+    width: 50vw;
     height: calc(100vh - 60px);
 }
 
