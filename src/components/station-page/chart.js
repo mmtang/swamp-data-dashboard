@@ -10,7 +10,9 @@ export default function Chart({ analyte, data, dateExtent }) {
 
     const formatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
-    const chartId = `chart-${analytes[analyte].code}`;
+    // Generate random 6 digit integer to serve as ID for this chart instance
+    const randomId = Math.floor(100000 + Math.random() * 900000);
+    const chartId = `chart-${randomId}`;
 
     const responsive = (id) => {
         // get container + svg aspect ratio
@@ -71,7 +73,7 @@ export default function Chart({ analyte, data, dateExtent }) {
             .attr('height', height - margin.bottom);
         // Initialize tooltip
         const tooltip = d3.select('body').append('div')
-            .attr('id', `tooltip-${analytes[analyte].code}`)
+            .attr('id', `tooltip-${randomId}`)
             .attr('class', customTooltip)
             .style('opacity', 0);
 
@@ -119,37 +121,40 @@ export default function Chart({ analyte, data, dateExtent }) {
             .style('font-family', 'Source Sans Pro');
 
         // Draw reference geometries
-        if (Object.keys(analyteScoringCategories).includes(analytes[analyte].code)) {
-            // Get reference values
-            const categories = analyteScoringCategories[analytes[analyte].code];
-            if (categories.length > 0) {
-                // Rectangles
-                const rects = categories.filter(d => d['type'] === 'area');
-                if (rects.length > 0) {
-                    const rectGroup = chart.append('g')
-                        .data(rects)
-                        .attr('clip-path', 'url(#clip)');
-                    rectGroup.selectAll('rect')
-                        .data(rects)
-                        .enter().append('rect')
-                        .attr('width', width - margin.left - margin.right)
-                        .attr('height', d => {
-                            //console.log(yScale(d.lowerValue) - yScale(d.upperValue));
-                            return yScale(d.lowerValue) - yScale(d.upperValue);
-                        })
-                        .attr('x', 0 + margin.left)
-                        .attr('y', d => yScale(d.upperValue))
-                        .attr('fill', d => d['fillColor'])
-                        .attr('opacity', 0.25);
-                    rectGroup.selectAll('text')
-                        .data(rects)
-                        .enter().append('text')
-                        .attr('x', width - margin.right - 5)
-                        .attr('y', d => yScale(d.lowerValue) - 5)
-                        .attr('font-family', 'Source Sans Pro')
-                        .attr('font-size', '11px')
-                        .attr('text-anchor', 'end')
-                        .text(d => d.label);
+        // Check that reference values exist
+        if (analytes[analyte]) {
+            if (Object.keys(analyteScoringCategories).includes(analytes[analyte].code)) {
+                // Get reference values
+                const categories = analyteScoringCategories[analytes[analyte].code];
+                if (categories.length > 0) {
+                    // Rectangles
+                    const rects = categories.filter(d => d['type'] === 'area');
+                    if (rects.length > 0) {
+                        const rectGroup = chart.append('g')
+                            .data(rects)
+                            .attr('clip-path', 'url(#clip)');
+                        rectGroup.selectAll('rect')
+                            .data(rects)
+                            .enter().append('rect')
+                            .attr('width', width - margin.left - margin.right)
+                            .attr('height', d => {
+                                //console.log(yScale(d.lowerValue) - yScale(d.upperValue));
+                                return yScale(d.lowerValue) - yScale(d.upperValue);
+                            })
+                            .attr('x', 0 + margin.left)
+                            .attr('y', d => yScale(d.upperValue))
+                            .attr('fill', d => d['fillColor'])
+                            .attr('opacity', 0.25);
+                        rectGroup.selectAll('text')
+                            .data(rects)
+                            .enter().append('text')
+                            .attr('x', width - margin.right - 5)
+                            .attr('y', d => yScale(d.lowerValue) - 5)
+                            .attr('font-family', 'Source Sans Pro')
+                            .attr('font-size', '11px')
+                            .attr('text-anchor', 'end')
+                            .text(d => d.label);
+                    }
                 }
             }
         }

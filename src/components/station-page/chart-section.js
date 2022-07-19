@@ -12,6 +12,7 @@ import { sectionContainer, analyteHeader, analyteTitle } from './chart-section.m
 export default function ChartSection({ station, selectedAnalytes }) {
     const [data, setData] = useState(null);
     const dateExtentRef = useRef(null);
+    const vizAnalytes = useRef(selectedAnalytes);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
 
@@ -20,15 +21,16 @@ export default function ChartSection({ station, selectedAnalytes }) {
         if (station && selectedAnalytes) {
             if (data) { setData(null) };
             // Limit number of analytes graphed to 4
-            let vizAnalytes;
+            let analyteList = selectedAnalytes;
             if (selectedAnalytes.length > 4) {
-                vizAnalytes = selectedAnalytes.slice(0, 4);
+                analyteList = selectedAnalytes.slice(0, 4);
             } else {
-                vizAnalytes = selectedAnalytes;
+                analyteList = selectedAnalytes;
             }
+            vizAnalytes.current = analyteList;
             const promises = [];
-            for (let i = 0; i < vizAnalytes.length; i++) {
-                promises.push(getData(vizAnalytes[i], station));
+            for (let i = 0; i < analyteList.length; i++) {
+                promises.push(getData(analyteList[i], station));
             }
             Promise.all(promises)
             .then((results) => {
@@ -114,22 +116,25 @@ export default function ChartSection({ station, selectedAnalytes }) {
 
     return (
         <div className={sectionContainer}>
-            { selectedAnalytes.map(analyteName => 
-                <div key={analytes[analyteName].code}>
+            { vizAnalytes.current.map(analyteName => 
+                <div key={analyteName}>
                     <div className={analyteHeader}>
                         <h4 className={analyteTitle}>
                             {analyteName}
                             { analyteName === 'pH' ? null : 
                               data ? ` (${data[analyteName].unit})` :
                               null }
-                            <HelpIcon position='right center' color='grey'>
+                            { analytes[analyteName] ? 
+                              <HelpIcon position='right center' color='grey'>
                                 <div style={{ fontSize: '13px' }}>
                                     { analytes[analyteName]['blurb'] }
                                     &nbsp;
                                     { /* Display the 'Read more' link for those indicators that have an indicator page. Do not display the link if the page does not exist yet */ }
                                     { analytes[analyteName]['page'] ? <a href={withPrefix(`/learn/indicators/${analytes[analyteName]['page']}`)} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a> : '' }
                                 </div>
-                            </HelpIcon>
+                              </HelpIcon>
+                              : null
+                            }
                         </h4>
                         <DownloadData 
                             data={data ? data[analyteName].data : null}
