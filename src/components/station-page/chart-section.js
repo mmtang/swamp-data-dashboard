@@ -85,7 +85,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         d.SampleDate = parseDate(d.SampleDate);
                         d.ResultDisplay = +parseFloat(d.Result).toFixed(3);
                         d.Censored = false;
-                        if (analyte === 'CSCI') {
+                        if (analyte === 'CSCI' || analyte === 'IPI') {
                             d.Unit = 'score';
                         }
                     });

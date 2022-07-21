@@ -169,6 +169,16 @@ export const stationSummaryDataFields = [
         type: 'string'
     },
     {
+        name: 'LastResult',
+        alias: 'Last Result',
+        type: 'double'
+    },
+    {
+        name: 'Unit',
+        alias: 'Unit',
+        type: 'string'
+    },
+    {
         name: 'Analyte',
         alias: 'Analyte',
         type: 'string'
@@ -218,6 +228,10 @@ export const stationSummaryTableFields = [
         name: 'LastSampleDate',
         label: 'Last Sample',
         direction: 'desc'
+    },
+    {
+        name: 'LastResult',
+        label: 'Last Result'
     },
     {
         // There is a bug in ArcGIS that will make the old table fields still show even after changing out the layer. Put the analyte field after the Last Sample date field so that this set of fields more closely resembles that of the station layer set. 

@@ -4,6 +4,7 @@ import TrendHelpIcon from '../common/trend-help-icon';
 import DataTable from 'react-data-table-component';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { Icon } from 'semantic-ui-react';
+import { format } from 'd3';
 import { tableWrapper } from './table.module.css';
 
 
@@ -14,6 +15,8 @@ import { tableWrapper } from './table.module.css';
 export default function Table({ selectedAnalyte, data, selectedSites, setSelectedSites }) {
     const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState(null); 
+
+    const formatNumber = format(',');
 
     // Documentation of RDT styles that can be overrided or extended
     // https://github.com/jbetancur/react-data-table-component/blob/master/src/DataTable/styles.ts
@@ -65,6 +68,23 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
             id: 'LastSampleDate',
             selector: row => row['LastSampleDate'],
             width: '140px',
+            sortable: true
+        },
+        lastResult: {
+            name: 'Last Result',
+            id: 'LastResult',
+            selector: row => row['LastResult'],
+            width: '135px',
+            sortable: true,
+            // Do the number formatting in format, not selector
+            // Otherwise the column sorting doesn't work correctly
+            format: row => row['LastResult'].toLocaleString()  
+        },
+        unit: {
+            name: 'Unit',
+            id: 'Unit',
+            selector: row => row['Unit'],
+            width: '105px',
             sortable: true
         },
         sitePage: {
@@ -121,7 +141,7 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
             if (!selectedAnalyte) {
                 setColumns([d.siteCode, d.siteName, d.region, d.lastSample, d.sitePage]);
             } else if (selectedAnalyte) {
-                setColumns([d.siteCode, d.siteName, d.region, d.analyte, d.trend, d.lastSample, d.sitePage]);
+                setColumns([d.siteCode, d.siteName, d.region, d.analyte, d.trend, d.lastSample, d.lastResult, d.unit, d.sitePage]);
             }
             if (loading) {
                 setLoading(false);

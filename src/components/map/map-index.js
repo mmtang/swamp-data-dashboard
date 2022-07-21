@@ -75,6 +75,8 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         RegionName: regionDict[d.Region],
                         Analyte: d.Analyte,
                         LastSampleDate: formatDate(parseDate(d.LastSampleDate)),
+                        LastResult: d.LastResult,
+                        Unit: d.Unit,
                         Trend: d.Trend,
                         bioaccumulation: d.Bioaccumulation,
                         bioassessment: d.Bioassessment,
@@ -104,7 +106,9 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                                 RegionName: d.attributes.RegionName,
                                 Analyte: d.attributes.Analyte,
                                 Trend: d.attributes.Trend,
-                                LastSampleDate: d.attributes.LastSampleDate
+                                LastSampleDate: d.attributes.LastSampleDate,
+                                LastResult: d.attributes.LastResult,
+                                Unit: d.attributes.Unit
                             }
                         } else {
                             return {
@@ -497,12 +501,19 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         title: '{StationName}<br><span class="map-popup-subtitle" style="color: #f15f2b">Monitoring station</span>',
                         content: buildStationPopup
                     }
-                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastSampleDate,Region,Trend,Bioaccumulation,Bioassessment,Fhab,Spot,SortOrder&limit=5000';
+                    let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Analyte,LastResult,Unit,LastSampleDate,Region,Trend,Bioaccumulation,Bioassessment,Fhab,Spot,SortOrder&limit=5000';
                     url += '&filters={%22Analyte%22:%22' + encodeURIComponent(selectedAnalyte) + '%22}'
                     fetch(url)
                     .then((resp) => resp.json())
                     .then((json) => json.result.records)
                     .then((records) => {
+                        records.map(d => {
+                            if (d.Analyte === 'CSCI' || d.Analyte === 'IPI') {
+                                d.Unit = 'score';
+                            } else if (d.Analyte === 'pH') {
+                                d.Unit = '';
+                            }
+                        });
                         // Sort records by descending order on SortOrder. This will change the rendering order of the stations so that the stations with trends are drawn on top of other stations without trends
                         records.sort((a, b) => b.SortOrder - a.SortOrder);
                         convertStationSummaryDataToGraphics(records)
@@ -565,7 +576,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         StationName: d.attributes.StationName,
                         StationCode: d.attributes.StationCode,
                         RegionName: d.attributes.RegionName,
-                        LastSampleDate: d.attributes.LastSampleDate
+                        LastSampleDate: d.attributes.LastSampleDate,
                     }
                 });
                 setTableData(featureData);
@@ -586,7 +597,9 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                             RegionName: d.attributes.RegionName,
                             Analyte: d.attributes.Analyte,
                             Trend: d.attributes.Trend,
-                            LastSampleDate: d.attributes.LastSampleDate
+                            LastSampleDate: d.attributes.LastSampleDate,
+                            LastResult: d.attributes.LastResult,
+                            Unit: d.attributes.Unit
                         }
                     });
                     setTableData(featureData);
