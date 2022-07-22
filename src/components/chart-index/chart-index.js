@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import AnalyteCard from '../map-controls/analyte-card';
 import DownloadData from '../common/download-data';
 import LoaderBlock from '../common/loader-block';
+import MessageDismissible from '../common/message-dismissible';
 import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
@@ -15,7 +16,9 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
     const [downloadData, setDownloadData] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [overSelectionLimit, setOverSelectionLimit] = useState(false);
 
+    const limitRef = useRef(5); // Limit number of sites that can be graphed
     const unitRef = useRef(null);
     const siteDictRef = useRef({});
 
@@ -23,6 +26,8 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
     const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
+
+    const overLimitMessage = `A maximum of ${limitRef.current.toLocaleString()} stations can be graphed at one time. ${limitRef.current.toLocaleString()} of the ${selectedSites.length} stations you selected are graphed below.`;
 
     const handleClick = () => {
         if (modalVisible === false) {
@@ -35,12 +40,13 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
     useEffect(() => {
         if (modalVisible) {
             if (data) { setData(null) };
-            // Limit number of sites graphed to 4
             let vizSites;
-            if (selectedSites.length > 4) {
-                vizSites = selectedSites.slice(0, 4);
+            if (selectedSites.length > limitRef.current) {
+                vizSites = selectedSites.slice(0, limitRef.current);
+                setOverSelectionLimit(true);
             } else {
                 vizSites = selectedSites;
+                setOverSelectionLimit(false);
             }
             const promises = [];
             for (let i = 0; i < vizSites.length; i++) {
@@ -321,7 +327,7 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
             // Add legend
             const svgLegend = d3.select('#index-legend-container').append('svg')
                 .attr('width', 350)
-                .attr('height', 29 * siteKeys.length);
+                .attr('height', 24 * siteKeys.length);
             svgLegend.append('g')
                 .attr('class', 'legendOrdinal')
                 .attr('transform', 'translate(10, 10)');
@@ -430,6 +436,10 @@ export default function ChartIndex({ text, selectedSites, analyte }) {
                     <Modal.Content>
                         { loading ? <LoaderBlock /> : 
                             <div className={modalContent}>
+                                {/* Display message if user selects too many sites */}
+                                { overSelectionLimit ? 
+                                    <MessageDismissible color='red' message={overLimitMessage} /> 
+                                : null }
                                 <div className={downloadWrapper}>
                                     <DownloadData 
                                         data={downloadData}

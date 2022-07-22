@@ -41,7 +41,6 @@ h3 {
 p {
   font-family: inherit;
   font-size: 0.96rem;
-  color: #5d5d5d;
   line-height: 1.5 !important;
   font-weight: 400;
 }
@@ -236,4 +235,9 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
 
 .ui.dimmer {
   background-color: rgba(0, 0, 0, .4);
+}
+
+.ui.message {
+  border-radius: 0;
+  color: #5d5d5d;
 }

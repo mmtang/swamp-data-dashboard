@@ -12,7 +12,7 @@ export default function ChartIndexWrapper({ text, selectedSites, analyte }) {
                 analyte={analyte} 
             />
             <HelpIcon>
-                <p>To use the graph function, select an indicator from the <strong>Filters</strong> section above and at least one site from the table below. A maximum of four sites can be graphed at one time.</p>
+                <p>To use the graph function, select an indicator from the <strong>Filters</strong> section above and at least one site from the table below. A maximum of five stations can be graphed at one time.</p>
             </HelpIcon>
         </div>
     )

@@ -3,6 +3,7 @@ import { withPrefix } from 'gatsby';
 import Chart from './chart';
 import DownloadData from '../common/download-data';
 import HelpIcon from '../icons/help-icon';
+import MessageDismissible from '../common/message-dismissible';
 import { Icon } from 'semantic-ui-react';
 import { timeParse, extent } from 'd3';
 import { analytes, chemDataFields, habitatDataFields, habitatAnalytes, dataQualityCategories } from '../../constants/constants-data';
@@ -11,21 +12,28 @@ import { sectionContainer, analyteHeader, analyteTitle } from './chart-section.m
 
 export default function ChartSection({ station, selectedAnalytes }) {
     const [data, setData] = useState(null);
+    const [overSelectionLimit, setOverSelectionLimit] = useState(false);
+
     const dateExtentRef = useRef(null);
     const vizAnalytes = useRef(selectedAnalytes);
+    const limitRef = useRef(5); // Limit number of analytes that can be graphed
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
+
+    const overLimitMessage = `A maximum of ${limitRef.current.toLocaleString()} indicators can be graphed at one time. ${limitRef.current.toLocaleString()} of the ${selectedAnalytes.length} indicators you selected are graphed below.`;
 
     useEffect(() => {
         // Get data for all selected analytes
         if (station && selectedAnalytes) {
             if (data) { setData(null) };
-            // Limit number of analytes graphed to 4
+            
             let analyteList = selectedAnalytes;
-            if (selectedAnalytes.length > 4) {
-                analyteList = selectedAnalytes.slice(0, 4);
+            if (selectedAnalytes.length > limitRef.current) {
+                analyteList = selectedAnalytes.slice(0, limitRef.current);
+                setOverSelectionLimit(true);
             } else {
                 analyteList = selectedAnalytes;
+                setOverSelectionLimit(false);
             }
             vizAnalytes.current = analyteList;
             const promises = [];
@@ -116,6 +124,10 @@ export default function ChartSection({ station, selectedAnalytes }) {
 
     return (
         <div className={sectionContainer}>
+            {/* Display message if user selects too many sites */}
+            { overSelectionLimit ? 
+                <MessageDismissible color='red' message={overLimitMessage} />
+            : null }
             { vizAnalytes.current.map(analyteName => 
                 <div key={analyteName}>
                     <div className={analyteHeader}>

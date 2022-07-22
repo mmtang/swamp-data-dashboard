@@ -110,7 +110,7 @@ export default function Station(props) {
                 <div className={rightContainer}>
                     <section>
                         <h2>Water quality data and trends</h2>
-                        <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring station. For a more detailed view of the data, select an indicator or indicators and click the "Graph data for selected indicators" button below. A maximum of four indicators can be graphed at one time.</p>
+                        <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring station. For a more detailed view of the data, select an indicator or indicators and click the "Graph data for selected indicators" button below.</p>
                     </section>
                     <section>
                         <div className={buttonContainer}>
