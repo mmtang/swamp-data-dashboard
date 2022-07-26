@@ -4,7 +4,6 @@ import TrendHelpIcon from '../common/trend-help-icon';
 import DataTable from 'react-data-table-component';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { Icon } from 'semantic-ui-react';
-import { format } from 'd3';
 import { tableWrapper } from './table.module.css';
 
 
@@ -15,8 +14,6 @@ import { tableWrapper } from './table.module.css';
 export default function Table({ selectedAnalyte, data, selectedSites, setSelectedSites }) {
     const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState(null); 
-
-    const formatNumber = format(',');
 
     // Documentation of RDT styles that can be overrided or extended
     // https://github.com/jbetancur/react-data-table-component/blob/master/src/DataTable/styles.ts

@@ -55,10 +55,10 @@ export default function Station(props) {
                 .then(records => {
                     if (records.length > 0) {
                         records.forEach(d => {
-                            d.Min = +d.Min.toFixed(2);
-                            d.Mean = +d.Mean.toFixed(2);
-                            d.Median = +d.Median.toFixed(2);
-                            d.Max = +d.Max.toFixed(2);
+                            d.Min = +d.Min;
+                            d.Mean = +d.Mean;
+                            d.Median = +d.Median;
+                            d.Max = +d.Max;
                             d.Unit = (d.Analyte === 'pH' ? '' : d.Analyte === 'CSCI' ? 'score' : d.Unit);
                             d.LastSampleDate = formatDate(parseDate(d.LastSampleDate));
                             d.TargetLatitude = +d.TargetLatitude;
