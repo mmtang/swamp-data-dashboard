@@ -114,6 +114,8 @@ a {
 .esri-layer-list {
   background-color: #fff !important;
   padding: 0 !important;
+  max-height: 300px !important;
+  width: 185px !important;
 }
 
 /* Layer title container */
@@ -128,12 +130,17 @@ a {
 /* Layer title */
 .esri-layer-list__item-title {
   font-family: 'Source Sans Pro', sans-serif;
-  font-size: 0.98em;
+  font-size: 0.92em;
 }
 
 /* Layer list item container, including legend */
 .esri-layer-list__item {
   border-bottom: 0 !important;
+}
+
+/* Hide layer list icon on right */
+.esri-icon-layer-list {
+  display: none !important;
 }
 
 /* 
@@ -186,10 +193,17 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
   width: auto !important;
 }
 
+/* Hide close button in map popups */
+.esri-popup__header-buttons {
+  display: none !important;
+}
+
 .esri-popup__header h2 {
-  font-size: 1.2em !important;
-  color: #103c68 !important;
-  padding-top: 12px;
+  font-size: 1em !important;
+  font-weight: 400;
+  background-color: #2b2b2b !important;
+  padding: 6px 10px;
+  margin: 0;
 }
 
 .esri-feature-content h3 {
@@ -201,12 +215,12 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
   box-shadow: 0 1px 4px rgba(0, 0, 0, .2) !important;
 }
 
-/*
 .esri-popup__main-container.esri-widget {
   width: auto !important;
-  max-width: 250px !important;
+  max-width: 200px !important;
 }
 
+/*
 .esri-popup__content {
   margin: 0 !important;
 }
@@ -241,3 +255,4 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
   border-radius: 0;
   color: #5d5d5d;
 }
+

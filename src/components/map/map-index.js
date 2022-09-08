@@ -23,7 +23,8 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
     const stationLayerRef = useRef(null);
     const stationSummaryLayerRef = useRef(null);
     const layerListRef = useRef(null);
-    const expandRef = useRef(null);
+    const expandLayerListRef = useRef(null);
+    const expandGalleryRef = useRef(null);
     const basemapGalleryRef = useRef(null);
     // This ref is used to store the old array of site code strings. Will be compared to the new array.
     const selectedSitesRef = useRef(null);
@@ -780,7 +781,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 viewRef.current = new MapView({
                     container: divRef.current,
                     map: mapRef.current,
-                    center: [-119.3624, 37.5048],
+                    center: [-119.3624, 37.4204],
                     zoom: 6,
                     constraints: {
                         minZoom: 5
@@ -813,9 +814,11 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         }
                     ]
                 });
+
+                // Define layer list widget
                 layerListRef.current = new LayerList({
                     view: viewRef.current,
-                    container: 'layerListContainer',
+                    //container: 'layerListContainer',
                     listItemCreatedFunction: function(event) {
                         const item = event.item;
                         if (item.layer.type !== 'group') {
@@ -828,13 +831,24 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                     }
                 });
 
+                // Define expand widget for layer list
+                expandLayerListRef.current = new Expand({
+                    expandIconClass: '',
+                    view: viewRef.current,
+                    content: layerListRef.current,
+                    expanded: false
+                })
+
+                // Add layer list
+                viewRef.current.ui.add(layerListRef.current, 'top-right');
+
                 // Define basemap gallery widget
                 basemapGalleryRef.current = new BasemapGallery({
                     view: viewRef.current
                 });
                 
                 // Define expand widget for basemap gallery
-                expandRef.current = new Expand({
+                expandGalleryRef.current = new Expand({
                     expandIconClass: 'esri-icon-basemap',
                     view: viewRef.current,
                     content: basemapGalleryRef.current,
@@ -842,7 +856,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                 })
 
                 // Add expand widget
-                viewRef.current.ui.add(expandRef.current, 'top-left');
+                viewRef.current.ui.add(expandGalleryRef.current, 'top-left');
 
                 // Add Home widget
                 const homeWidget = new Home({ view: viewRef.current });
@@ -984,7 +998,7 @@ export default function MapIndex({ setMapLoaded, selectedAnalyte, selectedRegion
                         visibilityMode: 'inherited'
                     });
                     // Add grouplayer to map
-                    mapRef.current.add(irLayerRef.current);
+                    // mapRef.current.add(irLayerRef.current);
                     // Add feature layers to search widget
                     searchRef.current.sources.add({
                         layer: irLineRef.current,

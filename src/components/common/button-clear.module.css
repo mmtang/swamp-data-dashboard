@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #064e96;
+}
+
+.container:hover {
+    cursor: pointer;
+    color: #1e70bf;
+}
+
+.outerContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 4px;
+}
+
+
