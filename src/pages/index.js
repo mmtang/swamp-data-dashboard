@@ -1,17 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import AccordionMenu from '../components/map-controls/accordion-menu';
-import DownloadData from '../components/common/download-data';
-import ChartIndexWrapper from '../components/chart-index/chart-index-wrapper';
-import FilterByExtent from '../components/map-controls/filter-by-extent';
 import LayoutMap from '../components/layout/layout-map';
 import LoaderDashboard from '../components/common/loader-dashboard';
-import MapIndex from '../components/map/map-index';
-import Table from '../components/table/table';
-import UpdateMessage from '../components/common/update-message';
-import ZoomToSelected from '../components/map-controls/zoom-to-selected';
-import { Divider, Modal, Icon } from 'semantic-ui-react';
-import { mapContainer, mainContainer, infoContainer, modalContent, swampIcon, modalButton } from './index.module.css';
+import MapIndex2 from '../components/map/map-index2';
 import Metadata from '../components/layout/metadata';
+import PanelIndex from '../components/panels/panel-index';
+
+import { timeParse, timeFormat } from 'd3';
+
+import { mapContainer, mainContainer, infoContainer, modalContent, swampIcon, modalButton } from './index.module.css';
 
 export default function Index() {
   const [loaded, setLoaded] = useState(false);
@@ -26,7 +22,10 @@ export default function Index() {
   const [zoomedToSites, setZoomedToSites] = useState(false);
   const [disclaimerVisible, setDisclaimerVisible] = useState(false);
 
-  const yearRef = useRef(new Date().getFullYear());
+  const [stationData, setStationData] = useState(null);
+
+  const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
+  const formatDate = timeFormat('%Y/%m/%d');
 
   useEffect(() => {
     if (mapLoaded) {
@@ -35,68 +34,51 @@ export default function Index() {
     }
   }, [mapLoaded]);
 
+  // Get full station dataset - data for use in map and table
+  useEffect(() => {
+    const allStationsUrl = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region,LastSampleDate,Bioassessment,Spot,Fhab,Bioaccumulation&limit=5000';
+    fetch(allStationsUrl)
+      .then((resp) => resp.json())
+      .then((json) => json.result.records)
+      .then((records) => {
+        if (records) {
+          records.map(d => {
+            d.Region = d.Region.toString();
+            d.LastSampleDate = formatDate(parseDate(d.LastSampleDate));
+            d.TargetLatitude = +d.TargetLatitude;
+            d.TargetLongitude = +d.TargetLongitude;
+          });
+          setStationData(records);
+        }
+      });
+  }, []);
+
   return (
     <LayoutMap>
       <Metadata />
       <div className={mapContainer}>
-        <MapIndex 
+        <MapIndex2 
           setMapLoaded={setMapLoaded}
-          selectedAnalyte={analyte} 
-          selectedRegion={region} 
-          selectedProgram={program}
+          analyte={analyte} 
+          region={region} 
+          program={program}
           selectedSites={selectedSites}
-          setSelectedSites={setSelectedSites}
-          setTableData={setTableData}
-          filteredByExtent={filteredByExtent}
-          setFilteredByExtent={setFilteredByExtent}
-          zoomedToSites={zoomedToSites}
-          setZoomedToSites={setZoomedToSites}
+          stationData={stationData}
         />
       </div>
       { !loaded ? <LoaderDashboard /> : null }
-      <div className={mainContainer}>
-        <div className={infoContainer}>
-          <p>The <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">Surface Water Ambient Monitoring Program</a> (SWAMP) mission is to generate  high quality, accessible, and usable data and information that is used to protect and restore California’s watersheds, and to inform California communities about local conditions of waterbodies monitored by SWAMP. Explore SWAMP data for the time period of 2000-{yearRef.current}.</p>
-          {/* Controls */}
-          <section style={{ marginBottom: '40px' }}>
-            <AccordionMenu
-              region={region}
-              setRegion={setRegion}
-              analyte={analyte}
-              setAnalyte={setAnalyte}
-              program={program}
-              setProgram={setProgram}
-            />
-          </section>
-          <Divider horizontal section>
-            Data Table
-          </Divider>
-          <section>
-            <p>The table below displays the map data in a tabular format. Any filters applied to the map are also applied to the table. Use the column headers to sort the records. Select a site (or multiple sites) to graph data for the selected indicator.</p>
-            <FilterByExtent 
-              filteredByExtent={filteredByExtent}
-              setFilteredByExtent={setFilteredByExtent} 
-            />
-            <ZoomToSelected
-              setZoomedToSites={setZoomedToSites}
-            />
-            <DownloadData data={tableData}>
-              Download table data
-            </DownloadData>
-            <ChartIndexWrapper
-              text={'Graph selected sites ' + (selectedSites.length > 0 ? `(${selectedSites.length})` : '(0)')}
-              selectedSites={selectedSites}
-              analyte={analyte}
-            />
-            <Table 
-              selectedAnalyte={analyte}
-              data={tableData}
-              selectedSites={selectedSites}
-              setSelectedSites={setSelectedSites}
-            />
-          </section>
-        </div>
+      <div>
+          <PanelIndex 
+            region={region}
+            setRegion={setRegion}
+            analyte={analyte}
+            setAnalyte={setAnalyte}
+            program={program}
+            setProgram={setProgram}
+            stationData={stationData}
+          />
       </div>
+      {/*
       { disclaimerVisible ? 
           <Modal
               size='tiny'
@@ -117,6 +99,7 @@ export default function Index() {
               </Modal.Content>
           </Modal> 
       : '' }
+      */}
     </LayoutMap>
   )
 }

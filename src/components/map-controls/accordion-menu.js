@@ -40,6 +40,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
             styled
         >
             {/* Search */}
+            {/*
             <Accordion.Title
                 className={customTitle}
                 active={activeIndex.includes(0)}
@@ -61,12 +62,12 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                         <p>Search for a specific location (city, region), landmark, waterbody (river, lake, reservoir), or SWAMP monitoring site (station name or code). The results are categorized by source/layer. By default, this search uses a library of Integrated Report 2018 waterbodies.</p>
                     </HelpIcon>
                 </p>
-                {/* Container for the ArcGIS JavaScript search widget */}
                 <div id="searchContainer" style={{ border: '1px solid #6e6e6e', marginBottom: '0.4em' }} />
                 <p className={pLabel}>
                     <span>Example: Lagunitas Creek, 201LAG195, or Nicasio, CA</span>
                 </p>
             </Accordion.Content>
+            */}
 
             {/* Filter */}
             <Accordion.Title
@@ -129,6 +130,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
             </Accordion.Content>
 
             {/* Layers */}
+            {/*
             <Accordion.Title
                 className={customTitle}
                 active={activeIndex.includes(2)}
@@ -146,6 +148,7 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
             <Accordion.Content active={activeIndex.includes(2)}>
                 <div id="layerListContainer" />
             </Accordion.Content>
+            */}
         </Accordion> 
     )
 }

@@ -1,3 +1,8 @@
+import { timeParse, timeFormat } from 'd3';
+
+export const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
+export const formatDate = timeFormat('%Y/%m/%d');
+
 export const chemistryEndpoint = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4';
 
 export const cedenChemistryEndpoint = {

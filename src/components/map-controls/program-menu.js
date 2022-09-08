@@ -1,4 +1,5 @@
 import React from 'react';
+import { navigate, withPrefix } from 'gatsby';
 import Select from 'react-select';
 import { customSelectStyle, programDict } from '../../utils/utils';
 
@@ -29,7 +30,7 @@ export default function RegionMenu({ program, setProgram }) {
         if (selection ) {
             const value = selection.value;
             if (value !== program) {
-                setProgram(value);
+                navigate(`/programs/${value}`);
             }
         } else {
             // Clear the program selection
