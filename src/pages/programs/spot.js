@@ -22,15 +22,18 @@ export default function IndexSpot() {
 
     const getAllStations = () => {
         return new Promise((resolve, reject) => {
-            const spotStationsUrl = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e&distinct=true&fields=StationCode,StationName,TargetLatitude,TargetLongitude,Region&limit=300';
-            fetch(spotStationsUrl)
+            const sql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e" ORDER BY "StationCode", "SampleDate" DESC`;
+            let url = 'https://data.ca.gov/api/3/action/datastore_search_sql?sql=' + sql;
+            console.log(url);
+            fetch(url)
             .then((resp) => resp.json())
             .then((json) => json.result.records)
             .then((records) => {
                 if (records) {
+                    console.log(records);
                     records.forEach(d => {
                         d.Region = d.Region.toString();
-                        d.LastSampleDate = formatDate(parseDate(d.LastSampleDate));
+                        d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
                         d.TargetLatitude = +d.TargetLatitude;
                         d.TargetLongitude = +d.TargetLongitude;
                     });
@@ -45,7 +48,7 @@ export default function IndexSpot() {
     const getStationData = (analyte) => {
         return new Promise((resolve, reject) => {
             // In the future, add different urls for the analyte type
-            const sql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", "Analyte", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "Result", "Unit", COUNT("StationCode") OVER (Partition by "StationCode") as CountResult, AVG("Result") OVER (Partition By "StationCode") as AvgResult, MIN("Result") OVER (Partition By "StationCode") as MinResult, MAX("Result") OVER (Partition By "StationCode") as MaxResult FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e" WHERE "Analyte" = '${encodeURIComponent(analyte.name)}' ORDER BY "StationCode", "SampleDate" DESC`;
+            const sql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", "Analyte", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultDisplay", "Unit", COUNT("StationCode") OVER (Partition by "StationCode") as CountResult, AVG("ResultDisplay") OVER (Partition By "StationCode") as AvgResult, MIN("ResultDisplay") OVER (Partition By "StationCode") as MinResult, MAX("ResultDisplay") OVER (Partition By "StationCode") as MaxResult FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e" WHERE "Analyte" = '${encodeURIComponent(analyte.name)}' ORDER BY "StationCode", "SampleDate" DESC`;
             let url = 'https://data.ca.gov/api/3/action/datastore_search_sql?sql=' + sql;
             fetch(url)
                 .then((resp) => resp.json())
@@ -57,8 +60,8 @@ export default function IndexSpot() {
                             d.LastSampleDate = formatDate(parseDate(d.maxsampledate)); // API request returns calculated values in all lowercase
                             d.TargetLatitude = +d.TargetLatitude;
                             d.TargetLongitude = +d.TargetLongitude;
-                            // Round to one decimal and convert to string
-                            d.avgresult = (+d.avgresult).toFixed(1);
+                            d.ResultDisplay = +parseFloat(d.ResultDisplay).toFixed(3); // Round to 3 decimal places (if needed)
+                            d.avgresult = (+d.avgresult).toFixed(1); // Round to one decimal and convert to string
                         });
                         resolve(records);
                     } else {
@@ -85,7 +88,6 @@ export default function IndexSpot() {
     }, [mapLoaded]);
 
     useEffect(() => {
-        console.log(analyte);
         if (analyte) {
             getStationData(analyte)
             .then(res => {

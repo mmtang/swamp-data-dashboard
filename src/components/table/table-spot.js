@@ -14,7 +14,7 @@ import { tableWrapper } from './table.module.css';
 // It makes use of the react-data-table-component library
 // https://github.com/jbetancur/react-data-table-component
 
-export default function TableSpot({ selectedAnalyte, data, selectedSites, setSelectedSites }) {
+export default function TableSpot({ data, selectedSites, setSelectedSites }) {
     const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState(null); 
 
@@ -67,12 +67,12 @@ export default function TableSpot({ selectedAnalyte, data, selectedSites, setSel
         lastResult: {
             name: 'Last Result',
             id: 'LastResult',
-            selector: row => row['LastResult'],
+            selector: row => row['ResultDisplay'],
             width: '135px',
             sortable: true,
             // Do the number formatting in format, not selector
             // Otherwise the column sorting doesn't work correctly
-            format: row => row['LastResult'].toLocaleString()  
+            format: row => row['ResultDisplay'].toLocaleString() + ' ' + row['Unit'] 
         },
         unit: {
             name: 'Unit',
@@ -80,28 +80,36 @@ export default function TableSpot({ selectedAnalyte, data, selectedSites, setSel
             selector: row => row['Unit'],
             width: '105px',
             sortable: true
-        },
-        /*
-        trend: {
-            name: <TrendHelpIcon />,
-            selector: row => row['Trend'],
-            width: '165px',
-            sortable: true,
-            format: row => <CustomTrend row={row} />
         }
-        */
     }
 
+    /*
     const handleSelectionUpdate = (rows) => {
         const selection = rows.selectedRows.map(d => d.StationCode);
         setSelectedSites(selection);
     };
+    */
+
+    /*
+    const CustomLink = ({ row }) => {
+        return (
+            <div>
+                <a href={withPrefix("/stations?id=" + encodeURIComponent(row['StationCode']))} target="_blank" rel="noopener noreferrer">Link</a>&nbsp;&nbsp;&nbsp;<Icon name='external' />
+            </div>
+        )
+    }
+    */
 
     useEffect(() => {
         if (data) {
-            // Render different table columns based on whether or not a parameter is selected
+            // Render different table columns based on whether or not an analyte is selected
             const d = columnDict;
-            setColumns([d.siteCode, d.siteName, d.lastSample]);
+            if (data[0].ResultDisplay) {
+                setColumns([d.siteCode, d.siteName, d.lastSample, d.lastResult]);
+            } else {
+                setColumns([d.siteCode, d.siteName, d.lastSample]);
+            }
+            // Turn off loader
             if (loading) {
                 setLoading(false);
             }
