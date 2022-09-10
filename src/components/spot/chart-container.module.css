@@ -1,0 +1,21 @@
+.sectionContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.analyteHeader {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f4f2f2;
+    padding: 0.5em 0.8em 0.6em 0.8em;
+    border-top: 5px solid #247ba0;
+}
+
+.analyteTitle {
+    margin: 0.25em 0 !important;
+    font-size: 1em;
+}

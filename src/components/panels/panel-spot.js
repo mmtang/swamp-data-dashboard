@@ -1,7 +1,7 @@
 import React from 'react';
 import ButtonClearProgram from '../common/button-clear-program';
 import SpotMenu from '../map-controls/spot-menu';
-//import TableSpot from '../table/table-spot';
+import TableSpot from '../table/table-spot';
 
 import { mainContainer, infoContainer } from '../../pages/index.module.css';
 
@@ -19,11 +19,9 @@ export default function PanelSpot({ setStationData, setAnalyte, setRegion, stati
                         <SpotMenu setStationData={setStationData} setAnalyte={setAnalyte} setRegion={setRegion} />
                     </div>
                 </section>
-                {/*
                 <section>
                     <TableSpot data={stationData} />
                 </section>
-                */}
             </div>
         </div>
     )

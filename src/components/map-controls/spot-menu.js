@@ -130,8 +130,6 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
     ]
 
     const handleChangeField = (selection, triggeredAction) => {
-        console.log(selection);
-        console.log(triggeredAction);
         if (selection) {
             // If user selected an analyte:
             // Clear other filters
@@ -191,65 +189,66 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
     return (
         <div>
             <div className={menuContainer}>
-                <strong>Contaminant / Parameter</strong>
-                <div className={wrapper}>
-                    <Select
-                        ref={selectFieldRef}
-                        options={fieldList} 
-                        isClearable={true}
-                        isSearchable={true}
-                        placeholder='Conventional, Field'
-                        styles={customSelectStyle}
-                        maxMenuHeight={200}
-                        formatOptionLabel={formatOptionLabel}
-                        onChange={handleChangeField}
-                    />
-                </div>
-                <div className={wrapper}>
-                    <Select
-                        ref={selectMetalRef}
-                        options={metalList} 
-                        isClearable={true}
-                        isSearchable={true}
-                        placeholder='Metals'
-                        styles={customSelectStyle}
-                        maxMenuHeight={200}
-                        formatOptionLabel={formatOptionLabel}
-                        onChange={handleChangeMetal}
-                    />
-                </div>
-                <div className={wrapper}>
-                    <Select
-                        ref={selectOrganicRef}
-                        options={organicList} 
-                        isClearable={true}
-                        isSearchable={true}
-                        placeholder='PAHs, PBDEs, PCBs'
-                        styles={customSelectStyle}
-                        maxMenuHeight={200}
-                        formatOptionLabel={formatOptionLabel}
-                        formatGroupLabel={formatGroupLabel}
-                        onChange={handleChangeOrganic}
-                    />
-                </div>
-                <div className={wrapper}>  
-                    <Select
-                        ref={selectPesticideRef}
-                        options={pesticideList} 
-                        isClearable={true}
-                        isSearchable={true}
-                        placeholder='Pesticides'
-                        styles={customSelectStyle}
-                        maxMenuHeight={200}
-                        formatOptionLabel={formatOptionLabel}
-                        formatGroupLabel={formatGroupLabel}
-                        onChange={handleChangePesticide}
-                    />
-                </div>
-            </div>
-            <div className={menuContainer}>
-                <strong>Toxicity</strong>
-
+                <section>
+                    <strong>Contaminant / Parameter</strong>
+                    <div className={wrapper}>
+                        <Select
+                            ref={selectFieldRef}
+                            options={fieldList} 
+                            isClearable={true}
+                            isSearchable={true}
+                            placeholder='Conventional, Field'
+                            styles={customSelectStyle}
+                            maxMenuHeight={200}
+                            formatOptionLabel={formatOptionLabel}
+                            onChange={handleChangeField}
+                        />
+                    </div>
+                    <div className={wrapper}>
+                        <Select
+                            ref={selectMetalRef}
+                            options={metalList} 
+                            isClearable={true}
+                            isSearchable={true}
+                            placeholder='Metals'
+                            styles={customSelectStyle}
+                            maxMenuHeight={200}
+                            formatOptionLabel={formatOptionLabel}
+                            onChange={handleChangeMetal}
+                        />
+                    </div>
+                    <div className={wrapper}>
+                        <Select
+                            ref={selectOrganicRef}
+                            options={organicList} 
+                            isClearable={true}
+                            isSearchable={true}
+                            placeholder='PAHs, PBDEs, PCBs'
+                            styles={customSelectStyle}
+                            maxMenuHeight={200}
+                            formatOptionLabel={formatOptionLabel}
+                            formatGroupLabel={formatGroupLabel}
+                            onChange={handleChangeOrganic}
+                        />
+                    </div>
+                    <div className={wrapper}>  
+                        <Select
+                            ref={selectPesticideRef}
+                            options={pesticideList} 
+                            isClearable={true}
+                            isSearchable={true}
+                            placeholder='Pesticides'
+                            styles={customSelectStyle}
+                            maxMenuHeight={200}
+                            formatOptionLabel={formatOptionLabel}
+                            formatGroupLabel={formatGroupLabel}
+                            onChange={handleChangePesticide}
+                        />
+                    </div>
+                </section>
+                <section>
+                    <strong>Toxicity</strong>
+                </section>
             </div>
         </div>
     )

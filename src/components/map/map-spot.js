@@ -266,7 +266,6 @@ export default function MapSpot({
                                         var graphic = response.results[0].graphic;
                                         // Clicking on an empty part of the map still returns an object with attributes (ID). Check for a station attribute
                                         if (graphic.attributes.StationCode) {
-                                            console.log(graphic.attributes);
                                             setStation(graphic.attributes);
                                         }
                                     });

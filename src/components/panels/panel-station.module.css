@@ -1,0 +1,42 @@
+.buttonContainer {
+    margin: 1.7em 0 0 0;
+}
+
+.chartSection {
+    margin: 20px 0;
+}
+
+.iconContainer {
+    align-items: baseline;
+    display: flex;
+    flex-direction: row;
+}
+
+.infoSubText {
+    font-size: 0.95em;
+    font-weight: 400;
+}
+
+.stationCover {
+    height: 270px;
+    object-fit: cover;
+    width: 100%; 
+}
+
+.stationHeader {
+    margin: 14px 0 4px 0;
+}
+
+.stationSubText {
+    color: #767676;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin: 0.4em 0.4em 0.4em 0;
+    text-transform: uppercase;
+}
+
+.topContainer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}

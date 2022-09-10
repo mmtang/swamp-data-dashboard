@@ -28,7 +28,7 @@ h1 {
   
 h2 {
   color: #103c68;
-  font-size: 1.4em !important;
+  font-size: 1.3em;
   margin: 30px 0 20px 0;
 }
   
@@ -83,21 +83,6 @@ a {
   font-weight: 400;
   padding: 4px;
   border: 3px solid #f2f2f2;
-}
-
-.popup-button {
-	background-color: #f2f2f2;
-	-webkit-border-radius: 0px;
-	-moz-border-radius: 0px;
-  text-indent: 0;
-	display: inline-block;
-  color: #333;
-	font-size: 12px;
-	font-weight: normal;
-	font-style: normal;
-	text-decoration: none;
-	text-align: center;
-  padding: 6px 10px;
 }
 
 .ui.modal > .header {
@@ -201,7 +186,7 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
 .esri-popup__header h2 {
   font-size: 1em !important;
   font-weight: 400;
-  background-color: #2b2b2b !important;
+  background-color: #1a252f !important;
   padding: 6px 10px;
   margin: 0;
 }
