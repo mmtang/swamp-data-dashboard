@@ -1,0 +1,49 @@
+.container {
+    height: 50px;
+    background-color: #20639b;
+    color: #fff;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0; /* required for the tab colors to work */
+}
+
+.menuItem {
+    width: 90px;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.menuItem:hover {
+    cursor: pointer;
+    background-color: #00b5ad;
+    color: #fff;
+}
+
+.menuItem span {
+    font-size: 0.78em;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin: 2px 0 2px 8px;
+}
+
+.statContainer {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: 100%;
+    justify-content: flex-end;
+    padding-right: 1.24em;
+    width: 120px;
+}
+
+.statLabel {
+    font-size: 0.82em;
+    font-weight: 400;
+    text-transform: uppercase;
+}

@@ -1,6 +1,6 @@
 .mapContainer {
-    height: calc(100% - 60px);
-    top: 60px;
+    height: 100%;
+    top: calc(60px + 50px);
     order: 2;
     flex-basis: 60%;
     z-index: 2;

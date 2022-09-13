@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { withPrefix } from 'gatsby';
 import LoaderBlock from '../common/loader-block';
-import TrendHelpIcon from '../common/trend-help-icon';
 
 import DataTable from 'react-data-table-component';
-import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
-import { Icon } from 'semantic-ui-react';
 
-import { tableWrapper } from './table.module.css';
+import { tableContainer } from './table.module.css';
 
 
 // This component generates the data table on the dashboard index page.
 // It makes use of the react-data-table-component library
 // https://github.com/jbetancur/react-data-table-component
 
-export default function TableSpot({ data, selectedSites, setSelectedSites }) {
+export default function TableSpot({ stationData }) {
     const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState(null); 
+
+    console.log(stationData);
 
     // Documentation of RDT styles that can be overrided or extended
     // https://github.com/jbetancur/react-data-table-component/blob/master/src/DataTable/styles.ts
@@ -43,42 +41,49 @@ export default function TableSpot({ data, selectedSites, setSelectedSites }) {
 
     // Define dictionary of data columns to pass to table
     const columnDict = {
+        region: {
+            name: 'Region',
+            selector: row => row['RegionName'],
+            width: '130px',
+            sortable: true
+        },
         siteCode: {
             name: 'Station Code',
             selector: row => row['StationCode'],
-            width: '115px',
+            width: '114px',
             sortable: true,
             wrap: true
         },
         siteName: {
             name: 'Station Name',
             selector: row => row['StationName'],
-            width: '220px',
+            width: '235px',
             sortable: true,
             wrap: true
         }, 
         lastSample: {
-            name: 'Last Sample Date',
+            name: 'Last Sample',
             id: 'LastSampleDate',
             selector: row => row['LastSampleDate'],
-            width: '140px',
+            width: '95px',
             sortable: true
         },
         lastResult: {
-            name: 'Last Result',
+            name: 'Result',
             id: 'LastResult',
             selector: row => row['ResultDisplay'],
-            width: '135px',
+            width: '85px',
             sortable: true,
             // Do the number formatting in format, not selector
             // Otherwise the column sorting doesn't work correctly
-            format: row => row['ResultDisplay'].toLocaleString() + ' ' + row['Unit'] 
+            format: row => row['ResultDisplay'].toLocaleString(),
+            right: true
         },
         unit: {
             name: 'Unit',
             id: 'Unit',
             selector: row => row['Unit'],
-            width: '105px',
+            width: '100px',
             sortable: true
         }
     }
@@ -101,46 +106,48 @@ export default function TableSpot({ data, selectedSites, setSelectedSites }) {
     */
 
     useEffect(() => {
-        if (data) {
+        if (stationData) {
             // Render different table columns based on whether or not an analyte is selected
             const d = columnDict;
-            if (data[0].ResultDisplay) {
-                setColumns([d.siteCode, d.siteName, d.lastSample, d.lastResult]);
+            if (stationData[0].ResultDisplay) {
+                setColumns([d.region, d.siteCode, d.siteName, d.lastSample, d.lastResult, d.unit]);
             } else {
-                setColumns([d.siteCode, d.siteName, d.lastSample]);
+                setColumns([d.region, d.siteCode, d.siteName, d.lastSample]);
             }
             // Turn off loader
             if (loading) {
                 setLoading(false);
             }
         }
-    }, [data])
+    }, [stationData])
 
 
 
     if (!loading) {
         return (
-            <div className={tableWrapper}>
+            <div className={tableContainer}>
                 <DataTable 
                     columns={columns} 
-                    data={data} 
+                    data={stationData} 
                     customStyles={customStyles}
-                    highlightOnHover
-                    pagination
-                    paginationPerPage={10}
+                    //highlightOnHover
+                    //pagination
+                    //paginationPerPage={12}
                     //selectableRows
                     //selectableRowsHighlight
                     defaultSortFieldId={'LastSampleDate'}
                     defaultSortAsc={false}
                     //onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
                     //selectableRowSelected={isSelected}
+                    fixedHeader={true}
+                    fixedHeaderScrollHeight='calc(100vh - 60px - 50px - 38px)'  // below does not accept percentages (inside or outside a calc function, subtract main navbar (60px), sub navbar (50px), and table header (38px)
                     dense
                 />
             </div>
         )
     } else {
         return (
-            <div className={tableWrapper}>
+            <div className={tableContainer}>
                 <LoaderBlock />
             </div>
         )

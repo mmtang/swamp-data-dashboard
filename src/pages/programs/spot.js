@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import LayoutMap from '../../components/layout/layout-map';
 import LoaderDashboard from '../../components/common/loader-dashboard';
-import MapSpot from '../../components/map/map-spot';
 import Metadata from '../../components/layout/metadata';
+import PanelMap from '../../components/panels/panel-map';
 import PanelSpot from '../../components/panels/panel-spot';
 import PanelStation from '../../components/panels/panel-station';
 
-import { parseDate, formatDate } from '../../utils/utils';
+import { formatDate, parseDate, regionDict } from '../../utils/utils';
 import { mapContainer } from '../index.module.css';
 
 export default function IndexSpot() {
@@ -33,6 +33,7 @@ export default function IndexSpot() {
                     console.log(records);
                     records.forEach(d => {
                         d.Region = d.Region.toString();
+                        d.RegionName = regionDict[d.Region];
                         d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
                         d.TargetLatitude = +d.TargetLatitude;
                         d.TargetLongitude = +d.TargetLongitude;
@@ -57,6 +58,7 @@ export default function IndexSpot() {
                     if (records) {
                         records.forEach(d => {
                             d.Region = d.Region.toString();
+                            d.RegionName = regionDict[d.Region];
                             d.LastSampleDate = formatDate(parseDate(d.maxsampledate)); // API request returns calculated values in all lowercase
                             d.TargetLatitude = +d.TargetLatitude;
                             d.TargetLongitude = +d.TargetLongitude;
@@ -103,6 +105,16 @@ export default function IndexSpot() {
             <Metadata />
             {/* Map */}
             <div className={mapContainer}>
+                <PanelMap
+                    analyte={analyte}
+                    region={region}
+                    setMapLoaded={setMapLoaded}
+                    setStation={setStation}
+                    setStationData={setStationData}
+                    stationData={stationData}
+                />
+                {/*
+                <PanelMenu stationData={stationData} />
                 <MapSpot
                     setMapLoaded={setMapLoaded}
                     analyte={analyte} 
@@ -111,6 +123,7 @@ export default function IndexSpot() {
                     setStationData={setStationData}
                     setStation={setStation}
                 />
+                */}
             </div>
             {/* Loader */} 
             { !loaded ? <LoaderDashboard /> : null }

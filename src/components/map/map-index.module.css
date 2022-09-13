@@ -1,6 +1,7 @@
 .container {
     width: 60vw;
-    height: calc(100vh - 60px);
+    /* Subtract 60px for navbar (navbar.js) and 50px for sub-navbar (panel-menu.js) */
+    height: calc(100vh - 60px - 50px);  
 }
 
 @media screen and (max-width: 800px) {

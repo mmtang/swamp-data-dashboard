@@ -1,3 +1,4 @@
-.tableWrapper {
-    margin: 1em 0 10px 0;
+.tableContainer {
+    overflow-y: auto;
+    width: 60vw;
 }
