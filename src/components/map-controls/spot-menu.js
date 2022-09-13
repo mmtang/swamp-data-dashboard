@@ -188,9 +188,9 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
 
     return (
         <div>
-            <div className={menuContainer}>
-                <section>
-                    <strong>Contaminant / Parameter</strong>
+            <section>
+                <div className={menuContainer}>
+                    <strong>Parameter / Contaminant</strong>
                     <div className={wrapper}>
                         <Select
                             ref={selectFieldRef}
@@ -245,11 +245,14 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
                             onChange={handleChangePesticide}
                         />
                     </div>
-                </section>
-                <section>
+                    
+                </div>
+            </section>
+            <section>
+                <div className={menuContainer}>
                     <strong>Toxicity</strong>
-                </section>
-            </div>
+                </div>
+            </section>
         </div>
     )
 }

@@ -1,0 +1,5 @@
+.content {
+    /* Subtract height of main navbar */
+    height: calc(100vh - 60px);
+    width: 100%;
+}
