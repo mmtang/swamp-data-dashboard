@@ -10,7 +10,7 @@ import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies'
 import StationTable from '../../components/station-page/station-table';
 import { regionDict, fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
-import { appContainer, mainGrid, header, leftContainer, siteMapContainer, rightContainer, stationName, buttonContainer } from './index.module.css';
+import { appContainer, buttonContainer, contentGrid, header, leftContainer, mainGrid, rightContainer, siteMapContainer, stationName } from './index.module.css';
 import Metadata from '../../components/layout/metadata';
 
 
@@ -20,7 +20,8 @@ export default function Station(props) {
     const errorRef = useRef(null);
 
     const [loading, setLoading] = useState('true');
-    const [tableData, setTableData] = useState([]);
+    const [tableDataWq, setTableDataWq] = useState([]);
+    const [tableDataTox, setTableDataTox] = useState([]);
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
@@ -45,29 +46,29 @@ export default function Station(props) {
         })
     }
 
-    const getTableData = () => {
+    const getTableDataWq = () => {
         return new Promise((resolve, reject) => {
             if (stationCodeRef.current) {
-                let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,StationName,Region,Analyte,LastSampleDate,LastResult,Unit,Min,Max,Median,Mean,Trend,NumResults,TargetLatitude,TargetLongitude';
-                url += '&filters={%22StationCode%22:%22' + encodeURIComponent(stationCodeRef.current) + '%22}';
+                //let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,StationName,Region,Analyte,LastSampleDate,LastResult,Unit,Min,Max,Median,Mean,Trend,NumResults,TargetLatitude,TargetLongitude';
+                //url += '&filters={%22StationCode%22:%22' + encodeURIComponent(stationCodeRef.current) + '%22}';
+                let url = `https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT DISTINCT ON ("Analyte", "MatrixName") "StationCode", "Analyte", "MatrixName", MAX("SampleDate") OVER (PARTITION BY "StationCode", "Analyte", "MatrixName") as MaxSampleDate, "ResultDisplay", "Unit", COUNT("Analyte") OVER (PARTITION BY "StationCode", "Analyte", "MatrixName"), AVG("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixName") as AvgResult, MIN("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixName") as MinResult, MAX("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixName") as MaxResult FROM "8d5331c8-e209-4ec0-bf1e-2c09881278d4" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" in ('Passed', 'Some review needed', 'Spatial accuracy unknown', 'Unknown data quality', 'Extensive review needed') ORDER BY "Analyte", "MatrixName", "SampleDate" DESC`;
                 fetchData(url)
                 .then(json => json.result.records)
                 .then(records => {
                     if (records.length > 0) {
                         records.forEach(d => {
-                            d.Min = +d.Min;
-                            d.Mean = +d.Mean;
-                            d.Median = +d.Median;
-                            d.Max = +d.Max;
-                            d.Unit = (d.Analyte === 'pH' ? '' : d.Analyte === 'CSCI' ? 'score' : d.Unit);
-                            d.LastSampleDate = formatDate(parseDate(d.LastSampleDate));
+                            d.Min = +d.minresult.toFixed(2);
+                            d.Mean = +d.avgresult.toFixed(2);
+                            d.Max = +d.maxresult.toFixed(2);
+                            d.Unit = (d.Analyte === 'pH' ? '' : d.Unit);
+                            d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
                             d.TargetLatitude = +d.TargetLatitude;
                             d.TargetLongitude = +d.TargetLongitude;
                             d.RegionName = regionDict[d.Region];
                         });
                         // Define stationObjRef to populate station values on page
                         stationObjRef.current = records[0];
-                        setTableData(records);
+                        setTableDataWq(records);
                         resolve();
                     } else {
                         errorRef.current = `No data available. Check the Station ID or try again later.`;
@@ -85,7 +86,7 @@ export default function Station(props) {
 
     useEffect(() => {
         parseStationCode()
-            .then(() => getTableData())
+            .then(() => getTableDataWq())
             .then(() => setLoading('false'));
     }, []);
 
@@ -95,43 +96,45 @@ export default function Station(props) {
                 <div className={header}>
                     <Navbar />
                 </div>
-                <div className={leftContainer}>
-                    <section>
-                        <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>
-                        <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{stationObjRef.current.RegionName} Region</span>
-                    </section>
-                    <div className={siteMapContainer}>
-                        <MapStation coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
-                    </div>
-                    <section style={{ margin: '1.1em 0' }}>
-                        <NearbyWaterbodies coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
-                    </section>
-                </div>
-                <div className={rightContainer}>
-                    <section>
-                        <h2>Water quality data and trends</h2>
-                        <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring station. For a more detailed view of the data, select an indicator or indicators and click the "Graph data for selected indicators" button below.</p>
-                    </section>
-                    <section>
-                        <div className={buttonContainer}>
-                            <ChartModal
-                                station={stationObjRef.current.StationCode} 
-                                stationName={stationObjRef.current.StationName}
-                                selectedAnalytes={selectedAnalytes} 
-                            />
-                            <DownloadData 
-                                data={tableData}
-                                fields={['StationCode', 'StationName', 'RegionName', 'TargetLatitude', 'TargetLongitude', 'Analyte', 'NumResults', 'LastSampleDate', 'LastResult', 'Unit', 'Trend', 'Min', 'Mean', 'Median', 'Max']}
-                            >
-                                Download table data
-                            </DownloadData>
+                <div className={contentGrid}>
+                    <div className={leftContainer}>
+                        <section>
+                            <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>
+                            <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{stationObjRef.current.RegionName} Region</span>
+                        </section>
+                        <div className={siteMapContainer}>
+                            <MapStation coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
                         </div>
-                        <StationTable 
-                            station={stationObjRef.current.StationCode} 
-                            data={tableData}
-                            setSelectedAnalytes={setSelectedAnalytes}
-                        />
-                    </section>
+                        <section style={{ margin: '1.1em 0' }}>
+                            <NearbyWaterbodies coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
+                        </section>
+                    </div>
+                    <div className={rightContainer}>
+                        <section>
+                            <h2>Water quality data and trends</h2>
+                            <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring station. For a more detailed view of the data, select an indicator or indicators and click the "Graph data for selected indicators" button below.</p>
+                        </section>
+                        <section>
+                            <div className={buttonContainer}>
+                                <ChartModal
+                                    station={stationObjRef.current.StationCode} 
+                                    stationName={stationObjRef.current.StationName}
+                                    selectedAnalytes={selectedAnalytes} 
+                                />
+                                <DownloadData 
+                                    data={tableDataWq}
+                                    fields={['StationCode', 'StationName', 'RegionName', 'TargetLatitude', 'TargetLongitude', 'Analyte', 'NumResults', 'LastSampleDate', 'LastResult', 'Unit', 'Trend', 'Min', 'Mean', 'Median', 'Max']}
+                                >
+                                    Download table data
+                                </DownloadData>
+                            </div>
+                            <StationTable 
+                                station={stationObjRef.current.StationCode} 
+                                data={tableDataWq}
+                                setSelectedAnalytes={setSelectedAnalytes}
+                            />
+                        </section>
+                    </div>
                 </div>
             </div>
         )

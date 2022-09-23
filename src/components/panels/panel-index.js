@@ -3,13 +3,12 @@ import ContentIndex from './content-index.js';
 //import ContentSpot from './content-spot';
 
 export default function PanelIndex({ 
-    region, 
-    setRegion, 
-    analyte, 
-    setAnalyte, 
+    analyte,
     program, 
+    region, 
+    setAnalyte, 
     setProgram, 
-    stationData 
+    setRegion, 
 }) {   
     const getContent = () => {
         if (program) {
@@ -22,12 +21,12 @@ export default function PanelIndex({
         } else {
             return (
                 <ContentIndex 
-                    region={region}
-                    setRegion={setRegion}
                     analyte={analyte}
-                    setAnalyte={setAnalyte}
                     program={program}
+                    region={region}
+                    setAnalyte={setAnalyte}
                     setProgram={setProgram}
+                    setRegion={setRegion} 
                 />
             )
         }

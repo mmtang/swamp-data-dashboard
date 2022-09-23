@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DownloadData from '../common/download-data';
+import MatrixTag from '../common/matrix-tag';
 import SpotStationChart from './spot-station-chart';
 
 import { extent, timeParse } from 'd3';
@@ -22,7 +23,7 @@ export default function ChartContainer({ station, analyte }) {
                     .then((json) => json.result.records)
                     .then((records) => {
                         // Filter for records that meet data quality requirements
-                        const data = records.filter(d => dataQualityCategories.includes(d['DataQuality']))
+                        const data = records.filter(d => dataQualityCategories.includes(d['DataQuality']));
                         data.forEach(d => {
                             d.SampleDate = parseDate(d.SampleDate);
                             d.ResultDisplay = +parseFloat(d.ResultDisplay).toFixed(3);
@@ -30,8 +31,8 @@ export default function ChartContainer({ station, analyte }) {
                             if (d.Unit === 'none') {
                                 d.Unit = '';
                             }
-                            resolve(data);
                         });
+                        resolve(data);
                     });
             }
         });
@@ -41,6 +42,7 @@ export default function ChartContainer({ station, analyte }) {
         if (station) {
             getWqData(analyte.name)
                 .then((data) => {
+                    console.log(data);
                     // Calculate date extent (range) for data
                     dateExtentRef.current = extent(data.map(d => d['SampleDate']));
                     // Change state for data
@@ -49,19 +51,24 @@ export default function ChartContainer({ station, analyte }) {
         }
     }, [station])
 
+    console.log(analyte);
+
     return (
         <div className={sectionContainer}>
                 <div key={analyte.name}>
                     <div className={analyteHeader}>
-                        <h4 className={analyteTitle}>
-                            {analyte.name}
-                        </h4>
+                        <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}>
+                            <MatrixTag matrix={analyte.matrix} />
+                            <span className={analyteTitle}>
+                                {analyte.name}&nbsp;&nbsp;
+                            </span>
+                        </div>
                         <DownloadData 
                             data={data}
                             fields={analyte.type === 'wq' ? chemDataFields : habitatDataFields}
                             color='grey'
                         >
-                            Download
+                            Data
                         </DownloadData>
                     </div>
                 <SpotStationChart analyte={analyte} data={data} extent={dateExtentRef.current} station={station} />

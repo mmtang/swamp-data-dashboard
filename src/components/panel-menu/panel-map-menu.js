@@ -1,9 +1,14 @@
 import React from 'react';
 import { Icon } from 'semantic-ui-react';
-import { container, menuItem, statContainer, statLabel, statValue } from './panel-map-menu.module.css';
+
+import { container, menuItem, statContainer, statLabel } from './panel-map-menu.module.css';
 
 
-export default function PanelMapMenu({ setView, stationData, view, back=false }) {   
+export default function PanelMapMenu({ 
+    setView, 
+    stationData, 
+    view
+}) {   
     const selectedStyle = {
         backgroundColor: '#00b5ad'
     }
@@ -17,16 +22,6 @@ export default function PanelMapMenu({ setView, stationData, view, back=false })
     return (
         <div className={container}>
             <div style={{ display: 'flex', height: '100%', width: '100%' }}>
-                { back ? 
-                    <div className={menuItem} onClick={() => handleClick()}>
-                        <Icon fitted inverted 
-                            size='large'
-                            name='reply' 
-                        />
-                        <span>Back</span>
-                    </div>
-                : null
-                }
                 <div 
                     className={menuItem} 
                     style={view === 'map' ? selectedStyle : null}

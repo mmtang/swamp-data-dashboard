@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { withPrefix } from 'gatsby';
-import TrendHelpIcon from '../common/trend-help-icon';
+import LoaderBlock from '../common/loader-block';
+
 import DataTable from 'react-data-table-component';
-import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
-import { Icon } from 'semantic-ui-react';
-import { tableWrapper } from './table.module.css';
+
+import { tableContainer } from './table.module.css';
 
 
 // This component generates the data table on the dashboard index page.
 // It makes use of the react-data-table-component library
 // https://github.com/jbetancur/react-data-table-component
 
-export default function Table({ selectedAnalyte, data, selectedSites, setSelectedSites }) {
+export default function Table({ setStation, stationData }) {
     const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState(null); 
 
@@ -20,104 +19,82 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
     const customStyles = {
         headRow: {
             style: {
-                minHeight: '38px',
                 backgroundColor: '#f0f1f1',
                 borderBottomWidth: '0px',
+                minHeight: '38px'
             }
         }, 
         headCells: {
             style: {
-                minHeight: '38px',
                 color: '#103c68',
+                minHeight: '38px'
             }
         },
         rows: {
             highlightOnHoverStyle: {
                 backgroundColor: '#f0f1f1',
-            },
+                cursor: 'pointer'
+            }
         }
     }
 
     // Define dictionary of data columns to pass to table
     const columnDict = {
-        siteCode: {
-            name: 'Station Code',
-            selector: row => row['StationCode'],
-            width: '115px',
-            sortable: true,
-            wrap: true
-        },
-        siteName: {
-            name: 'Station Name',
-            selector: row => row['StationName'],
-            width: '220px',
-            sortable: true,
-            wrap: true
-        }, 
         region: {
             name: 'Region',
             selector: row => row['RegionName'],
             width: '130px',
             sortable: true
         },
+        siteCode: {
+            name: 'Station Code',
+            selector: row => row['StationCode'],
+            width: '114px',
+            sortable: true,
+            wrap: true
+        },
+        siteName: {
+            name: 'Station Name',
+            selector: row => row['StationName'],
+            width: '235px',
+            sortable: true,
+            wrap: true
+        }, 
         lastSample: {
-            name: 'Last Sample Date',
+            name: 'Last Sample',
             id: 'LastSampleDate',
             selector: row => row['LastSampleDate'],
-            width: '140px',
+            width: '95px',
             sortable: true
         },
         lastResult: {
-            name: 'Last Result',
+            name: 'Result',
             id: 'LastResult',
-            selector: row => row['LastResult'],
-            width: '135px',
+            selector: row => row['ResultDisplay'],
+            width: '85px',
             sortable: true,
             // Do the number formatting in format, not selector
             // Otherwise the column sorting doesn't work correctly
-            format: row => row['LastResult'].toLocaleString()  
+            format: row => row['ResultDisplay'].toLocaleString(),
+            right: true
         },
         unit: {
             name: 'Unit',
             id: 'Unit',
             selector: row => row['Unit'],
-            width: '105px',
-            sortable: true
-        },
-        sitePage: {
-            name: 'Station Page',
-            selector: row => 'Link',
             width: '100px',
-            sortable: false,
-            format: row => <CustomLink row={row} />
-        },
-        analyte: {
-            name: 'Analyte',
-            selector: row => row['Analyte'],
-            width: '120px',
-            sortable: false
-        },
-        trend: {
-            name: <TrendHelpIcon />,
-            selector: row => row['Trend'],
-            width: '165px',
-            sortable: true,
-            format: row => <CustomTrend row={row} />
+            sortable: true
         }
     }
 
-    const CustomTrend = ({ row }) => {
-        return (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    { row['Trend'] === 'Possibly increasing' ? <IconTrendingUp size={18} /> : row['Trend'] === 'Possibly decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['Trend']} /> }
-                    &nbsp;&nbsp;&nbsp;
-                    <span>{row['Trend']}</span>
-                </div>
-            </div>
-        )
-    }
+    /*
+    const handleSelectionUpdate = (rows) => {
+        const selection = rows.selectedRows.map(d => d.StationCode);
+        setSelectedSites(selection);
+    };
+    */
 
+    /*
     const CustomLink = ({ row }) => {
         return (
             <div>
@@ -125,55 +102,59 @@ export default function Table({ selectedAnalyte, data, selectedSites, setSelecte
             </div>
         )
     }
+    */
 
-    const handleSelectionUpdate = (rows) => {
-        const selection = rows.selectedRows.map(d => d.StationCode);
-        setSelectedSites(selection);
-    };
+    // This event handler fires when a table row is clicked; it changes the selected station
+    const handleClick = (row) => {
+        if (row) {
+            setStation(row);
+        }
+    }
 
     useEffect(() => {
-        if (data) {
-            // Render different table columns based on whether or not a parameter is selected
+        if (stationData) {
+            // Render different table columns based on whether or not an analyte is selected
             const d = columnDict;
-            if (!selectedAnalyte) {
-                setColumns([d.siteCode, d.siteName, d.region, d.lastSample, d.sitePage]);
-            } else if (selectedAnalyte) {
-                setColumns([d.siteCode, d.siteName, d.region, d.analyte, d.trend, d.lastSample, d.lastResult, d.unit, d.sitePage]);
+            if (stationData[0].ResultDisplay) {
+                setColumns([d.region, d.siteCode, d.siteName, d.lastSample, d.lastResult, d.unit]);
+            } else {
+                setColumns([d.region, d.siteCode, d.siteName, d.lastSample]);
             }
+            // Turn off loader
             if (loading) {
                 setLoading(false);
             }
         }
-    }, [data])
+    }, [stationData])
 
-    const isSelected = (row) => {
-        return selectedSites.includes(row['StationCode']);
-    }
+
 
     if (!loading) {
         return (
-            <div className={tableWrapper}>
+            <div className={tableContainer}>
                 <DataTable 
                     columns={columns} 
-                    data={data} 
                     customStyles={customStyles}
+                    data={stationData} 
                     highlightOnHover
                     pagination
-                    paginationPerPage={10}
-                    selectableRows
-                    selectableRowsHighlight
+                    //selectableRows
+                    //selectableRowsHighlight
                     defaultSortFieldId={'LastSampleDate'}
                     defaultSortAsc={false}
-                    onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
-                    selectableRowSelected={isSelected}
                     dense
+                    //onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
+                    //selectableRowSelected={isSelected}
+                    fixedHeader={true}
+                    fixedHeaderScrollHeight='calc(100vh - 60px - 50px - 38px)'  // does not accept percentages (inside or outside a calc function), subtract main navbar (60px), sub navbar (50px), and table header (38px)
+                    onRowClicked={handleClick}
                 />
             </div>
         )
     } else {
         return (
-            <div className={tableWrapper}>
-                Loading...
+            <div className={tableContainer}>
+                <LoaderBlock />
             </div>
         )
     }

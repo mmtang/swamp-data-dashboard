@@ -216,17 +216,19 @@ export default function SpotStationChart({ analyte, data, extent, station }) {
             .attr('cx', d => xScale(d.SampleDate))
             .attr('cy', d => yScale(d.ResultDisplay));
         points.exit()
-            .remove();
-
-        setLoading(false);
+            .remove();        
     };
 
     useEffect(() => {
         if (data && extent) {
             clearChart()
             .then(() => {
-                drawChart();
-            });
+                setLoading(true);
+                setTimeout(() => {
+                    drawChart();
+                    setLoading(false);
+                }, 500)
+            })
         }
     }, [data])
 

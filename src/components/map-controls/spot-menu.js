@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
+
+import { matrixColor } from '../../constants/constants-app';
 import { customSelectStyle } from '../../utils/utils';
 
 import { menuContainer, wrapper } from './spot-menu.module.css';
 
-
-export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {   
+export default function SpotMenu({ setAnalyte }) {   
     // All analytes
-    const analytesRef = useRef(null);
+    const wqAnalytesRef = useRef(null);
+    const toxAnalytesRef = useRef(null);
     // Subgroups of analytes
     const [fieldList, setFieldList] = useState(null);
     const [metalList, setMetalList] = useState(null);
@@ -23,18 +25,25 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
     const selectMetalRef = useRef(null);
     const selectOrganicRef = useRef(null);
     const selectPesticideRef = useRef(null);
+    const selectToxRef = useRef(null);
 
     // Matrix colors
-    const sedimentColor = '#917c78';
-    const waterColor = '#0081a7';
+    const sedimentColor = matrixColor['sediment'];
+    const waterColor = matrixColor['samplewater'];
 
     // Initial load
     useEffect(() => {
         // Get analytes data for populating the select elements
-        getAllAnalytes();
+        getAllWqAnalytes();
+        getAllToxAnalytes();
     }, [])
 
-    const getAllAnalytes = () => {
+    const getAllToxAnalytes = () => {
+        const url = 'urlhere';
+        // will need label, value, organism, and matrix
+    }
+
+    const getAllWqAnalytes = () => {
         // Analyte count as of 8/22/22 is 214
         const url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e&distinct=true&fields=MatrixName%2CAnalyte%2CAnalyteCategory&limit=500'; 
         fetch(url)
@@ -42,23 +51,23 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
             .then((json) => json.result.records)
             .then((records) => {
                 if (records) {
-                    analytesRef.current = (getAnalyteList(records, null));
-                    setFieldList(getAnalyteList(records, 'Conventional/Field'));
-                    setMetalList(getAnalyteList(records, 'Metal'));
-                    setPahList(getAnalyteList(records, 'PAH'));
-                    setPbdeList(getAnalyteList(records, 'PBDE'));
-                    setPcbList(getAnalyteList(records, 'PCB'));
-                    setFipronilList(getAnalyteList(records, 'Fipronil'));
-                    setOrganoChList(getAnalyteList(records, 'Organochlorine'));
-                    setOrganoPhList(getAnalyteList(records, 'Organophosphate'));
-                    setPyrethroidList(getAnalyteList(records, 'Pyrethroid'));
+                    wqAnalytesRef.current = (getWqAnalyteList(records, null));
+                    setFieldList(getWqAnalyteList(records, 'Conventional/Field'));
+                    setMetalList(getWqAnalyteList(records, 'Metal'));
+                    setPahList(getWqAnalyteList(records, 'PAH'));
+                    setPbdeList(getWqAnalyteList(records, 'PBDE'));
+                    setPcbList(getWqAnalyteList(records, 'PCB'));
+                    setFipronilList(getWqAnalyteList(records, 'Fipronil'));
+                    setOrganoChList(getWqAnalyteList(records, 'Organochlorine'));
+                    setOrganoPhList(getWqAnalyteList(records, 'Organophosphate'));
+                    setPyrethroidList(getWqAnalyteList(records, 'Pyrethroid'));
                 } else {
                     console.error('No analyte data returned');
                 }
             });
     }
 
-    const getAnalyteList = (data, category) => {
+    const getWqAnalyteList = (data, category) => {
         // Filter by analyte category and sort in alphabetical ascending order by analyte name
         // Use localeCompare: https://stackoverflow.com/questions/51165/how-to-sort-strings-in-javascript
         const records = data.filter(d => d.AnalyteCategory === category).sort((a, b) => a.Analyte.localeCompare(b.Analyte));
@@ -138,7 +147,7 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
             selectPesticideRef.current.select.clearValue();
             // Change state
             const value = selection.value;
-            setAnalyte({ type: 'wq', name: value });
+            setAnalyte({ type: 'wq', name: value,  matrix: selection.matrix });
         } else {
             setAnalyte(null);
         }
@@ -152,7 +161,7 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
             selectPesticideRef.current.select.clearValue();
             // Change state
             const value = selection.value;
-            setAnalyte({ type: 'wq', name: value });
+            setAnalyte({ type: 'wq', name: value, matrix: selection.matrix });
         } else {
             setAnalyte(null);
         }
@@ -166,7 +175,7 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
             selectPesticideRef.current.select.clearValue();
             // Change state
             const value = selection.value;
-            setAnalyte({ type: 'wq', name: value });
+            setAnalyte({ type: 'wq', name: value,  matrix: selection.matrix });
         } else {
             setAnalyte(null);
         }
@@ -180,9 +189,15 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
             selectOrganicRef.current.select.clearValue();
             // Change state
             const value = selection.value;
-            setAnalyte({ type: 'wq', name: value });
+            setAnalyte({ type: 'wq', name: value,  matrix: selection.matrix });
         } else {
             setAnalyte(null);
+        }
+    }
+
+    const handleChangeTox = (selection) => {
+        if (selection) {
+            console.log('changed');
         }
     }
 
@@ -251,6 +266,19 @@ export default function SpotMenu({ setStationData, setAnalyte, setRegion }) {
             <section>
                 <div className={menuContainer}>
                     <strong>Toxicity</strong>
+                    <div className={wrapper}>
+                        <Select
+                            ref={selectToxRef}
+                            //options={fieldList} 
+                            isClearable={true}
+                            isSearchable={true}
+                            placeholder='Organism / Endpoint'
+                            styles={customSelectStyle}
+                            maxMenuHeight={200}
+                            formatOptionLabel={formatOptionLabel}
+                            onChange={handleChangeTox}
+                        />
+                    </div>
                 </div>
             </section>
         </div>
