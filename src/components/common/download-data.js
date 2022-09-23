@@ -76,14 +76,19 @@ export default function DownloadData({ children, data, fields, color = null }) {
     }
 
     useEffect(() => {
-        if (data) { setDataLoaded(true) };
+        setDataLoaded(false);
+        if (data) { 
+            setTimeout(() => {
+                setDataLoaded(true) 
+            }, 500)
+        };
     }, [data])
 
     return (
         <Button 
             className={rowButton}
             compact 
-            size='tiny'
+            size='mini'
             onClick={handleClick} 
             onKeyPress={handleClick}
             color={color}

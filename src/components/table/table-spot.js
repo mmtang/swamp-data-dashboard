@@ -10,32 +10,31 @@ import { tableContainer } from './table.module.css';
 // It makes use of the react-data-table-component library
 // https://github.com/jbetancur/react-data-table-component
 
-export default function TableSpot({ stationData }) {
+export default function TableSpot({ setStation, stationData }) {
     const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState(null); 
-
-    console.log(stationData);
 
     // Documentation of RDT styles that can be overrided or extended
     // https://github.com/jbetancur/react-data-table-component/blob/master/src/DataTable/styles.ts
     const customStyles = {
         headRow: {
             style: {
-                minHeight: '38px',
                 backgroundColor: '#f0f1f1',
                 borderBottomWidth: '0px',
+                minHeight: '38px'
             }
         }, 
         headCells: {
             style: {
-                minHeight: '38px',
                 color: '#103c68',
+                minHeight: '38px'
             }
         },
         rows: {
             highlightOnHoverStyle: {
                 backgroundColor: '#f0f1f1',
-            },
+                cursor: 'pointer'
+            }
         }
     }
 
@@ -105,6 +104,13 @@ export default function TableSpot({ stationData }) {
     }
     */
 
+    // This event handler fires when a table row is clicked; it changes the selected station
+    const handleClick = (row) => {
+        if (row) {
+            setStation(row);
+        }
+    }
+
     useEffect(() => {
         if (stationData) {
             // Render different table columns based on whether or not an analyte is selected
@@ -128,20 +134,21 @@ export default function TableSpot({ stationData }) {
             <div className={tableContainer}>
                 <DataTable 
                     columns={columns} 
-                    data={stationData} 
                     customStyles={customStyles}
-                    //highlightOnHover
+                    data={stationData} 
+                    highlightOnHover
                     //pagination
                     //paginationPerPage={12}
                     //selectableRows
                     //selectableRowsHighlight
                     defaultSortFieldId={'LastSampleDate'}
                     defaultSortAsc={false}
+                    dense
                     //onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
                     //selectableRowSelected={isSelected}
                     fixedHeader={true}
-                    fixedHeaderScrollHeight='calc(100vh - 60px - 50px - 38px)'  // below does not accept percentages (inside or outside a calc function, subtract main navbar (60px), sub navbar (50px), and table header (38px)
-                    dense
+                    fixedHeaderScrollHeight='calc(100vh - 60px - 50px - 38px)'  // does not accept percentages (inside or outside a calc function), subtract main navbar (60px), sub navbar (50px), and table header (38px)
+                    onRowClicked={handleClick}
                 />
             </div>
         )

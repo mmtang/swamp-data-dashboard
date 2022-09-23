@@ -409,5 +409,6 @@ export const dataQualityCategories = [
     'Passed',
     'Some review needed',
     'Spatial accuracy unknown',
-    'Unknown data quality'
+    'Unknown data quality',
+    'Extensive review needed'
 ]

@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-import MapSpot from '../map/map-spot';
+import MapIndex2 from '../map/map-index2';
 import PanelMapMenu from '../panel-menu/panel-map-menu';
-import TableSpot from '../table/table-spot';
+import Table from '../table/table';
+import Table2 from '../table/table2';
 
 import { content } from './panel-map.module.css';
 
 const tableContainerStyle = {
     height: '100%', // subtract height of main navbar and sub navbar
-    overflowY: 'auto'
+    overflowX: 'auto',
+    overflowY: 'auto',
+    width: '100%'
 }
 
 export default function PanelMap({ 
     analyte, 
+    program,
     region, 
     setMapLoaded,
     setStation,
@@ -29,17 +33,21 @@ export default function PanelMap({
                 view={view}
             />
             <div style={view !== 'map' ? { display: 'none' } : null }>
-                <MapSpot
-                    setMapLoaded={setMapLoaded}
+                <MapIndex2 
                     analyte={analyte} 
+                    program={program}
                     region={region} 
-                    stationData={stationData}
-                    setStationData={setStationData}
+                    setMapLoaded={setMapLoaded}
                     setStation={setStation}
+                    setStationData={setStationData}
+                    stationData={stationData}
                 />
             </div>
             <div style={view !== 'table' ? { display: 'none' } : tableContainerStyle }>
-                <TableSpot stationData={stationData} />
+                <Table2
+                    setStation={setStation}
+                    stationData={stationData} 
+                />
             </div>  
         </div>
     )

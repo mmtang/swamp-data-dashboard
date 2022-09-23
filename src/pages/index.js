@@ -1,83 +1,95 @@
 import React, { useState, useRef, useEffect } from 'react';
 import LayoutMap from '../components/layout/layout-map';
 import LoaderDashboard from '../components/common/loader-dashboard';
-import MapIndex2 from '../components/map/map-index2';
 import Metadata from '../components/layout/metadata';
 import PanelIndex from '../components/panels/panel-index';
+import PanelMap from '../components/panels/panel-map';
+import PanelStation from '../components/panels/panel-station';
 
-import { timeParse, timeFormat } from 'd3';
+import { formatDate, parseDate, regionDict } from '../utils/utils';
 
 import { mapContainer, mainContainer, infoContainer, modalContent, swampIcon, modalButton } from './index.module.css';
 
 export default function Index() {
+  // Data for all stations
+  const allStationRef = useRef();
+
+  const [analyte, setAnalyte] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [analyte, setAnalyte] = useState(null);
   const [program, setProgram] = useState(null);
   const [region, setRegion] = useState(null);
-  // const [site, setSite] = useState(null);
-  const [selectedSites, setSelectedSites] = useState([]);
-  const [tableData, setTableData] = useState();
-  const [filteredByExtent, setFilteredByExtent] = useState(false);
-  const [zoomedToSites, setZoomedToSites] = useState(false);
-  const [disclaimerVisible, setDisclaimerVisible] = useState(false);
-
+  const [station, setStation] = useState(null);
   const [stationData, setStationData] = useState(null);
 
-  const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
-  const formatDate = timeFormat('%Y/%m/%d');
-
-  useEffect(() => {
-    if (mapLoaded) {
-      setDisclaimerVisible(true);
-      setLoaded(true);
-    }
-  }, [mapLoaded]);
-
-  // Get full station dataset - data for use in map and table
-  useEffect(() => {
-    const allStationsUrl = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=e747b11d-1783-4f9a-9a76-aeb877654244&fields=_id,StationName,StationCode,TargetLatitude,TargetLongitude,Region,LastSampleDate,Bioassessment,Spot,Fhab,Bioaccumulation&limit=5000';
-    fetch(allStationsUrl)
+  const getAllStations = () => {
+    return new Promise((resolve, reject) => {
+      const params = {
+        // SWAMP Stations: https://data.ca.gov/dataset/surface-water-ambient-monitoring-program/resource/df69fdd7-1475-4e57-9385-bb1514f0291e
+        resource_id: 'df69fdd7-1475-4e57-9385-bb1514f0291e',
+        limit: 6000
+      };
+      const url = 'https://data.ca.gov/api/3/action/datastore_search?';
+      console.log(url + new URLSearchParams(params));
+      fetch(url + new URLSearchParams(params))
       .then((resp) => resp.json())
       .then((json) => json.result.records)
       .then((records) => {
         if (records) {
           records.map(d => {
-            d.Region = d.Region.toString();
             d.LastSampleDate = formatDate(parseDate(d.LastSampleDate));
+            d.RegionName = regionDict[d.Region];
             d.TargetLatitude = +d.TargetLatitude;
             d.TargetLongitude = +d.TargetLongitude;
           });
-          setStationData(records);
+          resolve(records);
         }
-      });
+      })
+    });
+  }
+
+  // This function runs upon initial load
+  // Get full station dataset - data for use in map and table
+  useEffect(() => {
+    getAllStations()
+    .then((data) => {
+      allStationRef.current = data;
+      setStationData(data);
+    });
   }, []);
 
+  useEffect(() => {
+    if (mapLoaded) {
+      //setDisclaimerVisible(true);
+      setLoaded(true);
+    }
+  }, [mapLoaded]);
+
   return (
-    <LayoutMap>
+    <LayoutMap> 
       <Metadata />
       <div className={mapContainer}>
-        <MapIndex2 
-          setMapLoaded={setMapLoaded}
-          analyte={analyte} 
-          region={region} 
+        <PanelMap
+          analyte={analyte}
           program={program}
-          selectedSites={selectedSites}
+          region={region}
+          setMapLoaded={setMapLoaded}
+          setStation={setStation}
+          setStationData={setStationData}
           stationData={stationData}
         />
       </div>
       { !loaded ? <LoaderDashboard /> : null }
-      <div>
+      { station ? <PanelStation station={station} setStation={setStation} analyte={analyte} /> : 
           <PanelIndex 
-            region={region}
-            setRegion={setRegion}
-            analyte={analyte}
-            setAnalyte={setAnalyte}
-            program={program}
-            setProgram={setProgram}
-            stationData={stationData}
+              analyte={analyte}
+              program={program}
+              region={region}
+              setAnalyte={setAnalyte}
+              setProgram={setProgram}
+              setRegion={setRegion}
           />
-      </div>
+      }
       {/*
       { disclaimerVisible ? 
           <Modal

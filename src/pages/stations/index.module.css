@@ -3,11 +3,17 @@
     height: 100vh;
 }
 
-.mainGrid {
+.contentGrid {
     display: grid;
-    grid-template-rows: 60px auto;
-    grid-template-columns: 30% 70%;
     height: 100%;
+    grid-template-columns: 30% 70%;
+    overflow-y: auto;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1.4em;
 }
 
 .header {
@@ -23,11 +29,27 @@
     min-width: 300px;
 }
 
+.leftContainer h2 {
+    margin-top: 6px;
+    font-size: 1.2em !important;
+}
+
+.mainGrid {
+    display: grid;
+    grid-template-rows: 60px auto;
+    height: 100%;
+}
+
 .rightContainer {
     grid-column-start: 2;
     grid-column-end: 2;
     background-color: #fff;
     padding: 1.2em 26px;
+}
+
+.rightContainer h2 {
+    margin-top: 6px;
+    font-size: 1.2em !important;
 }
 
 .siteMapContainer {
@@ -40,23 +62,15 @@
     line-height: 1.35;
 }
 
-.buttonContainer {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 1.4em;
-}
-
-.leftContainer h2 {
-    margin-top: 6px;
-    font-size: 1.2em !important;
-}
-
-.rightContainer h2 {
-    margin-top: 6px;
-    font-size: 1.2em !important;
-}
-
 @media screen and (max-width: 970px) {
+    .header {
+        grid-area: header;
+    }
+
+    .leftContainer {
+        grid-area: left;
+    }
+
     .mainGrid {
         display: grid;
         grid-template-areas:
@@ -67,17 +81,10 @@
         grid-template-columns: 1fr;
         height: auto;
     }
-
-    .header {
-        grid-area: header;
-    }
-
-    .leftContainer {
-        grid-area: left;
-    }
     
     .rightContainer {
         grid-area: right;
         overflow-x: auto;
+        overflow-y: auto;
     }
 }

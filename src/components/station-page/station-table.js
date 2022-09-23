@@ -71,6 +71,7 @@ export default function StationTable({ data, setSelectedAnalytes }) {
             format: row => row['LastResult'].toLocaleString() + ' ' + row['Unit'],
             right: true
         },
+        /*
         {
             id: 'trend',
             name: <TrendHelpIcon />,
@@ -79,6 +80,7 @@ export default function StationTable({ data, setSelectedAnalytes }) {
             sortable: true,
             format: row => <CustomTrend row={row} />
         },
+        */
         {
             id: 'min',
             name: 'Min',
