@@ -5,7 +5,7 @@ import HelpIcon from '../icons/help-icon';
 import ProgramMenu from '../map-controls/program-menu';
 import RegionMenu from '../map-controls/region-menu';
 import { Accordion, Icon } from 'semantic-ui-react';
-import { customAccordion, customTitle, titleWrapper, leadingIcon, pLabel, analyteWrapper } from './accordion-menu.module.css';
+import { analyteWrapper, customAccordion, customTitle, pLabel, titleWrapper} from './accordion-menu.module.css';
 
 
 // This component generates the structure for the accordion menu on the explore_data index page
@@ -78,8 +78,8 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
             >
                 <div className={titleWrapper}>
                     <div>
-                        <Icon className={leadingIcon} name='filter' />
-                        Filters
+                        {/*<Icon className={leadingIcon} name='filter' />*/}
+                        Statewide monitoring program
                     </div>
                     { activeIndex.includes(1) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
                 </div>
@@ -119,13 +119,6 @@ export default function AccordionMenu({ region, setRegion, analyte, setAnalyte, 
                             program={program}
                         />
                     </div>
-                    {/*
-                    <div>
-                        <Label pointing="left" className={customLabel}>
-                            Select to view trend data
-                        </Label>
-                    </div>
-                    */}
                 </div>
             </Accordion.Content>
 

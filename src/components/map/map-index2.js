@@ -7,13 +7,13 @@ import { stationDataFields, convertStationDataToGraphics } from '../../utils/uti
 import { container } from './map-index.module.css';
 
 export default function MapIndex2({ 
-    analyte, 
-    program,
-    region, 
+    selectedSites,
     setMapLoaded, 
+    setSelectedSites,
     setStation,
-    setStationData,
-    stationData
+    setZoomToStation,
+    stationData,
+    zoomToStation
 }) {
     // Declare component references
     const divRef = useRef(null);
@@ -27,6 +27,8 @@ export default function MapIndex2({
     const expandGalleryRef = useRef(null);
     const basemapGalleryRef = useRef(null);
 
+    // This ref is used to store the old array of site code strings. Will be compared to the new array.
+    const selectedSitesRef = useRef(null);
 
     const drawRegions = () => {
         return new Promise((resolve, reject) => {
@@ -257,7 +259,7 @@ export default function MapIndex2({
                                 });
                             });
     
-                            // Add click listener for getting station attributes when map is clicked
+                            // Add listener for clicking on a site
                             // https://gis.stackexchange.com/questions/223785/cannot-catch-click-event-on-featurelayer-in-arcgis-api-for-javascript-4
                             viewRef.current.on('click', function (evt) {  
                                 // Search for symbols on click's position
@@ -267,6 +269,7 @@ export default function MapIndex2({
                                         var graphic = response.results[0].graphic;
                                         // Clicking on an empty part of the map still returns an object with attributes (ID). Check for a station attribute
                                         if (graphic.attributes.StationCode) {
+                                            addToSelectedList(graphic.attributes.StationCode);
                                             setStation(graphic.attributes);
                                         }
                                     });
@@ -295,12 +298,128 @@ export default function MapIndex2({
         }
     }, [stationData])
 
+    // This function checks if a station is already in the selected sites array;
+    // If it does not already exist, then it adds the new value to the state array
+    const addToSelectedList = (stationCode) => {
+        if (stationCode) {
+            setSelectedSites(selectedSites => {
+                // Ideally we would put this conditional statement outside (and just before) the set state function, but doing that would give us an stale, empty state array because the value is based off what it is when the function is initiated. Using this anonymous function is the only way I've tried that gives the correct, updated state array
+                if (selectedSites.indexOf(stationCode) === -1) {
+                    return new Array(stationCode);
+                    // Change the above line to the one below to keep track of multiple selections
+                    // return [...selectedSites, stationCode];
+                } else {
+                    // Even though we are returning a new value, state does not update because the new array is unchanged from the current array
+                    return selectedSites;
+                }
+            });
+        }
+    }
+
     // Update/refresh station layer with new data
     useEffect(() => {
         if (stationLayerRef.current) {
             refreshStationLayer(stationData);
         }
     }, [stationData]);
+
+    useEffect(() => {
+        if (zoomToStation) {
+            const stationCode = zoomToStation;
+            // Get the layer ID of the current station layer
+            const layer = stationLayerRef.current;
+            // Query features from the layer and then get the Object ID for features that match the selected station code
+            const query = layer.createQuery();
+            layer.queryFeatures(query).then(response => {
+                const features = response.features;
+                const matches = features.filter(d => d.attributes.StationCode === stationCode);
+                const featureId = matches.map(d => d.attributes.ObjectId);
+                // Set the query's objectId
+                query.objectIds = featureId;
+                // Must get the geometry to be able to determine the extent and zoom
+                query.returnGeometry = true;
+                layer.queryFeatures(query).then((results) => {
+                    // Zoom to the matched result
+                    const feature = results.features[0];
+                    viewRef.current.goTo({
+                        target: feature.geometry,
+                        zoom: 13
+                    });
+                });
+            });
+            // Reset state
+            setZoomToStation(false);
+        }
+    }, [zoomToStation]);
+
+    useEffect(() => {
+        if (viewRef.current) {
+            const layer = stationLayerRef.current;
+            if (selectedSitesRef.current) {
+                viewRef.current.whenLayerView(layer).then(() => {
+                    // Compare to previous selection and identify added/removed sites
+                    const addedSites = selectedSites.filter(d => !selectedSitesRef.current.includes(d));
+                    const removedSites = selectedSitesRef.current.filter(d => !selectedSites.includes(d));
+                    if (addedSites.length > 0) { 
+                        addSiteHighlight(layer, addedSites[0]); 
+                    } 
+                    setTimeout(() => {
+                        if (removedSites.length > 0) {
+                            removeSiteHighlight(layer, removedSites);
+                        }
+                    }, 300);
+                    selectedSitesRef.current = selectedSites;
+                });
+            } else {
+                 // Initialize selectedSitesRef
+                // Should run for first selection only
+                if (selectedSites.length > 0) {
+                    addSiteHighlight(layer, selectedSites[0]);
+                    selectedSitesRef.current = selectedSites;
+                }
+            }
+        }
+    }, [selectedSites]);
+
+    const addSiteHighlight = (layer, stationCode) => {
+        viewRef.current.whenLayerView(layer).then((layerView) => {
+            const query = layer.createQuery();
+            query.where = `StationCode = '${stationCode}'`;
+            layer.queryFeatures(query)
+            .then(results => {
+                if (results.features.length > 0) {
+                    const feature = results.features[0].attributes.ObjectId;
+                    layerView.highlight(feature);
+                }
+            });
+        })
+    };
+
+    const removeSiteHighlight = (layer, stationCodes) => {
+        // Have to do an extra query here for removing the highlight, see end of function (can't used the passed layer object)
+        const layerId = 'station-layer';
+        const stationLayer = viewRef.current.allLayerViews.items.filter(d => d.layer.id === layerId)[0];   
+        // Handling one highlight removal is different than clearing all highlights. 
+        if (stationCodes.length === 1) {
+            // We want to remove the one highlight without causing flashing.
+            const query = layer.createQuery();
+            query.where = `StationCode = '${stationCodes[0]}'`;
+            layer.queryFeatures(query)
+            .then(results => {
+                if (results.features.length > 0) {
+                    // Get Object ID of the feature to be removed
+                    const featureId = results.features[0].attributes.ObjectId;
+                    // Query to get the layer object, which contains a map of all highlighted features
+                    stationLayer._highlightIds.delete(featureId);
+                    stationLayer._updateHighlight(); 
+                }
+            });
+        } else if (stationCodes.length > 1) {
+            // If there is more than one site code to be removed, remove all elements from the map object
+            stationLayer._highlightIds.clear();
+            stationLayer._updateHighlight(); 
+        }   
+    }
 
     return (
         <div

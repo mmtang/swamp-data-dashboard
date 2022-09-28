@@ -16,5 +16,6 @@
 }
 
 .button:hover {
+	background-color: #f4f2f2;
 	color: #5d5d5d;
 }

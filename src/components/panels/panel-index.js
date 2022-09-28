@@ -9,27 +9,20 @@ export default function PanelIndex({
     setAnalyte, 
     setProgram, 
     setRegion, 
+    station
 }) {   
     const getContent = () => {
-        if (program) {
-            switch(program) {
-                case 'spot':
-                    return null;
-                default:
-                    return null;
-            }
-        } else {
-            return (
-                <ContentIndex 
-                    analyte={analyte}
-                    program={program}
-                    region={region}
-                    setAnalyte={setAnalyte}
-                    setProgram={setProgram}
-                    setRegion={setRegion} 
-                />
-            )
-        }
+        return (
+            <ContentIndex 
+                analyte={analyte}
+                program={program}
+                region={region}
+                setAnalyte={setAnalyte}
+                setProgram={setProgram}
+                setRegion={setRegion} 
+                station={station}
+            />
+        )
     }
 
     return (
