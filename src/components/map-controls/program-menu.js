@@ -1,5 +1,5 @@
 import React from 'react';
-import { navigate, withPrefix } from 'gatsby';
+//import { navigate, withPrefix } from 'gatsby';
 import Select from 'react-select';
 import { customSelectStyle, programDict } from '../../utils/utils';
 
@@ -13,7 +13,8 @@ export default function RegionMenu({ program, setProgram }) {
         },
         {
             label: programDict['bioassessment'],
-            value: 'bioassessment'
+            value: 'bioassessment',
+            isDisabled: true
         },
         {
             label: programDict['fhab'],
@@ -30,7 +31,9 @@ export default function RegionMenu({ program, setProgram }) {
         if (selection ) {
             const value = selection.value;
             if (value !== program) {
-                navigate(`/programs/${value}`);
+                // Line below used to navigate to another page in the dashboard
+                // navigate(`/programs/${value}`);
+                setProgram(value);
             }
         } else {
             // Clear the program selection

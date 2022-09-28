@@ -1,16 +1,26 @@
 import React from 'react';
 import ButtonClearStation from '../common/button-clear-station';
-import ButtonStationPage from '../spot/button-station-page';
+import ButtonExploreData from '../common/button-explore-data';
+import ButtonZoomStation from '../common/button-zoom-station';
 import ChartContainer from '../spot/chart-container';
 
 import { Icon } from 'semantic-ui-react';
 
 import { mainContainer, infoContainer } from '../../pages/index.module.css';
-import { buttonContainer, chartSection, iconContainer, infoSubText, stationCover, stationHeader, stationSubText, topContainer } from './panel-station.module.css';
+import { buttonContainer, buttonGrid, chartSection, iconContainer, infoSubText, stationCover, stationHeader, stationSubText, topContainer } from './panel-station.module.css';
 
-export default function PanelStation({ station, setStation, analyte }) {   
+export default function PanelStation({ 
+    analyte,
+    setStation, 
+    setZoomToStation,
+    station
+}) {   
+    const stationStyle = {
+        display: 'none'
+    }
+
     return (
-        <div className={mainContainer}>
+        <div className={mainContainer} style={ !station ? stationStyle : null }>
             {/*
             <div>
                 <img
@@ -28,12 +38,20 @@ export default function PanelStation({ station, setStation, analyte }) {
                     </div>
                     <ButtonClearStation setStation={setStation} />
                 </div>
-                <h2 className={stationHeader}>{station.StationName ? station.StationName: null}</h2>
+                <h2 className={stationHeader}>{station ? station.StationName: null}</h2>
                 <span className={infoSubText}>
-                    {station.StationCode ? station.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{station.RegionName ? station.RegionName : null}  Region
+                    {station ? station.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{station ? station.RegionName : null}  Region
                 </span>
-                <div className={buttonContainer}>
-                    <ButtonStationPage stationCode={station.StationCode} />
+                <div className={buttonGrid}>
+                    <div className={buttonContainer}>
+                        <ButtonExploreData stationCode={station ? station.StationCode : null} />
+                    </div>
+                    <div className={buttonContainer}>
+                        <ButtonZoomStation 
+                            setZoomToStation={setZoomToStation} 
+                            station={station ? station.StationCode : null}
+                        />
+                    </div>
                 </div>
                 <section className={chartSection}>
                     { analyte ? 

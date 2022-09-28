@@ -2,6 +2,11 @@
     margin: 1.7em 0 0 0;
 }
 
+.buttonGrid {
+    display: flex;
+    justify-content: space-between;
+}
+
 .chartSection {
     margin: 20px 0;
 }
@@ -29,7 +34,7 @@
 
 .stationSubText {
     color: #767676;
-    font-size: 0.85em;
+    font-size: 0.82em;
     font-weight: 600;
     margin: 0.4em 0.4em 0.4em 0;
     text-transform: uppercase;

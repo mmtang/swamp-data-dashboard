@@ -3,6 +3,11 @@ import { timeParse, timeFormat } from 'd3';
 export const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
 export const formatDate = timeFormat('%Y/%m/%d');
 
+// https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+export const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export const chemistryEndpoint = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=8d5331c8-e209-4ec0-bf1e-2c09881278d4';
 
 export const cedenChemistryEndpoint = {

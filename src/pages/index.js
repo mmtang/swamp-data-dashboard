@@ -6,9 +6,9 @@ import PanelIndex from '../components/panels/panel-index';
 import PanelMap from '../components/panels/panel-map';
 import PanelStation from '../components/panels/panel-station';
 
-import { formatDate, parseDate, regionDict } from '../utils/utils';
+import { capitalizeFirstLetter, formatDate, parseDate, regionDict } from '../utils/utils';
 
-import { mapContainer, mainContainer, infoContainer, modalContent, swampIcon, modalButton } from './index.module.css';
+import { mapContainer } from './index.module.css';
 
 export default function Index() {
   // Data for all stations
@@ -19,8 +19,10 @@ export default function Index() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [program, setProgram] = useState(null);
   const [region, setRegion] = useState(null);
+  const [selectedSites, setSelectedSites] = useState([]);
   const [station, setStation] = useState(null);
   const [stationData, setStationData] = useState(null);
+  const [zoomToStation, setZoomToStation] = useState(false);
 
   const getAllStations = () => {
     return new Promise((resolve, reject) => {
@@ -36,7 +38,7 @@ export default function Index() {
       .then((json) => json.result.records)
       .then((records) => {
         if (records) {
-          records.map(d => {
+          records.forEach(d => {
             d.LastSampleDate = formatDate(parseDate(d.LastSampleDate));
             d.RegionName = regionDict[d.Region];
             d.TargetLatitude = +d.TargetLatitude;
@@ -46,6 +48,27 @@ export default function Index() {
         }
       })
     });
+  }
+
+  const getStations = (params) => {
+    return new Promise((resolve, reject) => {
+      const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
+      console.log(url + new URLSearchParams(params));
+      fetch(url + new URLSearchParams(params))
+      .then((resp) => resp.json())
+      .then((json) => json.result.records)
+      .then((records) => {
+        if (records) {
+          records.forEach(d => {
+            d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
+            d.RegionName = regionDict[d.Region];
+            d.TargetLatitude = +d.TargetLatitude;
+            d.TargetLongitude = +d.TargetLongitude;
+          });
+          resolve(records);
+        }
+      });
+    })
   }
 
   // This function runs upon initial load
@@ -65,6 +88,50 @@ export default function Index() {
     }
   }, [mapLoaded]);
 
+  // This function runs whenever any of the three states (program, region, analyte) change
+  // It resets the station dataset OR re-queries the open data portal for new data and initiates changing the underlying data populating the map and table
+  useEffect(() => {
+    const isDuplicate = (row, arr) => {
+      return arr.some(x => (row.StationCode === x.StationCode))
+    };
+
+    // If none of the filters are selected, change state to the full station dataset
+    if (!program && !region && !analyte) {
+      setStationData(allStationRef.current);
+    }
+
+    if (program) {
+      const paramsChem = {
+        sql: `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e" WHERE "${capitalizeFirstLetter(program)}" = 'True' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "StationCode", "SampleDate" DESC`
+      }
+      const paramsTox = {
+        sql: `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "a6dafb52-3671-46fa-8d42-13ddfa36fd49" WHERE "${capitalizeFirstLetter(program)}" = 'True' ORDER BY "StationCode", "SampleDate" DESC`
+      }
+      Promise.all([
+        // Chemistry dataset
+        getStations(paramsChem),
+        // Tox dataset
+        getStations(paramsTox)
+      ]).then((res) => {
+        if (res.length > 0) {
+          // Concatenate the records into one array
+          let allData = res[0].concat(res[1]);
+          // Sort desc by last sample date
+          allData.sort((a, b) => new Date(b.LastSampleDate).getTime() - new Date(a.LastSampleDate).getTime());
+          // Iterate and find unique stations
+          // https://stackoverflow.com/questions/61183837/how-to-remove-duplicate-from-array-of-objects-with-multiple-properties-as-unique
+          const uniqueStations = [];
+          for (const row of allData) {
+            if (!isDuplicate(row, uniqueStations)) { 
+              uniqueStations.push(row);
+            }
+          }
+          setStationData(uniqueStations);
+        }
+      })
+    }
+  }, [program])
+
   return (
     <LayoutMap> 
       <Metadata />
@@ -73,23 +140,33 @@ export default function Index() {
           analyte={analyte}
           program={program}
           region={region}
+          selectedSites={selectedSites}
           setMapLoaded={setMapLoaded}
+          setSelectedSites={setSelectedSites}
           setStation={setStation}
           setStationData={setStationData}
+          setZoomToStation={setZoomToStation}
           stationData={stationData}
+          zoomToStation={zoomToStation}
         />
       </div>
       { !loaded ? <LoaderDashboard /> : null }
-      { station ? <PanelStation station={station} setStation={setStation} analyte={analyte} /> : 
-          <PanelIndex 
-              analyte={analyte}
-              program={program}
-              region={region}
-              setAnalyte={setAnalyte}
-              setProgram={setProgram}
-              setRegion={setRegion}
-          />
-      }
+      {/* Render both panels at the same time but control visibility using styles around the parent divs in each component. Conditional rendering, which is what was in place before, causes the PanelIndex component and all select menus to re-render after closing out the station panel, which is not desirable. https://stackoverflow.com/questions/69009266/react-hiding-vs-removing-components */}
+      <PanelIndex 
+        analyte={analyte}
+        program={program}
+        region={region}
+        setAnalyte={setAnalyte}
+        setProgram={setProgram}
+        setRegion={setRegion}
+        station={station}
+      />
+      <PanelStation 
+        station={station} 
+        setStation={setStation} 
+        analyte={analyte} 
+        setZoomToStation={setZoomToStation}
+      />
       {/*
       { disclaimerVisible ? 
           <Modal

@@ -17,10 +17,14 @@ export default function PanelMap({
     analyte, 
     program,
     region, 
+    selectedSites,
     setMapLoaded,
+    setSelectedSites,
     setStation,
     setStationData,
-    stationData
+    setZoomToStation,
+    stationData,
+    zoomToStation
 }) {   
     // State
     const [view, setView] = useState('map');
@@ -37,10 +41,14 @@ export default function PanelMap({
                     analyte={analyte} 
                     program={program}
                     region={region} 
+                    selectedSites={selectedSites}
                     setMapLoaded={setMapLoaded}
+                    setSelectedSites={setSelectedSites}
                     setStation={setStation}
                     setStationData={setStationData}
+                    setZoomToStation={setZoomToStation}
                     stationData={stationData}
+                    zoomToStation={zoomToStation}
                 />
             </div>
             <div style={view !== 'table' ? { display: 'none' } : tableContainerStyle }>

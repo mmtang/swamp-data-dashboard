@@ -13,9 +13,8 @@ export default function ButtonClearStation({ setStation }) {
                 <Icon
                     size='large'
                     name='close' 
-                    color='teal'
+                    color='grey'
                 />
-                <span>Close</span>
             </div>
         </div>   
     )
