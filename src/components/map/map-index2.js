@@ -278,7 +278,7 @@ export default function MapIndex2({
             initializeMap().then(() => {
                 Promise.all([
                     drawRegions(),
-                    //drawStationLayer()
+                    drawStationLayer()
                     //drawLandUse(),
                 ]).then(values => {
                     setMapLoaded(true);

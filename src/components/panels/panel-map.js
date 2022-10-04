@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import MapIndex2 from '../map/map-index2';
 import PanelMapMenu from '../panel-menu/panel-map-menu';
+import Table from '../table/table';
 import Table2 from '../table/table2';
 
 import { content } from './panel-map.module.css';
