@@ -2,6 +2,9 @@ export const colorPaletteViz = ['#1f77b4', '#ff7f0e', '#2ca02c', '#af7aa1', '#17
 
 // Matrix colors
 export const matrixColor = {
+    //'benthic': '#e76f51',
+    //'habitat': '#1a4d2e',
+    'samplewater': '#0081a7',
     'sediment': '#917c78',
-    'samplewater': '#0081a7'
+    'other': '#0f4c5c'
 }

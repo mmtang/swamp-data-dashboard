@@ -19,6 +19,8 @@ export default function Table2({ setStation, stationData }) {
     const [sortType, setSortType] = useState('desc')
     const [width, setWidth] = useState(0);
 
+    console.log(stationData);
+
     /*
     useEffect(() => {
         setWidth(containerRef.current.parentElement.offsetWidth);
@@ -33,10 +35,20 @@ export default function Table2({ setStation, stationData }) {
             return stationData.sort((a, b) => {
                 let x = a[sortColumn];
                 let y = b[sortColumn];
-                if (sortType === 'asc') {
-                    return x.localeCompare(y)
+                if (typeof x === 'number') {
+                    // Sort numbers
+                    if (sortType === 'asc') {
+                        return x - y;
+                    } else {
+                        return y - x;
+                    }
                 } else {
-                    return y.localeCompare(x);
+                    // Sort strings
+                    if (sortType === 'asc') {
+                        return x.localeCompare(y)
+                    } else {
+                        return y.localeCompare(x);
+                    }
                 }
             });
         } else {
@@ -91,10 +103,22 @@ export default function Table2({ setStation, stationData }) {
                         <HeaderCell>Station Name</HeaderCell>
                         <Cell dataKey='StationName' />
                     </Column>
-                    <Column sortable width={110}>
+                    <Column sortable width={120}>
                         <HeaderCell>Last Sample</HeaderCell>
                         <Cell dataKey='LastSampleDate' />
                     </Column>
+                    { stationData[0].LastResult ?  
+                        <Column sortable width={90} align='left'>
+                            <HeaderCell>Result</HeaderCell>
+                            <Cell dataKey='LastResult' />
+                        </Column>
+                    : null }
+                    { stationData[0].Unit ?  
+                        <Column sortable width={90} align='left'>
+                            <HeaderCell>Unit</HeaderCell>
+                            <Cell dataKey='Unit' />
+                        </Column>
+                    : null }
                 </Table> 
             }
         </div>

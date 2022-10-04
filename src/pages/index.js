@@ -7,7 +7,6 @@ import PanelMap from '../components/panels/panel-map';
 import PanelStation from '../components/panels/panel-station';
 
 import { capitalizeFirstLetter, formatDate, parseDate, regionDict } from '../utils/utils';
-
 import { mapContainer } from './index.module.css';
 
 export default function Index() {
@@ -71,6 +70,88 @@ export default function Index() {
     })
   }
 
+  const createParams = (resource) => {
+    let querySql;
+    if (!analyte) {
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "${resource}"`;
+    } else {
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultDisplay", "Unit" FROM "${resource}"`;
+    };
+    if (analyte || program || region) {
+        // This block constucts the "WHERE" part of the select query
+        // There can be one or more filters
+        const whereStatements = [];
+        if (analyte) {
+          whereStatements.push(`"Analyte" = '${analyte.value}'`);
+          whereStatements.push(`"MatrixName" = '${analyte.matrix}'`);
+        }
+        if (program) {
+          whereStatements.push(`"${capitalizeFirstLetter(program)}" = 'True'`);
+        }
+        if (region) {
+          // Region value on open data portal is string; convert value before appending to query string
+          let regionVal = region;
+          if (typeof regionVal === 'number') {
+            regionVal = region.toString();
+          }
+          whereStatements.push(`"Region" = '${regionVal}'`);
+        }
+        // Data quality
+        whereStatements.push(`"DataQuality" NOT IN ('MetaData', 'Reject record')`);
+        const concat = whereStatements.join(' AND ');
+        querySql += ' WHERE ';
+        querySql += concat;
+        querySql += ` ORDER BY "StationCode", "SampleDate" DESC`
+    }
+    console.log(querySql);
+    return { resource_id: resource, sql: querySql };
+  }
+
+  // This function runs whenever any of the three states (program, region, analyte) change
+  // It resets the station dataset OR re-queries the open data portal for new data and initiates changing the underlying data populating the map and table
+  useEffect(() => {
+    const isDuplicate = (row, arr) => {
+      return arr.some(x => (row.StationCode === x.StationCode))
+    };
+    // If none of the filters are selected, change state to the full station dataset
+    if (!program && !region && !analyte) {
+      setStationData(allStationRef.current);
+    } else {
+      const paramsChem = createParams('2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e');
+      const paramsHabitat = createParams('6d9a828a-d539-457e-922c-3cb54a6d4f9b');
+      const paramsTox = createParams('a6dafb52-3671-46fa-8d42-13ddfa36fd49');
+      Promise.all([
+        // Chemistry dataset
+        getStations(paramsChem),
+        // Habitat dataset
+        getStations(paramsHabitat),
+        // Tox dataset
+        getStations(paramsTox)
+      ]).then((res) => {
+        if (res.length > 0) {
+          // Concatenate the records into one array
+          let allData = res[0].concat(res[1], res[2]);
+          // Sort desc by last sample date
+          allData.sort((a, b) => new Date(b.LastSampleDate).getTime() - new Date(a.LastSampleDate).getTime());
+          // Iterate and find unique stations
+          // https://stackoverflow.com/questions/61183837/how-to-remove-duplicate-from-array-of-objects-with-multiple-properties-as-unique
+          const uniqueStations = [];
+          for (const row of allData) {
+            if (!isDuplicate(row, uniqueStations)) { 
+              uniqueStations.push(row);
+            }
+          }
+          if (uniqueStations[0].ResultDisplay) {
+            uniqueStations.forEach(d => {
+              d.LastResult = +d.ResultDisplay
+            });
+          };
+          setStationData(uniqueStations);
+        }
+      })
+    }
+  }, [analyte, program, region])
+
   // This function runs upon initial load
   // Get full station dataset - data for use in map and table
   useEffect(() => {
@@ -88,56 +169,12 @@ export default function Index() {
     }
   }, [mapLoaded]);
 
-  // This function runs whenever any of the three states (program, region, analyte) change
-  // It resets the station dataset OR re-queries the open data portal for new data and initiates changing the underlying data populating the map and table
-  useEffect(() => {
-    const isDuplicate = (row, arr) => {
-      return arr.some(x => (row.StationCode === x.StationCode))
-    };
-
-    // If none of the filters are selected, change state to the full station dataset
-    if (!program && !region && !analyte) {
-      setStationData(allStationRef.current);
-    }
-
-    if (program) {
-      const paramsChem = {
-        sql: `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e" WHERE "${capitalizeFirstLetter(program)}" = 'True' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "StationCode", "SampleDate" DESC`
-      }
-      const paramsTox = {
-        sql: `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "a6dafb52-3671-46fa-8d42-13ddfa36fd49" WHERE "${capitalizeFirstLetter(program)}" = 'True' ORDER BY "StationCode", "SampleDate" DESC`
-      }
-      Promise.all([
-        // Chemistry dataset
-        getStations(paramsChem),
-        // Tox dataset
-        getStations(paramsTox)
-      ]).then((res) => {
-        if (res.length > 0) {
-          // Concatenate the records into one array
-          let allData = res[0].concat(res[1]);
-          // Sort desc by last sample date
-          allData.sort((a, b) => new Date(b.LastSampleDate).getTime() - new Date(a.LastSampleDate).getTime());
-          // Iterate and find unique stations
-          // https://stackoverflow.com/questions/61183837/how-to-remove-duplicate-from-array-of-objects-with-multiple-properties-as-unique
-          const uniqueStations = [];
-          for (const row of allData) {
-            if (!isDuplicate(row, uniqueStations)) { 
-              uniqueStations.push(row);
-            }
-          }
-          setStationData(uniqueStations);
-        }
-      })
-    }
-  }, [program])
-
   return (
     <LayoutMap> 
       <Metadata />
       <div className={mapContainer}>
         <PanelMap
-          analyte={analyte}
+          //analyte={analyte}
           program={program}
           region={region}
           selectedSites={selectedSites}

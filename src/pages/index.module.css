@@ -64,6 +64,10 @@
     background-color: #1a4c68;
 }
 
+.welcomeHeader {
+    margin: 8px 0 14px 0 !important;
+}
+
 @media screen and (max-width: 800px) {
     .mapContainer {
         flex-basis: 35%;

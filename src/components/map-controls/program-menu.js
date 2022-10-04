@@ -1,58 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 //import { navigate, withPrefix } from 'gatsby';
 import Select from 'react-select';
 import { customSelectStyle, programDict } from '../../utils/utils';
 
 
-export default function RegionMenu({ program, setProgram }) {   
-    const programList = [
-        {
-            label: programDict['bioaccumulation'],
-            value: 'bioaccumulation',
-            isDisabled: true
-        },
-        {
-            label: programDict['bioassessment'],
-            value: 'bioassessment',
-            isDisabled: true
-        },
-        {
-            label: programDict['fhab'],
-            value: 'fhab',
-            isDisabled: true
-        },
-        {
-            label: programDict['spot'],
-            value: 'spot'
+export default function ProgramMenu({ program, programList, setProgram }) {   
+    const [loading, setLoading] = useState(true);
+    const [selected, setSelected] = useState(null);
+
+    useEffect(() => {
+        if (program) {
+            setSelected({ label: programDict[program], value: program });
+        } else {
+            setSelected(null);
         }
-    ];
+    }, [program]);
 
     const handleChange = (selection) => {
         if (selection ) {
             const value = selection.value;
-            if (value !== program) {
-                // Line below used to navigate to another page in the dashboard
-                // navigate(`/programs/${value}`);
-                setProgram(value);
-            }
+            // Line below used to navigate to another page in the dashboard, sved for reference
+            // navigate(`/programs/${value}`);
+            setProgram(value);
         } else {
             // Clear the program selection
-            if (selection !== program) {
-                setProgram(null)
-            }
+            setProgram(null)
         }
     }
+
+    useEffect(() => {
+        if (programList) {
+            setLoading(false);
+        }
+    }, [programList]);
 
     return (
         <React.Fragment>
             <Select
                 options={programList} 
                 isClearable={true}
+                isLoading={loading}
                 isSearchable={true}
                 placeholder='Program'
                 onChange={handleChange}
                 styles={customSelectStyle}
                 maxMenuHeight={200}
+                value={selected}
             />
         </React.Fragment>
     )
