@@ -113,6 +113,8 @@ export default function Index() {
     const isDuplicate = (row, arr) => {
       return arr.some(x => (row.StationCode === x.StationCode))
     };
+
+    setMapLoaded(false);
     // If none of the filters are selected, change state to the full station dataset
     if (!program && !region && !analyte) {
       setStationData(allStationRef.current);
@@ -174,7 +176,8 @@ export default function Index() {
       <Metadata />
       <div className={mapContainer}>
         <PanelMap
-          //analyte={analyte}
+          analyte={analyte}
+          mapLoaded={mapLoaded}
           program={program}
           region={region}
           selectedSites={selectedSites}
@@ -187,7 +190,9 @@ export default function Index() {
           zoomToStation={zoomToStation}
         />
       </div>
+      {/*
       { !loaded ? <LoaderDashboard /> : null }
+      */}
       {/* Render both panels at the same time but control visibility using styles around the parent divs in each component. Conditional rendering, which is what was in place before, causes the PanelIndex component and all select menus to re-render after closing out the station panel, which is not desirable. https://stackoverflow.com/questions/69009266/react-hiding-vs-removing-components */}
       <PanelIndex 
         analyte={analyte}
