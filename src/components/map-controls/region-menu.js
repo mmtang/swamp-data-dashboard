@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import LoaderMenu from './loader-menu';
+
 import Select from 'react-select';
 import { customSelectStyle, regionDict, regionNumDict } from '../../utils/utils';
 
@@ -12,16 +14,9 @@ export default function RegionMenu({ region, regionList, setRegion }) {
             const value = selection.value;
             setRegion(regionNumDict[value]);
         } else {
-            // Clear the region selection
             setRegion(null)
         }
     }
-
-    useEffect(() => {
-        if (regionList) {
-            setLoading(false);
-        }
-    }, [regionList]);
 
     useEffect(() => {
         if (region) {
@@ -31,22 +26,32 @@ export default function RegionMenu({ region, regionList, setRegion }) {
         }
     }, [region])
 
-    return (
-        <React.Fragment>
-            <Select
-                options={regionList} 
-                isClearable={true}
-                isLoading={loading}
-                isSearchable={true}
-                placeholder='Region'
-                onChange={handleChange}
-                styles={customSelectStyle}
-                maxMenuHeight={200}
-                value={selected}
-            />
-            {/*
-            { selectedRegion ? <RegionCard selectedRegion={selectedRegion} /> : null }
-            */}
-        </React.Fragment>
-    )
+    useEffect(() => {
+        if (regionList) {
+            setLoading(false);
+        }
+    }, [regionList]);
+
+    if (!loading) {
+        return (
+            <React.Fragment>
+                <Select
+                    options={regionList} 
+                    isClearable={true}
+                    isLoading={loading}
+                    isSearchable={true}
+                    placeholder='Region'
+                    onChange={handleChange}
+                    styles={customSelectStyle}
+                    maxMenuHeight={200}
+                    value={selected}
+                />
+            </React.Fragment>
+        )
+    } else {
+        return (
+            <LoaderMenu />
+        )
+    }
+    
 }
