@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import MenuLoader from './menu-loader';
+
 import Select from 'react-select';
 
 import { matrixColor } from '../../constants/constants-app';
@@ -8,6 +10,10 @@ import { customSelectStyle } from '../../utils/utils';
 export default function AnalyteMenu({ analyte, analyteList, category, categoryList, setAnalyte, setCategory  }) {
     const [loadingAnalyte, setLoadingAnalyte] = useState(true);
     const [loadingCategory, setLoadingCategory] = useState(true);
+
+    const selectWrapper = {
+        marginBottom: '10px'
+    };
 
     /*
     const createAnalyteParams = (resource) => {
@@ -126,7 +132,6 @@ export default function AnalyteMenu({ analyte, analyteList, category, categoryLi
     const handleSelectChange = (selection) => {
         // If there is a selection, the passed object is formatted as { label: 'fhab', value: 'fhab'}
         if (selection) {
-            console.log(selection);
             setAnalyte(selection);
         } else {
             setAnalyte(null);
@@ -147,29 +152,35 @@ export default function AnalyteMenu({ analyte, analyteList, category, categoryLi
 
     return (
         <div>
-            <Select
-                options={categoryList} 
-                isClearable={true}
-                isLoading={loadingCategory}
-                isSearchable={true}
-                placeholder='Category'
-                onChange={handleCategoryChange}
-                styles={customSelectStyle}
-                maxMenuHeight={200}
-                value={category ? { label: category, value: category } : null}
-            />
-            <Select
-                options={analyteList} 
-                isClearable={true}
-                isLoading={loadingAnalyte}
-                isSearchable={true}
-                placeholder='Parameter'
-                onChange={handleSelectChange}
-                styles={customSelectStyle}
-                maxMenuHeight={200}
-                formatOptionLabel={formatOptionLabel}
-                value={analyte ? analyte : null}
-            />
+            { loadingCategory === false ? (
+                <div style={selectWrapper}>
+                    <Select
+                        options={categoryList} 
+                        isClearable={true}
+                        isSearchable={true}
+                        placeholder='Category'
+                        onChange={handleCategoryChange}
+                        styles={customSelectStyle}
+                        maxMenuHeight={200}
+                        value={category ? { label: category, value: category } : null}
+                    />
+                </div>
+            ) : <div style={selectWrapper}><MenuLoader /></div> }
+            { loadingAnalyte === false ? (
+                <div>
+                    <Select
+                        options={analyteList} 
+                        isClearable={true}
+                        isSearchable={true}
+                        placeholder='Parameter'
+                        onChange={handleSelectChange}
+                        styles={customSelectStyle}
+                        maxMenuHeight={200}
+                        formatOptionLabel={formatOptionLabel}
+                        value={analyte ? analyte : null}
+                    />
+                </div>
+            ) : <div><MenuLoader /></div> }
         </div>
     )
 }

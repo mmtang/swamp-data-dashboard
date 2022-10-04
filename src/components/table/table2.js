@@ -19,8 +19,6 @@ export default function Table2({ setStation, stationData }) {
     const [sortType, setSortType] = useState('desc')
     const [width, setWidth] = useState(0);
 
-    console.log(stationData);
-
     /*
     useEffect(() => {
         setWidth(containerRef.current.parentElement.offsetWidth);

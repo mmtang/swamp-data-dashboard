@@ -31,7 +31,7 @@ export default function Index() {
         limit: 6000
       };
       const url = 'https://data.ca.gov/api/3/action/datastore_search?';
-      console.log(url + new URLSearchParams(params));
+      //console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => resp.json())
       .then((json) => json.result.records)
@@ -52,7 +52,7 @@ export default function Index() {
   const getStations = (params) => {
     return new Promise((resolve, reject) => {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-      console.log(url + new URLSearchParams(params));
+      //console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => resp.json())
       .then((json) => json.result.records)
@@ -103,7 +103,6 @@ export default function Index() {
         querySql += concat;
         querySql += ` ORDER BY "StationCode", "SampleDate" DESC`
     }
-    console.log(querySql);
     return { resource_id: resource, sql: querySql };
   }
 
@@ -157,6 +156,7 @@ export default function Index() {
   useEffect(() => {
     getAllStations()
     .then((data) => {
+      console.log(data);
       allStationRef.current = data;
       setStationData(data);
     });
