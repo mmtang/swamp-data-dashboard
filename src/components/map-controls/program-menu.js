@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-//import { navigate, withPrefix } from 'gatsby';
+import LoaderMenu from './loader-menu';
+
 import Select from 'react-select';
 import { customSelectStyle, programDict } from '../../utils/utils';
 
@@ -7,14 +8,6 @@ import { customSelectStyle, programDict } from '../../utils/utils';
 export default function ProgramMenu({ program, programList, setProgram }) {   
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
-
-    useEffect(() => {
-        if (program) {
-            setSelected({ label: programDict[program], value: program });
-        } else {
-            setSelected(null);
-        }
-    }, [program]);
 
     const handleChange = (selection) => {
         if (selection ) {
@@ -29,24 +22,38 @@ export default function ProgramMenu({ program, programList, setProgram }) {
     }
 
     useEffect(() => {
+        if (program) {
+            setSelected({ label: programDict[program], value: program });
+        } else {
+            setSelected(null);
+        }
+    }, [program]);
+
+    useEffect(() => {
         if (programList) {
             setLoading(false);
         }
     }, [programList]);
 
-    return (
-        <React.Fragment>
-            <Select
-                options={programList} 
-                isClearable={true}
-                isLoading={loading}
-                isSearchable={true}
-                placeholder='Program'
-                onChange={handleChange}
-                styles={customSelectStyle}
-                maxMenuHeight={200}
-                value={selected}
-            />
-        </React.Fragment>
-    )
+    if (!loading) {
+        return (
+            <React.Fragment>
+                <Select
+                    options={programList} 
+                    isClearable={true}
+                    isLoading={loading}
+                    isSearchable={true}
+                    placeholder='Program'
+                    onChange={handleChange}
+                    styles={customSelectStyle}
+                    maxMenuHeight={200}
+                    value={selected}
+                />
+            </React.Fragment>
+        )
+    } else {
+        return (
+            <LoaderMenu />
+        )
+    }
 }
