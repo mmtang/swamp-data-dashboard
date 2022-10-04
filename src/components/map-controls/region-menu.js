@@ -1,72 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
-import { customSelectStyle } from '../../utils/utils';
+import { customSelectStyle, regionDict, regionNumDict } from '../../utils/utils';
 
 
-export default function RegionMenu({ region, setRegion }) {   
-    const regionList = [
-        {
-            label: 'North Coast',
-            value: 'North Coast'
-        },
-        {
-            label: 'San Francisco Bay',
-            value: 'San Francisco Bay'
-        },
-        {
-            label: 'Central Coast',
-            value: 'Central Coast'
-        },
-        {
-            label: 'Los Angeles',
-            value: 'Los Angeles'
-        },
-        {
-            label: 'Central Valley',
-            value: 'Central Valley'
-        },
-        {
-            label: 'Lahontan',
-            value: 'Lahontan'
-        },
-        {
-            label: 'Colorado River',
-            value: 'Colorado River'
-        },
-        {
-            label: 'Santa Ana',
-            value: 'Santa Ana'
-        },
-        {
-            label: 'San Diego',
-            value: 'San Diego'
-        }
-    ];
+export default function RegionMenu({ region, regionList, setRegion }) {   
+    const [loading, setLoading] = useState(true);
+    const [selected, setSelected] = useState(null);
 
     const handleChange = (selection) => {
         if (selection ) {
             const value = selection.value;
-            if (value !== region) {
-                setRegion(value);
-            }
+            setRegion(regionNumDict[value]);
         } else {
             // Clear the region selection
-            if (selection !== region) {
-                setRegion(selection)
-            }
+            setRegion(null)
         }
     }
+
+    useEffect(() => {
+        if (regionList) {
+            setLoading(false);
+        }
+    }, [regionList]);
+
+    useEffect(() => {
+        if (region) {
+            setSelected({ label: regionDict[region], value: region })
+        } else {
+            setSelected(null);
+        }
+    }, [region])
 
     return (
         <React.Fragment>
             <Select
                 options={regionList} 
                 isClearable={true}
+                isLoading={loading}
                 isSearchable={true}
                 placeholder='Region'
                 onChange={handleChange}
                 styles={customSelectStyle}
                 maxMenuHeight={200}
+                value={selected}
             />
             {/*
             { selectedRegion ? <RegionCard selectedRegion={selectedRegion} /> : null }

@@ -19,7 +19,7 @@ export default function MapIndex2({
     const divRef = useRef(null);
     const mapRef = useRef(null);
     const viewRef = useRef(null);
-    const searchRef = useRef(null);
+    // const searchRef = useRef(null);
     const stationLayerRef = useRef(null);
     const layerListRef = useRef(null);
     const regionLayerRef = useRef(null);
@@ -121,7 +121,7 @@ export default function MapIndex2({
                 // Define layer list widget
                 layerListRef.current = new LayerList({
                     view: viewRef.current,
-                    //container: 'layerListContainer',
+                    container: 'layerListContainer',
                     listItemCreatedFunction: function(event) {
                         const item = event.item;
                         if (item.layer.type !== 'group') {
@@ -133,17 +133,6 @@ export default function MapIndex2({
                         }
                     }
                 });
-
-                // Define expand widget for layer list
-                expandLayerListRef.current = new Expand({
-                    expandIconClass: '',
-                    view: viewRef.current,
-                    content: layerListRef.current,
-                    expanded: false
-                })
-
-                // Add layer list
-                viewRef.current.ui.add(layerListRef.current, 'top-right');
 
                 // Define basemap gallery widget
                 // List of basemap ids: https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap
@@ -363,11 +352,13 @@ export default function MapIndex2({
                     if (addedSites.length > 0) { 
                         addSiteHighlight(layer, addedSites[0]); 
                     } 
-                    setTimeout(() => {
-                        if (removedSites.length > 0) {
+                    if (removedSites.length > 0) {
+                        // Delay removal of highlight a little bit due to an issue with ArcGIS JS where the highlight will flash twice before being removed. I think this is because it is trying to perform both operations (add + remove) simultaneously
+                        setTimeout(() => {
                             removeSiteHighlight(layer, removedSites);
-                        }
-                    }, 300);
+                        }, 250)
+                        
+                    }
                     selectedSitesRef.current = selectedSites;
                 });
             } else {

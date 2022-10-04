@@ -5,22 +5,30 @@ import { matrixColor } from '../../constants/constants-app';
 import { tagBox, tagWrapper } from './matrix-tag.module.css';
 
 export default function MatrixTag({ matrix }) {
+    const benthicColor = matrixColor['benthic'];
     const sedimentColor = matrixColor['sediment'];
     const waterColor = matrixColor['samplewater'];
+    const otherColor = '#0f4c5c';
 
-    console.log(matrix);
-
-    const tagColor = () => {
-        if (matrix === 'sediment') {
-            return sedimentColor;
-        } else if (matrix === 'samplewater') {
-            return waterColor;
+    const tagColor = (matrix) => {
+        switch (matrix) {
+            case 'samplewater':
+                return waterColor;
+                break;
+            case 'sediment':
+                return sedimentColor;
+                break;
+            case 'benthic':
+                return benthicColor;
+                break;
+            default:
+                return otherColor;
         }
     }
 
     return (
         <div className={tagWrapper}>
-            <div className={tagBox} style={{ backgroundColor: `${tagColor()}` }}>
+            <div className={tagBox} style={{ backgroundColor: `${tagColor(matrix)}` }}>
                 {matrix}
             </div>
         </div>

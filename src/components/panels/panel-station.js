@@ -54,8 +54,9 @@ export default function PanelStation({
                     </div>
                 </div>
                 <section className={chartSection}>
-                    { analyte ? 
-                    // Show chart if an analyte is selected
+                    { station && analyte ? 
+                    // Check for both station and analyte before trying to draw chart
+                    // this will try to render if analyte is selected but station is not
                     <ChartContainer station={station.StationCode} analyte={analyte} />
                     // Show nothing if an analyte is not selected
                     : null }
