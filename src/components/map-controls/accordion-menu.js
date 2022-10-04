@@ -133,6 +133,7 @@ export default function AccordionMenu({
 
     const updateProgramList = (data) => {
         if (data) {
+            console.log(data);
             let programOptions = [];
             // Work on a subset of the fields for better performance and simplicity
             const programRecords = data.map(d => {
@@ -207,6 +208,7 @@ export default function AccordionMenu({
         if (allAnalyteCombosRef.current) {
             // Get new data based on user selection
             let newData = allAnalyteCombosRef.current;
+            console.log(newData);
             if (program) {
                 newData = newData.filter(d => d[capitalizeFirstLetter(program)] === 'True')
             }
@@ -220,6 +222,7 @@ export default function AccordionMenu({
                 newData = newData.filter(d => d.Analyte === analyte.value);
                 newData = newData.filter(d => d.MatrixDisplay === analyte.matrix);
             }
+            console.log(newData);
             // Update select menu lists
             if (updateAnalyte) {
                 updateAnalyteList(newData);
