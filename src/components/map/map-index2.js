@@ -61,6 +61,11 @@ export default function MapIndex2({
             stationLayerRef.current.applyEdits({
                 addFeatures: newFeatures,
             });
+            /*
+            setTimeout(() => {
+                setMapLoaded(true);
+            }, 500)
+            */
         });
     }
 
@@ -94,6 +99,15 @@ export default function MapIndex2({
                             buttonEnabled: false
                         },
                         collapseEnabled: false,
+                    }
+                });
+
+                // Controls loading indicator
+                viewRef.current.watch('updating', (evt) => {
+                    if (evt === true) {
+                      setMapLoaded(false);
+                    } else {
+                      setMapLoaded(true);
                     }
                 });
 
@@ -356,7 +370,7 @@ export default function MapIndex2({
                         // Delay removal of highlight a little bit due to an issue with ArcGIS JS where the highlight will flash twice before being removed. I think this is because it is trying to perform both operations (add + remove) simultaneously
                         setTimeout(() => {
                             removeSiteHighlight(layer, removedSites);
-                        }, 250)
+                        }, 500)
                         
                     }
                     selectedSitesRef.current = selectedSites;

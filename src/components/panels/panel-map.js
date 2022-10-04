@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import LoaderPanel from '../common/loader-panel';
 import MapIndex2 from '../map/map-index2';
 import PanelMapMenu from '../panel-menu/panel-map-menu';
-import Table from '../table/table';
 import Table2 from '../table/table2';
 
 import { content } from './panel-map.module.css';
@@ -14,7 +14,8 @@ const tableContainerStyle = {
 }
 
 export default function PanelMap({ 
-    analyte, 
+    analyte,
+    mapLoaded,
     program,
     region, 
     selectedSites,
@@ -37,6 +38,7 @@ export default function PanelMap({
                 view={view}
             />
             <div style={view !== 'map' ? { display: 'none' } : null }>
+                { !mapLoaded ? <LoaderPanel /> : null }
                 <MapIndex2 
                     analyte={analyte} 
                     program={program}
