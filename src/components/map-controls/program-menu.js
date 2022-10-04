@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 //import { navigate, withPrefix } from 'gatsby';
+import MenuLoader from './menu-loader';
+
 import Select from 'react-select';
 import { customSelectStyle, programDict } from '../../utils/utils';
 
@@ -34,19 +36,25 @@ export default function ProgramMenu({ program, programList, setProgram }) {
         }
     }, [programList]);
 
-    return (
-        <React.Fragment>
-            <Select
-                options={programList} 
-                isClearable={true}
-                isLoading={loading}
-                isSearchable={true}
-                placeholder='Program'
-                onChange={handleChange}
-                styles={customSelectStyle}
-                maxMenuHeight={200}
-                value={selected}
-            />
-        </React.Fragment>
-    )
+    if (loading === true) {
+        return (
+            <MenuLoader />
+        )
+    } else {
+        return (
+            <React.Fragment>
+                <Select
+                    options={programList} 
+                    isClearable={true}
+                    isLoading={loading}
+                    isSearchable={true}
+                    placeholder='Program'
+                    onChange={handleChange}
+                    styles={customSelectStyle}
+                    maxMenuHeight={200}
+                    value={selected}
+                />
+            </React.Fragment>
+        )
+    }
 }
