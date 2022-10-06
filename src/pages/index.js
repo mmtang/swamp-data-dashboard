@@ -205,6 +205,7 @@ export default function Index() {
       />
       <PanelStation 
         station={station} 
+        setSelectedSites={setSelectedSites}
         setStation={setStation} 
         analyte={analyte} 
         setZoomToStation={setZoomToStation}

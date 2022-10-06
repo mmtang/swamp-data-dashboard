@@ -1,4 +1,5 @@
 import React from 'react';
+import MatrixTag from '../common/matrix-tag';
 import TrendHelpIcon from '../common/trend-help-icon';
 import DataTable from 'react-data-table-component';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
@@ -36,10 +37,21 @@ export default function StationTable({ data, setSelectedAnalytes }) {
         )
     }
 
+    console.log(data);
+
     const columns = [
         {
-            id: 'indicator',
-            name: 'Indicator',
+            id: 'matrix',
+            name: 'Matrix',
+            selector: row => row['MatrixDisplay'],
+            width: '122px',
+            wrap: true,
+            sortable: true,
+            format: row => <MatrixTag matrix={row['MatrixDisplay']} />
+        },
+        {
+            id: 'parameter',
+            name: 'Parameter',
             selector: row => row['Analyte'],
             width: '180px',
             wrap: true,
@@ -56,19 +68,19 @@ export default function StationTable({ data, setSelectedAnalytes }) {
         },
         {
             id: 'lastDate',
-            name: 'Last Sample Date',
+            name: 'Last Sample',
             selector: row => row['LastSampleDate'],
-            width: '140px',
+            width: '130px',
             sortable: true,
             right: true
         },
         {
             id: 'lastResult',
             name: 'Last Result',
-            selector: row => row['LastResult'] + ' ' + row['Unit'],
+            selector: row => row['ResultDisplay'] + ' ' + row['Unit'],
             width: '145px',
             sortable: false,
-            format: row => row['LastResult'].toLocaleString() + ' ' + row['Unit'],
+            format: row => row['ResultDisplay'].toLocaleString() + ' ' + row['Unit'],
             right: true
         },
         /*
@@ -100,15 +112,6 @@ export default function StationTable({ data, setSelectedAnalytes }) {
             right: true
         },
         {
-            id: 'median',
-            name: 'Median',
-            selector: row => row['Median'],
-            width: '84px',
-            sortable: false,
-            format: row => row['Median'].toLocaleString(),
-            right: true
-        },
-        {
             id: 'max',
             name: 'Max',
             selector: row => row['Max'],
@@ -120,7 +123,14 @@ export default function StationTable({ data, setSelectedAnalytes }) {
     ];
 
     const handleSelectionUpdate = (rows) => {
-        const newSelection = rows.selectedRows.map(d => d.Analyte);
+        const newSelection = rows.selectedRows.map((d) => {
+            return {
+                Analyte: d.Analyte,
+                Matrix: d.MatrixDisplay,
+                Source: d.Source,
+                Key: d.Analyte + ' ' + d.MatrixDisplay
+            }
+        });
         setSelectedAnalytes(newSelection);
     };
     
@@ -128,8 +138,9 @@ export default function StationTable({ data, setSelectedAnalytes }) {
         <div className={tableWrapper}>
             <DataTable 
                 columns={columns} 
-                data={data} 
                 customStyles={customStyles}
+                data={data} 
+                fixedHeader
                 highlightOnHover
                 selectableRows
                 selectableRowsHighlight

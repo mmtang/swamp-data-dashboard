@@ -11,6 +11,7 @@ import { buttonContainer, buttonGrid, chartSection, iconContainer, infoSubText, 
 
 export default function PanelStation({ 
     analyte,
+    setSelectedSites,
     setStation, 
     setZoomToStation,
     station
@@ -36,7 +37,7 @@ export default function PanelStation({
                         <Icon name='map marker' color='grey' />
                         <span className={stationSubText}>Monitoring Station</span>
                     </div>
-                    <ButtonClearStation setStation={setStation} />
+                    <ButtonClearStation setSelectedSites={setSelectedSites} setStation={setStation} />
                 </div>
                 <h2 className={stationHeader}>{station ? station.StationName: null}</h2>
                 <span className={infoSubText}>

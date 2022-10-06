@@ -20,8 +20,7 @@ export default function Station(props) {
     const errorRef = useRef(null);
 
     const [loading, setLoading] = useState('true');
-    const [tableDataWq, setTableDataWq] = useState([]);
-    const [tableDataTox, setTableDataTox] = useState([]);
+    const [tableData, setTableData] = useState(null);
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
@@ -29,56 +28,76 @@ export default function Station(props) {
 
     const parseStationCode = () => {
         return new Promise((resolve, reject) => {
-            const url = props.location.href;
-            // Use regex to get the station code from the page URL
-            const re = new RegExp(/stations\/\?id=([a-zA-Z0-9-_]+)$/i);
-            const matches = url.match(re);
-            // Match returns null if no matches are found
-            // If a match is found, get the second array item [1] (capturing group), not the first [0] array item (complete matching regular expression))
-            if (matches) {
-                stationCodeRef.current = matches[1];
-                resolve();
+            const params = new URLSearchParams(document.location.search);
+            const stationCode = params.get('id');
+            if (stationCode) {
+                stationCodeRef.current = stationCode;
+                resolve(stationCode);
             } else {
                 console.error('Error parsing station code');
                 errorRef.current = 'Error: Not a valid station code.'
                 setLoading('error');
-            }
+            };
+        });
+    };
+
+    const getStationInfo = (stationCode) => {
+        return new Promise((resolve, reject) => {
+            if (stationCode) {
+                let url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
+                const params = {
+                    sql: `SELECT "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region" FROM "df69fdd7-1475-4e57-9385-bb1514f0291e" WHERE "StationCode"='${stationCode}'`
+                };
+                console.log(url + new URLSearchParams(params));
+                fetch(url + new URLSearchParams(params))
+                .then((resp) => resp.json())
+                .then((json) => json.result.records)
+                .then((records) => {
+                    if (records) {
+                        records.forEach(d => {
+                            d.RegionName = regionDict[d.Region];
+                            d.TargetLatitude = +d.TargetLatitude;
+                            d.TargetLongitude = +d.TargetLongitude;
+                        });
+                        // Define stationObjRef to populate station values on page
+                        stationObjRef.current = records[0];
+                        resolve();
+                    } else {
+                        console.error('Error getting station information');
+                    errorRef.current = 'Error: Could not retrieve station information.'
+                    setLoading('error');
+                    }
+                });
+            };
         })
     }
 
-    const getTableDataWq = () => {
+    const getData = (params, source) => {
         return new Promise((resolve, reject) => {
-            if (stationCodeRef.current) {
-                //let url = 'https://data.ca.gov/api/3/action/datastore_search?resource_id=555ee3bf-891f-4ac4-a1fc-c8855cf70e7e&limit=1000&fields=StationCode,StationName,Region,Analyte,LastSampleDate,LastResult,Unit,Min,Max,Median,Mean,Trend,NumResults,TargetLatitude,TargetLongitude';
-                //url += '&filters={%22StationCode%22:%22' + encodeURIComponent(stationCodeRef.current) + '%22}';
-                let url = `https://data.ca.gov/api/3/action/datastore_search_sql?sql=SELECT DISTINCT ON ("Analyte", "MatrixName") "StationCode", "Analyte", "MatrixName", MAX("SampleDate") OVER (PARTITION BY "StationCode", "Analyte", "MatrixName") as MaxSampleDate, "ResultDisplay", "Unit", COUNT("Analyte") OVER (PARTITION BY "StationCode", "Analyte", "MatrixName"), AVG("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixName") as AvgResult, MIN("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixName") as MinResult, MAX("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixName") as MaxResult FROM "8d5331c8-e209-4ec0-bf1e-2c09881278d4" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" in ('Passed', 'Some review needed', 'Spatial accuracy unknown', 'Unknown data quality', 'Extensive review needed') ORDER BY "Analyte", "MatrixName", "SampleDate" DESC`;
-                fetchData(url)
+            if (params) {
+                const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
+                console.log(url + new URLSearchParams(params));
+                fetchData(url + new URLSearchParams(params))
                 .then(json => json.result.records)
                 .then(records => {
                     if (records.length > 0) {
                         records.forEach(d => {
-                            d.Min = +d.minresult.toFixed(2);
-                            d.Mean = +d.avgresult.toFixed(2);
-                            d.Max = +d.maxresult.toFixed(2);
+                            d.NumResults = +d.count;
+                            d.Min = parseFloat((+d.minresult).toFixed(2));
+                            d.Mean = parseFloat((+d.avgresult).toFixed(2));
+                            d.Max = parseFloat((+d.maxresult).toFixed(2));
                             d.Unit = (d.Analyte === 'pH' ? '' : d.Unit);
                             d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
-                            d.TargetLatitude = +d.TargetLatitude;
-                            d.TargetLongitude = +d.TargetLongitude;
-                            d.RegionName = regionDict[d.Region];
+                            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(2));
+                            d.Source = source;
                         });
-                        // Define stationObjRef to populate station values on page
-                        stationObjRef.current = records[0];
-                        setTableDataWq(records);
-                        resolve();
-                    } else {
-                        errorRef.current = `No data available. Check the Station ID or try again later.`;
-                        setLoading('error');
                     }
+                    resolve(records);
                 })
                 .catch(error => {
                     console.error(error);
-                    errorRef.current = 'Error getting station data. Reload or try again later.'
-                    setLoading('error');
+                    //errorRef.current = 'Error getting station data. Reload or try again later.'
+                    //setLoading('error');
                 });
             }
         })
@@ -86,8 +105,34 @@ export default function Station(props) {
 
     useEffect(() => {
         parseStationCode()
-            .then(() => getTableDataWq())
-            .then(() => setLoading('false'));
+            .then((stationCode) => getStationInfo(stationCode))
+            .then(() => {
+                // Chemistry
+                const chemParams = { 
+                    resource_id: '2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e', 
+                    sql: `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "Analyte", "MatrixDisplay") as MaxSampleDate, "ResultDisplay", "Unit", COUNT("Analyte") OVER (PARTITION BY "StationCode", "Analyte", "MatrixDisplay"), AVG("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay") as AvgResult, MIN("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay") as MinResult, MAX("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay") as MaxResult FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "Analyte", "MatrixDisplay", "SampleDate" DESC` 
+                }
+                // Habitat
+                const habitatParams = { 
+                    resource_id: '6d9a828a-d539-457e-922c-3cb54a6d4f9b', 
+                    sql: `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "Analyte", "MatrixDisplay") as MaxSampleDate, "ResultDisplay", "Unit", COUNT("Analyte") OVER (PARTITION BY "StationCode", "Analyte", "MatrixDisplay"), AVG("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay") as AvgResult, MIN("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay") as MinResult, MAX("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay") as MaxResult FROM "6d9a828a-d539-457e-922c-3cb54a6d4f9b" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "Analyte", "MatrixDisplay", "SampleDate" DESC` 
+                }
+                // Toxicity
+                const toxParams = {
+                    resource_id: 'a6dafb52-3671-46fa-8d42-13ddfa36fd49',
+                    sql: `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "Analyte", "MatrixDisplay") as MaxSampleDate, "ResultDisplay", "Unit", COUNT("Analyte") OVER (PARTITION BY "StationCode", "Analyte", "MatrixDisplay"), AVG("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay") as AvgResult, MIN("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay") as MinResult, MAX("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay") as MaxResult FROM "a6dafb52-3671-46fa-8d42-13ddfa36fd49" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "Analyte", "MatrixDisplay", "SampleDate" DESC` 
+                }
+                // Send all API data requests
+                Promise.all([
+                    getData(chemParams, 'chemistry'),
+                    getData(habitatParams, 'habitat'),
+                    getData(toxParams, 'toxicity')
+                ]).then((res) => {
+                    const allRecords = res[0].concat(res[1], res[2]);
+                    setTableData(allRecords);
+                    setLoading('false');
+                });
+            });
     }, []);
 
     const pageContent = () => {
@@ -111,8 +156,8 @@ export default function Station(props) {
                     </div>
                     <div className={rightContainer}>
                         <section>
-                            <h2>Water quality data and trends</h2>
-                            <p>Use the table below to view a summary of the water quality data collected at this SWAMP monitoring station. For a more detailed view of the data, select an indicator or indicators and click the "Graph data for selected indicators" button below.</p>
+                            <h2>Explore station data</h2>
+                            <p>The table below offers a summary of the data collected at this SWAMP monitoring station. For a more detailed view of the data, select a parameter or multiple parameters and click the "Graph data" button below.</p>
                         </section>
                         <section>
                             <div className={buttonContainer}>
@@ -122,7 +167,7 @@ export default function Station(props) {
                                     selectedAnalytes={selectedAnalytes} 
                                 />
                                 <DownloadData 
-                                    data={tableDataWq}
+                                    data={tableData}
                                     fields={['StationCode', 'StationName', 'RegionName', 'TargetLatitude', 'TargetLongitude', 'Analyte', 'NumResults', 'LastSampleDate', 'LastResult', 'Unit', 'Trend', 'Min', 'Mean', 'Median', 'Max']}
                                 >
                                     Download table data
@@ -130,7 +175,7 @@ export default function Station(props) {
                             </div>
                             <StationTable 
                                 station={stationObjRef.current.StationCode} 
-                                data={tableDataWq}
+                                data={tableData}
                                 setSelectedAnalytes={setSelectedAnalytes}
                             />
                         </section>

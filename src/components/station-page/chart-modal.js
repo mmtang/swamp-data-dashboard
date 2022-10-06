@@ -27,7 +27,7 @@ export default function ChartModal({ station, stationName, selectedAnalytes }) {
                 onKeyPress={handleClick}
             >
                 <Icon name='chart bar' />
-                Graph data for selected indicators {selectedAnalytes.length > 0 ? `(${selectedAnalytes.length})` : '(0)' }
+                Graph data {selectedAnalytes.length > 0 ? `(${selectedAnalytes.length})` : '(0)' }
             </Button>
             { modalVisible ? 
                 <Modal
