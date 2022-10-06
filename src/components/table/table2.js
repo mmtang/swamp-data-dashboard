@@ -14,12 +14,10 @@ export default function Table2({ setStation, stationData }) {
     const containerRef = useRef(null)
 
     const [loading, setLoading] = useState(false)
-    const [height, setHeight] = useState(0);
+    // const [height, setHeight] = useState(0);
     const [sortColumn, setSortColumn] = useState('LastSampleDate');
     const [sortType, setSortType] = useState('desc')
-    const [width, setWidth] = useState(0);
-
-    console.log(stationData);
+    // const [width, setWidth] = useState(0);
 
     /*
     useEffect(() => {

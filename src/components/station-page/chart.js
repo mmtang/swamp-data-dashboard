@@ -40,7 +40,7 @@ export default function Chart({ analyte, data, dateExtent }) {
     }
 
     const drawChart = () => {
-        const margin = { top: 20, right: 40, bottom: 30, left: 55 };
+        const margin = { top: 30, right: 40, bottom: 30, left: 55 };
         // get container + svg aspect ratio
         const container = d3.select('#' + chartId).node();
         const targetWidth = parseInt(container.getBoundingClientRect().width);
