@@ -129,7 +129,7 @@ export default function AnalyteMenu({ analyte, analyteList, category, categoryLi
         }
     }
 
-    const handleSelectChange = (selection) => {
+    const handleAnalyteChange = (selection) => {
         // If there is a selection, the passed object is formatted as { label: 'fhab', value: 'fhab'}
         if (selection) {
             console.log(selection);
@@ -175,7 +175,7 @@ export default function AnalyteMenu({ analyte, analyteList, category, categoryLi
                     isLoading={loadingAnalyte}
                     isSearchable={true}
                     placeholder='Parameter'
-                    onChange={handleSelectChange}
+                    onChange={handleAnalyteChange}
                     styles={customSelectStyle}
                     maxMenuHeight={200}
                     formatOptionLabel={formatOptionLabel}
