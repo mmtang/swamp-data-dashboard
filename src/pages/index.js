@@ -23,6 +23,11 @@ export default function Index() {
   const [stationData, setStationData] = useState(null);
   const [zoomToStation, setZoomToStation] = useState(false);
 
+  const chemistryResourceId = '2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e';
+  const habitatResourceId = '6d9a828a-d539-457e-922c-3cb54a6d4f9b';
+  const toxicityResourceId = 'a6dafb52-3671-46fa-8d42-13ddfa36fd49';
+  
+
   const getAllStations = () => {
     return new Promise((resolve, reject) => {
       const params = {
@@ -75,14 +80,14 @@ export default function Index() {
     if (!analyte) {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultDisplay", "Unit" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "${ resource === toxicityResourceId ? 'MeanDisplay' : 'ResultDisplay' }", "Unit" FROM "${resource}"`;
     };
     if (analyte || program || region) {
         // This block constucts the "WHERE" part of the select query
         // There can be one or more filters
         const whereStatements = [];
         if (analyte) {
-          whereStatements.push(`"Analyte" = '${analyte.value}'`);
+          whereStatements.push(`"Analyte" = '${analyte.label}'`);
           whereStatements.push(`"MatrixName" = '${analyte.matrix}'`);
         }
         if (program) {
@@ -119,9 +124,9 @@ export default function Index() {
     if (!program && !region && !analyte) {
       setStationData(allStationRef.current);
     } else {
-      const paramsChem = createParams('2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e');
-      const paramsHabitat = createParams('6d9a828a-d539-457e-922c-3cb54a6d4f9b');
-      const paramsTox = createParams('a6dafb52-3671-46fa-8d42-13ddfa36fd49');
+      const paramsChem = createParams(chemistryResourceId);
+      const paramsHabitat = createParams(habitatResourceId);
+      const paramsTox = createParams(toxicityResourceId);
       Promise.all([
         // Chemistry dataset
         getStations(paramsChem),

@@ -10,6 +10,7 @@ import { capitalizeFirstLetter, programDict, regionDict } from '../../utils/util
 
 import { analyteWrapper, customAccordion, customTitle, leadingIcon, pLabel, titleWrapper} from './accordion-menu.module.css';
 
+
 // This component generates the structure for the accordion menu on the explore_data index page
 // It calls upon other componenets to fill the content for each panel
 export default function AccordionMenu({ 
@@ -95,16 +96,14 @@ export default function AccordionMenu({
             const analyteRecords = data.map(d => {
                 return { 
                     label: d.Analyte, 
-                    value: d.Analyte, 
+                    value: d.Analyte + '$' + d.MatrixDisplay, 
                     matrix: d.MatrixDisplay, 
-                    category: d.AnalyteGroup1,
-                    // Create a unique key, used to find unique values based on analyte name and matrix name
-                    combinedKey: d.Analyte + '$' + d.MatrixDisplay  
+                    category: d.AnalyteGroup1
                 }
             })
             // Get unique objects from an array of objects based on object attribute value
             // https://yagisanatode.com/2021/07/03/get-a-unique-list-of-objects-in-an-array-of-object-in-javascript/
-            const uniqueAnalytes = [...new Map(analyteRecords.map((item) => [item['combinedKey'], item])).values(),];
+            const uniqueAnalytes = [...new Map(analyteRecords.map((item) => [item['value'], item])).values(),];
             setAnalyteList(uniqueAnalytes);
         } else {
             console.error('Empty or null data');
@@ -215,7 +214,7 @@ export default function AccordionMenu({
                 newData = newData.filter(d => d.AnalyteGroup1 === category);
             }
             if (analyte) {
-                newData = newData.filter(d => d.Analyte === analyte.value);
+                newData = newData.filter(d => d.Analyte === analyte.label);
                 newData = newData.filter(d => d.MatrixDisplay === analyte.matrix);
             }
             console.log(newData);

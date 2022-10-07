@@ -507,7 +507,7 @@ export const toxicityDataFields = [
     //'UpstreamLength',
     //'DownstreamLength',
     //'TotalReach',
-    //'Probability',
+    'Probability',
     'PercentEffect',
     'SampleID',
     'SampleTypeType',

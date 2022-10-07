@@ -143,7 +143,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         // Filter for records that meet data quality requirements
                         records.forEach(d => {
                             d.SampleDate = parseDate(d.SampleDate);
-                            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(3));
+                            d.ResultDisplay = parseFloat((+d.MeanDisplay).toFixed(3));
                             d.Censored = false;  // Convert string to boolean
                         });
                         resolve(records);
