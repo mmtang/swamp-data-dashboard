@@ -1,12 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import LayoutMap from '../components/layout/layout-map';
-import LoaderDashboard from '../components/common/loader-dashboard';
 import Metadata from '../components/layout/metadata';
 import PanelIndex from '../components/panels/panel-index';
 import PanelMap from '../components/panels/panel-map';
 import PanelStation from '../components/panels/panel-station';
 
-import { capitalizeFirstLetter, formatDate, parseDate, regionDict } from '../utils/utils';
+import { 
+  capitalizeFirstLetter, 
+  chemistryResourceId,
+  formatDate, 
+  habitatResourceId,
+  parseDate, 
+  regionDict,
+  toxicityResourceId
+} from '../utils/utils';
 import { mapContainer } from './index.module.css';
 
 export default function Index() {
@@ -18,15 +25,11 @@ export default function Index() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [program, setProgram] = useState(null);
   const [region, setRegion] = useState(null);
-  const [selectedSites, setSelectedSites] = useState([]);
+  const [comparisonSites, setComparisonSites] = useState([]);
+  const [selecting, setSelecting] = useState(false);
   const [station, setStation] = useState(null);
   const [stationData, setStationData] = useState(null);
   const [zoomToStation, setZoomToStation] = useState(false);
-
-  const chemistryResourceId = '2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e';
-  const habitatResourceId = '6d9a828a-d539-457e-922c-3cb54a6d4f9b';
-  const toxicityResourceId = 'a6dafb52-3671-46fa-8d42-13ddfa36fd49';
-  
 
   const getAllStations = () => {
     return new Promise((resolve, reject) => {
@@ -108,7 +111,6 @@ export default function Index() {
         querySql += concat;
         querySql += ` ORDER BY "StationCode", "SampleDate" DESC`
     }
-    console.log(querySql);
     return { resource_id: resource, sql: querySql };
   }
 
@@ -185,12 +187,15 @@ export default function Index() {
           mapLoaded={mapLoaded}
           program={program}
           region={region}
-          selectedSites={selectedSites}
+          comparisonSites={comparisonSites}
+          selecting={selecting}
           setMapLoaded={setMapLoaded}
-          setSelectedSites={setSelectedSites}
+          setComparisonSites={setComparisonSites}
+          setSelecting={setSelecting}
           setStation={setStation}
           setStationData={setStationData}
           setZoomToStation={setZoomToStation}
+          station={station}
           stationData={stationData}
           zoomToStation={zoomToStation}
         />
@@ -209,10 +214,13 @@ export default function Index() {
         station={station}
       />
       <PanelStation 
-        station={station} 
-        setSelectedSites={setSelectedSites}
+        comparisonSites={comparisonSites}
+        setComparisonSites={setComparisonSites}
         setStation={setStation} 
+        station={station} 
         analyte={analyte} 
+        selecting={selecting}
+        setSelecting={setSelecting}
         setZoomToStation={setZoomToStation}
       />
       {/*

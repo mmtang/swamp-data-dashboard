@@ -132,7 +132,6 @@ export default function AnalyteMenu({ analyte, analyteList, category, categoryLi
     const handleAnalyteChange = (selection) => {
         // If there is a selection, the passed object is formatted as { label: 'fhab', value: 'fhab'}
         if (selection) {
-            console.log(selection);
             setAnalyte(selection);
         } else {
             setAnalyte(null);

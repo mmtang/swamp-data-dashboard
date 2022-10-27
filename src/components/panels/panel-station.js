@@ -2,16 +2,19 @@ import React from 'react';
 import ButtonClearStation from '../common/button-clear-station';
 import ButtonExploreData from '../common/button-explore-data';
 import ButtonZoomStation from '../common/button-zoom-station';
-import ChartContainer from '../spot/chart-container';
+import PanelStationInfo from './panel-station-info';
 
 import { Icon } from 'semantic-ui-react';
 
 import { mainContainer, infoContainer } from '../../pages/index.module.css';
-import { buttonContainer, buttonGrid, chartSection, iconContainer, infoSubText, stationCover, stationHeader, stationSubText, topContainer } from './panel-station.module.css';
+import { buttonContainer, buttonGrid, contentSection, iconContainer, infoSubText, stationCover, stationHeader, stationSubText, topContainer } from './panel-station.module.css';
 
 export default function PanelStation({ 
     analyte,
-    setSelectedSites,
+    comparisonSites,
+    selecting,
+    setComparisonSites,
+    setSelecting,
     setStation, 
     setZoomToStation,
     station
@@ -37,7 +40,7 @@ export default function PanelStation({
                         <Icon name='map marker' color='grey' />
                         <span className={stationSubText}>Monitoring Station</span>
                     </div>
-                    <ButtonClearStation setSelectedSites={setSelectedSites} setStation={setStation} />
+                    <ButtonClearStation setComparisonSites={setComparisonSites} setStation={setStation} />
                 </div>
                 <h2 className={stationHeader}>{station ? station.StationName: null}</h2>
                 <span className={infoSubText}>
@@ -54,13 +57,25 @@ export default function PanelStation({
                         />
                     </div>
                 </div>
-                <section className={chartSection}>
-                    { station && analyte ? 
-                    // Check for both station and analyte before trying to draw chart
-                    // this will try to render if analyte is selected but station is not
-                    <ChartContainer station={station.StationCode} analyte={analyte} />
-                    // Show nothing if an analyte is not selected
+                <section className={contentSection}>
+                    { station ? 
+                        <PanelStationInfo 
+                            analyte={analyte}
+                            comparisonSites={comparisonSites}
+                            selecting={selecting}
+                            setComparisonSites={setComparisonSites}
+                            setSelecting={setSelecting}
+                            station={station} 
+                        />
                     : null }
+                    {/*
+                    { station && analyte ? 
+                        // Check for both station and analyte before trying to draw chart
+                        // this will try to render if analyte is selected but station is not
+                        <ChartContainer station={station.StationCode} analyte={analyte} />
+                        // Show nothing if an analyte is not selected
+                    : null }
+                    */}
                 </section>
             </div>
         </div>

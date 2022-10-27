@@ -8,7 +8,7 @@ export default function LoaderPanel({ children }) {
             zIndex: 900,
             position: 'fixed',
             top: '110px',
-            width: '60vw',
+            width: '65vw',
             height: 'calc(100vh - 110px)',
             backgroundColor: 'rgba(0, 0, 0, 0.5)'
     }

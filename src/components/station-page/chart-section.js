@@ -9,6 +9,7 @@ import MessageDismissible from '../common/message-dismissible';
 import { Icon } from 'semantic-ui-react';
 import { timeParse, extent } from 'd3';
 import { analytes, chemDataFields, habitatDataFields, toxicityDataFields } from '../../constants/constants-data';
+import { chemistryResourceId, habitatResourceId, toxicityResourceId } from '../../utils/utils';
 
 import { sectionContainer, analyteHeader, analyteTitle } from './chart-section.module.css';
 
@@ -86,9 +87,6 @@ export default function ChartSection({ station, selectedAnalytes }) {
 
     const getData = (station, analyte, matrix, source) => {
         return new Promise((resolve, reject) => {
-            const chemistryResourceId = '2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e';
-            const habitatResourceId = '6d9a828a-d539-457e-922c-3cb54a6d4f9b';
-            const toxicityResourceId = 'a6dafb52-3671-46fa-8d42-13ddfa36fd49';
             const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
             // Get data from the chemistry dataset
             if (source === 'chemistry') {
@@ -140,7 +138,6 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     .then(resp => resp.json())
                     .then(json => json.result.records)
                     .then(records => {
-                        // Filter for records that meet data quality requirements
                         records.forEach(d => {
                             d.SampleDate = parseDate(d.SampleDate);
                             d.ResultDisplay = parseFloat((+d.MeanDisplay).toFixed(3));

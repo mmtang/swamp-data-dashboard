@@ -46,9 +46,9 @@ export default function AccordionMenu({
                 sql: `SELECT DISTINCT ON ("Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "a6dafb52-3671-46fa-8d42-13ddfa36fd49"`
             }
             Promise.all([
-                getData(chemParams),
-                getData(habitatParams),
-                getData(toxParams)
+                getData(chemParams, 'chemistry'),
+                getData(habitatParams, 'habitat'),
+                getData(toxParams, 'toxicity')
             ]).then((res) => {
                 const allOptions = res[0].concat(res[1], res[2]);
                 allOptions.forEach(d => {
@@ -60,7 +60,7 @@ export default function AccordionMenu({
         });
     }
 
-    const getData = (params) => {
+    const getData = (params, dataSource) => {
         return new Promise((resolve, reject) => {
             const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
             //console.log(url + new URLSearchParams(params));
@@ -68,7 +68,10 @@ export default function AccordionMenu({
             .then((resp) => resp.json())
             .then((json) => json.result.records)
             .then((records) => {
-              resolve(records);
+                records.forEach(d => {
+                    d.Source = dataSource;
+                });
+                resolve(records);
             });
         })
     }
@@ -98,7 +101,8 @@ export default function AccordionMenu({
                     label: d.Analyte, 
                     value: d.Analyte + '$' + d.MatrixDisplay, 
                     matrix: d.MatrixDisplay, 
-                    category: d.AnalyteGroup1
+                    category: d.AnalyteGroup1,
+                    source: d.Source
                 }
             })
             // Get unique objects from an array of objects based on object attribute value
@@ -128,7 +132,6 @@ export default function AccordionMenu({
 
     const updateProgramList = (data) => {
         if (data) {
-            console.log(data);
             let programOptions = [];
             // Work on a subset of the fields for better performance and simplicity
             const programRecords = data.map(d => {
