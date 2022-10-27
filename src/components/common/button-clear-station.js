@@ -2,10 +2,10 @@ import React from 'react';
 import { Icon } from 'semantic-ui-react';
 import { container, outerContainer } from './button-clear.module.css';
 
-export default function ButtonClearStation({ setSelectedSites, setStation }) {   
+export default function ButtonClearStation({ setComparisonSites, setStation }) {   
     const handleClick = () => {
         setStation(null);
-        setSelectedSites([]);  // Clear selected sites array to remove highlight on map
+        setComparisonSites([]);  
     }
 
     return (

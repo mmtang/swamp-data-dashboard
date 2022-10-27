@@ -18,12 +18,15 @@ export default function PanelMap({
     mapLoaded,
     program,
     region, 
-    selectedSites,
+    comparisonSites,
+    selecting,
     setMapLoaded,
-    setSelectedSites,
+    setComparisonSites,
+    setSelecting,
     setStation,
     setStationData,
     setZoomToStation,
+    station,
     stationData,
     zoomToStation
 }) {   
@@ -43,18 +46,23 @@ export default function PanelMap({
                     analyte={analyte} 
                     program={program}
                     region={region} 
-                    selectedSites={selectedSites}
+                    comparisonSites={comparisonSites}
+                    selecting={selecting}
                     setMapLoaded={setMapLoaded}
-                    setSelectedSites={setSelectedSites}
+                    setComparisonSites={setComparisonSites}
+                    setSelecting={setSelecting}
                     setStation={setStation}
                     setStationData={setStationData}
                     setZoomToStation={setZoomToStation}
+                    station={station}
                     stationData={stationData}
                     zoomToStation={zoomToStation}
                 />
             </div>
             <div style={view !== 'table' ? { display: 'none' } : tableContainerStyle }>
                 <Table2
+                    comparisonSites={comparisonSites}
+                    setComparisonSites={setComparisonSites}
                     setStation={setStation}
                     stationData={stationData} 
                 />

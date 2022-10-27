@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
 
@@ -10,7 +10,7 @@ import { tableContainer } from './table.module.css';
 // It makes use of the react-data-table-component library
 // https://github.com/jbetancur/react-data-table-component
 
-export default function Table2({ setStation, stationData }) {
+export default function Table2({ comparisonSites, setComparisonSites, setStation, stationData }) {
     const containerRef = useRef(null)
 
     const [loading, setLoading] = useState(false)
@@ -25,6 +25,24 @@ export default function Table2({ setStation, stationData }) {
         setHeight(containerRef.current.parentElement.offsetHeight);
     }, []);
     */
+
+    // This function checks if a station is already in the selected sites array;
+    // If it does not already exist, then it adds the new value to the state array
+    const addToComparisonList = (stationCode) => {
+        if (stationCode) {
+            setComparisonSites(comparisonSites => {
+                // Ideally we would put this conditional statement outside (and just before) the set state function, but doing that would give us an stale, empty state array because the value is based off what it is when the function is initiated. Using this anonymous function is the only way I've tried that gives the correct, updated state array
+                if (comparisonSites.indexOf(stationCode) === -1) {
+                    return new Array(stationCode);
+                    // Change the above line to the one below to keep track of multiple selections
+                    // return [...comparisonSites, stationCode];
+                } else {
+                    // Even though we are returning a new value, state does not update because the new array is unchanged from the current array
+                    return comparisonSites;
+                }
+            });
+        }
+    }
 
     // Uses state variables sortColumn and sortType to return a dynamically sorted version of the stationData dataset
     // https://rsuite.github.io/rsuite-table/#10
@@ -56,6 +74,7 @@ export default function Table2({ setStation, stationData }) {
 
     // This function runs whenever a table row is clicked
     const handleClick = (clickedStation) => {
+        addToComparisonList(clickedStation.StationCode);  // Must add site to selected list in order for the highlight on the map to appear
         setStation(clickedStation);
     }
 
