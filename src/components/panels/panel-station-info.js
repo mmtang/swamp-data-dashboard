@@ -15,8 +15,9 @@ export default function PanelStationInfo({
     setSelecting, 
     station 
 }) {  
-    const [allSites, setAllSites] = useState([]);
-    const [chartData, setChartData] = useState(null);
+    const [allSites, setAllSites] = useState([]);  // list of station objects, no data
+    const [allSitesData, setAllSitesData] = useState({}); // dictionary for site data
+    const [chartData, setChartData] = useState(null); // combines allSitesData into the correct format for charting
     const [downloadData, setDownloadData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [panelAnalyte, setPanelAnalyte] = useState(analyte);
@@ -84,6 +85,7 @@ export default function PanelStationInfo({
         }
     }
 
+    /*
     useEffect(() => {
         if (panelAnalyte) {
             setLoading(true);
@@ -123,12 +125,54 @@ export default function PanelStationInfo({
                 });
         }
     }, [allSites, panelAnalyte]);
+    */
 
     useEffect(() => {
-        setLoading(true);
-        // Reset analyte when another point is selected on map
-        setPanelAnalyte(analyte);
-        setAllSites(new Array(station));
+        if (Object.keys(allSitesData).length > 0) {
+            const chartDict = {
+                analyte: analyte,
+                sites: allSitesData
+            };
+            setChartData(chartDict);
+            setLoading(false);
+        }
+    }, [allSitesData]);
+
+    // Compiles a dictionary of data for each selected site; intermediary step before setting as chart data
+    useEffect(() => {
+        if (allSites.length > 0) {
+            allSites.forEach(d => {
+                if (!(allSitesData[d.StationCode])) {
+                    getData(d, analyte)
+                        .then(results => {
+                            const dataDict = {...allSitesData}; // Make a copy of state dictionary
+                            dataDict[d.StationCode] = results;
+                            setAllSitesData(dataDict);
+                        });
+                }
+            });
+        }
+    }, [allSites]);
+
+    useEffect(() => {
+        if (comparisonSites.length > 0) {
+            setLoading(true);
+            setAllSites([station, ...comparisonSites]);
+        }
+    }, [comparisonSites]);
+
+    // Runs initially when user selects a station
+    useEffect(() => {
+        // Reset state
+        setAllSites([]);
+        setAllSitesData({}); 
+
+        if (station) {
+            setLoading(true);
+            // Reset analyte when another point is selected on map
+            setPanelAnalyte(analyte);
+            setAllSites([station]);
+        }
     }, [station]);
 
     return (

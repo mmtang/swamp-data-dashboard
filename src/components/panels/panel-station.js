@@ -40,7 +40,11 @@ export default function PanelStation({
                         <Icon name='map marker' color='grey' />
                         <span className={stationSubText}>Monitoring Station</span>
                     </div>
-                    <ButtonClearStation setComparisonSites={setComparisonSites} setStation={setStation} />
+                    <ButtonClearStation 
+                        setComparisonSites={setComparisonSites} 
+                        setSelecting={setSelecting}
+                        setStation={setStation} 
+                    />
                 </div>
                 <h2 className={stationHeader}>{station ? station.StationName: null}</h2>
                 <span className={infoSubText}>
