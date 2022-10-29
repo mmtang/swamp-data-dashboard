@@ -10,14 +10,19 @@ import { tableContainer } from './table.module.css';
 // It makes use of the react-data-table-component library
 // https://github.com/jbetancur/react-data-table-component
 
-export default function Table2({ comparisonSites, setComparisonSites, setStation, stationData }) {
+export default function Table2({ 
+    comparisonSites, 
+    selecting,
+    setComparisonSites, 
+    setStation, 
+    station, 
+    stationData 
+}) {
     const containerRef = useRef(null)
 
     const [loading, setLoading] = useState(false)
-    // const [height, setHeight] = useState(0);
     const [sortColumn, setSortColumn] = useState('LastSampleDate');
     const [sortType, setSortType] = useState('desc')
-    // const [width, setWidth] = useState(0);
 
     /*
     useEffect(() => {
@@ -25,24 +30,6 @@ export default function Table2({ comparisonSites, setComparisonSites, setStation
         setHeight(containerRef.current.parentElement.offsetHeight);
     }, []);
     */
-
-    // This function checks if a station is already in the selected sites array;
-    // If it does not already exist, then it adds the new value to the state array
-    const addToComparisonList = (stationCode) => {
-        if (stationCode) {
-            setComparisonSites(comparisonSites => {
-                // Ideally we would put this conditional statement outside (and just before) the set state function, but doing that would give us an stale, empty state array because the value is based off what it is when the function is initiated. Using this anonymous function is the only way I've tried that gives the correct, updated state array
-                if (comparisonSites.indexOf(stationCode) === -1) {
-                    return new Array(stationCode);
-                    // Change the above line to the one below to keep track of multiple selections
-                    // return [...comparisonSites, stationCode];
-                } else {
-                    // Even though we are returning a new value, state does not update because the new array is unchanged from the current array
-                    return comparisonSites;
-                }
-            });
-        }
-    }
 
     // Uses state variables sortColumn and sortType to return a dynamically sorted version of the stationData dataset
     // https://rsuite.github.io/rsuite-table/#10
@@ -72,10 +59,37 @@ export default function Table2({ comparisonSites, setComparisonSites, setStation
         }
     }
 
+    // This function checks if a station is already in the comparison sites array. If it does not already exist, then it adds the new value to the state array
+    // This runs when a station on the map is clicked and the selecting mode is on (true)
+    const addToComparisonList = (stationObj) => {
+        if (stationObj) {
+            // Check that the clicked site isn't the same as the currently selected site
+            if (stationObj.StationCode !== station.StationCode) {
+                // Check if site has already been selected. If not already selected (-1), add to existing array
+                // Use the ref value here, not the state, because this function cannot get the updated state. There is a useEffect function that updates the ref value whenever state changes
+                const selectedCodes = comparisonSites.map(d => d.StationCode);
+                if (selectedCodes.indexOf(stationObj.StationCode) === -1) {
+                    const newObj = {
+                        StationCode: stationObj.StationCode,
+                        StationName: stationObj.StationName
+                    }
+                    setComparisonSites(comparisonSites => [...comparisonSites, newObj]);
+                } else {
+                    console.log(`${stationObj.StationCode} has already been selected`);
+                }
+            } else {
+                console.log(`${stationObj.StationCode} is the currently selected site`);
+            }
+        }
+    }
+
     // This function runs whenever a table row is clicked
     const handleClick = (clickedStation) => {
-        addToComparisonList(clickedStation.StationCode);  // Must add site to selected list in order for the highlight on the map to appear
-        setStation(clickedStation);
+        if (!selecting) {
+            setStation(clickedStation);
+        } else {
+            addToComparisonList(clickedStation);
+        }
     }
 
     // This function runs whenever a column header is clicked (user changes column sort)

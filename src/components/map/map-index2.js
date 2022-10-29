@@ -390,18 +390,22 @@ export default function MapIndex2({
     // This runs when a station on the map is clicked and the selecting mode is on (true)
     const addToComparisonList = (stationObj) => {
         if (stationObj) {
-            // Check if site has already been selected. If not already selected (-1), add to existing array
-            // Use the ref value here, not the state, because this function cannot get the updated state. There is a useEffect function that updates the ref value whenever state changes
-            const selectedCodes = comparisonSitesRef.current.map(d => d.StationCode);
-            if (selectedCodes.indexOf(stationObj.StationCode) === -1) {
-                const newObj = {
-                    StationCode: stationObj.StationCode,
-                    StationName: stationObj.StationName
+            // Check that the clicked site isn't the same as the currently selected site
+            if (stationObj.StationCode !== station.StationCode) {
+                // Check if site has already been selected. If not already selected (-1), add to existing array
+                // Use the ref value here, not the state, because this function cannot get the updated state. There is a useEffect function that updates the ref value whenever state changes
+                const selectedCodes = comparisonSitesRef.current.map(d => d.StationCode);
+                if (selectedCodes.indexOf(stationObj.StationCode) === -1) {
+                    const newObj = {
+                        StationCode: stationObj.StationCode,
+                        StationName: stationObj.StationName
+                    }
+                    setComparisonSites(comparisonSites => [...comparisonSites, newObj]);
+                } else {
+                    console.log(`${stationObj.StationCode} has already been selected`);
                 }
-                console.log([...comparisonSites, newObj]);
-                setComparisonSites(comparisonSites => [...comparisonSites, newObj]);
             } else {
-                console.log(`${stationObj.StationCode} has already been selected`);
+                console.log(`${stationObj.StationCode} is the currently selected site`);
             }
         }
     }

@@ -62,8 +62,10 @@ export default function PanelMap({
             <div style={view !== 'table' ? { display: 'none' } : tableContainerStyle }>
                 <Table2
                     comparisonSites={comparisonSites}
+                    selecting={selecting}
                     setComparisonSites={setComparisonSites}
                     setStation={setStation}
+                    station={station}
                     stationData={stationData} 
                 />
             </div>  

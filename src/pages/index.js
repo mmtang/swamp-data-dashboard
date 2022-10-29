@@ -178,6 +178,10 @@ export default function Index() {
     }
   }, [mapLoaded]);
 
+  useEffect(() => {
+    setComparisonSites([]);
+  }, [station]);
+
   return (
     <LayoutMap> 
       <Metadata />
