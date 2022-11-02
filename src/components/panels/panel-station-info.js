@@ -5,11 +5,20 @@ import LoaderBlock from '../common/loader-block';
 import StationAnalyteMenu from '../station-page/station-analyte-menu';
 import { Segment } from 'semantic-ui-react';
 
-import { chemistryResourceId, formatDate, habitatResourceId, parseDate, toxicityResourceId } from '../../utils/utils';
+import { 
+    capitalizeFirstLetter, 
+    chemistryResourceId, 
+    habitatResourceId, 
+    parseDate, 
+    toxicityResourceId 
+} from '../../utils/utils';
+
+import { colorPaletteViz } from '../../constants/constants-app';
 
 export default function PanelStationInfo({ 
     analyte, 
     comparisonSites, 
+    program,
     selecting, 
     setComparisonSites, 
     setSelecting, 
@@ -17,7 +26,11 @@ export default function PanelStationInfo({
 }) {  
     const [allSites, setAllSites] = useState([]);  // list of station objects, no data
     const [allSitesData, setAllSitesData] = useState({}); // dictionary for site data
-    const [chartData, setChartData] = useState(null); // combines allSitesData into the correct format for charting
+    const [chartData, setChartData] = useState(null); // list of objects that combine allSitesData into the correct format for charting
+
+     // Make a copy of the colorPaletteViz array. Used to keep track of what colors are being used and not being used in the current render. We don't want color to be tied to array position; or else the color of a site will change everytime a site before it is removed from the comparisonSites selection. Will use a fresh copy everytime the selected station changes.
+     const [vizColors, setVizColors] = useState(colorPaletteViz);  
+
     const [downloadData, setDownloadData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [panelAnalyte, setPanelAnalyte] = useState(analyte);
@@ -36,12 +49,18 @@ export default function PanelStationInfo({
                 } else if (dataAnalyte.source === 'toxicity') {
                     resource = toxicityResourceId;
                 }
-                // Build query string and get data
+                // Build query string
                 const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
+                let sql = `SELECT * FROM "${resource}" WHERE "Analyte" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                if (program) {
+                    sql += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
+                }
+                sql += ' ORDER BY "SampleDate" DESC'
                 const params = {
                     resource_id: resource,
-                    sql: `SELECT * FROM "${resource}" WHERE "Analyte" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
+                    sql: sql
                 }
+                // Get data
                 fetch(url + new URLSearchParams(params))
                     .then((resp) => resp.json())
                     .then((json) => json.result.records)
@@ -85,47 +104,71 @@ export default function PanelStationInfo({
         }
     }
 
-    /*
     useEffect(() => {
-        if (panelAnalyte) {
-            setLoading(true);
+        setLoading(true);
+        setSelecting(false);
+        setVizColors(colorPaletteViz);
+        setAllSitesData({}); // Have to reset this; otherwise, data for the original analyte will continue to show
+        setComparisonSites([]);
+        unitRef.current = null;
+    }, [panelAnalyte]);
 
-            let promises = [];
+    useEffect(() => {
+        setLoading(true);
+        setAllSites([station, ...comparisonSites]);
+    }, [comparisonSites]);
+
+    // Compiles a dictionary of data for each selected site; intermediary step before setting as chart data
+    useEffect(() => {
+        // This function checks for if the data for this station needs to be fetched from the API or if it already exists in the site data dictionary. If the API is needed, it calls getData to fetch the data (and returns it). Otherwise, it takes the existing data and returns it. In both cases, it returns the array of the data for the station.
+        const checkForData = (dict, station) => {
+            return new Promise((resolve, reject) => {
+                if (!(dict[station.StationCode])) {
+                    // If the site's data does not already exist in the state dictionary, fetch the data and add a new dictionary entry for the site
+                    getData(station, panelAnalyte)
+                        .then(results => {
+                            resolve(results);
+                        });
+                } else {
+                    // If the site's data already exists in the state dictionary, grab it and assign the array 
+                    resolve(dict[station.StationCode]);
+                }
+            });
+        };
+
+        if (allSites.length > 0) {
+            console.log(allSites);
+            let checks = [];
             for (let i = 0; i < allSites.length; i++) {
-                promises.push(getData(allSites[i], panelAnalyte));
-            }
-            Promise.all(promises)
-                .then((results) => {
-                    const obj = {
-                        analyte: panelAnalyte,
-                        sites: {}
-                    };
-                    const unitArray = [];
-                    for (let i = 0; i < results.length; i++) {
-                        const station = results[i][0].StationCode;
-                        const data = results[i];
-                        const units = results[i].map(d => d.Unit);
-                        unitArray.push(...units);
-                        obj.sites[station] = data;
-                    }
-                    // Get unique units for display in modal header
-                    // Can have multiple (equivalent) units in one dataset
-                    const unitSet = new Set(unitArray);
-                    // Back to an array
-                    const uniqueUnits = Array.from(unitSet);
-                    const unitString = uniqueUnits.join(', ');
-                    unitRef.current = unitString;
+                const station = allSites[i];
+                checks.push(checkForData(allSitesData, station));
+            };
+            // Use Promise.all to deal with sync/async issues
+            Promise.all(checks)
+            .then(res => {
+                console.log(res);
+                let dataDict = {}; // Dictionary to store data (key = StationCode)
+                let allUnitValues = []; // Dictionary to store all unit values, will be used to find unique values
+                // Assign arrays to dictionary using station name as key
+                for (let i = 0; i < res.length; i++) {
+                    const stationCode = res[i][0]['StationCode'];
+                    dataDict[stationCode] = res[i];
+                    // Append unit values to array
+                    const units = res[i].map(d => d.Unit);
+                    allUnitValues = [...allUnitValues, ...units];
+                }
 
-                    setChartData(obj);
-                    //processDataForDownload(obj);
-                    setTimeout(() => {
-                        setLoading(false);
-                    }, 1000);
-                    
-                });
+                // Get unique units, convert unit array to set. Can have multiple units for the same analyte
+                const unitSet = new Set(allUnitValues);
+                // Back to an array
+                const uniqueUnits = Array.from(unitSet);
+                const unitString = uniqueUnits.join(', ');
+                unitRef.current = unitString;
+
+                setAllSitesData(dataDict);
+            });
         }
-    }, [allSites, panelAnalyte]);
-    */
+    }, [allSites]);
 
     useEffect(() => {
         if (Object.keys(allSitesData).length > 0) {
@@ -138,34 +181,13 @@ export default function PanelStationInfo({
         }
     }, [allSitesData]);
 
-    // Compiles a dictionary of data for each selected site; intermediary step before setting as chart data
-    useEffect(() => {
-        if (allSites.length > 0) {
-            allSites.forEach(d => {
-                if (!(allSitesData[d.StationCode])) {
-                    getData(d, analyte)
-                        .then(results => {
-                            const dataDict = {...allSitesData}; // Make a copy of state dictionary
-                            dataDict[d.StationCode] = results;
-                            setAllSitesData(dataDict);
-                        });
-                }
-            });
-        }
-    }, [allSites]);
-
-    useEffect(() => {
-        if (comparisonSites.length > 0) {
-            setLoading(true);
-            setAllSites([station, ...comparisonSites]);
-        }
-    }, [comparisonSites]);
-
     // Runs initially when user selects a station
     useEffect(() => {
         // Reset state
         setAllSites([]);
         setAllSitesData({}); 
+        setVizColors(colorPaletteViz);
+        unitRef.current = null;
 
         if (station) {
             setLoading(true);
@@ -181,6 +203,7 @@ export default function PanelStationInfo({
                 <div>View data:</div>
                 <StationAnalyteMenu 
                     panelAnalyte={panelAnalyte} 
+                    program={program}
                     setPanelAnalyte={setPanelAnalyte} 
                     station={station.StationCode} 
                 />
@@ -191,6 +214,7 @@ export default function PanelStationInfo({
                             analyte={panelAnalyte} 
                             data={chartData}
                             unit={unitRef.current}
+                            vizColors={vizColors}
                         />
                     : panelAnalyte && loading ?  // If an analyte is selected but still loading, show the loader
                         <LoaderBlock />
@@ -209,7 +233,9 @@ export default function PanelStationInfo({
                         selecting={selecting}
                         setSelecting={setSelecting}
                         setComparisonSites={setComparisonSites}
+                        setVizColors={setVizColors}
                         station={station} 
+                        vizColors={vizColors}
                     />
                 : null }
         </div>

@@ -333,6 +333,8 @@ export default function MapIndex2({
                             // Clicking on an empty part of the map still returns an object with attributes (ID). Check for a station attribute
                             if (graphic.attributes.StationCode) {
                                 addToComparisonList(graphic.attributes);
+                                // Reset the selecting state; this resets the selecting button after the user clicks a station
+                                setSelecting(false);
                             }
                         });
                 }); 
@@ -449,14 +451,17 @@ export default function MapIndex2({
     useEffect(() => {
         if (viewRef.current) {
             const layer = stationLayerRef.current;
-            if (station) {
+            // Having this check here prevents the highlight on the map from clearing when a station is "deselected". Test more and then delete
+            /* if (station) { */
                 viewRef.current.whenLayerView(layer).then(() => {
                     removeSiteHighlights();
-                    setTimeout(() => {
-                        addSiteHighlight(layer, station); 
-                    }, 500)
+                    if (station) {
+                        setTimeout(() => {
+                            addSiteHighlight(layer, station); 
+                        }, 500)
+                    }
                 });
-            }
+            /* } */
         }
     }, [station]);
 

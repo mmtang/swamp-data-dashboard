@@ -218,14 +218,15 @@ export default function Index() {
         station={station}
       />
       <PanelStation 
-        comparisonSites={comparisonSites}
-        setComparisonSites={setComparisonSites}
-        setStation={setStation} 
-        station={station} 
         analyte={analyte} 
+        comparisonSites={comparisonSites}
+        program={program}
         selecting={selecting}
+        setComparisonSites={setComparisonSites}
         setSelecting={setSelecting}
+        setStation={setStation} 
         setZoomToStation={setZoomToStation}
+        station={station} 
       />
       {/*
       { disclaimerVisible ? 

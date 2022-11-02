@@ -3,9 +3,9 @@ import LoaderMenu from '../map-controls/loader-menu';
 import Select from 'react-select';
 
 import { matrixColor } from '../../constants/constants-app';
-import { chemistryResourceId, customSelectStyle, habitatResourceId, toxicityResourceId } from '../../utils/utils';
+import { capitalizeFirstLetter, chemistryResourceId, customSelectStyle, habitatResourceId, toxicityResourceId } from '../../utils/utils';
 
-export default function StationAnalyteMenu({ panelAnalyte, setPanelAnalyte, station }) {
+export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnalyte, station }) {
     const [analyteList, setAnalyteList] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -33,17 +33,35 @@ export default function StationAnalyteMenu({ panelAnalyte, setPanelAnalyte, stat
     useEffect(() => {
         if (station) {
             setLoading(true);
+
+            // Chemistry
+            let sqlChem = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            if (program) {
+                sqlChem += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
+            };
             const paramsChem = {
                 resource_id: chemistryResourceId,
-                sql: `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                sql: sqlChem
+            };
+
+            // Habitat
+            let sqlHabitat = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            if (program) {
+                sqlHabitat += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
             };
             const paramsHabitat = {
                 resource_id: habitatResourceId,
-                sql: `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                sql: sqlHabitat
             };
+
+            // Toxicity
+            let sqlTox = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            if (program) {
+                sqlTox += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
+            }
             const paramsTox = {
                 resource_id: toxicityResourceId,
-                sql: `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                sql: sqlTox
             };
             Promise.all([
                 // Chemistry dataset
