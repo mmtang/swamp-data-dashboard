@@ -239,3 +239,13 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
   border-radius: 0;
   color: #5d5d5d;
 }
+
+.ui.segment {
+  border-radius: 0;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+.ui.table {
+  border-radius: 0;
+}

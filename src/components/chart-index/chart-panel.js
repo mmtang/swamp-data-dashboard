@@ -7,11 +7,11 @@ import * as d3 from 'd3';
 import { legendColor } from 'd3-svg-legend';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { analytes, analyteScoringCategories, habitatAnalytes, analyteYMax, chemDataFields, habitatDataFields, dataQualityCategories  } from '../../constants/constants-data';
-import { colorPaletteViz } from '../../constants/constants-app';
+// import { colorPaletteViz } from '../../constants/constants-app';
 import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, modalContent, downloadWrapper } from './chart-index.module.css';
 
 // Component for rendering graph on the dashboard index page (from map and dashboard)
-export default function ChartPanel({ analyte, data, unit }) {
+export default function ChartPanel({ analyte, data, unit, vizColors }) {
     const [overSelectionLimit, setOverSelectionLimit] = useState(false);
 
     const limitRef = useRef(5); // Limit number of sites that can be graphed
@@ -230,7 +230,7 @@ export default function ChartPanel({ analyte, data, unit }) {
                     .enter().append('path')
                     .attr('class', 'line ' + siteKeys[i])
                     .attr('fill', 'none')
-                    .attr('stroke', d => colorPaletteViz[i])
+                    .attr('stroke', d => vizColors[i])
                     .attr('stroke-width', 1.5)
                     .attr('d', resultLine(data.sites[siteKeys[i]])) // When using d3-selection, have to use line(data) method of getting data, https://observablehq.com/@d3/d3-line
                     .merge(lines)
@@ -249,8 +249,8 @@ export default function ChartPanel({ analyte, data, unit }) {
                     .attr('r', 4)
                     .attr('cx', d => xScale(d.SampleDate))
                     .attr('cy', d => yScale(d.ResultDisplay))
-                    .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[i])
-                    .attr('stroke', d => d.Censored ? colorPaletteViz[i] : '#fff')
+                    .attr('fill', d => d.Censored ? '#e3e4e6' : vizColors[i])
+                    .attr('stroke', d => d.Censored ? vizColors[i] : '#fff')
                     .attr('stroke-width', d => d.Censored ? 2 : 1)
                     .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                     .on('mouseover', function(currentEvent, d) {
@@ -297,7 +297,7 @@ export default function ChartPanel({ analyte, data, unit }) {
                             + ',' + (yScale(d.ResultDisplay) + 5 ) + ')';
                     })
                     .attr('x', 5)
-                    .style('fill', colorPaletteViz[i])
+                    .style('fill', vizColors[i])
                     .style('font-size', '0.83em')
                     .style('font-weight', 600)
                     .text(d => d.StationCode);

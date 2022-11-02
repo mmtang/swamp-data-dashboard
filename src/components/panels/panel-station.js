@@ -12,6 +12,7 @@ import { buttonContainer, buttonGrid, contentSection, iconContainer, infoSubText
 export default function PanelStation({ 
     analyte,
     comparisonSites,
+    program,
     selecting,
     setComparisonSites,
     setSelecting,
@@ -66,6 +67,7 @@ export default function PanelStation({
                         <PanelStationInfo 
                             analyte={analyte}
                             comparisonSites={comparisonSites}
+                            program={program}
                             selecting={selecting}
                             setComparisonSites={setComparisonSites}
                             setSelecting={setSelecting}

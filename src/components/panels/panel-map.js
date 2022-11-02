@@ -64,6 +64,7 @@ export default function PanelMap({
                     comparisonSites={comparisonSites}
                     selecting={selecting}
                     setComparisonSites={setComparisonSites}
+                    setSelecting={setSelecting}
                     setStation={setStation}
                     station={station}
                     stationData={stationData} 

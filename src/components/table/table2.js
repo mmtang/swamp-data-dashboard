@@ -14,6 +14,7 @@ export default function Table2({
     comparisonSites, 
     selecting,
     setComparisonSites, 
+    setSelecting,
     setStation, 
     station, 
     stationData 
@@ -89,6 +90,8 @@ export default function Table2({
             setStation(clickedStation);
         } else {
             addToComparisonList(clickedStation);
+            // Reset the selecting state; this resets the selecting button after the user clicks a station
+            setSelecting(false);
         }
     }
 
