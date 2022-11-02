@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, Icon, Popup, Segment, Table } from 'semantic-ui-react';
+import { Button, Divider, Icon, Popup, Segment, Table } from 'semantic-ui-react';
 
 import { colorPaletteViz } from '../../constants/constants-app';
 
@@ -108,7 +108,9 @@ export default function CompareSites({
                 />
             </div>
             { allSites.length > 1 ? 
-                <Table celled striped>
+                <div>
+                <Divider />
+                <Table basic='very' compact>
                     <Table.Body>
                         { allSites.map((d, i) => {
                             return (
@@ -133,6 +135,7 @@ export default function CompareSites({
                         }) }
                     </Table.Body>
                 </Table>
+                </div>
                 : null
             }
         </Segment>

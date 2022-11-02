@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import LoaderMenu from '../map-controls/loader-menu';
+
 import { Button, Icon } from 'semantic-ui-react';
 import { timeFormat } from 'd3';
 import { rowButton } from './download-data.module.css';
 
 // This component renders a button. When the button is clicked, the array of JavaScript objects passed to the component is converted to a CSV file and downloaded in the browser.
-export default function DownloadData({ children, data, fields, color = null }) {   	
+export default function DownloadData({ 
+    children, 
+    basic=false, 
+    color=null, 
+    compact=true,
+    data, 
+    fields, 
+    fluid=false, 
+    loading,
+    size='mini' 
+}) {   	
     const [dataLoaded, setDataLoaded] = useState(false);
 
     const formatDate = timeFormat('%Y-%m-%d %H:%M:%S'); // Date formatting for open data portal
@@ -84,14 +96,22 @@ export default function DownloadData({ children, data, fields, color = null }) {
         };
     }, [data])
 
+    useEffect(() => {
+        if (loading) {
+            setDataLoaded(false);
+        }
+    }, [loading]);
+
     return (
         <Button 
+            basic={basic}
             className={rowButton}
-            compact 
-            size='mini'
+            color={color}
+            compact={compact}
+            fluid={fluid}
+            size={size}
             onClick={handleClick} 
             onKeyPress={handleClick}
-            color={color}
             disabled={!dataLoaded}
         >
             <Icon name='download' />
