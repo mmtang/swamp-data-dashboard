@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ChartPanel from '../chart-index/chart-panel';
 import CompareSites from '../compare-sites/compare-sites';
+import DownloadSection from '../station-page/download-section';
 import LoaderBlock from '../common/loader-block';
 import StationAnalyteMenu from '../station-page/station-analyte-menu';
 import { Segment } from 'semantic-ui-react';
@@ -222,6 +223,10 @@ export default function PanelStationInfo({
                         <div style={{ fontStyle: 'italic' }}>Select a parameter</div>
                     : null }
                 </Segment>
+                {/* ----- Download data */}
+                { panelAnalyte ? 
+                    <DownloadSection data={chartData} loading={loading} />
+                : null }
                 {/* ----- Compare Sites
                 If analyte selection matches analyte selection in map, then show the "Compare sites" content 
                 Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used

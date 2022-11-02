@@ -249,3 +249,7 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
 .ui.table {
   border-radius: 0;
 }
+
+.ui.basic.button {
+  border-radius: 0;
+}
