@@ -12,6 +12,6 @@
 
 .tagWrapper {
     align-items: center;
-    display: flex;   
+    display: inline-flex;   
 }
 

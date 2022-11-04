@@ -1,13 +1,7 @@
 import React from 'react';
-import { Button } from 'semantic-ui-react';
+import { Button, Icon } from 'semantic-ui-react';
 
 export default function ClearFilters({ setAnalyte, setCategory, setProgram, setRegion }) {   
-    const buttonContainer = {
-        display: 'flex',
-        justifyContent: 'flex-end',
-        marginTop: '0.8em'
-    }
-
     const handleClick = () => {
         setAnalyte(null);
         setCategory(null);
@@ -16,15 +10,14 @@ export default function ClearFilters({ setAnalyte, setCategory, setProgram, setR
     }
 
     return (
-        <div style={buttonContainer}>
-            <Button 
-                compact 
-                onClick={handleClick} 
-                onKeyPress={handleClick}
-                size='tiny'
-            >
+        <Button 
+            compact 
+            onClick={handleClick} 
+            onKeyPress={handleClick}
+            size='tiny'
+        >
+            <Icon name='x' />
             Clear all
         </Button>
-        </div>
     )
 }
