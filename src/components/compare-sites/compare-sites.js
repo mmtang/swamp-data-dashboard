@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, Divider, Icon, Popup, Segment, Table } from 'semantic-ui-react';
+import { Button, Icon, Popup, Segment, Table } from 'semantic-ui-react';
 
 import { colorPaletteViz } from '../../constants/constants-app';
 
@@ -108,33 +108,30 @@ export default function CompareSites({
                 />
             </div>
             { allSites.length > 1 ? 
-                <div>
-                <Divider />
-                <Table basic='very' compact>
-                    <Table.Body>
-                        { allSites.map((d, i) => {
-                            return (
-                                <Table.Row key={d.StationCode} style={{ fontSize: '0.92em' }}>
-                                    <Table.Cell style={{ fontWeight: '600', color: `${vizColors[i]}` }}>{d.StationCode}</Table.Cell>
-                                    <Table.Cell>{d.StationName}</Table.Cell>
-                                    <Table.Cell textAlign='right'>
-                                        { i > 0 ? 
-                                            <Button 
-                                                compact
-                                                icon
-                                                onClick={() => handleRemove(d.StationCode)}
-                                                onKeyPress={() => handleRemove(d.StationCode)}
-                                                size='mini'
-                                            >
-                                                <Icon name='x' />
-                                            </Button>
-                                        : null }
-                                    </Table.Cell>
-                                </Table.Row>
-                            )
-                        }) }
-                    </Table.Body>
-                </Table>
+                <div style={{ marginTop: '1.6em' }}>
+                    <Table basic='very' compact>
+                        <Table.Body>
+                            { allSites.map((d, i) => {
+                                return (
+                                    <Table.Row key={d.StationCode} style={{ fontSize: '0.92em' }}>
+                                        <Table.Cell style={{ fontWeight: '600', color: `${vizColors[i]}` }}>{d.StationCode}</Table.Cell>
+                                        <Table.Cell>{d.StationName}</Table.Cell>
+                                        <Table.Cell textAlign='right'>
+                                            { i > 0 ? 
+                                                <Icon 
+                                                    color='grey'
+                                                    link
+                                                    name='x' 
+                                                    onClick={() => handleRemove(d.StationCode)}
+                                                    onKeyPress={() => handleRemove(d.StationCode)}
+                                                />
+                                            : null }
+                                        </Table.Cell>
+                                    </Table.Row>
+                                )
+                            }) }
+                        </Table.Body>
+                    </Table>
                 </div>
                 : null
             }
