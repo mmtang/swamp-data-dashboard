@@ -93,6 +93,7 @@ export default function PanelStationInfo({
 
     // This function packages the chart data into a form that is ready for download.
     // It combines multiple sites' data into one array. No need to worry about different data structures because all sites under the same analyte should have the same structure.
+    /*
     const processDataForDownload = (obj) => {
         if (obj.sites) {
             const siteDicts = obj.sites;
@@ -104,6 +105,7 @@ export default function PanelStationInfo({
             setDownloadData(mergedData);
         }
     }
+    */
 
     useEffect(() => {
         setLoading(true);
@@ -174,7 +176,7 @@ export default function PanelStationInfo({
     useEffect(() => {
         if (Object.keys(allSitesData).length > 0) {
             const chartDict = {
-                analyte: analyte,
+                analyte: panelAnalyte,
                 sites: allSitesData
             };
             setChartData(chartDict);
@@ -200,49 +202,49 @@ export default function PanelStationInfo({
 
     return (
         <div>
-                {/* ----- Panel Analyte Menu */}
-                <div>View data:</div>
-                <StationAnalyteMenu 
-                    panelAnalyte={panelAnalyte} 
-                    program={program}
-                    setPanelAnalyte={setPanelAnalyte} 
-                    station={station.StationCode} 
-                />
-                {/* ------ Chart */}
-                <Segment placeholder  textAlign='center'>
-                    { panelAnalyte && !loading ?  // If an analyte is selected and there is no loading status, show the chart
-                        <ChartPanel 
-                            analyte={panelAnalyte} 
-                            data={chartData}
-                            unit={unitRef.current}
-                            vizColors={vizColors}
-                        />
-                    : panelAnalyte && loading ?  // If an analyte is selected but still loading, show the loader
-                        <LoaderBlock />
-                    : !panelAnalyte ?  // If an analyte is not selected, show a message
-                        <div style={{ fontStyle: 'italic' }}>Select a parameter</div>
-                    : null }
-                </Segment>
-                {/* ----- Download data */}
-                { panelAnalyte ? 
-                    <DownloadSection data={chartData} loading={loading} />
-                : null }
-                {/* ----- Compare Sites
-                If analyte selection matches analyte selection in map, then show the "Compare sites" content 
-                Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used
-                There is no easy way to compare objects except to convert the object to string; this will work as long as the order of the attribute fields in both objects are the same
-                */}
-                { (JSON.stringify(analyte) === JSON.stringify(panelAnalyte)) && (analyte !== null) ? 
-                    <CompareSites 
-                        comparisonSites={comparisonSites} 
-                        selecting={selecting}
-                        setSelecting={setSelecting}
-                        setComparisonSites={setComparisonSites}
-                        setVizColors={setVizColors}
-                        station={station} 
+            {/* ----- Panel Analyte Menu */}
+            <div>View data:</div>
+            <StationAnalyteMenu 
+                panelAnalyte={panelAnalyte} 
+                program={program}
+                setPanelAnalyte={setPanelAnalyte} 
+                station={station} 
+            />
+            {/* ------ Chart */}
+            <Segment placeholder  textAlign='center'>
+                { panelAnalyte && !loading ?  // If an analyte is selected and there is no loading status, show the chart
+                    <ChartPanel 
+                        analyte={panelAnalyte} 
+                        data={chartData}
+                        unit={unitRef.current}
                         vizColors={vizColors}
                     />
+                : panelAnalyte && loading ?  // If an analyte is selected but still loading, show the loader
+                    <LoaderBlock />
+                : !panelAnalyte ?  // If an analyte is not selected, show a message
+                    <div style={{ fontStyle: 'italic' }}>Select a parameter</div>
                 : null }
+            </Segment>
+            {/* ----- Download data */}
+            { panelAnalyte ? 
+                <DownloadSection data={chartData} loading={loading} />
+            : null }
+            {/* ----- Compare Sites
+            If analyte selection matches analyte selection in map, then show the "Compare sites" content 
+            Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used
+            There is no easy way to compare objects except to convert the object to string; this will work as long as the order of the attribute fields in both objects are the same
+            */}
+            { (JSON.stringify(analyte) === JSON.stringify(panelAnalyte)) && (analyte !== null) ? 
+                <CompareSites 
+                    comparisonSites={comparisonSites} 
+                    selecting={selecting}
+                    setSelecting={setSelecting}
+                    setComparisonSites={setComparisonSites}
+                    setVizColors={setVizColors}
+                    station={station} 
+                    vizColors={vizColors}
+                />
+            : null }
         </div>
     )
 }

@@ -249,7 +249,7 @@ export default function MapIndex2({
                             viewRef.current.on('pointer-move', (event) => {
                                 // only include graphics from the station layer in the hitTest
                                 const opts = {
-                                include: stationLayerRef.current
+                                    include: stationLayerRef.current
                                 }
                                 viewRef.current.hitTest(event, opts).then((response) => {
                                     // check if a feature is returned from the station layer

@@ -10,6 +10,7 @@ export default function DownloadSection({ data, loading }) {
 
     useEffect(() => {
         if (data) {
+            console.log(data);
             // Reset state
             fieldsRef.current = null;
             setDownloadData(null);
