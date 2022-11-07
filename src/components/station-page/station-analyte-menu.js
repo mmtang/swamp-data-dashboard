@@ -35,7 +35,7 @@ export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnal
             setLoading(true);
 
             // Chemistry
-            let sqlChem = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            let sqlChem = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
                 sqlChem += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
             };
@@ -45,7 +45,7 @@ export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnal
             };
 
             // Habitat
-            let sqlHabitat = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            let sqlHabitat = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
                 sqlHabitat += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
             };
@@ -55,7 +55,7 @@ export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnal
             };
 
             // Toxicity
-            let sqlTox = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            let sqlTox = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
                 sqlTox += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
             }
