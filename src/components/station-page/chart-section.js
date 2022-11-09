@@ -17,9 +17,9 @@ import { sectionContainer, analyteHeader, analyteTitle } from './chart-section.m
 export default function ChartSection({ station, selectedAnalytes }) {
     const [data, setData] = useState(null);
     const [overSelectionLimit, setOverSelectionLimit] = useState(false);
+    const [vizAnalytes, setVizAnalytes] = useState([]);
 
     const dateExtentRef = useRef(null);
-    const vizAnalytes = useRef([]);
     const limitRef = useRef(5); // Limit number of analytes that can be graphed
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
@@ -42,7 +42,9 @@ export default function ChartSection({ station, selectedAnalytes }) {
             if (analyteList.length > 1) {
                 analyteList.sort((a, b) => a['Analyte'].localeCompare(b['Analyte']));
             }
-            vizAnalytes.current = analyteList;
+            // Render
+            setVizAnalytes(analyteList);
+
             const promises = [];
             for (let i = 0; i < analyteList.length; i++) {
                 promises.push(getData(station, analyteList[i].Analyte, analyteList[i].Matrix, analyteList[i].Source));
@@ -92,7 +94,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
             if (source === 'chemistry') {
                 const params = {
                     resource_id: chemistryResourceId,
-                    sql: `SELECT * FROM "${chemistryResourceId}" WHERE "Analyte" = '${analyte}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
+                    sql: `SELECT * FROM "${chemistryResourceId}" WHERE "AnalyteDisplay" = '${analyte}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
                 }
                 console.log(url + new URLSearchParams(params));
                 fetch(url + new URLSearchParams(params))
@@ -100,6 +102,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     .then(json => json.result.records)
                     .then(records => {
                         records.forEach(d => {
+                            d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.SampleDate);
                             d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(3));
                             d['Censored'] = d['Censored'].toLowerCase() === 'true';  // Convert string to boolean
@@ -113,7 +116,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                 // Get data from the habitat dataset
                 const params = {
                     resource_id: habitatResourceId,
-                    sql: `SELECT * FROM "${habitatResourceId}" WHERE "Analyte" = '${analyte}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
+                    sql: `SELECT * FROM "${habitatResourceId}" WHERE "AnalyteDisplay" = '${analyte}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
                 }
                 console.log(url + new URLSearchParams(params));
                 fetch(url + new URLSearchParams(params))
@@ -121,6 +124,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     .then(json => json.result.records)
                     .then(records => {
                         records.forEach(d => {
+                            d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.SampleDate);
                             d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(3));
                             d.Censored = false;  // Convert string to boolean
@@ -131,7 +135,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                 // Get data from the toxicity dataset
                 const params = {
                     resource_id: toxicityResourceId,
-                    sql: `SELECT * FROM "${toxicityResourceId}" WHERE "Analyte" = '${analyte}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
+                    sql: `SELECT * FROM "${toxicityResourceId}" WHERE "AnalyteDisplay" = '${analyte}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
                 }
                 console.log(url + new URLSearchParams(params));
                 fetch(url + new URLSearchParams(params))
@@ -139,6 +143,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     .then(json => json.result.records)
                     .then(records => {
                         records.forEach(d => {
+                            d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.SampleDate);
                             d.ResultDisplay = parseFloat((+d.MeanDisplay).toFixed(3));
                             d.Censored = false;  // Convert string to boolean
@@ -155,7 +160,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
             { overSelectionLimit ? 
                 <MessageDismissible color='red' message={overLimitMessage} />
             : null }
-            { vizAnalytes.current.map(analyteObj => 
+            { vizAnalytes.map(analyteObj => 
                 <div key={analyteObj.Key}>
                     <div className={analyteHeader}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>

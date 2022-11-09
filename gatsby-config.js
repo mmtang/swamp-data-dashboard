@@ -18,4 +18,8 @@ module.exports = {
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
   ],
+  proxy: {
+    prefix: "/portalserver",
+    url: 'https://gispublic.waterboards.ca.gov',
+  },
 }

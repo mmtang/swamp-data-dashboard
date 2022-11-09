@@ -1,12 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 
-import { regionRenderer } from './map-renderer';
-import { stationDataFields, convertStationDataToGraphics } from '../../utils/utils-map';
+import { irLineRenderer, irPolyRenderer, regionRenderer } from './map-renderer';
+import { convertStationDataToGraphics, stationDataFields } from '../../utils/utils-map';
+import { irRegionDict, regionDict } from '../../utils/utils';
 
 import { container } from './map-index.module.css';
 
 export default function MapIndex2({ 
+    analyte,
+    program,
+    region,
     comparisonSites,
     selecting,
     setMapLoaded, 
@@ -19,17 +23,21 @@ export default function MapIndex2({
     zoomToStation
 }) {
     // Declare component references
+    const basemapGalleryRef = useRef(null);
     const divRef = useRef(null);
-    const mapRef = useRef(null);
-    const viewRef = useRef(null);
-    // const searchRef = useRef(null);
-    const stationLayerRef = useRef(null);
+    const expandGalleryRef = useRef(null);
+    //const expandLayerListRef = useRef(null);
+    const irLayerRef = useRef(null);
+    const irLineRef = useRef(null);
+    const irPolyRef = useRef(null);
+    const landUseLayerRef = useRef(null);
     const layerListRef = useRef(null);
     const listenerRef = useRef(null);
+    const mapRef = useRef(null);
     const regionLayerRef = useRef(null);
-    const expandLayerListRef = useRef(null);
-    const expandGalleryRef = useRef(null);
-    const basemapGalleryRef = useRef(null);
+    const searchRef = useRef(null);
+    const stationLayerRef = useRef(null);
+    const viewRef = useRef(null);
 
     // This ref is used to store the old array of site code strings. Will be compared to the new array.
     const comparisonSitesRef = useRef(null);
@@ -50,6 +58,186 @@ export default function MapIndex2({
                 });
             }
         })
+    }
+
+    const drawIntegratedReport = () => {
+        const irTemplate = {
+            // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
+            outFields: ['wbid', 'wbname', 'rb', 'wbtype', 'wb_category', 'wb_listingstatus', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_', 'fact_sheet'],
+            title: '{wbname}<br><span class="map-popup-subtitle" style="color: #518f33">2018 Integrated Report waterbody</span>',
+            content: [
+                {
+                    type: 'fields',
+                    fieldInfos: [
+                        {
+                            fieldName: 'wbid',
+                            label: 'ID',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'wbtype',
+                            label: 'Type',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'rb',
+                            label: 'Region',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'wb_category',
+                            label: 'Waterbody Condition Category',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'wb_listingstatus',
+                            label: 'Overall Listing Status',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listed_pollutants',
+                            label: 'Listed Pollutant(s)',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listed_pollutant_w_tmdl',
+                            label: 'Listed Pollutant(s) w TMDL',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listed_pollutant_addressed_by_n',
+                            label: 'Listed Pollutant Addressed by NonTMDL',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listed_pollutant_addressed_by_n',
+                            label: 'Listed Pollutant Addressed by NonTMDL',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listed_pollutant_addressed_by_n',
+                            label: 'Listed Pollutant Addressed by NonTMDL',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'pollutants_assessed_not_listed_',
+                            label: 'Pollutants Assessed, Not Listed',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'fact_sheet',
+                            label: 'Waterbody Fact Sheet',
+                            visible: true
+                        }
+                    ]
+                }
+            ]
+        };
+        return new Promise((resolve, reject) => {
+            if (mapRef) {
+                loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
+                .then(([FeatureLayer, GroupLayer]) => {
+                    irLineRef.current = new FeatureLayer({
+                        id: 'ir-line-layer',
+                        title: 'Integrated Report Lines 2018',
+                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/0',
+                        outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
+                        popupTemplate: irTemplate,
+                        listMode: 'show',
+                        renderer: irLineRenderer
+                    });
+                    irPolyRef.current = new FeatureLayer({
+                        id: 'ir-poly-layer',
+                        title: 'Integrated Report Polygons 2018',
+                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/1',
+                        outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
+                        popupTemplate: irTemplate,
+                        renderer: irPolyRenderer,
+                        listMode: 'show',
+                        opacity: 0.8
+                    });
+                    irLayerRef.current = new GroupLayer({
+                        id: 'ir-group-layer',
+                        title: 'Integrated Report 2018',
+                        visible: false,
+                        layers: [irLineRef.current, irPolyRef.current],
+                        listMode: 'show',
+                        visibilityMode: 'inherited'
+                    });
+                    // Add grouplayer to map
+                    // mapRef.current.add(irLayerRef.current);
+                    // Add feature layers to search widget
+                    searchRef.current.sources.add({
+                        layer: irLineRef.current,
+                        searchFields: ['wbid', 'wbname'],
+                        displayField: 'wbname',
+                        exactMatch: false,
+                        outFields: ['wbname'],
+                        name: 'Integrated Report Lines 2018',
+                        placeholder: 'Example: Burney Creek'
+                    });
+                    searchRef.current.sources.add({
+                        layer: irPolyRef.current,
+                        searchFields: ['wbid', 'wbname'],
+                        displayField: 'wbname',
+                        exactMatch: false,
+                        outFields: ['wbname'],
+                        name: 'Integrated Report Polygons 2018',
+                        placeholder: 'Example: Folsom Lake'
+                    });
+                    resolve();
+                });
+            }
+        })
+    }
+
+    const drawLandUse = () => {
+        return new Promise((resolve, reject) => {
+            if (mapRef) {
+                loadModules(['esri/layers/WMSLayer'])
+                .then(([WMSLayer]) => {
+                    landUseLayerRef.current = new WMSLayer({
+                        id: 'nlcd-layer',
+                        title: 'National Land Cover Database 2019',
+                        url: 'https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2019_Land_Cover_L48/wms?service=WMS&request=GetCapabilities',
+                        sublayers: [{
+                            name: 'NLCD_2019_Land_Cover_L48',
+                            title: 'Land Cover',
+                            legendUrl: 'https://www.mrlc.gov/geoserver/mrlc_display/wms?REQUEST=GetLegendGraphic&FORMAT=image/png&WIDTH=12&HEIGHT=12&LAYER=NLCD_2019_Land_Cover_L48&legend_options=fontAntiAliasing:true;fontSize:8;dpi:100'
+                        }],
+                        copyright: 'MRLC NLCD',
+                        listMode: 'hide-children',
+                        opacity: 0.5,
+                        visible: false
+                    });
+                    mapRef.current.add(landUseLayerRef.current);
+                    resolve();
+                });
+            }
+        })
+    };
+
+    // Refreshes the Integrated Report layers based on user selection
+    const refreshIntegratedReport = () => {
+        const constructDefExpLine = () => {
+            if (region) {
+                return `rb = '${irRegionDict[region]}'`;
+            } else if (!region) {
+                return '';
+            }
+        }
+        const constructDefExpPoly = () => {
+            if (region) {
+                return `rb_1 = '${irRegionDict[region]}'`;
+            } else if (!region) {
+                return '';
+            }
+        }
+        if (mapRef.current) {
+            // Update filters
+            irLineRef.current.definitionExpression = constructDefExpLine();
+            irPolyRef.current.definitionExpression = constructDefExpPoly();
+        }
     }
 
     // https://community.esri.com/t5/arcgis-api-for-javascript-questions/is-there-a-way-to-load-update-the-data-without/td-p/251114
@@ -123,25 +311,15 @@ export default function MapIndex2({
                 */
 
                 // Define search widget
-                /*
                 searchRef.current = new Search({
                     view: viewRef.current,
                     container: 'searchContainer',
-                    allPlaceholder: ' ',
-                    label: 'Search for a location, waterbody, or monitoring site',
-                    includeDefaultSources: true,
+                    allPlaceholder: 'Find a station',
+                    includeDefaultSources: false,
                     locationEnabled: false,
                     popupEnabled: false,
                     autoSelect: true,
-                    sources: [
-                        {
-                            filter: {
-                                where: "RegionAbbr = 'CA'"
-                            }
-                        }
-                    ]
                 });
-                */
 
                 // Define layer list widget
                 layerListRef.current = new LayerList({
@@ -225,18 +403,16 @@ export default function MapIndex2({
                             mapRef.current.add(stationLayerRef.current);
     
                             // Add station layer data to search
-                            /*
                             searchRef.current.sources.add({
                                 layer: stationLayerRef.current,
                                 searchFields: ['StationName', 'StationCode'],
                                 suggestionTemplate: '{StationCode} - {StationName}',
                                 exactMatch: false,
                                 outFields: ['StationName', 'StationCode'],
-                                name: 'SWAMP Monitoring Sites',
+                                name: 'SWAMP Monitoring Stations',
                                 placeholder: 'Example: Buena Vista Park',
                                 zoomScale: 14000
                             });
-                            */
     
                             // Add hover listener to display tooltip
                             // https://support.esri.com/en/technical-article/000024297
@@ -272,24 +448,6 @@ export default function MapIndex2({
                                     }
                                 });
                             });
-
-                            // Add listener for clicking on a site
-                            // https://gis.stackexchange.com/questions/223785/cannot-catch-click-event-on-featurelayer-in-arcgis-api-for-javascript-4
-                            /*
-                            listenerRef.current = viewRef.current.on('click', function(evt) {  
-                                // Search for symbols on click's position
-                                viewRef.current.hitTest(evt.screenPoint)
-                                    .then(function(response) {
-                                        // Retrieve the first symbol
-                                        var graphic = response.results[0].graphic;
-                                        // Clicking on an empty part of the map still returns an object with attributes (ID). Check for a station attribute
-                                        if (graphic.attributes.StationCode) {
-                                            //addToSelectedList({ code: graphic.attributes.StationCode, name: graphic.attributes.StationName });
-                                            setStation(graphic.attributes);
-                                        }
-                                    });
-                            }); 
-                            */
                             resolve();
                         });
                     } else {
@@ -304,9 +462,10 @@ export default function MapIndex2({
             loadCss();
             initializeMap().then(() => {
                 Promise.all([
+                    drawStationLayer(),
                     drawRegions(),
-                    drawStationLayer()
-                    //drawLandUse(),
+                    drawIntegratedReport(),
+                    drawLandUse()
                 ]).then(values => {
                     setMapLoaded(true);
                 });
@@ -415,6 +574,7 @@ export default function MapIndex2({
     // Update/refresh station layer with new data
     useEffect(() => {
         if (stationLayerRef.current) {
+            console.log(searchRef.current.sources);
             refreshStationLayer(stationData);
         }
     }, [stationData]);
@@ -464,6 +624,28 @@ export default function MapIndex2({
             /* } */
         }
     }, [station]);
+
+    useEffect(() => {
+        const zoomToRegion = (regionName) => {
+            if (viewRef.current) {
+                viewRef.current.whenLayerView(regionLayerRef.current).then(() => {
+                    const query = regionLayerRef.current.createQuery();
+                    query.where = `rb_name = '${regionName}'`;
+                    regionLayerRef.current.queryFeatures(query).then(results => {
+                        const feature = results.features[0];
+                        viewRef.current.goTo(feature.geometry);
+                    })
+                })
+            }
+        }
+
+        if (mapRef.current) {
+            refreshIntegratedReport();
+            if (region) {
+                zoomToRegion(regionDict[region]);
+            }
+        }
+    }, [region]);
 
     const addSiteHighlight = (layer, station) => {
         viewRef.current.whenLayerView(layer).then((layerView) => {

@@ -46,7 +46,7 @@ export default function PanelStation({
     if (stationLoading) {
         return (
             <div className={mainContainer} style={ !station ? stationStyle : null }>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', backgroundImage: 'linear-gradient(to bottom, #4491cd, #3b85c0, #337ab4, #2a6ea7, #20639b)', color: '#fff' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', backgroundColor: '#4491cd', color: '#fff' }}>
                     <Loader 
                         active 
                         inline='centered'
