@@ -52,7 +52,7 @@ export default function PanelStationInfo({
                 }
                 // Build query string
                 const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-                let sql = `SELECT * FROM "${resource}" WHERE "Analyte" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                let sql = `SELECT * FROM "${resource}" WHERE "AnalyteDisplay" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 if (program) {
                     sql += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
                 }
@@ -70,6 +70,7 @@ export default function PanelStationInfo({
                         let data = records;
                         if (dataAnalyte.source === 'chemistry' || dataAnalyte.source === 'habitat') {
                             data.forEach(d => {
+                                d.Analyte = d.AnalyteDisplay;
                                 d.SampleDate = parseDate(d.SampleDate);
                                 d.ResultDisplay = parseFloat(((+d.ResultDisplay)).toFixed(3));
                                 d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
@@ -140,7 +141,6 @@ export default function PanelStationInfo({
         };
 
         if (allSites.length > 0) {
-            console.log(allSites);
             let checks = [];
             for (let i = 0; i < allSites.length; i++) {
                 const station = allSites[i];
@@ -149,7 +149,6 @@ export default function PanelStationInfo({
             // Use Promise.all to deal with sync/async issues
             Promise.all(checks)
             .then(res => {
-                console.log(res);
                 let dataDict = {}; // Dictionary to store data (key = StationCode)
                 let allUnitValues = []; // Dictionary to store all unit values, will be used to find unique values
                 // Assign arrays to dictionary using station name as key

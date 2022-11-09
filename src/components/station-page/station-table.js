@@ -37,8 +37,6 @@ export default function StationTable({ data, setSelectedAnalytes }) {
         )
     }
 
-    console.log(data);
-
     const columns = [
         {
             id: 'matrix',
@@ -53,7 +51,7 @@ export default function StationTable({ data, setSelectedAnalytes }) {
             id: 'parameter',
             name: 'Parameter',
             selector: row => row['Analyte'],
-            width: '180px',
+            width: '200px',
             wrap: true,
             sortable: true
         },

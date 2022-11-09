@@ -38,13 +38,13 @@ export default function AccordionMenu({
     const getAllAnalyteOptions = () => {
         return new Promise((resolve, reject) => {
             const chemParams = {
-                sql: `SELECT DISTINCT ON ("Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e"`
+                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e"`
             }
             const habitatParams = {
-                sql: `SELECT DISTINCT ON ("Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "6d9a828a-d539-457e-922c-3cb54a6d4f9b"`
+                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "6d9a828a-d539-457e-922c-3cb54a6d4f9b"`
             };
             const toxParams = {
-                sql: `SELECT DISTINCT ON ("Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "a6dafb52-3671-46fa-8d42-13ddfa36fd49"`
+                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "a6dafb52-3671-46fa-8d42-13ddfa36fd49"`
             }
             Promise.all([
                 getData(chemParams, 'chemistry'),
@@ -70,6 +70,7 @@ export default function AccordionMenu({
             .then((json) => json.result.records)
             .then((records) => {
                 records.forEach(d => {
+                    d.Analyte = d.AnalyteDisplay
                     d.Source = dataSource;
                 });
                 resolve(records);
@@ -102,7 +103,9 @@ export default function AccordionMenu({
                     label: d.Analyte, 
                     value: d.Analyte + '$' + d.MatrixDisplay, 
                     matrix: d.MatrixDisplay, 
-                    category: d.AnalyteGroup1,
+                    category1: d.AnalyteGroup1,
+                    category2: d.AnalyteGroup2,
+                    category3: d.AnalyteGroup3,
                     source: d.Source
                 }
             })
@@ -207,7 +210,6 @@ export default function AccordionMenu({
         if (allAnalyteCombosRef.current) {
             // Get new data based on user selection
             let newData = allAnalyteCombosRef.current;
-            console.log(newData);
             if (program) {
                 newData = newData.filter(d => d[capitalizeFirstLetter(program)] === 'True')
             }
@@ -221,7 +223,6 @@ export default function AccordionMenu({
                 newData = newData.filter(d => d.Analyte === analyte.label);
                 newData = newData.filter(d => d.MatrixDisplay === analyte.matrix);
             }
-            console.log(newData);
             // Update select menu lists
             if (updateAnalyte) {
                 updateAnalyteList(newData);

@@ -206,11 +206,13 @@ export default function Chart({ analyte, data, dateExtent }) {
             .attr('cy', d => yScale(d.ResultDisplay));
         points.exit()
             .remove();
+
+        setLoading(false);
     };
 
     useEffect(() => {
+        setLoading(true);
         if (data && dateExtent) {
-            setLoading(false);
             drawChart();
         }
     }, [data])

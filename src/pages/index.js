@@ -67,6 +67,7 @@ export default function Index() {
       .then((records) => {
         if (records) {
           records.forEach(d => {
+            d.Analyte = d.AnalyteDisplay;
             d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
             d.RegionName = regionDict[d.Region];
             d.TargetLatitude = +d.TargetLatitude;
@@ -90,7 +91,7 @@ export default function Index() {
         // There can be one or more filters
         const whereStatements = [];
         if (analyte) {
-          whereStatements.push(`"Analyte" = '${analyte.label}'`);
+          whereStatements.push(`"AnalyteDisplay" = '${analyte.label}'`);
           whereStatements.push(`"MatrixName" = '${analyte.matrix}'`);
         }
         if (program) {
@@ -152,7 +153,7 @@ export default function Index() {
           }
           if (uniqueStations[0].ResultDisplay) {
             uniqueStations.forEach(d => {
-              d.LastResult = +d.ResultDisplay
+              d.LastResult = parseFloat((+d.ResultDisplay).toFixed(3));
             });
           };
           setStationData(uniqueStations);

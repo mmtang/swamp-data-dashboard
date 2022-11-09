@@ -253,3 +253,15 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
 .ui.basic.button {
   border-radius: 0;
 }
+
+/* Search bar */
+#searchContainer .esri-input {
+  background-color: #103350 !important;
+  color: #fff !important;
+  font-family: inherit;
+}
+
+#searchContainer .esri-widget--button {
+  background-color: #103350 !important;
+  color: #fff !important;
+}
