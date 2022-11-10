@@ -42,6 +42,40 @@ export default function MapIndex2({
     // This ref is used to store the old array of site code strings. Will be compared to the new array.
     const comparisonSitesRef = useRef(null);
 
+    const addSearchSources = () => {
+        // Add Integrated Report layers
+        searchRef.current.sources.add({
+            layer: irLineRef.current,
+            searchFields: ['wbid', 'wbname'],
+            displayField: 'wbname',
+            exactMatch: false,
+            outFields: ['wbname'],
+            name: '2018 Integrated Report Streams, Rivers, Beaches',
+            placeholder: 'Example: Burney Creek'
+        });
+        searchRef.current.sources.add({
+            layer: irPolyRef.current,
+            searchFields: ['wbid', 'wbname'],
+            displayField: 'wbname',
+            exactMatch: false,
+            outFields: ['wbname'],
+            name: '2018 Integrated Report Lakes, Bays, Reservoirs',
+            placeholder: 'Example: Folsom Lake'
+        });
+
+        // Add Station Layer
+        searchRef.current.sources.add({
+            layer: stationLayerRef.current,
+            searchFields: ['StationName', 'StationCode'],
+            suggestionTemplate: '{StationCode} - {StationName}',
+            exactMatch: false,
+            outFields: ['StationName', 'StationCode'],
+            name: 'SWAMP Monitoring Stations',
+            placeholder: 'Example: Buena Vista Park',
+            zoomScale: 14000
+        });
+    }
+
     const drawRegions = () => {
         return new Promise((resolve, reject) => {
             if (mapRef) {
@@ -63,8 +97,12 @@ export default function MapIndex2({
     const drawIntegratedReport = () => {
         const irTemplate = {
             // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
+            // green = #518f33
             outFields: ['wbid', 'wbname', 'rb', 'wbtype', 'wb_category', 'wb_listingstatus', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_', 'fact_sheet'],
-            title: '{wbname}<br><span class="map-popup-subtitle" style="color: #518f33">2018 Integrated Report waterbody</span>',
+            /*
+            title: '<span style="font-size: 1.2em; color: #ffffff">{wbname}</span><br><span class="map-popup-subtitle" style="color: #d8e9f4">2018 Integrated Report waterbody</span>',
+            */
+            title: '<div style="padding: 4px 0"><span style="font-size: 1.05em; color: #ffffff">{wbname}</span></div>',
             content: [
                 {
                     type: 'fields',
@@ -139,52 +177,32 @@ export default function MapIndex2({
                 .then(([FeatureLayer, GroupLayer]) => {
                     irLineRef.current = new FeatureLayer({
                         id: 'ir-line-layer',
-                        title: 'Integrated Report Lines 2018',
+                        title: 'Streams, Rivers, Beaches',
                         url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/0',
                         outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
                         popupTemplate: irTemplate,
-                        listMode: 'show',
+                        listMode: 'hide',
                         renderer: irLineRenderer
                     });
                     irPolyRef.current = new FeatureLayer({
                         id: 'ir-poly-layer',
-                        title: 'Integrated Report Polygons 2018',
+                        title: 'Lakes, Bays, Reservoirs',
                         url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/1',
                         outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
                         popupTemplate: irTemplate,
                         renderer: irPolyRenderer,
-                        listMode: 'show',
+                        listMode: 'hide',
                         opacity: 0.8
                     });
                     irLayerRef.current = new GroupLayer({
                         id: 'ir-group-layer',
-                        title: 'Integrated Report 2018',
-                        visible: false,
+                        title: '2018 Integrated Report',
+                        visible: true,
                         layers: [irLineRef.current, irPolyRef.current],
                         listMode: 'show',
                         visibilityMode: 'inherited'
                     });
-                    // Add grouplayer to map
-                    // mapRef.current.add(irLayerRef.current);
-                    // Add feature layers to search widget
-                    searchRef.current.sources.add({
-                        layer: irLineRef.current,
-                        searchFields: ['wbid', 'wbname'],
-                        displayField: 'wbname',
-                        exactMatch: false,
-                        outFields: ['wbname'],
-                        name: 'Integrated Report Lines 2018',
-                        placeholder: 'Example: Burney Creek'
-                    });
-                    searchRef.current.sources.add({
-                        layer: irPolyRef.current,
-                        searchFields: ['wbid', 'wbname'],
-                        displayField: 'wbname',
-                        exactMatch: false,
-                        outFields: ['wbname'],
-                        name: 'Integrated Report Polygons 2018',
-                        placeholder: 'Example: Folsom Lake'
-                    });
+
                     resolve();
                 });
             }
@@ -210,7 +228,7 @@ export default function MapIndex2({
                         opacity: 0.5,
                         visible: false
                     });
-                    mapRef.current.add(landUseLayerRef.current);
+                    //mapRef.current.add(landUseLayerRef.current);
                     resolve();
                 });
             }
@@ -221,14 +239,14 @@ export default function MapIndex2({
     const refreshIntegratedReport = () => {
         const constructDefExpLine = () => {
             if (region) {
-                return `rb = '${irRegionDict[region]}'`;
+                return `rb = '${irRegionDict[regionDict[region]]}'`;
             } else if (!region) {
                 return '';
             }
         }
         const constructDefExpPoly = () => {
             if (region) {
-                return `rb_1 = '${irRegionDict[region]}'`;
+                return `rb_1 = '${irRegionDict[regionDict[region]]}'`;
             } else if (!region) {
                 return '';
             }
@@ -314,7 +332,7 @@ export default function MapIndex2({
                 searchRef.current = new Search({
                     view: viewRef.current,
                     container: 'searchContainer',
-                    allPlaceholder: 'Find a station',
+                    allPlaceholder: 'Find a station, waterbody',
                     includeDefaultSources: false,
                     locationEnabled: false,
                     popupEnabled: false,
@@ -327,13 +345,13 @@ export default function MapIndex2({
                     container: 'layerListContainer',
                     listItemCreatedFunction: function(event) {
                         const item = event.item;
-                        if (item.layer.type !== 'group') {
+                        //if (item.layer.type !== 'group') {
                           // don't show legend twice
                           item.panel = {
                             content: 'legend',
                             open: true
                           };
-                        }
+                        //}
                     }
                 });
 
@@ -392,26 +410,12 @@ export default function MapIndex2({
                                 objectIdField: 'ObjectId',
                                 geometryType: 'point',
                                 spatialReference: 3857,
-                                title: 'SWAMP Monitoring Stations',
+                                title: 'SWAMP Stations',
                                 source: res,
                                 fields: stationDataFields,
                                 outFields: ['*'],
                                 renderer: stationRenderer,
                                 popupTemplate: stationTemplate
-                            });
-                            // Add layer to map
-                            mapRef.current.add(stationLayerRef.current);
-    
-                            // Add station layer data to search
-                            searchRef.current.sources.add({
-                                layer: stationLayerRef.current,
-                                searchFields: ['StationName', 'StationCode'],
-                                suggestionTemplate: '{StationCode} - {StationName}',
-                                exactMatch: false,
-                                outFields: ['StationName', 'StationCode'],
-                                name: 'SWAMP Monitoring Stations',
-                                placeholder: 'Example: Buena Vista Park',
-                                zoomScale: 14000
                             });
     
                             // Add hover listener to display tooltip
@@ -443,7 +447,9 @@ export default function MapIndex2({
                                         };
                                     } else { 
                                         // close graphic's popup
+                                        /*
                                         viewRef.current.popup.close(); 
+                                        */
                                         lastStationHovered = null;
                                     }
                                 });
@@ -467,6 +473,9 @@ export default function MapIndex2({
                     drawIntegratedReport(),
                     drawLandUse()
                 ]).then(values => {
+                    // Add layers in order
+                    mapRef.current.addMany([landUseLayerRef.current, irLayerRef.current, stationLayerRef.current]);
+                    addSearchSources();
                     setMapLoaded(true);
                 });
             });
@@ -571,13 +580,12 @@ export default function MapIndex2({
         }
     }
 
-    // Update/refresh station layer with new data
     useEffect(() => {
         if (stationLayerRef.current) {
-            console.log(searchRef.current.sources);
             refreshStationLayer(stationData);
         }
-    }, [stationData]);
+    }
+    , [stationData]);
 
     useEffect(() => {
         if (zoomToStation) {
@@ -640,8 +648,8 @@ export default function MapIndex2({
         }
 
         if (mapRef.current) {
-            refreshIntegratedReport();
             if (region) {
+                refreshIntegratedReport();
                 zoomToRegion(regionDict[region]);
             }
         }

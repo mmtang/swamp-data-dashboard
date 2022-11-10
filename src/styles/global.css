@@ -117,6 +117,11 @@ a {
   font-size: 0.92em;
 }
 
+/* Sub-layer title */
+.esri-legend h3 {
+  font-size: 0.88em !important;
+}
+
 /* Layer list item container, including legend */
 .esri-layer-list__item {
   border-bottom: 0 !important;
@@ -173,10 +178,6 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
   font-weight: 600 !important;
 }
 
-.esri-search {
-  width: auto !important;
-}
-
 /* Hide close button in map popups */
 .esri-popup__header-buttons {
   display: none !important;
@@ -185,7 +186,7 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
 .esri-popup__header h2 {
   font-size: 1em !important;
   font-weight: 400;
-  background-color: #1a252f !important;
+  background-color: #1a252f !important; /* #1a252f #103350 */
   padding: 6px 10px;
   margin: 0;
 }
@@ -201,14 +202,12 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
 
 .esri-popup__main-container.esri-widget {
   width: auto !important;
-  max-width: 200px !important;
+  max-width: 300px !important;
 }
 
-/*
 .esri-popup__content {
-  margin: 0 !important;
+  margin: 8px 0 !important;
 }
-*/
 
 /* To hide the footer area in ArcGIS 4.14 */
 .esri-popup__footer {
@@ -256,8 +255,8 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
 
 /* Search bar */
 #searchContainer .esri-input {
-  background-color: #103350 !important;
-  color: #fff !important;
+  background-color: #f5f4f3 !important;  /* #103350 */
+  color: #757575 !important;
   font-family: inherit;
 }
 
