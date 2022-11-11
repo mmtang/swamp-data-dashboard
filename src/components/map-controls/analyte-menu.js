@@ -169,12 +169,12 @@ export default function AnalyteMenu({ analyte, analyteList, category, categoryLi
             : <div style={wrapperStyle}><LoaderMenu /></div> }
             { !loadingAnalyte ? 
                 <Select
-                    options={analyteList} 
                     isClearable={true}
                     isLoading={loadingAnalyte}
                     isSearchable={true}
                     placeholder='Parameter'
                     onChange={handleAnalyteChange}
+                    options={analyteList} 
                     styles={customSelectStyle}
                     maxMenuHeight={200}
                     formatOptionLabel={formatOptionLabel}

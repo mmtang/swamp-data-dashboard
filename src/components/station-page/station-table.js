@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import MatrixTag from '../common/matrix-tag';
 import TrendHelpIcon from '../common/trend-help-icon';
 import DataTable from 'react-data-table-component';
@@ -6,7 +6,9 @@ import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { tableWrapper } from './station-table.module.css';
 
 // This component renders the data (passed from index, the parent component) on the station page.
-export default function StationTable({ data, setSelectedAnalytes }) {
+export default function StationTable({ data, selectedCategory, setSelectedAnalytes }) {
+    const [toggledClearRows, setToggledClearRows] = useState(false);
+
     // Overrides:
     // https://github.com/jbetancur/react-data-table-component/blob/master/src/DataTable/styles.js
     const customStyles = {
@@ -131,10 +133,19 @@ export default function StationTable({ data, setSelectedAnalytes }) {
         });
         setSelectedAnalytes(newSelection);
     };
+
+    useEffect(() => {
+        // Set toggledClearRows (state) to the opposite boolean value in order to clear all rows
+        // https://react-data-table-component.netlify.app/?path=/docs/selectable-manage-selections--manage-selections
+        setToggledClearRows(!toggledClearRows);
+        // Also clear state for parent component to clear the analyte count displayed in button
+        setSelectedAnalytes([]);
+    }, [selectedCategory]);
     
     return (
         <div className={tableWrapper}>
             <DataTable 
+                clearSelectedRows={toggledClearRows}
                 columns={columns} 
                 customStyles={customStyles}
                 data={data} 
