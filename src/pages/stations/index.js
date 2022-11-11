@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef  } from 'react';
-import DownloadData from '../../components/common/download-data';
+// import DownloadData from '../../components/common/download-data';
 import ChartModal from '../../components/station-page/chart-modal';
 import ErrorFullscreen from '../../components/common/error-fullscreen';
 import LayoutMap from '../../components/layout/layout-map';
@@ -8,20 +8,26 @@ import MapStation from '../../components/map/map-station';
 import Navbar from '../../components/navbar/navbar';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
 import StationTable from '../../components/station-page/station-table';
+import TableMenu from '../../components/station-page/table-menu';
+
 import { regionDict, fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 import { appContainer, buttonContainer, contentGrid, header, leftContainer, mainGrid, rightContainer, siteMapContainer, stationName } from './index.module.css';
+
 import Metadata from '../../components/layout/metadata';
 
 
 export default function Station(props) {
+    const allDataRef = useRef(null);  // Save all analyte data points for this station; for filtering
+    const categoriesRef = useRef(null);
+    const errorRef = useRef(null);
     const stationCodeRef = useRef(null);
     const stationObjRef = useRef(null);
-    const errorRef = useRef(null);
 
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [loading, setLoading] = useState('true');
-    const [tableData, setTableData] = useState(null);
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
+    const [tableData, setTableData] = useState(null);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = timeFormat('%Y/%m/%d');
@@ -70,6 +76,15 @@ export default function Station(props) {
                 });
             };
         })
+    }
+
+    const getCategories = (data) => {
+        const categories = data.map(d => d.AnalyteGroup1);
+        let uniqueCategories = [... new Set(categories)];
+        uniqueCategories.sort();
+        // Filter out null values, don't want this value to show in the select menu
+        uniqueCategories = uniqueCategories.filter(d => d !== null);
+        categoriesRef.current = uniqueCategories;
     }
 
     const getData = (params, source) => {
@@ -132,11 +147,22 @@ export default function Station(props) {
                     allRecords.forEach((d) => {
                         d.Analyte = d.AnalyteDisplay;
                     });
+                    getCategories(allRecords);
+                    allDataRef.current = allRecords; // Save for use later (filtering)
                     setTableData(allRecords);
                     setLoading('false');
                 });
             });
     }, []);
+
+    useEffect(() => {
+        if (selectedCategory) {
+            const newAnalytes = allDataRef.current.filter(d => d.AnalyteGroup1 === selectedCategory.value);
+            setTableData(newAnalytes);
+        } else {
+            setTableData(allDataRef.current);
+        }
+    }, [selectedCategory])
 
     const pageContent = () => {
         return (
@@ -164,19 +190,31 @@ export default function Station(props) {
                         </section>
                         <section>
                             <div className={buttonContainer}>
-                                <ChartModal
-                                    station={stationObjRef.current.StationCode} 
-                                    stationName={stationObjRef.current.StationName}
-                                    selectedAnalytes={selectedAnalytes} 
-                                />
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <ChartModal
+                                        station={stationObjRef.current.StationCode} 
+                                        stationName={stationObjRef.current.StationName}
+                                        selectedAnalytes={selectedAnalytes} 
+                                    />
+                                    <TableMenu 
+                                        categories={categoriesRef.current} 
+                                        selectedCategory={selectedCategory}
+                                        setSelectedCategory={setSelectedCategory}
+                                    />
+                                </div>
+                                    Search
+                                
+                                {/*
                                 <DownloadData 
                                     data={tableData}
                                     fields={['StationCode', 'StationName', 'RegionName', 'TargetLatitude', 'TargetLongitude', 'Analyte', 'NumResults', 'LastSampleDate', 'LastResult', 'Unit', 'Trend', 'Min', 'Mean', 'Median', 'Max']}
                                 >
                                     Download table data
                                 </DownloadData>
+                                */}
                             </div>
                             <StationTable 
+                                selectedCategory={selectedCategory}
                                 station={stationObjRef.current.StationCode} 
                                 data={tableData}
                                 setSelectedAnalytes={setSelectedAnalytes}
@@ -191,8 +229,8 @@ export default function Station(props) {
     return (
         <div className={appContainer}>
             <Metadata title='Monitoring Station' />
-            { loading === 'true' ? <LayoutMap><LoaderDashboard /></LayoutMap> :
-            loading === 'error' ? <LayoutMap><ErrorFullscreen>{errorRef.current}</ErrorFullscreen></LayoutMap> :
+            { loading === 'true' ? <LayoutMap search={false}><LoaderDashboard /></LayoutMap> :
+            loading === 'error' ? <LayoutMap search={false}><ErrorFullscreen>{errorRef.current}</ErrorFullscreen></LayoutMap> :
             loading === 'false' && stationObjRef.current ? pageContent() :
             <LoaderDashboard /> // Catch all other values
             }

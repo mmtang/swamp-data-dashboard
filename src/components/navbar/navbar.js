@@ -4,7 +4,9 @@ import { withPrefix } from 'gatsby';
 // import LinkDropdown from './link-dropdown';
 import { navBar, navTitle, navMenu, titleContainer, logo } from './navbar.module.css';
 
-const Navbar = ({ active }) => {
+const Navbar = ({ active, search }) => {
+    console.log(search);
+
     return (
         <div className={navBar}>
             {/* Wrap navbar header text in span */}
@@ -13,7 +15,10 @@ const Navbar = ({ active }) => {
                 <a href='https://www.waterboards.ca.gov/water_issues/programs/swamp/' target='_blank' rel='noreferrer noopener'><img className={logo} src={withPrefix('/swamp-logo-white-small.png')} /></a>
                 <Link to="/"><span className={navTitle}>SWAMP Data Dashboard</span></Link>
             </div>
-            <div id="searchContainer" style={{ border: '1px solid #2e4558', marginRight: '26px', width: '250px' }} />
+            { search ? 
+                <div id="searchContainer" style={{ border: '1px solid #2e4558', marginRight: '26px', width: '250px' }} />
+                : null
+            }
             {/*
             <div className={navMenu}>
                 <ul>

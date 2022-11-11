@@ -19,15 +19,16 @@ export default function ChartModal({ station, stationName, selectedAnalytes }) {
     return (
         <div>
             <Button 
+                basic
                 className={rowButton}
-                compact 
-                size='tiny'
+                color='grey'
+                size='small'
                 disabled={selectedAnalytes.length < 1}
                 onClick={handleClick} 
                 onKeyPress={handleClick}
             >
                 <Icon name='chart bar' />
-                Graph data {selectedAnalytes.length > 0 ? `(${selectedAnalytes.length})` : '(0)' }
+                Graph {selectedAnalytes.length > 0 ? `(${selectedAnalytes.length})` : '(0)' }
             </Button>
             { modalVisible ? 
                 <Modal
