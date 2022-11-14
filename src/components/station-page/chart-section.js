@@ -1,14 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { withPrefix } from 'gatsby';
+//import { withPrefix } from 'gatsby';
 import Chart from './chart';
 import DownloadData from '../common/download-data';
-import HelpIcon from '../icons/help-icon';
 import MatrixTag from '../common/matrix-tag';
 import MessageDismissible from '../common/message-dismissible';
 
-import { Icon } from 'semantic-ui-react';
 import { timeParse, extent } from 'd3';
-import { analytes, chemDataFields, habitatDataFields, toxicityDataFields } from '../../constants/constants-data';
+import { chemDataFields, habitatDataFields, toxicityDataFields } from '../../constants/constants-data';
 import { chemistryResourceId, habitatResourceId, toxicityResourceId } from '../../utils/utils';
 
 import { sectionContainer, analyteHeader, analyteTitle } from './chart-section.module.css';
@@ -167,20 +165,11 @@ export default function ChartSection({ station, selectedAnalytes }) {
                             { analyteObj.Matrix ? <MatrixTag matrix={analyteObj.Matrix} height={25} /> : null }
                             <h4 className={analyteTitle}>
                                 {analyteObj.Analyte}
+                                {/*
                                 { analyteObj.Analyte === 'pH' ? null : 
                                 data ? ` (${data[analyteObj.Key].unit})` :
                                 null }
-                                { analytes[analyteObj.Analyte] ? 
-                                <HelpIcon position='right center' color='grey'>
-                                    <div style={{ fontSize: '13px' }}>
-                                        { analytes[analyteObj.Analyte]['blurb'] }
-                                        &nbsp;
-                                        { /* Display the 'Read more' link for those indicators that have an indicator page. Do not display the link if the page does not exist yet */ }
-                                        { analytes[analyteObj.Analyte]['page'] ? <a href={withPrefix(`/learn/indicators/${analytes[analyteObj.Analyte]['page']}`)} target='_blank' rel='noreferrer noopener'>Read more&nbsp;&nbsp;<Icon name='external' /></a> : '' }
-                                    </div>
-                                </HelpIcon>
-                                : null
-                                }
+                                */}
                             </h4>
                         </div>
                         <DownloadData 
@@ -197,10 +186,10 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         </DownloadData>
                     </div>
                     <Chart 
-                        station={station}
                         analyte={analyteObj.Analyte}
                         data={data ? data[analyteObj.Key].data : null}
                         dateExtent={dateExtentRef.current}
+                        unit={data ? data[analyteObj.Key].unit : null}
                     />
                 </div>
             )}

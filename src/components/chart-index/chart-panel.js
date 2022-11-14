@@ -1,31 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import AnalyteCard from '../map-controls/analyte-card';
-import DownloadData from '../common/download-data';
-import LoaderBlock from '../common/loader-block';
-import MessageDismissible from '../common/message-dismissible';
+import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { legendColor } from 'd3-svg-legend';
-import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { analytes, analyteScoringCategories, habitatAnalytes, analyteYMax, chemDataFields, habitatDataFields, dataQualityCategories  } from '../../constants/constants-data';
-// import { colorPaletteViz } from '../../constants/constants-app';
-import { buttonContainer, customTooltip, chartFooter, legendContainer, cardWrapper, modalContent, downloadWrapper } from './chart-index.module.css';
+// import { legendColor } from 'd3-svg-legend';
+import { analyteYMax  } from '../../constants/constants-data';
+import { customTooltip, modalContent } from './chart-index.module.css';
 
 // Component for rendering graph on the dashboard index page (from map and dashboard)
 export default function ChartPanel({ analyte, data, unit, vizColors }) {
-    const [overSelectionLimit, setOverSelectionLimit] = useState(false);
-
-    const limitRef = useRef(5); // Limit number of sites that can be graphed
-    const unitRef = useRef(null);
-    const siteDictRef = useRef({});
-
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
-    const parseDate = d3.timeParse('%Y-%m-%dT%H:%M:%S');
     const formatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
-
-    /*
-    const overLimitMessage = `A maximum of ${limitRef.current.toLocaleString()} stations can be graphed at one time. ${limitRef.current.toLocaleString()} of the ${selectedSites.length} stations you selected are graphed below.`;
-    */
 
     useEffect(() => {
         const responsive = (id) => {
@@ -60,9 +43,7 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             const targetWidth = parseInt(container.getBoundingClientRect().width);
 
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 20, right: 85, bottom: 30, left: 55 };
-            //const width = 645 + margin.left + margin.right;
-            //const height = 220 + margin.top + margin.bottom;
+            const margin = { top: 20, right: 35, bottom: 30, left: 55 };
             const width = targetWidth;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 5;
@@ -166,19 +147,6 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             d3.selectAll('.axis > .tick > text')
                 .style('font-size', '1.3em')
                 .style('font-family', 'Source Sans Pro');
-            
-            /* Taking this out and putting unit in the modal header (consistent with station charts)
-            // Draw unit on top of y-axis
-            chart.append('text')
-                .attr('class', 'unitLabel')
-                //.attr('x', 10)
-                //.attr('y', margin.top / 2)
-                .attr('transform', `translate(18, ${margin.top}) rotate(-90)`)
-                .attr('font-size', '11px')
-                .attr('fill', '#41464b')
-                .attr('text-anchor', 'end')
-                .text(unitRef.current);
-            */
 
             /*
             // Draw reference geometries (scoring categories)
@@ -213,15 +181,18 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             }
             */
 
+            /* 
+            // 11/14/22 - Changed lines + points to just lines
+            // Commented out for reference and for if we decide to add the lines back
             const resultLine = d3.line()
                 .x(d => xScale(d.SampleDate))
                 .y(d => yScale(d.ResultDisplay))
                 //.curve(d3.curveMonotoneX) // apply smoothing to the line
+            */
         
             // Loops through each site and draw lines + points
             for (let i = 0; i < siteKeys.length; i++) {
-                //console.log(data.sites[siteKeys[i]]);
-
+                /*
                 // Draw lines
                 const lines = chart.append('g');
                     //.attr('clip-path', 'url(#clip)');
@@ -237,7 +208,7 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
                     .attr('d', resultLine(data.sites[siteKeys[i]]))
                 lines.exit()
                     .remove();
-
+                */
 
                 // Add points
                 const points = chart.append('g')
@@ -287,7 +258,7 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
                 points.exit()
                     .remove();
 
-
+                /*
                 // Add labels to lines
                 lines.append('text')
                     .attr('class', 'series-label')
@@ -301,44 +272,8 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
                     .style('font-size', '0.83em')
                     .style('font-weight', 600)
                     .text(d => d.StationCode);
+                */
             }
-
-            {/*
-            // *** Legend
-            // Combine site codes and names
-            let legendLabels = [];
-            for (let i = 0; i < siteKeys.length; i++) {
-                //const combinedName = `${siteKeys[i]} (${siteDictRef.current[siteKeys[i]].name})`;
-                //const shortenedName = combinedName.length > 40 ? combinedName.slice(0, 40) + '...' : combinedName
-                const shortenedName = siteKeys[i];
-                legendLabels.push(shortenedName);
-            }
-            // Add legend
-            const svgLegend = d3.select('#index-legend-container').append('svg')
-                .attr('class', 'legend')
-                .attr('width', 350)
-                .attr('height', 24 * siteKeys.length);
-            svgLegend.append('g')
-                .attr('class', 'legendOrdinal')
-                .attr('transform', 'translate(10, 10)');
-            const ordinal = d3.scaleOrdinal()
-                .domain(legendLabels)
-                .range(colorPaletteViz);
-            const legendOrdinal = legendColor()
-                //d3 symbol creates a path-string, for example
-                //"M0,-8.059274488676564L9.306048591020996,
-                //8.059274488676564 -9.306048591020996,8.059274488676564Z"
-                .shape('path', d3.symbol().type(d3.symbolCircle).size(100)())
-                .shapePadding(6)
-                //use cellFilter to hide the "e" cell
-                .cellFilter(function(d){ return d.label !== 'e' })
-                .scale(ordinal)
-                .orient('vertical')
-                //.labelWrap(80)
-                //.labelAlign('middle');
-            svgLegend.select('.legendOrdinal')
-                .call(legendOrdinal);
-            */}
         };
 
         if (data) {
@@ -348,18 +283,7 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
     
     return (
         <div className={modalContent}>
-            {/* Display message if user selects too many sites */}
-            {/*
-            { overSelectionLimit ? 
-                <MessageDismissible color='red' message={overLimitMessage} /> 
-            : null }
-            */}
             <div id="index-chart-container"></div>
-            {/*
-            <div className={chartFooter}>
-                <div id="index-legend-container" className={legendContainer}></div>
-            </div>
-            */}
         </div>
     );
 }
