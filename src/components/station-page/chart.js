@@ -5,7 +5,7 @@ import { analyteYMax, analyteScoringCategories, analytes } from '../../constants
 import { colorPaletteViz } from '../../constants/constants-app';
 import { chartContainer, customTooltip, chart } from './chart.module.css';
 
-export default function Chart({ analyte, data, dateExtent }) {
+export default function Chart({ analyte, data, dateExtent, unit }) {
     const [loading, setLoading] = useState(true);
 
     const formatDate = d3.timeFormat('%b %e, %Y');
@@ -113,7 +113,16 @@ export default function Chart({ analyte, data, dateExtent }) {
         chart.append('g')
             .attr('class', 'y axis')
             .attr('transform', 'translate(' + margin.left + ', 0)')
-            .call(yAxis);
+            .call(yAxis)
+            .append('text') // Add y-axis label (unit)
+            .attr('transform', 'rotate(-90)')
+            .attr('dy', '0.75em')
+            .attr('x' , 0 - margin.top)
+            .attr('y', 6)
+            .style('fill', '#5d5d5d')
+            .style('font-size', '12px')
+            .style('text-anchor', 'end')
+            .text(unit);
 
         // Restyle axis text elements
         d3.selectAll('.axis > .tick > text')
