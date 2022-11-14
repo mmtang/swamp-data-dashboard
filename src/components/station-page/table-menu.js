@@ -8,6 +8,11 @@ import { customSelectStyle } from '../../utils/utils';
 export default function TableMenu({ categories, selectedCategory, setSelectedCategory }) {
     const [options, setOptions] = useState(null);
 
+    const containerStyle = {
+        marginRight: '0.32em',
+        width: '185px'
+    }
+
     const handleChange = (selection) => {
         if (selection) {
             setSelectedCategory(selection);
@@ -30,7 +35,7 @@ export default function TableMenu({ categories, selectedCategory, setSelectedCat
     }, [categories]);
 
     return (
-        <div style={{ width: '185px' }}>
+        <div style={containerStyle}>
             <Select
                 components={{
                     Control: ({ ...props }) => (

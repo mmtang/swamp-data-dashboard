@@ -5,8 +5,6 @@ import { withPrefix } from 'gatsby';
 import { navBar, navTitle, navMenu, titleContainer, logo } from './navbar.module.css';
 
 const Navbar = ({ active, search }) => {
-    console.log(search);
-
     return (
         <div className={navBar}>
             {/* Wrap navbar header text in span */}
