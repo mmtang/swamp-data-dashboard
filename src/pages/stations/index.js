@@ -9,6 +9,7 @@ import Navbar from '../../components/navbar/navbar';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
 import StationTable from '../../components/station-page/station-table';
 import TableMenu from '../../components/station-page/table-menu';
+import TableSearch from '../../components/station-page/table-search';
 
 import { regionDict, fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
@@ -24,8 +25,9 @@ export default function Station(props) {
     const stationCodeRef = useRef(null);
     const stationObjRef = useRef(null);
 
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [filterText, setFilterText] = useState('');
     const [loading, setLoading] = useState('true');
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
     const [tableData, setTableData] = useState(null);
 
@@ -157,12 +159,39 @@ export default function Station(props) {
 
     useEffect(() => {
         if (selectedCategory) {
-            const newAnalytes = allDataRef.current.filter(d => d.AnalyteGroup1 === selectedCategory.value);
-            setTableData(newAnalytes);
+            const newSelection = allDataRef.current.filter(d => d.AnalyteGroup1 === selectedCategory.value);
+            setTableData(newSelection);
         } else {
             setTableData(allDataRef.current);
         }
     }, [selectedCategory])
+
+    // This function handles changes to the search bar input element. It filters the table data and then changes the table data state to the newly selected records. This function also handles resetting the table data state (when the user clears the search bar). 
+    // The search filter builds upon the category filter. As in, the search filter is applied after the category flter. If the search input is cleared, the table data will revert to the dataset that was filtered by category (if a category was selected). If no category was selected, then the table data will be reset to the original dataset with all records.
+    useEffect(() => {
+        if (filterText.length > 0) {
+            // Filter records based on search input
+            let records = [];
+            if (selectedCategory) {
+                records = allDataRef.current.filter(d => d.AnalyteGroup1 === selectedCategory.value);
+            } else {
+                records = allDataRef.current;
+            }
+            const newSelection = records.filter(d => {
+                return d.Analyte.toLowerCase().includes(filterText.toLowerCase());
+            });
+            setTableData(newSelection);
+        } else {
+            // Reset records
+            let resetRecords = [];
+            if (selectedCategory) {
+                resetRecords = allDataRef.current.filter(d => d.AnalyteGroup1 === selectedCategory.value);
+            } else {
+                resetRecords = allDataRef.current;
+            }
+            setTableData(resetRecords);
+        }
+    }, [filterText])
 
     const pageContent = () => {
         return (
@@ -190,19 +219,20 @@ export default function Station(props) {
                         </section>
                         <section>
                             <div className={buttonContainer}>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <ChartModal
-                                        station={stationObjRef.current.StationCode} 
-                                        stationName={stationObjRef.current.StationName}
-                                        selectedAnalytes={selectedAnalytes} 
-                                    />
-                                    <TableMenu 
-                                        categories={categoriesRef.current} 
-                                        selectedCategory={selectedCategory}
-                                        setSelectedCategory={setSelectedCategory}
-                                    />
-                                </div>
-                                    Search
+                                <ChartModal
+                                    station={stationObjRef.current.StationCode} 
+                                    stationName={stationObjRef.current.StationName}
+                                    selectedAnalytes={selectedAnalytes} 
+                                />
+                                <TableMenu 
+                                    categories={categoriesRef.current} 
+                                    selectedCategory={selectedCategory}
+                                    setSelectedCategory={setSelectedCategory}
+                                />
+                                <TableSearch
+                                    filterText={filterText}
+                                    setFilterText={setFilterText} 
+                                />
                                 
                                 {/*
                                 <DownloadData 

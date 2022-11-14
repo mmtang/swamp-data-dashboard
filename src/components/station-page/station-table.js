@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import MatrixTag from '../common/matrix-tag';
-import TrendHelpIcon from '../common/trend-help-icon';
+// import TrendHelpIcon from '../common/trend-help-icon';
 import DataTable from 'react-data-table-component';
 import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { tableWrapper } from './station-table.module.css';
@@ -134,6 +134,9 @@ export default function StationTable({ data, selectedCategory, setSelectedAnalyt
         setSelectedAnalytes(newSelection);
     };
 
+    // Commented out 11/13/22 - From a UX perspective, we may want the user selection to persist even when the category is changed. If the user is searching many records, then they may be trying to narrow down their selections, and resetting the selected analytes could cause a lot of frustration
+    // Keep for reference or if we decide to add it back
+    /*
     useEffect(() => {
         // Set toggledClearRows (state) to the opposite boolean value in order to clear all rows
         // https://react-data-table-component.netlify.app/?path=/docs/selectable-manage-selections--manage-selections
@@ -141,6 +144,7 @@ export default function StationTable({ data, selectedCategory, setSelectedAnalyt
         // Also clear state for parent component to clear the analyte count displayed in button
         setSelectedAnalytes([]);
     }, [selectedCategory]);
+    */
     
     return (
         <div className={tableWrapper}>
