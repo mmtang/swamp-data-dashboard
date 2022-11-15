@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import MatrixTag from '../common/matrix-tag';
 // import TrendHelpIcon from '../common/trend-help-icon';
 import DataTable from 'react-data-table-component';
-import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
+// import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
 import { tableWrapper } from './station-table.module.css';
 
 // This component renders the data (passed from index, the parent component) on the station page.
-export default function StationTable({ data, selectedCategory, setSelectedAnalytes }) {
+export default function StationTable({ data, selectedAnalytes, setSelectedAnalytes }) {
     const [toggledClearRows, setToggledClearRows] = useState(false);
 
     // Overrides:
@@ -26,6 +26,7 @@ export default function StationTable({ data, selectedCategory, setSelectedAnalyt
         }
     }
 
+    /*
     // Function for rendering the trend and accompanying icon in the table
     const CustomTrend = ({ row }) => {
         return (
@@ -38,6 +39,7 @@ export default function StationTable({ data, selectedCategory, setSelectedAnalyt
             </div>
         )
     }
+    */
 
     const columns = [
         {
@@ -145,6 +147,14 @@ export default function StationTable({ data, selectedCategory, setSelectedAnalyt
         setSelectedAnalytes([]);
     }, [selectedCategory]);
     */
+
+    useEffect(() => {
+        if (selectedAnalytes.length === 0) {
+            // Set toggledClearRows (state) to the opposite boolean value in order to clear all rows
+            // https://react-data-table-component.netlify.app/?path=/docs/selectable-manage-selections--manage-selections
+            setToggledClearRows(!toggledClearRows);
+        }
+    }, [selectedAnalytes]);
     
     return (
         <div className={tableWrapper}>

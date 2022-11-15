@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-
 import { Button, Icon, Popup, Segment, Table } from 'semantic-ui-react';
+import { colorPaletteViz, popupStyle } from '../../constants/constants-app';
 
-import { colorPaletteViz } from '../../constants/constants-app';
 
 export default function CompareSites({ 
     comparisonSites, 
@@ -15,13 +14,6 @@ export default function CompareSites({
 }) {  
     const [allSites, setAllSites] = useState([]);
     const selectLimit = 5;
-
-    const popupStyle = {
-        backgroundColor: '#1a252f',
-        borderRadius: 0,
-        color: '#ffffff',
-        fontSize: '0.8em'
-    };
     
     const handleChange = (evt) => {
         if (!selecting) {

@@ -8,6 +8,7 @@ import MapStation from '../../components/map/map-station';
 import Navbar from '../../components/navbar/navbar';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
 import StationTable from '../../components/station-page/station-table';
+import TableClear from '../../components/station-page/table-clear';
 import TableMenu from '../../components/station-page/table-menu';
 import TableSearch from '../../components/station-page/table-search';
 
@@ -233,7 +234,6 @@ export default function Station(props) {
                                     filterText={filterText}
                                     setFilterText={setFilterText} 
                                 />
-                                
                                 {/*
                                 <DownloadData 
                                     data={tableData}
@@ -243,10 +243,13 @@ export default function Station(props) {
                                 </DownloadData>
                                 */}
                             </div>
+                            <TableClear
+                                selectedAnalytes={selectedAnalytes} 
+                                setSelectedAnalytes={setSelectedAnalytes}
+                            />
                             <StationTable 
-                                selectedCategory={selectedCategory}
-                                station={stationObjRef.current.StationCode} 
                                 data={tableData}
+                                selectedAnalytes={selectedAnalytes}
                                 setSelectedAnalytes={setSelectedAnalytes}
                             />
                         </section>

@@ -32,7 +32,6 @@ export default function PanelStationInfo({
      // Make a copy of the colorPaletteViz array. Used to keep track of what colors are being used and not being used in the current render. We don't want color to be tied to array position; or else the color of a site will change everytime a site before it is removed from the comparisonSites selection. Will use a fresh copy everytime the selected station changes.
      const [vizColors, setVizColors] = useState(colorPaletteViz);  
 
-    const [downloadData, setDownloadData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [panelAnalyte, setPanelAnalyte] = useState(analyte);
 
@@ -152,6 +151,7 @@ export default function PanelStationInfo({
                 let dataDict = {}; // Dictionary to store data (key = StationCode)
                 let allUnitValues = []; // Dictionary to store all unit values, will be used to find unique values
                 // Assign arrays to dictionary using station name as key
+                console.log(res);
                 for (let i = 0; i < res.length; i++) {
                     const stationCode = res[i][0]['StationCode'];
                     dataDict[stationCode] = res[i];
@@ -210,7 +210,7 @@ export default function PanelStationInfo({
                 station={station} 
             />
             {/* ------ Chart */}
-            <Segment placeholder  textAlign='center'>
+            <Segment placeholder textAlign='center'>
                 { panelAnalyte && !loading ?  // If an analyte is selected and there is no loading status, show the chart
                     <ChartPanel 
                         analyte={panelAnalyte} 
