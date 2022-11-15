@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
+import InfoModalContent from '../components/common/info-modal-content';
 import LayoutMap from '../components/layout/layout-map';
 import Metadata from '../components/layout/metadata';
 import PanelIndex from '../components/panels/panel-index';
 import PanelMap from '../components/panels/panel-map';
 import PanelStation from '../components/panels/panel-station';
+
+import { Modal } from 'semantic-ui-react';
 
 import { 
   capitalizeFirstLetter, 
@@ -14,6 +17,7 @@ import {
   regionDict,
   toxicityResourceId
 } from '../utils/utils';
+
 import { mapContainer } from './index.module.css';
 
 export default function Index() {
@@ -21,6 +25,7 @@ export default function Index() {
   const allStationRef = useRef();
 
   const [analyte, setAnalyte] = useState(null);
+  const [disclaimerVisible, setDisclaimerVisible] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [program, setProgram] = useState(null);
@@ -174,7 +179,7 @@ export default function Index() {
 
   useEffect(() => {
     if (mapLoaded) {
-      //setDisclaimerVisible(true);
+      setDisclaimerVisible(true);
       setLoaded(true);
     }
   }, [mapLoaded]);
@@ -229,28 +234,19 @@ export default function Index() {
         setZoomToStation={setZoomToStation}
         station={station} 
       />
-      {/*
       { disclaimerVisible ? 
           <Modal
-              size='tiny'
+              closeIcon
+              closeOnDimmerClick={true}
               open={disclaimerVisible}
               onClose={() => setDisclaimerVisible(false)}
-              closeOnDimmerClick={false}
+              size='small'
           >
               <Modal.Content>
-                  <div className={modalContent}>
-                    <img className={swampIcon} src={`./swamp-logo-black-small.png`} alt='SWAMP logo' />
-                    <p>Welcome to the <strong>SWAMP Data Dashboard</strong>, an interactive tool for exploring and downloading water quality data collected by the <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">Surface Water Ambient Monitoring Program</a> (SWAMP).</p>
-                    <p><Icon name='exclamation triangle' />This dashboard is in <strong>public beta</strong> and may change at any time without prior notification. All data are provisional and should not be used for any particular purpose other than general reference. Feedback and general inquiries: <a href="mailto:swamp@waterboards.ca.gov">swamp@waterboards.ca.gov</a>.</p>
-                    <p>
-                      <button className={modalButton} onClick={() => setDisclaimerVisible(false)} onKeyPress={() => setDisclaimerVisible(false)}>Go to the dashboard</button>
-                    </p>
-                    <UpdateMessage />
-                  </div>
+                  <InfoModalContent setDisclaimerVisible={setDisclaimerVisible} />
               </Modal.Content>
           </Modal> 
       : '' }
-      */}
     </LayoutMap>
   )
 }
