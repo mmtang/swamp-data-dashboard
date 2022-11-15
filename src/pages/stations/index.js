@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef  } from 'react';
-// import DownloadData from '../../components/common/download-data';
 import ChartModal from '../../components/station-page/chart-modal';
 import ErrorFullscreen from '../../components/common/error-fullscreen';
 import LayoutMap from '../../components/layout/layout-map';
 import LoaderDashboard from '../../components/common/loader-dashboard';
 import MapStation from '../../components/map/map-station';
+import Metadata from '../../components/layout/metadata';
 import Navbar from '../../components/navbar/navbar';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
 import StationTable from '../../components/station-page/station-table';
@@ -14,9 +14,17 @@ import TableSearch from '../../components/station-page/table-search';
 
 import { regionDict, fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
-import { appContainer, buttonContainer, contentGrid, header, leftContainer, mainGrid, rightContainer, siteMapContainer, stationName } from './index.module.css';
-
-import Metadata from '../../components/layout/metadata';
+import { 
+    appContainer, 
+    buttonContainer, 
+    contentGrid, 
+    header, 
+    leftContainer, 
+    mainGrid, 
+    rightContainer, 
+    siteMapContainer, 
+    stationName 
+} from './index.module.css';
 
 
 export default function Station(props) {
@@ -30,6 +38,7 @@ export default function Station(props) {
     const [loading, setLoading] = useState('true');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
+    const [disclaimerVisible, setDisclaimerVisible] = useState(false);
     const [tableData, setTableData] = useState(null);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
@@ -198,7 +207,7 @@ export default function Station(props) {
         return (
             <div className={mainGrid}>
                 <div className={header}>
-                    <Navbar />
+                    <Navbar setDisclaimerVisible={setDisclaimerVisible} />
                 </div>
                 <div className={contentGrid}>
                     <div className={leftContainer}>
@@ -234,14 +243,6 @@ export default function Station(props) {
                                     filterText={filterText}
                                     setFilterText={setFilterText} 
                                 />
-                                {/*
-                                <DownloadData 
-                                    data={tableData}
-                                    fields={['StationCode', 'StationName', 'RegionName', 'TargetLatitude', 'TargetLongitude', 'Analyte', 'NumResults', 'LastSampleDate', 'LastResult', 'Unit', 'Trend', 'Min', 'Mean', 'Median', 'Max']}
-                                >
-                                    Download table data
-                                </DownloadData>
-                                */}
                             </div>
                             <TableClear
                                 selectedAnalytes={selectedAnalytes} 
