@@ -8,3 +8,10 @@ export const matrixColor = {
     'sediment': '#917c78',
     'other': '#0f4c5c'
 }
+
+export const popupStyle = {
+    backgroundColor: '#1a252f',
+    borderRadius: 0,
+    color: '#ffffff',
+    fontSize: '0.8em'
+};

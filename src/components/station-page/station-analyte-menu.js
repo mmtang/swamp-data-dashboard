@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import LoaderMenu from '../map-controls/loader-menu';
 import Select from 'react-select';
-
 import { matrixColor } from '../../constants/constants-app';
 import { capitalizeFirstLetter, chemistryResourceId, customSelectStyle, habitatResourceId, toxicityResourceId } from '../../utils/utils';
 
@@ -35,7 +34,7 @@ export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnal
             setLoading(true);
 
             // Chemistry
-            let sqlChem = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            let sqlChem = `SELECT DISTINCT ON ("AnalyteDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
                 sqlChem += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
             };
@@ -45,7 +44,7 @@ export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnal
             };
 
             // Habitat
-            let sqlHabitat = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            let sqlHabitat = `SELECT DISTINCT ON ("AnalyteDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
                 sqlHabitat += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
             };
@@ -55,7 +54,7 @@ export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnal
             };
 
             // Toxicity
-            let sqlTox = `SELECT DISTINCT ON ("Analyte") "StationCode", "Analyte", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            let sqlTox = `SELECT DISTINCT ON ("AnalyteDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
                 sqlTox += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
             }
@@ -74,11 +73,11 @@ export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnal
                 // Concatenate the records into one array
                 let allData = res[0].concat(res[1], res[2]);
                 // Sort desc by last sample date
-                allData.sort((a, b) => a['Analyte'].localeCompare(b['Analyte']));
+                allData.sort((a, b) => a['AnalyteDisplay'].localeCompare(b['AnalyteDisplay']));
                 const analyteOptions = allData.map(d => {
                     return { 
-                        label: d.Analyte, 
-                        value: d.Analyte + '$' + d.MatrixDisplay, 
+                        label: d.AnalyteDisplay, 
+                        value: d.AnalyteDisplay + '$' + d.MatrixDisplay, 
                         matrix: d.MatrixDisplay, 
                         category: d.AnalyteGroup1,
                         source: d.Source
@@ -94,7 +93,7 @@ export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnal
         const boxColor = matrixColor[matrix] ? matrixColor[matrix] : matrixColor['other'];
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '80px', marginRight: '10px', padding: '0 6px', borderRadius: '0', fontSize: '12px', backgroundColor: `${boxColor}`, color: '#fff' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '80px', minWidth: '80px', marginRight: '10px', padding: '0 6px', borderRadius: '0', fontSize: '12px', backgroundColor: `${boxColor}`, color: '#fff' }}>
                     {matrix}
                 </div>
                 <div style={{ fontSize: '14px', overflowWrap: 'break-word' }}>{label}</div>

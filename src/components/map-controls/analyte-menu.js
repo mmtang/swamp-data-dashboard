@@ -41,7 +41,7 @@ export default function AnalyteMenu({ analyte, analyteList, category, categoryLi
         const boxColor = matrixColor[matrix] ? matrixColor[matrix] : matrixColor['other'];
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '80px', marginRight: '10px', padding: '0 6px', borderRadius: '0', fontSize: '12px', backgroundColor: `${boxColor}`, color: '#fff' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '80px', minWidth: '80px', marginRight: '10px', padding: '0 6px', borderRadius: '0', fontSize: '12px', backgroundColor: `${boxColor}`, color: '#fff' }}>
                     {matrix}
                 </div>
                 <div style={{ fontSize: '14px', overflowWrap: 'break-word' }}>{label}</div>

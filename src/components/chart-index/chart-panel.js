@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 // import { legendColor } from 'd3-svg-legend';
-import { analyteYMax  } from '../../constants/constants-data';
+import { analyteYMax, analyteScoringCategories, analytes } from '../../constants/constants-data';
 import { customTooltip, modalContent } from './chart-index.module.css';
 
 // Component for rendering graph on the dashboard index page (from map and dashboard)
@@ -43,7 +43,7 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             const targetWidth = parseInt(container.getBoundingClientRect().width);
 
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 20, right: 35, bottom: 30, left: 55 };
+            const margin = { top: 30, right: 35, bottom: 30, left: 55 };
             const width = targetWidth;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 5;
@@ -109,8 +109,8 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             // Get max value
             // For some analytes (see analyteYMax dictionary), we will want to show the full range and will use a pre-determined max
             let yMax;
-            if (Object.keys(analyteYMax).includes(analyte)) {
-                yMax = analyteYMax[analyte];
+            if (Object.keys(analyteYMax).includes(analyte.label)) {
+                yMax = analyteYMax[analyte.label];
             } else {
                 yMax = d3.max(allResults);
             }
@@ -148,10 +148,9 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
                 .style('font-size', '1.3em')
                 .style('font-family', 'Source Sans Pro');
 
-            /*
             // Draw reference geometries (scoring categories)
-            if (analytes[analyte]) {
-                const geometries = analyteScoringCategories[analytes[analyte]['code']] || [];
+            if (analytes[analyte.label]) {
+                const geometries = analyteScoringCategories[analytes[analyte.label]['code']] || [];
                 if (geometries.length > 0) {
                     const rects = geometries.filter(d => d['type'] === 'area');
                     if (rects.length > 0) {
@@ -179,7 +178,6 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
                     }
                 }
             }
-            */
 
             /* 
             // 11/14/22 - Changed lines + points to just lines
