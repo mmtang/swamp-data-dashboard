@@ -174,12 +174,12 @@ export default function Index() {
     .then((data) => {
       allStationRef.current = data;
       setStationData(data);
+      setDisclaimerVisible(true); // Show welcome modal
     });
   }, []);
 
   useEffect(() => {
     if (mapLoaded) {
-      setDisclaimerVisible(true);
       setLoaded(true);
     }
   }, [mapLoaded]);
@@ -242,7 +242,7 @@ export default function Index() {
               onClose={() => setDisclaimerVisible(false)}
               size='small'
           >
-              <Modal.Content>
+              <Modal.Content scrolling>
                   <InfoModalContent setDisclaimerVisible={setDisclaimerVisible} />
               </Modal.Content>
           </Modal> 

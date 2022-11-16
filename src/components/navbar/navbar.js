@@ -67,7 +67,7 @@ const Navbar = ({ active, search }) => {
                     onClose={() => setDisclaimerVisible(false)}
                     size='small'
                 >
-                    <Modal.Content>
+                    <Modal.Content scrolling>
                         <InfoModalContent setDisclaimerVisible={setDisclaimerVisible} />
                     </Modal.Content>
                 </Modal> 
