@@ -1,3 +1,94 @@
+export const bpLineRenderer = {
+    type: 'unique-value',
+    field: 'wbid_t',
+    legendOptions: {
+        title: 'Channel Type'
+    },
+    defaultSympbol: { type: 'simple-line' },
+    uniqueValueInfos: [
+        {
+            value: 'Main',
+            label: 'Main',
+            symbol: {
+                type: 'simple-line',
+                color: '#0070ff',
+                width: '2px'
+            }
+        },
+        {
+            value: 'Trib',
+            label: 'Natural tributary',
+            symbol: {
+                type: 'simple-line',
+                color: '#73e0ff',
+                width: '2px'
+            }
+        },
+        {
+            value: 'Other',
+            label: 'Other channel',
+            symbol: {
+                type: 'simple-line',
+                color: '#b2b2b2',
+                width: '2px'
+            }
+        }
+    ]
+}
+
+export const bpPolyRenderer = {
+    type: 'unique-value',
+    field: 'wb_subtype',
+    legendOptions: {
+        title: 'Waterbody Type'
+    },
+    defaultSymbol: { 
+        type: 'simple-fill',
+        color: '#97dbf2',
+        outline: {
+            color: '#8cbff2'
+        }
+    },
+    defaultLabel: 'Waterbody',
+    uniqueValueInfos: [
+        {
+            value: 'Nearshore Zone',
+            label: 'Nearshore Zone',
+            symbol: {
+                type: 'simple-fill',
+                color: '#6fc445',
+                outline: {
+                    color: '#6fc445'
+                },
+                style: 'backward-diagonal'
+            }
+        },
+        {
+            value: 'Offshore Zone',
+            label: 'Offshore Zone',
+            symbol: {
+                type: 'simple-fill',
+                color: '#79a9f2',
+                outline: {
+                    color: '#79a9f2'
+                },
+                style: 'backward-diagonal'
+            }
+        },
+        {
+            value: 'Wetlands',
+            label: 'Wetlands',
+            symbol: {
+                type: 'simple-fill',
+                color: '#6fc445',
+                outline: {
+                    color: '#6fab51'
+                }
+            }
+        }
+    ]
+}
+
 export const irLineRenderer = {
     type: 'unique-value',
     field: 'wb_listingstatus',

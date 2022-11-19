@@ -10,6 +10,8 @@ export default function UpdateMessage() {
     const dateRef = useRef('');
 
     useEffect(() => {
+        // Use isMounted to deal with "Warning: Can't perform a React state update on an unmounted component" warning
+        let isMounted = true;
         // d3 functions for parsing and formatting dates.
         // Placed these in the useEffect to avoid missing dependency warning
         const parseDate = timeParse('%Y-%m-%dT%H:%M:%S.%f');
@@ -27,15 +29,24 @@ export default function UpdateMessage() {
                 // This will automatically update the value in the renderer.
                 const lastDate = parseDate(result['last_modified']);
                 dateRef.current = formatDate(lastDate);
-                setStatus('loaded');
+                if (isMounted) {
+                    setStatus('loaded');
+                }
             })
             .catch(error => {
                 console.error(error);
-                setStatus('error');
+                if (isMounted) {
+                    setStatus('error');
+                }
             });
         }
 
         getDate();
+
+        return () => {
+            // when component unmounts, set isMounted to false
+            isMounted = false;
+        };
     }, [])
 
     return (
