@@ -3,46 +3,48 @@ import { regionDict } from './utils';
 
 export const bpLayerDict = {
     '1': {
-        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/North_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/1',
-        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/North_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/3'
+        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/North_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/0',
+        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/North_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/2',
+        table: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/North_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/5'
     },
     '2': {
-        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/San_Francisco_Bay_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/1',
-        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/San_Francisco_Bay_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/3'
+        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/San_Francisco_Bay_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/0',
+        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/San_Francisco_Bay_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/2',
+        table: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/San_Francisco_Bay_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/5'
     },
     '3': {
-        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/1',
-        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/3'
+        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/0',
+        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/2'
     },
     '4': {
-        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Los_Angeles_Basin_Plan_Beneficial_Uses/FeatureServer/1',
-        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Los_Angeles_Basin_Plan_Beneficial_Uses/FeatureServer/3'
+        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Los_Angeles_Basin_Plan_Beneficial_Uses/FeatureServer/0',
+        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Los_Angeles_Basin_Plan_Beneficial_Uses/FeatureServer/2'
     },
     // Sacramento and San Joaquin River Basin Basin Plan
-    '51': {
-        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Valley_Sacramento_and_San_Joaquin_River_Basin_Plan_Beneficial_Uses/FeatureServer/1',
-        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Valley_Sacramento_and_San_Joaquin_River_Basin_Plan_Beneficial_Uses/FeatureServer/3'
+    '5S': {
+        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Valley_Sacramento_and_San_Joaquin_River_Basin_Plan_Beneficial_Uses/FeatureServer/0',
+        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Valley_Sacramento_and_San_Joaquin_River_Basin_Plan_Beneficial_Uses/FeatureServer/2'
     },
     // Tulare Basin Plan
-    '52': {
-        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Valley_Tulare_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/1',
+    '5T': {
+        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Valley_Tulare_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/0',
         polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Valley_Tulare_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/2'
     },
     '6': {
-        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Lahontan_Basin_Plan_Beneficial_Uses/FeatureServer/1',
-        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Lahontan_Basin_Plan_Beneficial_Uses/FeatureServer/3'
+        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Lahontan_Basin_Plan_Beneficial_Uses/FeatureServer/0',
+        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Lahontan_Basin_Plan_Beneficial_Uses/FeatureServer/2'
     },
     '7': {
-        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_7C/FeatureServer/1',
-        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_7C/FeatureServer/3'
+        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_7C/FeatureServer/0',
+        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_7C/FeatureServer/2'
     },
     '8': {
-        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_8S/FeatureServer/1',
-        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_8S/FeatureServer/3'
+        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_8S/FeatureServer/0',
+        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_8S/FeatureServer/2'
     },
     '9': {
-        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_9S/FeatureServer/1',
-        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_9S/FeatureServer/3'
+        lines: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_9S/FeatureServer/0',
+        polys: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/BP_BeneficialUses_9S/FeatureServer/2'
     }
 }
 

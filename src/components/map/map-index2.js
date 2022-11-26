@@ -1,16 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
-
-import { bpLineRenderer, bpPolyRenderer, brPolyRenderer, irLineRenderer, irPolyRenderer, regionRenderer } from './map-renderer';
+// Load helper functions and constants
+import { bpLineRenderer, bpPolyRenderer, irLineRenderer, irPolyRenderer, regionRenderer } from './map-renderer';
 import { bpLayerDict, convertStationDataToGraphics, stationDataFields } from '../../utils/utils-map';
 import { irRegionDict, regionDict } from '../../utils/utils';
-
+// Load styles
 import { container } from './map-index.module.css';
-import { map } from 'd3';
 
 export default function MapIndex2({ 
-    analyte,
-    program,
     region,
     comparisonSites,
     selecting,
@@ -25,16 +22,17 @@ export default function MapIndex2({
 }) {
     // Declare component references
     const basemapGalleryRef = useRef(null);
-    const bpLayerRef = useRef(null);
+    const bpLayerRef = useRef(null); // The main Basin Plan group layer ref used for all regions
+    const bpLayer2Ref = useRef(null); // Used only for R5, which has two Basin Plan layers/datasets
     const divRef = useRef(null);
     const expandGalleryRef = useRef(null);
-    //const expandLayerListRef = useRef(null);
-    const irLayerRef = useRef(null);
+    const irLayerRef = useRef(null); // Integrated Report group layer ref
+    // IR Sublayers - Need to have separate refs for both layers because the features in each layer will be filtered by region based on user selection. The refs are needed to change the layer's definition expression
     const irLineRef = useRef(null);
-    const irPolyRef = useRef(null);
+    const irPolyRef = useRef(null); 
     const landUseLayerRef = useRef(null);
     const layerListRef = useRef(null);
-    const listenerRef = useRef(null);
+    const listenerRef = useRef(null); // Used for keeping track of selection modes, example: user selecting comparison sites
     const mapRef = useRef(null);
     const regionLayerRef = useRef(null);
     const searchRef = useRef(null);
@@ -44,205 +42,8 @@ export default function MapIndex2({
     // This ref is used to store the old array of site code strings. Will be compared to the new array.
     const comparisonSitesRef = useRef(null);
 
-    const addSearchSources = () => {
-        // Add Integrated Report layers
-        searchRef.current.sources.add({
-            layer: irLineRef.current,
-            searchFields: ['wbid', 'wbname'],
-            displayField: 'wbname',
-            exactMatch: false,
-            outFields: ['wbname'],
-            name: '2018 Integrated Report Streams, Rivers, Beaches',
-            placeholder: 'Example: Burney Creek'
-        });
-        searchRef.current.sources.add({
-            layer: irPolyRef.current,
-            searchFields: ['wbid', 'wbname'],
-            displayField: 'wbname',
-            exactMatch: false,
-            outFields: ['wbname'],
-            name: '2018 Integrated Report Lakes, Bays, Reservoirs',
-            placeholder: 'Example: Folsom Lake'
-        });
-        // Add Basin Plan layers
-        /*
-        searchRef.current.sources.add({
-            layer: bpLayerRef.current,
-            searchFields: ['WB_NAME'],
-            displayField: 'WB_NAME',
-            exactMatch: false,
-            outFields: ['WB_NAME'],
-            name: 'Basin Plan Benficial Uses - Waterbodies'
-        })
-        */
-
-        // Add Station Layer
-        searchRef.current.sources.add({
-            layer: stationLayerRef.current,
-            searchFields: ['StationName', 'StationCode'],
-            suggestionTemplate: '{StationCode} - {StationName}',
-            exactMatch: false,
-            outFields: ['StationName', 'StationCode'],
-            name: 'SWAMP Monitoring Stations',
-            placeholder: 'Example: Buena Vista Park',
-            zoomScale: 14000
-        });
-    }
-
-    const drawBasinPlan = () => {
-        const templateTitle = (feature) => {
-            const attributes = feature.graphic.attributes;
-            if (!attributes.WB_NAME) {
-                return '<span style="font-style: italic">Unnamed waterbody</span><br><span class="map-popup-subtitle" style="color: #0071bc">Basin Plan waterbody</span>'
-            } else {
-                return attributes.WB_NAME + '<br><span class="map-popup-subtitle" style="color: #0071bc">Basin Plan waterbody</span>';
-            }
-        }
-        const buildLinePopup = (feature) => {
-            const attributes = feature.graphic.attributes;
-            if (attributes.WBID_T === 'Trib') {
-                attributes.WBID_T = 'Tributary';
-            };
-            const waterbodyID = attributes['OBJECTID'];
-            const url = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/1/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=2&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
-            return fetch(url)
-                .then((resp) => resp.json())
-                .then((json) => {
-                    if (json.relatedRecordGroups && json.relatedRecordGroups.length > 0) {
-                        const records = json.relatedRecordGroups[0].relatedRecords;
-                        const buData = records.map((d) => d.attributes);
-                        buData.sort((a, b) => a.BU_CODE > b.BU_CODE);
-                        // Table for waterbody information
-                        let table = '<table class="esri-widget__table"><tbody><tr><th class="esri-feature-fields__field-header">Basin Plan</th><td>' + attributes.BASINPLANNAME + '</td></tr><tr><th class="esri-feature-fields__field-header">Waterbody type</th><td>' + attributes.WBID_T  + '</td></tr></tbody></table><br><h3>Beneficial uses</h3>'
-                        // Table for beneficial uses
-                        table += '<table class="esri-widget__table"><tbody>';
-                        for (const d in buData) {
-                            table += '<tr><th class="esri-feature-fields__field-header">' + buData[d].BU_CODE + '</th><td class="esri-feature-fields__field-data">' + buData[d].BU_NAME + '</td></tr>';
-                        };
-                        table += '</tbody></table>'
-                        return table.toString();
-                    } 
-                });
-        }
-        const buildPolyPopup = (feature) => {
-            const attributes = feature.graphic.attributes;
-            const waterbodyID = attributes['OBJECTID'];
-            const url = 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer/0/queryRelatedRecords?objectIds=' + waterbodyID + '&relationshipId=1&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnZ=false&returnM=false&gdbVersion=&datumTransformation=&f=pjson';
-            return fetch(url)
-                .then((resp) => resp.json())
-                .then((json) => {
-                    if (json.relatedRecordGroups && json.relatedRecordGroups.length > 0) {
-                        const records = json.relatedRecordGroups[0].relatedRecords;
-                        const buData = records.map((d) => d.attributes);
-                        buData.sort((a, b) => a.BU_CODE > b.BU_CODE);
-                        // Table for waterbody information
-                        let table = '<table class="esri-widget__table"><tbody><tr><th class="esri-feature-fields__field-header">Basin Plan</th><td>' + attributes.BASINPLANNAME + '</td></tr><tr><th class="esri-feature-fields__field-header">Waterbody type</th><td>' + attributes.WBID_T  + '</td></tr></tbody></table><br><h3>Beneficial uses</h3>'
-                        // Table for beneficial uses
-                        table += '<table class="esri-widget__table"><tbody>';
-                        for (const d in buData) {
-                            table += '<tr><th class="esri-feature-fields__field-header">' + buData[d].BU_CODE + '</th><td class="esri-feature-fields__field-data">' + buData[d].BU_NAME + '</td></tr>';
-                        };
-                        table += '</tbody></table>'
-                        return table;
-                    }
-                });
-        }
-        const bpPolyTemplate = {
-            outFields: ['BASINPLANNAME', 'WB_NAME', 'WBID_T'],
-            title: templateTitle,
-            content: buildPolyPopup
-        }
-        const bpLineTemplate = {
-            outFields: ['BASINPLANNAME', 'WB_NAME', 'WBID_T'],
-            title: templateTitle,
-            content: buildLinePopup
-        }
-        return new Promise((resolve, reject) => {
-            if (mapRef.current) {
-                loadModules(['esri/layers/MapImageLayer'])
-                .then(([MapImageLayer]) => {
-                    /*
-                    const bpLineNorthCoast = new FeatureLayer({
-                        id: 'bp-line-1-layer',
-                        title: 'North Coast - Lines',
-                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/North_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/1',
-                        outfields: ['*'],
-                        listMode: 'hide'
-                    });
-                    const bpPolyNorthCoast = new FeatureLayer({
-                        id: 'bp-poly-1-layer',
-                        title: 'North Coast - Polys',
-                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/North_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/3',
-                        outfields: ['*'],
-                        listMode: 'hide'
-                    });
-                    const bpLineCentralCoast = new FeatureLayer({
-                        id: 'bp-line-3-layer',
-                        title: 'Central Coast - Lines',
-                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/1',
-                        outfields: ['*'],
-                        //popupTemplate: irTemplate,
-                        listMode: 'hide',
-                        //renderer: irLineRenderer
-                    });
-                    const bpPolyCentralCoast = new FeatureLayer({
-                        id: 'bp-poly-3-layer',
-                        title: 'Central Coast - Polys',
-                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Central_Coast_Basin_Plan_Beneficial_Uses_gdb/FeatureServer/3',
-                        outfields: ['*'],
-                        //popupTemplate: irTemplate,
-                        listMode: 'hide',
-                        //renderer: irLineRenderer
-                    });
-                    bpLayerRef.current = new GroupLayer({
-                        id: 'bp-group-layer',
-                        title: 'Basin Plan - Beneficial Uses',
-                        visible: true,
-                        layers: [bpLineNorthCoast, bpPolyNorthCoast, bpLineCentralCoast, bpPolyCentralCoast],
-                        listMode: 'show',
-                        visibilityMode: 'inherited'
-                    })
-                    */
-
-                    bpLayerRef.current = new MapImageLayer({
-                        id: 'basin-plan-layer',
-                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Basin_Plan/California_Basin_Plan_Beneficial_Uses/MapServer',
-                        sublayers: [
-                            {
-                                id: 0, // polygon sublayer
-                                title: 'Beneficial Uses - Polygons',
-                                //popupTemplate: bpPolyTemplate,  
-                            },
-                            {
-                                id: 1, // line sublayer
-                                title: 'Beneficial Uses - Lines',
-                                //popupTemplate: bpLineTemplate
-                            }
-                        ],
-                        listMode: 'hide-children',
-                        legendEnabled: true,
-                        visible: false
-                    });
-
-                    //mapRef.current.add(bpLayerRef.current);
-
-                    /*
-                    searchRef.current.sources.add({
-                        layer: bpLayerRef.current,
-                        searchFields: ['WB_NAME'],
-                        displayField: 'WB_NAME',
-                        exactMatch: false,
-                        outFields: ['WB_NAME'],
-                        name: 'Basin Plan Benficial Uses - Waterbodies'
-                    });
-                    */
-
-                    resolve();
-                });
-            }
-        })
-    }
-
+    // This function fetches and renders the region layer service
+    // This layer is immediately added to the map, unlike other layers on the map, because the region values are used very early on during initialization of component
     const drawRegions = () => {
         return new Promise((resolve, reject) => {
             if (mapRef) {
@@ -251,7 +52,8 @@ export default function MapIndex2({
                     regionLayerRef.current = new FeatureLayer({
                         id: 'region-layer',
                         url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Regional_Board_Boundary_Features/FeatureServer/1',
-                        listMode: 'hide',
+                        // listMode: With this option, the layer is not shown in layer legend/list, and therefore the user cannot change the visibility of the layer. Better to always show it because there are many filters being applied on a region by region basis. Can always make this layer "toggleable" in the future if there is feedback requesting it
+                        listMode: 'hide', 
                         renderer: regionRenderer
                     });
                     mapRef.current.add(regionLayerRef.current);
@@ -264,11 +66,7 @@ export default function MapIndex2({
     const drawIntegratedReport = () => {
         const irTemplate = {
             // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
-            // green = #518f33
             outFields: ['wbid', 'wbname', 'rb', 'wbtype', 'wb_category', 'wb_listingstatus', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_', 'fact_sheet'],
-            /*
-            title: '<span style="font-size: 1.2em; color: #ffffff">{wbname}</span><br><span class="map-popup-subtitle" style="color: #d8e9f4">2018 Integrated Report waterbody</span>',
-            */
             title: '<div style="padding: 4px 0"><span style="font-size: 1.05em; color: #ffffff">{wbname}</span></div>',
             content: [
                 {
@@ -443,11 +241,6 @@ export default function MapIndex2({
                     setMapLoaded(true);
                 }, 1000)
             }, 100); // Set timeout to prevent flashing on the map. I picked 100ms because this timing seems to work well with the map's loading indicator (automatically generated)
-            /*
-            setTimeout(() => {
-                setMapLoaded(true);
-            }, 500)
-            */
         });
     }
 
@@ -483,17 +276,6 @@ export default function MapIndex2({
                         collapseEnabled: false,
                     }
                 });
-
-                /*
-                // Controls loading indicator whenever map view updates or changes (including zoom)
-                viewRef.current.watch('updating', (evt) => {
-                    if (evt === true) {
-                      setMapLoaded(false);
-                    } else {
-                      setMapLoaded(true);
-                    }
-                });
-                */
 
                 // Define search widget
                 searchRef.current = new Search({
@@ -567,7 +349,7 @@ export default function MapIndex2({
                 const stationTemplate = {
                     title: '<div style="background-color: ##2b2b2b; color: #fff; text-align: center">{StationName}</div>'
                 };
-                loadModules(['esri/layers/FeatureLayer', 'esri/core/watchUtils'])
+                loadModules(['esri/layers/FeatureLayer'])
                 .then(([FeatureLayer]) => {
                     if (mapRef) {
                         convertStationDataToGraphics(stationData)
@@ -591,6 +373,8 @@ export default function MapIndex2({
     
                             // variable for tracking last station that was hovered (use StationCode)
                             // this has to be initiated outside of the on pointer-move function
+
+                            /*
                             let lastStationHovered = null;
     
                             viewRef.current.on('pointer-move', (event) => {
@@ -614,13 +398,15 @@ export default function MapIndex2({
                                         };
                                     } else { 
                                         // close graphic's popup
-                                        /*
-                                        viewRef.current.popup.close(); 
-                                        */
+
+                                        // viewRef.current.popup.close(); 
+
                                         lastStationHovered = null;
                                     }
                                 });
                             });
+                            */
+
                             resolve();
                         });
                     } else {
@@ -631,7 +417,7 @@ export default function MapIndex2({
         };
 
         if (!mapRef.current && stationData) {
-            setDefaultOptions({ version: '4.22' });
+            setDefaultOptions({ version: '4.25' });
             loadCss();
             initializeMap().then(() => {
                 Promise.all([
@@ -641,8 +427,12 @@ export default function MapIndex2({
                     drawLandUse()
                 ]).then(values => {
                     // Add layers in order
-                    mapRef.current.addMany([landUseLayerRef.current, irLayerRef.current, stationLayerRef.current]);
-                    addSearchSources();
+                    mapRef.current.addMany([
+                        landUseLayerRef.current, 
+                        irLayerRef.current, 
+                        stationLayerRef.current
+                    ]);
+                    resetSearchSources(); // Initialize search sources
                     setMapLoaded(true);
                 });
             });
@@ -814,105 +604,256 @@ export default function MapIndex2({
             }
         }
         const addBasinPlanRegionLayer = (region) => {
-            loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer', 'esri/renderers/support/jsonUtils'])
-                .then(([FeatureLayer, GroupLayer, rendererJsonUtils]) => {
+            const templateTitle = (feature) => {
+                const attributes = feature.graphic.attributes;
+                if (!attributes.wb_name) {
+                    return '<div style="padding: 4px 0"><span style="font-size: 1.05em; font-style: italic; color: #fff">Unnamed waterbody</span></div>'
+                } else {
+                    return `<div style="padding: 4px 0"><span style="font-size: 1.05em; color: #fff">${attributes.wb_name}</span></div>`;
+                }
+            }
+            const buildLinePopup = (feature) => {
+                const attributes = feature.graphic.attributes;
+                if (attributes.wbid_t === 'Trib') {
+                    attributes.wbid_t = 'Tributary';
+                };
+                const waterbodyId = attributes['objectid'];
+                let layerUrl;
+                // Special case for R5 because R5 has two Basin Plan layers/datasets
+                if (attributes.reg_id === '5S' || attributes.reg_id === '5T') {
+                    layerUrl = bpLayerDict[attributes['reg_id']]['lines'];
+                } else {
+                    layerUrl = bpLayerDict[attributes['region']]['lines'];
+                }
+                let dataUrl = `${layerUrl}/queryRelatedRecords?objectIds=${waterbodyId}&relationshipId=0&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&gdbVersion=&historicMoment=&returnZ=false&returnM=false&multipatchOption=xyFootprint&returnTrueCurves=false&timeReferenceUnknownClient=false&datumTransformation=&f=pjson`;
+                return fetch(dataUrl)
+                    .then((resp) => resp.json())
+                    .then((json) => {
+                        if (json.relatedRecordGroups && json.relatedRecordGroups.length > 0) {
+                            const records = json.relatedRecordGroups[0].relatedRecords;
+                            const buData = records.map((d) => d.attributes);
+                            buData.sort((a, b) => a.bu_code > b.bu_code);
+                            // Table for waterbody information
+                            let table = `<div style="padding: 0 7px"><table class="esri-widget__table"><tbody><tr><th class="esri-feature-fields__field-header">Waterbody type</th><td>${attributes.wbid_t}</td></tr><tr><th class="esri-feature-fields__field-header">Basin Plan</th><td>${attributes.basinplanname}</td></tr></tbody></table><div style="align-items: center; display: flex; font-size: 0.92em; font-style: italic; font-weight: 600; margin: 1em 0 0.4em 0">Beneficial uses</div>`;
+                            // Table for beneficial uses
+                            table += '<table class="esri-widget__table"><tbody>';
+                            for (const d in buData) {
+                                table += '<tr><th class="esri-feature-fields__field-header">' + buData[d].bu_code + '</th><td class="esri-feature-fields__field-data">' + buData[d].bu_name + '</td></tr>';
+                            };
+                            table += '</tbody></table></div>';
+                            return table.toString();
+                        } 
+                    });
+            }
+            const buildPolyPopup = (feature) => {
+                const attributes = feature.graphic.attributes;
+                const waterbodyId = attributes['objectid'];
+                let layerUrl;
+                // Special case for R5 because R5 has two Basin Plan layers/datasets
+                if (attributes.reg_id === '5S' || attributes.reg_id === '5T') {
+                    layerUrl = bpLayerDict[attributes['reg_id']]['polys'];
+                } else {
+                    layerUrl = bpLayerDict[attributes['region']]['polys'];
+                }
+                let dataUrl = `${layerUrl}/queryRelatedRecords?objectIds=${waterbodyId}&relationshipId=1&outFields=*&definitionExpression=&returnGeometry=false&maxAllowableOffset=&geometryPrecision=&outSR=&gdbVersion=&historicMoment=&returnZ=false&returnM=false&multipatchOption=xyFootprint&returnTrueCurves=false&timeReferenceUnknownClient=false&datumTransformation=&f=pjson`;
+                return fetch(dataUrl)
+                    .then((resp) => resp.json())
+                    .then((json) => {
+                        if (json.relatedRecordGroups && json.relatedRecordGroups.length > 0) {
+                            const records = json.relatedRecordGroups[0].relatedRecords;
+                            const buData = records.map((d) => d.attributes);
+                            buData.sort((a, b) => a.BU_CODE > b.BU_CODE);
+                            // Table for waterbody information
+                            let table = `<div style="padding: 0 7px"><table class="esri-widget__table"><tbody><tr><th class="esri-feature-fields__field-header">Waterbody type</th><td>${attributes.wbid_t}</td></tr><tr><th class="esri-feature-fields__field-header">Basin Plan</th><td>${attributes.basinplanname}</td></tr></tbody></table><div style="align-items: center; display: flex; font-size: 0.92em; font-style: italic; font-weight: 600; margin: 1em 0 0.4em 0">Beneficial uses</div>`;
+                            // Table for beneficial uses
+                            table += '<table class="esri-widget__table"><tbody>';
+                            for (const d in buData) {
+                                table += '<tr><th class="esri-feature-fields__field-header">' + buData[d].bu_code + '</th><td class="esri-feature-fields__field-data">' + buData[d].bu_name + '</td></tr>';
+                            };
+                            table += '</tbody></table></div>'
+                            return table.toString();
+                        } 
+                    });
+                
+            }
+            const bpLineTemplate = {
+                outFields: ['wb_name', 'wbid_t', 'basinplanname', 'wbf_id', 'region', 'reg_id'],
+                title: templateTitle,
+                content: buildLinePopup
+            }
+            const bpPolyTemplate = {
+                outFields: ['wb_name', 'wbid_t', 'basinplanname', 'wbf_id', 'region', 'reg_id'],
+                title: templateTitle,
+                content: buildPolyPopup
+            }
+
+            loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
+                .then(([FeatureLayer, GroupLayer]) => {
                     // For R5, need to add a total of four layers
                     if (region === '5') {
-                        // Sublayer 1
+                        // Sacramento River and San Joaquin River Basins
+                        // Sublayer 1 
                         const bpLine1 = new FeatureLayer({
-                            id: 'bp-line-layer-51',
-                            title: 'Central Valley - Sacramento River and San Joaquin River Basins (Lines)',
-                            url: bpLayerDict['51']['lines'],
+                            id: 'bp-line-layer-5s',
+                            title: 'Sacramento River and San Joaquin River Basins (Lines)',
+                            url: bpLayerDict['5S']['lines'],
                             outfields: ['*'],
                             listMode: 'hide',
-                            renderer: bpLineRenderer
+                            renderer: bpLineRenderer,
+                            popupTemplate: bpLineTemplate
+                        });
+                        searchRef.current.sources.push({
+                            layer: bpLine1,
+                            searchFields: ['wb_name'],
+                            displayField: 'wb_name',
+                            exactMatch: false,
+                            outFields: ['wb_name'],
+                            name: 'Basin Plan Waterbodies 5S - Lines'
                         });
                         // Sublayer 2
                         const bpPoly1 = new FeatureLayer({
-                            id: 'bp-poly-layer-51',
-                            title: 'Central Valley - Sacramento River and San Joaquin River Basins (Polygons)',
-                            url: bpLayerDict['51']['polys'],
+                            id: 'bp-poly-layer-5s',
+                            title: 'Sacramento River and San Joaquin River Basins (Polygons)',
+                            url: bpLayerDict['5S']['polys'],
                             outfields: ['*'],
                             listMode: 'hide',
-                            renderer: bpPolyRenderer
+                            renderer: bpPolyRenderer,
+                            popupTemplate: bpPolyTemplate
                         });
+                        searchRef.current.sources.push({
+                            layer: bpPoly1,
+                            searchFields: ['wb_name'],
+                            displayField: 'wb_name',
+                            exactMatch: false,
+                            outFields: ['wb_name'],
+                            name: 'Basin Plan Waterbodies 5S - Polys'
+                        });
+                        // Group Layer 1
+                        bpLayerRef.current = new GroupLayer({
+                            id: 'bp-group-layer-5s',
+                            title: 'Basin Plan - Sacramento River and San Joaquin River Basins',
+                            visible: false,
+                            layers: [bpLine1, bpPoly1],
+                            listMode: 'show',
+                            visibilityMode: 'inherited'
+                        });
+
+                        // Tulare Lake Basin
                         // Sublayer 3
                         const bpLine2 = new FeatureLayer({
-                            id: 'bp-line-layer-52',
-                            title: 'Central Valley - Tulare Lake Basin (Lines)',
-                            url: bpLayerDict['52']['lines'],
+                            id: 'bp-line-layer-5t',
+                            title: 'Tulare Lake Basin (Lines)',
+                            url: bpLayerDict['5T']['lines'],
                             outfields: ['*'],
                             listMode: 'hide',
-                            renderer: bpLineRenderer
+                            renderer: bpLineRenderer,
+                            popupTemplate: bpLineTemplate
+                        });
+                        searchRef.current.sources.push({
+                            layer: bpLine2,
+                            searchFields: ['wb_name'],
+                            displayField: 'wb_name',
+                            exactMatch: false,
+                            outFields: ['wb_name'],
+                            name: 'Basin Plan Waterbodies 5T - Lines'
                         });
                         // Sublayer 4
                         const bpPoly2 = new FeatureLayer({
-                            id: 'bp-poly-layer-52',
-                            title: 'Central Valley - Tulare Lake Basin (Polygons)',
-                            url: bpLayerDict['52']['polys'],
+                            id: 'bp-poly-layer-5t',
+                            title: 'Tulare Lake Basin (Polygons)',
+                            url: bpLayerDict['5T']['polys'],
                             outfields: ['*'],
                             listMode: 'hide',
-                            renderer: bpPolyRenderer
+                            renderer: bpPolyRenderer,
+                            popupTemplate: bpPolyTemplate
+                        });
+                        searchRef.current.sources.push({
+                            layer: bpPoly2,
+                            searchFields: ['wb_name'],
+                            displayField: 'wb_name',
+                            exactMatch: false,
+                            outFields: ['wb_name'],
+                            name: 'Basin Plan Waterbodies 5T - Polys'
                         });
                         // Group layer
-                        bpLayerRef.current = new GroupLayer({
-                            id: 'bp-group-layer',
-                            title: 'Basin Plan - Beneficial Uses',
+                        bpLayer2Ref.current = new GroupLayer({
+                            id: 'bp-group-layer-5t',
+                            title: 'Basin Plan - Tulare Lake Basin',
                             visible: false,
-                            layers: [bpLine1, bpPoly1, bpLine2, bpPoly2],
+                            layers: [bpLine2, bpPoly2],
                             listMode: 'show',
                             visibilityMode: 'inherited'
-                        })
+                        });
+                        // Add layer + reorder layer to appear on bottom, above the land use layer. The bottom-most layer (base layer) has an index of 0
+                        mapRef.current.add(bpLayerRef.current);
+                        mapRef.current.reorder(bpLayerRef.current, 2);
+                        // Add layer + reorder layer to appear on bottom, above the land use layer. The bottom-most layer (base layer) has an index of 0
+                        mapRef.current.add(bpLayer2Ref.current);
+                        mapRef.current.reorder(bpLayer2Ref.current, 2);
                     } else {
                         // Every other region adds two layers
-                        let bpLine, bpPoly;
-                        // Sublayer 1
-                        bpLine = new FeatureLayer({
+                        // Sublayer 1 - Feature Layer
+                        const bpLine = new FeatureLayer({
                             id: 'bp-line-layer-' + region,
                             title: `${regionDict[region]} - Lines`,
                             url: bpLayerDict[region]['lines'],
                             outfields: ['*'],
                             listMode: 'hide',
-                            renderer: bpLineRenderer
+                            renderer: bpLineRenderer,
+                            popupTemplate: bpLineTemplate
                         });
                         // Sublayer 2
-                        bpPoly = new FeatureLayer({
+                        const bpPoly = new FeatureLayer({
                             id: 'bp-poly-layer-' + region,
                             title: `${regionDict[region]} - Polygons`,
                             url: bpLayerDict[region]['polys'],
                             outfields: ['*'],
                             listMode: 'hide',
-                            renderer: bpPolyRenderer
+                            renderer: bpPolyRenderer,
+                            popupTemplate: bpPolyTemplate
                         });
                          // Group layer
                          bpLayerRef.current = new GroupLayer({
                             id: 'bp-group-layer',
                             title: 'Basin Plan - Beneficial Uses',
                             visible: false,
-                            layers: [bpPoly, bpLine],
+                            layers: [bpLine, bpPoly],
                             listMode: 'show',
                             visibilityMode: 'inherited'
-                        })
+                        });
+                        // Add to search
+                        searchRef.current.sources.push({
+                            id: 'bp-line-1',
+                            layer: bpLine,
+                            searchFields: ['wb_name'],
+                            displayField: 'wb_name',
+                            exactMatch: false,
+                            outFields: ['wb_name'],
+                            name: 'Basin Plan Waterbodies - Lines'
+                        });
+                        searchRef.current.sources.push({
+                            id: 'bp-poly-2',
+                            layer: bpPoly,
+                            searchFields: ['wb_name'],
+                            displayField: 'wb_name',
+                            exactMatch: false,
+                            outFields: ['wb_name'],
+                            name: 'Basin Plan Waterbodies - Polys'
+                        });
+                        // Add layer + reorder layer to appear on bottom, above the land use layer. The bottom-most layer (base layer) has an index of 0
+                        mapRef.current.add(bpLayerRef.current);
+                        mapRef.current.reorder(bpLayerRef.current, 2);
                     }
-                    mapRef.current.add(bpLayerRef.current);
-                    // Reorder layer to appear on bottom, above the land use layer. The bottom-most layer has an index of 0
-                    mapRef.current.reorder(bpLayerRef.current, 1);
-
-                    /*
-                    searchRef.current.sources.add({
-                        layer: bpLayerRef.current,
-                        searchFields: ['WB_NAME'],
-                        displayField: 'WB_NAME',
-                        exactMatch: false,
-                        outFields: ['WB_NAME'],
-                        name: 'Basin Plan Benficial Uses - Waterbodies'
-                    });
-                    */
                 });
         }
         const removeBasinPlanRegionLayer = () => {
             mapRef.current.remove(bpLayerRef.current);
             bpLayerRef.current = null;
+            if (bpLayer2Ref.current) {
+                mapRef.current.remove(bpLayer2Ref.current);
+                bpLayer2Ref.current = null;
+            }
+            resetSearchSources();
         }
 
         if (mapRef.current) {
@@ -921,6 +862,9 @@ export default function MapIndex2({
                 removeBasinPlanRegionLayer();
                 addBasinPlanRegionLayer(region);
                 zoomToRegion(regionDict[region]);
+            } else {
+                refreshIntegratedReport();
+                removeBasinPlanRegionLayer();
             }
         }
     }, [region]);
@@ -945,6 +889,39 @@ export default function MapIndex2({
         const stationLayer = viewRef.current.allLayerViews.items.filter(d => d.layer.id === layerId)[0];   
         stationLayer._highlightIds.clear();
         stationLayer._updateHighlight(); 
+    }
+
+    const resetSearchSources = () => {
+        searchRef.current.sources = [
+            {
+                layer: irLineRef.current,
+                searchFields: ['wbid', 'wbname'],
+                displayField: 'wbname',
+                exactMatch: false,
+                outFields: ['wbname'],
+                name: '2018 Integrated Report Streams, Rivers, Beaches',
+                placeholder: 'Example: Burney Creek'
+            },
+            {
+                layer: irPolyRef.current,
+                searchFields: ['wbid', 'wbname'],
+                displayField: 'wbname',
+                exactMatch: false,
+                outFields: ['wbname'],
+                name: '2018 Integrated Report Lakes, Bays, Reservoirs',
+                placeholder: 'Example: Folsom Lake'
+            },
+            {
+                layer: stationLayerRef.current,
+                searchFields: ['StationName', 'StationCode'],
+                suggestionTemplate: '{StationCode} - {StationName}',
+                exactMatch: false,
+                outFields: ['StationName', 'StationCode'],
+                name: 'SWAMP Monitoring Stations',
+                placeholder: 'Example: Buena Vista Park',
+                zoomScale: 14000
+            }
+        ];
     }
 
     return (
