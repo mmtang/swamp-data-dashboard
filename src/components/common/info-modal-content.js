@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import UpdateMessage from './update-message';
 
 import swampLogo from '../../../static/swamp-logo-black-small.png';
@@ -8,7 +8,7 @@ import { Button, Icon, Menu, Segment } from 'semantic-ui-react';
 
 import { imageSetContainer, modalButton, modalContent, swampIcon } from './info-modal-content.module.css';
 
-export default function InfoModalContent({ setDisclaimerVisible }) {   
+const InfoModalContent = ({ setDisclaimerVisible }) => {   
     const [activeItem, setActiveItem] = useState('welcome');
 
     const handleItemClick = (e, { name }) => {
@@ -103,3 +103,5 @@ export default function InfoModalContent({ setDisclaimerVisible }) {
         </div>
     )
 }
+
+export default memo(InfoModalContent);

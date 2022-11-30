@@ -44,7 +44,6 @@ export default function Index() {
         limit: 6000
       };
       const url = 'https://data.ca.gov/api/3/action/datastore_search?';
-      console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => resp.json())
       .then((json) => json.result.records)

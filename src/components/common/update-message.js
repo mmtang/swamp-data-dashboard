@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { fetchData } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 import { message } from './update-message.module.css';
 
 // This component shows the data last updated date on the main dashboard page.
 // It calls the open data portal API where the data is hosted and gets the date from the metadata.
-export default function UpdateMessage() {   
+const UpdateMessage = () => {   
     const [status, setStatus] = useState('loading');
     const dateRef = useRef('');
 
@@ -59,3 +59,5 @@ export default function UpdateMessage() {
         </div>
     )
 }
+
+export default memo(UpdateMessage);

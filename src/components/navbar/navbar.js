@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { Link } from 'gatsby';
 import { withPrefix } from 'gatsby';
 import InfoModalContent from '../common/info-modal-content';
@@ -50,7 +50,7 @@ const Navbar = ({ active, search }) => {
                     />
                 </div>
             </div>
-            {/*
+            {/* Commented out this, no longer using but keeping for reference
             <div className={navMenu}>
                 <ul>
                     <LinkDropdown path='/learn' active={active === 'learn' ? true : false}>Learn</LinkDropdown>
@@ -77,4 +77,4 @@ const Navbar = ({ active, search }) => {
 
 }
 
-export default Navbar;
+export default memo(Navbar);
