@@ -37,13 +37,13 @@ export default function AccordionMenu({
     const getAllAnalyteOptions = () => {
         return new Promise((resolve, reject) => {
             const chemParams = {
-                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e"`
+                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             }
             const habitatParams = {
-                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "6d9a828a-d539-457e-922c-3cb54a6d4f9b"`
+                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "6d9a828a-d539-457e-922c-3cb54a6d4f9b" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             };
             const toxParams = {
-                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "a6dafb52-3671-46fa-8d42-13ddfa36fd49"`
+                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "a6dafb52-3671-46fa-8d42-13ddfa36fd49" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             }
             Promise.all([
                 getData(chemParams, 'chemistry'),
@@ -206,7 +206,7 @@ export default function AccordionMenu({
     }) => {
         // Check that the data reference already exists; otherwise, this will run on intial load with the reference = null
         if (allAnalyteCombosRef.current) {
-            // Get new data based on user selection
+            // Get new data based on user selections
             let newData = allAnalyteCombosRef.current;
             if (program) {
                 newData = newData.filter(d => d[capitalizeFirstLetter(program)] === 'True')
@@ -222,53 +222,58 @@ export default function AccordionMenu({
                 newData = newData.filter(d => d.MatrixDisplay === analyte.matrix);
             }
             // Update select menu lists
-            if (updateAnalyte) {
-                updateAnalyteList(newData);
-            };
+            if (updateProgram) {
+                updateProgramList(newData);
+            }
             if (updateRegion) {
                 updateRegionList(newData);
             }
             if (updateCategory) {
                 updateCategoryList(newData);
             }
-            if (updateProgram) {
-                updateProgramList(newData);
-            }
+            if (updateAnalyte) {
+                updateAnalyteList(newData);
+            };
         }
     };
 
     useEffect(() => {
         if (program) {
+            // If program is updated
             updateMenuOptions({ updateProgram: false, updateRegion: true, updateCategory: true, updateAnalyte: true });
         } else {
-            // If program was cleared
+            // If program is cleared
             updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateAnalyte: true });
         }
     }, [program]);
 
     useEffect(() => {
         if (region) {
+            // If region is updated
             updateMenuOptions({ updateProgram: true, updateRegion: false, updateCategory: true, updateAnalyte: true });
         } else {
-            // If region was cleared
+            // If region is cleared
             updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateAnalyte: true });
         }
     }, [region]);
 
     useEffect(() => {
         if (category) {
+            // If category is updated
             updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: false, updateAnalyte: true })
         } else {
-            // If category was cleared
+            // If category is cleared
             updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateAnalyte: true });
         }
     }, [category]);
 
     useEffect(() => {
         if (analyte) {
+            // If analyte is updated
             updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateAnalyte: false });
         } else {
-            // If analyte was cleared
+            // If analyte is cleared
+            setCategory(null);
             updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateAnalyte: true });
         }
     }, [analyte]);
