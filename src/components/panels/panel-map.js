@@ -15,13 +15,13 @@ const tableContainerStyle = {
 
 export default function PanelMap({ 
     analyte,
-    mapLoaded,
-    program,
-    region, 
     comparisonSites,
+    mapLoaded,
+    region, 
+    program,
     selecting,
-    setMapLoaded,
     setComparisonSites,
+    setMapLoaded,
     setSelecting,
     setStation,
     setStationData,

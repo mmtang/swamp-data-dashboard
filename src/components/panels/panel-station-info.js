@@ -209,6 +209,10 @@ export default function PanelStationInfo({
                 setPanelAnalyte={setPanelAnalyte} 
                 station={station} 
             />
+            {/* ----- Download data */}
+            { panelAnalyte ? 
+                <DownloadSection data={chartData} loading={loading} />
+            : null }
             {/* ------ Chart */}
             <Segment placeholder textAlign='center'>
                 { panelAnalyte && !loading ?  // If an analyte is selected and there is no loading status, show the chart
@@ -224,10 +228,8 @@ export default function PanelStationInfo({
                     <div style={{ fontStyle: 'italic' }}>Select a parameter</div>
                 : null }
             </Segment>
-            {/* ----- Download data */}
-            { panelAnalyte ? 
-                <DownloadSection data={chartData} loading={loading} />
-            : null }
+            { console.log(analyte) }
+            { console.log(panelAnalyte) }
             {/* ----- Compare Sites
             If analyte selection matches analyte selection in map, then show the "Compare sites" content 
             Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used

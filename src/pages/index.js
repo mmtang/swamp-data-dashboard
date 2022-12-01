@@ -189,8 +189,8 @@ export default function Index() {
 
   return (
     <LayoutMap> 
-      <Metadata />
       <div className={mapContainer}>
+        <Metadata />
         <PanelMap
           analyte={analyte}
           mapLoaded={mapLoaded}
