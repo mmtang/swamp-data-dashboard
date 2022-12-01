@@ -32,18 +32,18 @@ export default function DownloadSection({ data, loading }) {
     }, [data]);
 
     return (
-        <div style={{ width: '100%' }}>
-        <DownloadData
-            basic={true}
-            compact={false}
-            data={downloadData}
-            fields={fieldsRef.current}
-            fluid={true} 
-            loading={loading}
-            size='small'
-        >
-            Download data
-        </DownloadData>
+        <div style={{ marginTop: '15px', width: '100%' }}>
+            <DownloadData
+                basic={true}
+                compact={false}
+                data={downloadData}
+                fields={fieldsRef.current}
+                fluid={true} 
+                loading={loading}
+                size='small'
+            >
+                Download data
+            </DownloadData>
         </div>
     )
 }

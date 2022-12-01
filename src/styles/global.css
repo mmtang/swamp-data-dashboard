@@ -263,3 +263,12 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
   background-color: #103350 !important;
   color: #fff !important;
 }
+
+/* Map popups for small screens */
+.esri-popup--is-docked .esri-popup__header {
+  padding: 0 !important;
+}
+ 
+.esri-popup__main-container {
+  padding: 0 !important;
+}

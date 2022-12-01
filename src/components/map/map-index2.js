@@ -370,7 +370,8 @@ export default function MapIndex2({
                 searchRef.current = new Search({
                     view: viewRef.current,
                     container: 'searchContainer',
-                    allPlaceholder: 'Find a station, waterbody',
+                    //allPlaceholder: 'Find a station, waterbody',
+                    allPlaceholder: '',
                     includeDefaultSources: false, // default sources include ArcGIS world geocoding service
                     locationEnabled: false, // pinpoint user location using browser
                     popupEnabled: false,

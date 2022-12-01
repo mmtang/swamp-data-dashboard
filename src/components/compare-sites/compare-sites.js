@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Icon, Popup, Segment, Table } from 'semantic-ui-react';
+import { Button, Icon, Popup, Segment } from 'semantic-ui-react';
 import { colorPaletteViz, popupStyle } from '../../constants/constants-app';
+// Import styles
+import { compareContainer, compareRow, popupContainer, popupTitle, rowLeft } from './compare-sites.module.css';
 
 
 export default function CompareSites({ 
@@ -79,8 +81,8 @@ export default function CompareSites({
     
     return (
         <Segment textAlign='center'>
-             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '1em', fontWeight: 600, color: '#103c68' }}>Compare stations</span>
+             <div className={popupContainer}>
+                <span className={popupTitle}>Compare stations</span>
                 <Popup
                     inverted
                     style={popupStyle}
@@ -100,30 +102,28 @@ export default function CompareSites({
                 />
             </div>
             { allSites.length > 1 ? 
-                <div style={{ marginTop: '1.6em' }}>
-                    <Table basic='very' compact>
-                        <Table.Body>
-                            { allSites.map((d, i) => {
-                                return (
-                                    <Table.Row key={d.StationCode} style={{ fontSize: '0.92em' }}>
-                                        <Table.Cell style={{ fontWeight: '600', color: `${vizColors[i]}` }}>{d.StationCode}</Table.Cell>
-                                        <Table.Cell>{d.StationName}</Table.Cell>
-                                        <Table.Cell textAlign='right'>
-                                            { i > 0 ? 
-                                                <Icon 
-                                                    color='grey'
-                                                    link
-                                                    name='x' 
-                                                    onClick={() => handleRemove(d.StationCode)}
-                                                    onKeyPress={() => handleRemove(d.StationCode)}
-                                                />
-                                            : null }
-                                        </Table.Cell>
-                                    </Table.Row>
-                                )
-                            }) }
-                        </Table.Body>
-                    </Table>
+                <div className={compareContainer}>
+                    { allSites.map((d, i) => {
+                        return (
+                            <div className={compareRow}>
+                                <div className={rowLeft}>
+                                    <div style={{ color: `${vizColors[i]}`, fontWeight: '600', marginRight: '0.8em' }}>{d.StationCode}</div>
+                                    <div>{d.StationName}</div>
+                                </div>
+                                <div>
+                                    { i > 0 ? 
+                                        <Icon 
+                                            color='grey'
+                                            link
+                                            name='x' 
+                                            onClick={() => handleRemove(d.StationCode)}
+                                            onKeyPress={() => handleRemove(d.StationCode)}
+                                        />
+                                    : null }
+                                </div>
+                            </div>
+                        )
+                    }) }
                 </div>
                 : null
             }

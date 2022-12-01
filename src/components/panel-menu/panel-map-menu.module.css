@@ -47,3 +47,15 @@
     font-weight: 400;
     text-transform: uppercase;
 }
+
+@media screen and (max-width: 800px) {
+    .container {
+        height: 44px;
+    }
+    .menuItem span {
+        font-size: 0.76em;
+    }
+    .statLabel {
+        font-size: 0.82em;
+    }
+}

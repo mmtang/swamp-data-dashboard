@@ -5,20 +5,22 @@ import InfoModalContent from '../common/info-modal-content';
 // import LinkDropdown from './link-dropdown';
 
 import { Icon, Modal } from 'semantic-ui-react';
-import { infoIconWrapper, logo, navBar, navTitle, rightContainer, titleContainer,  } from './navbar.module.css';
+import { 
+    infoIconWrapper, 
+    logo, 
+    navBar, 
+    navTitle, 
+    rightContainer, 
+    searchContainer,
+    titleContainer,  
+} from './navbar.module.css';
 
-const Navbar = ({ active, search }) => {
+const Navbar = ({ search }) => {
     const [disclaimerVisible, setDisclaimerVisible] = useState(false);
 
     const infoIconStyle = {
         height: '34px',
         margin: '0'
-    }
-
-    const searchContainerStyle = {
-        border: '1px solid #2e4558', 
-        marginRight: '0.6em', 
-        width: '250px'
     }
 
     const handleInfoClick = () => {
@@ -35,7 +37,7 @@ const Navbar = ({ active, search }) => {
             </div>
             <div className={rightContainer}>
                 { search ? 
-                    <div id="searchContainer" style={searchContainerStyle} />
+                    <div id="searchContainer" className={searchContainer} />
                     : null
                 }
                 <div className={infoIconWrapper}>

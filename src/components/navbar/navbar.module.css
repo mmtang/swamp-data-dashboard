@@ -3,8 +3,13 @@
     display: 'flex';
     height: '34px';
     justify-content: 'center';
-    margin-right: 26px;
     width: 34px;
+}
+
+.logo {
+    vertical-align: middle;
+    height: 34px;
+    margin: auto 16px auto 0;
 }
 
 .navBar {
@@ -19,13 +24,7 @@
     align-items: center;
     justify-content: space-between;
     z-index: 100;
-}
-
-.navTitle {
-    color: #ffffff;
-    font-size: 1.2em;
-    font-weight: 600;
-    margin-left: 2px;
+    padding: 8px 26px;
 }
 
 .navMenu > ul {
@@ -48,30 +47,43 @@
     padding: 0;
 }
 
+.navTitle {
+    color: #ffffff;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
 .rightContainer {
     display: flex;
+}
+
+.searchContainer {
+    border: 1px solid #2e4558;
+    margin-right: 0.6em;
+    width: 250px;
 }
 
 .titleContainer {
     height: 40px;
     display: flex;
     align-items: center;
-    margin: 0 26px;
-}
-.logo {
-    vertical-align: middle;
-    height: 34px;
-    margin: auto 16px auto 0;
 }
 
+
 @media screen and (max-width: 800px) {
+    .infoIconWrapper {
+        display: none;
+    }
+    .logo {
+        display: none;
+    }
     .navMenu {
         display: none;
     }
-    .titleContainer {
-        margin: 17px;
+    .navTitle {
+        font-size: 1.05em;
     }
-    .logo {
-        height: 30px;
+    .searchContainer {
+        width: 150px !important;
     }
 }

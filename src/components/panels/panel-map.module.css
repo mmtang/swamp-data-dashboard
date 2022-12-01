@@ -1,5 +1,14 @@
 .content {
+    display: flex;
+    flex-direction: column;
     /* Subtract height of main navbar */
     height: calc(100vh - 60px);
     width: 100%;
+}
+
+@media screen and (max-width: 800px) {
+    .content {
+        flex-direction: column-reverse;
+        height: 50vh;
+    }
 }

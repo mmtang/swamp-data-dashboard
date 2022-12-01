@@ -101,9 +101,7 @@ export default function AccordionMenu({
                     label: d.Analyte, 
                     value: d.Analyte + '$' + d.MatrixDisplay, 
                     matrix: d.MatrixDisplay, 
-                    category1: d.AnalyteGroup1,
-                    category2: d.AnalyteGroup2,
-                    category3: d.AnalyteGroup3,
+                    category: d.AnalyteGroup1,
                     source: d.Source
                 }
             })
