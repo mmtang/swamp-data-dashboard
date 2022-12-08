@@ -6,7 +6,7 @@ import InfoModalContent from '../common/info-modal-content';
 
 import { Icon, Modal } from 'semantic-ui-react';
 import { 
-    infoIconWrapper, 
+    iconWrapper, 
     logo, 
     navBar, 
     navTitle, 
@@ -27,6 +27,10 @@ const Navbar = ({ search }) => {
         setDisclaimerVisible(true);
     }
 
+    const handleMenuClick = () => {
+        alert('clicked');
+    }
+
     return (
         <div className={navBar}>
             {/* Wrap navbar header text in span */}
@@ -40,7 +44,7 @@ const Navbar = ({ search }) => {
                     <div id="searchContainer" className={searchContainer} />
                     : null
                 }
-                <div className={infoIconWrapper}>
+                <div className={iconWrapper}>
                     <Icon 
                         bordered
                         color='black'

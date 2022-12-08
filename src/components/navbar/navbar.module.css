@@ -1,8 +1,9 @@
-.infoIconWrapper {
+.iconWrapper {
     align-items: center; 
-    display: 'flex';
-    height: '34px';
-    justify-content: 'center';
+    display: flex;
+    height: 34px;
+    justify-content: center;
+    margin-left: 0.6em;
     width: 34px;
 }
 
@@ -59,7 +60,6 @@
 
 .searchContainer {
     border: 1px solid #2e4558;
-    margin-right: 0.6em;
     width: 250px;
 }
 
@@ -71,11 +71,14 @@
 
 
 @media screen and (max-width: 800px) {
-    .infoIconWrapper {
+    .iconWrapper {
         display: none;
     }
     .logo {
         display: none;
+    }
+    .navBar {
+        padding: 8px 16px;
     }
     .navMenu {
         display: none;

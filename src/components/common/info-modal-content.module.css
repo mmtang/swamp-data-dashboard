@@ -8,9 +8,10 @@
 }
 
 .imageSetContainer img {
+    height: auto;
     margin: 1em 0;
     max-width: 400px;
-    width: auto;
+    width: 100%;
 }
 
 .imageSetContainer figcaption {

@@ -1,0 +1,19 @@
+.loaderContainer {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    height: calc(100vh - 110px); /* 110px is the combined navbar + map panel menu height */
+    justify-content: center;
+    position: fixed;
+    top: 110px;
+    width: 65vw;
+    z-index: 900;
+}
+
+@media screen and (max-width: 800px) {
+    .loaderContainer {
+        /* 50vh is the height of the map as defined in the map component; 44px is the height of the map panel menu */
+        height: calc(50vh - 44px); 
+        top: 60px;
+        width: 100vw;
+    }
+}

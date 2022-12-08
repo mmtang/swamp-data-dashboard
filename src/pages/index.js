@@ -241,9 +241,11 @@ export default function Index() {
               onClose={() => setDisclaimerVisible(false)}
               size='small'
           >
-              <Modal.Content scrolling>
-                  <InfoModalContent setDisclaimerVisible={setDisclaimerVisible} />
-              </Modal.Content>
+            <Modal.Content scrolling>
+              <Modal.Description>
+                <InfoModalContent setDisclaimerVisible={setDisclaimerVisible} />
+              </Modal.Description>
+            </Modal.Content>
           </Modal> 
       : '' }
     </LayoutMap>
