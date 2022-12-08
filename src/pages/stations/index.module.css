@@ -65,15 +65,12 @@
 }
 
 @media screen and (max-width: 970px) {
-    .content{
-        display: grid;
-        height: 100%;
-        grid-template-columns: 30% 70%;
+    .contentGrid {
+        display: block;
+        height: auto;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
         overflow-y: auto;
-    }
-
-    .header {
-        grid-area: header;
     }
 
     .leftContainer {
@@ -81,23 +78,14 @@
         grid-row-end: 1;
         width: 100vw;
     }
-
-    .mainGrid {
-        display: grid;
-        grid-template-areas:
-            'header'
-            'left'
-            'right';
-        grid-template-rows: 60px auto auto;
-        grid-template-columns: 1fr;
-        height: auto;
-    }
     
     .rightContainer {
+        grid-column-start: 1;
+        grid-column-end: 1;
         grid-row-start: 2;
         grid-row-end: 2;
-        overflow-x: hidden;
-        overflow-y: auto;
-        width: 100%;
+        height: auto;
+        overflow-x: auto;
+        width: 100vw;
     }
 }

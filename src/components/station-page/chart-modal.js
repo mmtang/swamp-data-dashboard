@@ -10,6 +10,10 @@ export default function ChartModal({ station, stationName, selectedAnalytes }) {
     const [loading, setLoading] = useState(true);
     const selectLimit = 5;
 
+    const containerStyle = {
+        marginBottom: '0.4em'
+    }
+
     const handleClick = () => {
         if (modalVisible === false) {
             setLoading(true);
@@ -19,7 +23,7 @@ export default function ChartModal({ station, stationName, selectedAnalytes }) {
     }
 
     return (
-        <div>
+        <div style={containerStyle}>
             {/* Wrap button in span in order for the popup to show when the button is disabled: https://github.com/Semantic-Org/Semantic-UI-React/issues/1413 */}
             <Popup
                 inverted

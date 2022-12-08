@@ -9,6 +9,7 @@ export default function TableMenu({ categories, selectedCategory, setSelectedCat
     const [options, setOptions] = useState(null);
 
     const containerStyle = {
+        marginBottom: '0.4em',
         marginRight: '0.32em',
         width: '185px'
     }
