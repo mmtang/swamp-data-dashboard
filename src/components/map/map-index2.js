@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 // Load helper functions and constants
-import { bpLineRenderer, bpPolyRenderer, irLineRenderer, irPolyRenderer, regionRenderer } from './map-renderer';
+import { bpLineRenderer, bpPolyRenderer, irLineRenderer2020, irPolyRenderer2020, regionRenderer } from './map-renderer';
 import { bpLayerDict, convertStationDataToGraphics, stationDataFields } from '../../utils/utils-map';
 import { irRegionDict, regionDict, regionNumDict } from '../../utils/utils';
 // Load styles
@@ -27,10 +27,13 @@ export default function MapIndex2({
     const comparisonSitesRef = useRef(null); // Used to store the old array of site code strings. Will be compared to the new array
     const divRef = useRef(null); // Map container
     const expandGalleryRef = useRef(null); // Used for basemap gallery
-    const irLayerRef = useRef(null); // Integrated Report group layer ref
+    // const irLayer2018Ref = useRef(null); // Integrated Report group layer ref
     // IR Sublayers - Need to have separate refs for both layers because the features in each layer will be filtered by region based on user selection. The refs are needed to change the layer's definition expression
-    const irLineRef = useRef(null);
-    const irPolyRef = useRef(null); 
+    const irLine2018Ref = useRef(null);
+    const irPoly2018Ref = useRef(null); 
+    const irLayer2020Ref = useRef(null);
+    const irLine2020Ref = useRef(null);
+    const irPoly2020Ref = useRef(null);
     const landUseLayerRef = useRef(null);
     const layerListRef = useRef(null);
     const listenerRef = useRef(null); // Used for keeping track of selection modes, example: user selecting comparison sites
@@ -64,7 +67,8 @@ export default function MapIndex2({
     // This function fetches the 2018 Integrated Report layer services for polys and lines and stores both in a group layer object
     // The IR features are visible on the map upon initial load
     const drawIntegratedReport = () => {
-        const irTemplate = {
+        /*
+        const irTemplate2018 = {
             // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
             outFields: ['wbid', 'wbname', 'rb', 'wbtype', 'wb_category', 'wb_listingstatus', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_', 'fact_sheet'],
             title: '<div style="padding: 4px 0"><span style="font-size: 1.05em; color: #ffffff">{wbname}</span></div>',
@@ -136,34 +140,118 @@ export default function MapIndex2({
                 }
             ]
         };
+        */
+        const irTemplate2020 = {
+            // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
+            outFields: ['waterbody_id', 'waterbody_name', 'regional_board', 'waterbody_type', 'waterbody_category', 'listing_status', 'pollutants_listed', 'fact_sheet', 'wb_size', 'waterbody_counties'],
+            title: '<div style="padding: 4px 0"><span style="font-size: 1.05em; color: #ffffff">{waterbody_name}</span></div>',
+            content: [
+                {
+                    type: 'fields',
+                    fieldInfos: [
+                        {
+                            fieldName: 'waterbody_id',
+                            label: 'ID',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'waterbody_type',
+                            label: 'Type',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'regional_board',
+                            label: 'Region',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'waterbody_category',
+                            label: 'Waterbody Category',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'wb_size',
+                            label: 'Size (miles)',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'listing_status',
+                            label: 'Listing Status',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'pollutants_listed',
+                            label: 'Pollutants Listed',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'fact_sheet',
+                            label: 'Fact Sheet',
+                            visible: true
+                        }
+                    ]
+                }
+            ]
+        };
         return new Promise((resolve, reject) => {
             if (mapRef) {
                 loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
                 .then(([FeatureLayer, GroupLayer]) => {
-                    irLineRef.current = new FeatureLayer({
-                        id: 'ir-line-layer',
+                    // 2018 IR Layer - removed for now, kept for reference and in case we are asked to add it back
+                    /*
+                    irLine2018Ref.current = new FeatureLayer({
+                        id: 'ir-line-layer-2018',
                         title: 'Streams, Rivers, Beaches',
                         url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/0',
                         outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
-                        popupTemplate: irTemplate,
                         listMode: 'hide',
-                        renderer: irLineRenderer
+                        popupTemplate: irTemplate2018,
+                        renderer: irLineRenderer2018
                     });
-                    irPolyRef.current = new FeatureLayer({
-                        id: 'ir-poly-layer',
+                    irPoly2018Ref.current = new FeatureLayer({
+                        id: 'ir-poly-layer-2018',
                         title: 'Lakes, Bays, Reservoirs',
                         url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/1',
                         outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
-                        popupTemplate: irTemplate,
-                        renderer: irPolyRenderer,
                         listMode: 'hide',
-                        opacity: 0.8
+                        opacity: 0.8,
+                        popupTemplate: irTemplate2018,
+                        renderer: irPolyRenderer2018
                     });
-                    irLayerRef.current = new GroupLayer({
-                        id: 'ir-group-layer',
+                    irLayer2018Ref.current = new GroupLayer({
+                        id: 'ir-group-layer-2018',
                         title: '2018 Integrated Report',
+                        visible: false,
+                        layers: [irLine2018Ref.current, irPoly2018Ref.current],
+                        listMode: 'show',
+                        visibilityMode: 'inherited'
+                    });
+                    */
+                    // 2020 IR Layer
+                    irLine2020Ref.current = new FeatureLayer({
+                        id: 'ir-line-layer-2020',
+                        title: 'Streams, Rivers, Beaches',
+                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Lines/FeatureServer/0',
+                        outfields: ['waterbody_id', 'waterbody_name', 'waterbody_counties', 'wb_size', 'waterbody_type', 'regional_board', 'wb_category', 'listing_status', 'fact_sheet', 'pollutants_listed'],
+                        listMode: 'hide',
+                        popupTemplate: irTemplate2020,
+                        renderer: irLineRenderer2020
+                    });
+                    irPoly2020Ref.current = new FeatureLayer({
+                        id: 'ir-poly-layer-2020',
+                        title: 'Lakes, Bays, Reservoirs',
+                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Polys/FeatureServer/0',
+                        outfields: ['waterbody_id', 'waterbody_name', 'waterbody_counties', 'wb_size', 'waterbody_type', 'regional_board', 'wb_category', 'listing_status', 'fact_sheet', 'pollutants_listed'],
+                        listMode: 'hide',
+                        opacity: 0.8,
+                        popupTemplate: irTemplate2020,
+                        renderer: irPolyRenderer2020
+                    });
+                    irLayer2020Ref.current = new GroupLayer({
+                        id: 'ir-group-layer-2020',
+                        title: '2020-2022 Integrated Report',
                         visible: true,
-                        layers: [irLineRef.current, irPolyRef.current],
+                        layers: [irLine2020Ref.current, irPoly2020Ref.current],
                         listMode: 'show',
                         visibilityMode: 'inherited'
                     });
@@ -202,25 +290,17 @@ export default function MapIndex2({
 
     // Refreshes the Integrated Report layers based on user selection. The IR layers are filtered using definition expressions
     const refreshIntegratedReport = () => {
-        // There are two functions for building the definition expression string mainly because the field names for the two layers are different (rb vs. rb_1). Could probably combine the two into a single function, but I'm not convinced it would be that much better (personal preference)
-        const constructDefExpLine = () => {
+        const constructDefExp = () => {
             if (region) {
-                return `rb = '${irRegionDict[regionDict[region]]}'`;
-            } else if (!region) {
-                return '';
-            }
-        }
-        const constructDefExpPoly = () => {
-            if (region) {
-                return `rb_1 = '${irRegionDict[regionDict[region]]}'`;
+                return `regional_board = '${irRegionDict[regionDict[region]]}'`;
             } else if (!region) {
                 return '';
             }
         }
         if (mapRef.current) {
             // Update filters
-            irLineRef.current.definitionExpression = constructDefExpLine();
-            irPolyRef.current.definitionExpression = constructDefExpPoly();
+            irLine2020Ref.current.definitionExpression = constructDefExp();
+            irPoly2020Ref.current.definitionExpression = constructDefExp();
         }
     }
 
@@ -260,48 +340,7 @@ export default function MapIndex2({
                             outFields: ['*'],
                             renderer: stationRenderer,
                             popupTemplate: stationTemplate
-                        });
-
-                        // Keep for reference, will likely delete
-                        // Add hover listener to display tooltip
-                        // https://support.esri.com/en/technical-article/000024297
-                        // https://developers.arcgis.com/javascript/latest/sample-code/view-hittest/
-
-                        // variable for tracking last station that was hovered (use StationCode)
-                        // this has to be initiated outside of the on pointer-move function
-
-                        /*
-                        let lastStationHovered = null;
-
-                        viewRef.current.on('pointer-move', (event) => {
-                            // only include graphics from the station layer in the hitTest
-                            const opts = {
-                                include: stationLayerRef.current
-                            }
-                            viewRef.current.hitTest(event, opts).then((response) => {
-                                // check if a feature is returned from the station layer
-                                if (response.results.length) {
-                                    const graphic = response.results[0].graphic;
-                                    // check if still over the same graphic, this is required for smooth hover tooltips. do not remove the if statement and its contents
-                                    // https://community.esri.com/t5/arcgis-api-for-javascript-questions/smooth-hover-mouseover-tooltips-in-jsapi-v4/m-p/706938/highlight/true#M65797
-                                    if (graphic.attributes.StationCode !== lastStationHovered) {
-                                        // open graphic's popup
-                                        viewRef.current.popup.open({ 
-                                            location: graphic.geometry.centroid, 
-                                            features: [graphic] 
-                                        }); 
-                                        lastStationHovered = graphic.attributes.StationCode;
-                                    };
-                                } else { 
-                                    // close graphic's popup
-
-                                    // viewRef.current.popup.close(); 
-
-                                    lastStationHovered = null;
-                                }
-                            });
-                        });
-                        */
+                        })
                         resolve();
                     });
                 } else {
@@ -430,7 +469,8 @@ export default function MapIndex2({
                     // Add layers in order
                     mapRef.current.addMany([
                         landUseLayerRef.current, 
-                        irLayerRef.current, 
+                        //irLayer2018Ref.current, 
+                        irLayer2020Ref.current,
                         stationLayerRef.current
                     ]);
                     resetSearchSources(); // Initialize search sources
@@ -873,7 +913,7 @@ export default function MapIndex2({
         // At some point, want to change this so it's not hard-coded
         searchRef.current.sources = [
             {
-                layer: irLineRef.current,
+                layer: irLine2018Ref.current,
                 searchFields: ['wbid', 'wbname'],
                 displayField: 'wbname',
                 exactMatch: false,
@@ -882,7 +922,7 @@ export default function MapIndex2({
                 placeholder: 'Example: Burney Creek'
             },
             {
-                layer: irPolyRef.current,
+                layer: irPoly2018Ref.current,
                 searchFields: ['wbid', 'wbname'],
                 displayField: 'wbname',
                 exactMatch: false,
