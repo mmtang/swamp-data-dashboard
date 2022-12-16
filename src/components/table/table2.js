@@ -1,15 +1,12 @@
 import React, { useRef, useState } from 'react';
-
-import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
-
+import { Cell, Column, HeaderCell, Table,  } from 'rsuite-table';
+// Import styles
 import 'rsuite-table/dist/css/rsuite-table.css';
-import { tableContainer } from './table.module.css';
-
+import { tableContainer } from './table2.module.css';
 
 // This component generates the data table on the dashboard index page.
 // It makes use of the react-data-table-component library
 // https://github.com/jbetancur/react-data-table-component
-
 export default function Table2({ 
     comparisonSites, 
     selecting,
@@ -19,18 +16,12 @@ export default function Table2({
     station, 
     stationData 
 }) {
-    const containerRef = useRef(null)
-
+    // State
     const [loading, setLoading] = useState(false)
     const [sortColumn, setSortColumn] = useState('LastSampleDate');
     const [sortType, setSortType] = useState('desc')
-
-    /*
-    useEffect(() => {
-        setWidth(containerRef.current.parentElement.offsetWidth);
-        setHeight(containerRef.current.parentElement.offsetHeight);
-    }, []);
-    */
+    // References
+    const containerRef = useRef(null)
 
     // Uses state variables sortColumn and sortType to return a dynamically sorted version of the stationData dataset
     // https://rsuite.github.io/rsuite-table/#10

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
+// Import components
 import MatrixTag from '../common/matrix-tag';
-// import TrendHelpIcon from '../common/trend-help-icon';
 import DataTable from 'react-data-table-component';
-// import { IconTrendingUp, IconTrendingDown, IconMinus } from '@tabler/icons';
+// Import styles
 import { tableWrapper } from './station-table.module.css';
 
-// This component renders the data (passed from index, the parent component) on the station page.
+// This component renders the table on the station page using data passed from index, the parent component
 export default function StationTable({ data, selectedAnalytes, setSelectedAnalytes }) {
+    // State
     const [toggledClearRows, setToggledClearRows] = useState(false);
 
-    // Overrides:
+    // Style overrides:
     // https://github.com/jbetancur/react-data-table-component/blob/master/src/DataTable/styles.js
     const customStyles = {
         headRow: {
@@ -25,21 +26,6 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
             }
         }
     }
-
-    /*
-    // Function for rendering the trend and accompanying icon in the table
-    const CustomTrend = ({ row }) => {
-        return (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {row['Trend'] === 'Possibly increasing' ? <IconTrendingUp size={18} /> : row['Trend'] === 'Possibly decreasing' ? <IconTrendingDown size={18} /> : <IconMinus size={18} alt={row['Trend']} /> }
-                    &nbsp;&nbsp;&nbsp;
-                    <span>{row['Trend']}</span>
-                </div>
-            </div>
-        )
-    }
-    */
 
     const columns = [
         {
@@ -85,16 +71,6 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
             format: row => row['ResultDisplay'].toLocaleString() + ' ' + row['Unit'],
             right: true
         },
-        /*
-        {
-            id: 'trend',
-            name: <TrendHelpIcon />,
-            selector: row => row['Trend'],
-            width: '165px',
-            sortable: true,
-            format: row => <CustomTrend row={row} />
-        },
-        */
         {
             id: 'min',
             name: 'Min',

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Icon, Label } from 'semantic-ui-react'
 
-
 export default function TableClear({ selectedAnalytes, setSelectedAnalytes }) {
     const labelStyle = {
         borderRadius: 0

@@ -7,7 +7,7 @@ import MapStation from '../../components/map/map-station';
 import Metadata from '../../components/layout/metadata';
 import Navbar from '../../components/navbar/navbar';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
-import StationTable from '../../components/station-page/station-table';
+import StationTable from '../../components/table/station-table';
 import TableClear from '../../components/station-page/table-clear';
 import TableMenu from '../../components/station-page/table-menu';
 import TableSearch from '../../components/station-page/table-search';
