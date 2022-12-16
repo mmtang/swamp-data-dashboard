@@ -64,9 +64,10 @@
 }
 
 .titleContainer {
-    height: 40px;
-    display: flex;
     align-items: center;
+    display: flex;
+    height: 40px;
+    margin-right: 1em;
 }
 
 
@@ -87,6 +88,6 @@
         font-size: 1.05em;
     }
     .searchContainer {
-        width: 150px !important;
+        width: 186px !important;
     }
 }

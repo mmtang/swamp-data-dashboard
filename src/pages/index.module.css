@@ -32,11 +32,11 @@
 
 @media screen and (max-width: 800px) {
     .mapContainer {
-        flex-basis: 35%;
+        flex-basis: 40%;
         height: 100%;
         order: 1;
     }
     .mainContainer {
-        flex-basis: 65%;
+        flex-basis: 60%;
     }
 }
