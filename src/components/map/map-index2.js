@@ -1,11 +1,29 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 // Load helper functions and constants
-import { bpLineRenderer, bpPolyRenderer, irLineRenderer2020, irPolyRenderer2020, regionRenderer } from './map-renderer';
-import { bpLayerDict, convertStationDataToGraphics, stationDataFields } from '../../utils/utils-map';
-import { irRegionDict, regionDict, regionNumDict } from '../../utils/utils';
+import { 
+    bpLineRenderer, 
+    bpPolyRenderer, 
+    irLineRenderer2020, 
+    irPolyRenderer2020, 
+    regionRenderer, 
+    stationRenderer 
+} from './map-renderer';
+
+import { 
+    bpLayerDict, 
+    convertStationDataToGraphics, 
+    stationDataFields 
+} from '../../utils/utils-map';
+
+import { 
+    irRegionDict, 
+    regionDict, 
+    regionNumDict 
+} from '../../utils/utils';
+
 // Load styles
-import { container } from './map-index.module.css';
+import { container } from './map-index2.module.css';
 
 export default function MapIndex2({ 
     comparisonSites,
@@ -64,83 +82,8 @@ export default function MapIndex2({
         })
     }
 
-    // This function fetches the 2018 Integrated Report layer services for polys and lines and stores both in a group layer object
-    // The IR features are visible on the map upon initial load
+    // This function fetches the Integrated Report layer services for polys and lines and stores both in a group layer object. The IR features are visible on the map upon initial load
     const drawIntegratedReport = () => {
-        /*
-        const irTemplate2018 = {
-            // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
-            outFields: ['wbid', 'wbname', 'rb', 'wbtype', 'wb_category', 'wb_listingstatus', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_', 'fact_sheet'],
-            title: '<div style="padding: 4px 0"><span style="font-size: 1.05em; color: #ffffff">{wbname}</span></div>',
-            content: [
-                {
-                    type: 'fields',
-                    fieldInfos: [
-                        {
-                            fieldName: 'wbid',
-                            label: 'ID',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'wbtype',
-                            label: 'Type',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'rb',
-                            label: 'Region',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'wb_category',
-                            label: 'Waterbody Condition Category',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'wb_listingstatus',
-                            label: 'Overall Listing Status',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'listed_pollutants',
-                            label: 'Listed Pollutant(s)',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'listed_pollutant_w_tmdl',
-                            label: 'Listed Pollutant(s) w TMDL',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'listed_pollutant_addressed_by_n',
-                            label: 'Listed Pollutant Addressed by NonTMDL',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'listed_pollutant_addressed_by_n',
-                            label: 'Listed Pollutant Addressed by NonTMDL',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'listed_pollutant_addressed_by_n',
-                            label: 'Listed Pollutant Addressed by NonTMDL',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'pollutants_assessed_not_listed_',
-                            label: 'Pollutants Assessed, Not Listed',
-                            visible: true
-                        },
-                        {
-                            fieldName: 'fact_sheet',
-                            label: 'Waterbody Fact Sheet',
-                            visible: true
-                        }
-                    ]
-                }
-            ]
-        };
-        */
         const irTemplate2020 = {
             // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
             outFields: ['waterbody_id', 'waterbody_name', 'regional_board', 'waterbody_type', 'waterbody_category', 'listing_status', 'pollutants_listed', 'fact_sheet', 'wb_size', 'waterbody_counties'],
@@ -197,36 +140,6 @@ export default function MapIndex2({
             if (mapRef) {
                 loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
                 .then(([FeatureLayer, GroupLayer]) => {
-                    // 2018 IR Layer - removed for now, kept for reference and in case we are asked to add it back
-                    /*
-                    irLine2018Ref.current = new FeatureLayer({
-                        id: 'ir-line-layer-2018',
-                        title: 'Streams, Rivers, Beaches',
-                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/0',
-                        outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
-                        listMode: 'hide',
-                        popupTemplate: irTemplate2018,
-                        renderer: irLineRenderer2018
-                    });
-                    irPoly2018Ref.current = new FeatureLayer({
-                        id: 'ir-poly-layer-2018',
-                        title: 'Lakes, Bays, Reservoirs',
-                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer/1',
-                        outfields: ['wbid', 'wbname', 'est_size_a', 'size_assess', 'wbtype', 'rb', 'wb_category', 'wb_listingstatus', 'fact_sheet', 'listed_pollutants', 'listed_pollutant_w_tmdl', 'listed_pollutant_addressed_by_n', 'pollutants_assessed_not_listed_'],
-                        listMode: 'hide',
-                        opacity: 0.8,
-                        popupTemplate: irTemplate2018,
-                        renderer: irPolyRenderer2018
-                    });
-                    irLayer2018Ref.current = new GroupLayer({
-                        id: 'ir-group-layer-2018',
-                        title: '2018 Integrated Report',
-                        visible: false,
-                        layers: [irLine2018Ref.current, irPoly2018Ref.current],
-                        listMode: 'show',
-                        visibilityMode: 'inherited'
-                    });
-                    */
                     // 2020 IR Layer
                     irLine2020Ref.current = new FeatureLayer({
                         id: 'ir-line-layer-2020',
@@ -307,18 +220,6 @@ export default function MapIndex2({
     // Process station data and define station layer
     const drawStationLayer = () => {
         return new Promise((resolve, reject) => {
-            const stationRenderer = {
-                type: 'simple',
-                symbol: {
-                    type: 'simple-marker',
-                    size: 6,
-                    color: '#046b99',
-                    outline: {
-                        color: '#fff',
-                        width: 0.8
-                    }
-                }
-            }
             const stationTemplate = {
                 title: '<div style="background-color: ##2b2b2b; color: #fff; text-align: center">{StationName}</div>'
             };
@@ -877,7 +778,7 @@ export default function MapIndex2({
                 addBasinPlanRegionLayer(region);
                 zoomToRegion(regionDict[region]);
             } else {
-                // Region is cleared, restore statewide view
+                // Region is cleared, restore statewide view settings
                 refreshIntegratedReport();
                 removeBasinPlanRegionLayer();
             }
