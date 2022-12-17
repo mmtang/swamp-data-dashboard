@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ChartPanel from '../chart-index/chart-panel';
+import ChartPanel from '../chart/chart-panel';
 import CompareSites from '../compare-sites/compare-sites';
 import DownloadSection from '../station-page/download-section';
 import LoaderBlock from '../common/loader-block';

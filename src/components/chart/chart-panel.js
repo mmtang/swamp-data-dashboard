@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-// import { legendColor } from 'd3-svg-legend';
-import { analyteYMax, analyteScoringCategories, analytes } from '../../constants/constants-data';
-import { customTooltip, modalContent } from './chart-index.module.css';
+import { analytes, analyteScoringCategories, analyteYMax } from '../../constants/constants-data';
+import { customTooltip, modalContent } from './chart-panel.module.css';
 
-// Component for rendering graph on the dashboard index page (from map and dashboard)
+// Component for rendering graph on the dashboard index page (station panel)
 export default function ChartPanel({ analyte, data, unit, vizColors }) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
     const formatDate = d3.timeFormat('%b %e, %Y');
