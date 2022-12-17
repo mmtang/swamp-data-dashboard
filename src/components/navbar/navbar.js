@@ -12,7 +12,6 @@ import {
     titleContainer,  
 } from './navbar.module.css';
 
-
 const Navbar = ({ search }) => {
     const [disclaimerVisible, setDisclaimerVisible] = useState(false);
 

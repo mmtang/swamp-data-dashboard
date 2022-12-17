@@ -28,26 +28,6 @@
     padding: 8px 26px;
 }
 
-.navMenu > ul {
-    padding: 0;
-    margin-right: 15px;
-    border: 0;
-}
-
-.navMenu > ul > li {
-    display: inline-block;
-    list-style: none;
-    vertical-align: baseline;
-    color: inherit;
-    font-size: 1em;
-    font-weight: 400;
-    height: 60px;
-    margin: 0;
-    border: 0;
-    line-height: 60px;
-    padding: 0;
-}
-
 .navTitle {
     color: #ffffff;
     font-size: 1.2em;
@@ -80,9 +60,6 @@
     }
     .navBar {
         padding: 8px 16px;
-    }
-    .navMenu {
-        display: none;
     }
     .navTitle {
         font-size: 1.05em;
