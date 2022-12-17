@@ -31,6 +31,12 @@
     margin: 2px 0 2px 8px;
 }
 
+.menuWrapper {
+    display: flex;
+    height: 50px;
+    width: 100%;
+}
+
 .statContainer {
     align-items: center;
     display: flex;
@@ -54,6 +60,9 @@
     }
     .menuItem span {
         font-size: 0.76em;
+    }
+    .menuWrapper{
+        height: 44px;
     }
     .statLabel {
         font-size: 0.82em;
