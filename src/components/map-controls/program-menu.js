@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import LoaderMenu from './loader-menu';
+import LoaderMenu from '../loaders/loader-menu';
 
 import Select from 'react-select';
 import { customSelectStyle, programDict } from '../../utils/utils';

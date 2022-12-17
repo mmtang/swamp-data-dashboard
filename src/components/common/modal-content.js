@@ -1,14 +1,14 @@
 import React, { memo, useState } from 'react';
 import UpdateMessage from './update-message';
 
-import swampLogo from '../../../static/swamp-logo-black-small.png';
 import downloadParameter from '../../../static/download-parameter.png';
 import downloadStation from '../../../static/download-station.png';
+import swampLogo from '../../../static/swamp-logo-black-small.png';
 import { Button, Icon, Menu, Segment } from 'semantic-ui-react';
 
-import { imageSetContainer, modalButton, modalContent, swampIcon } from './info-modal-content.module.css';
+import { imageSetContainer, modalButton, modalContent, swampIcon } from './modal-content.module.css';
 
-const InfoModalContent = ({ setDisclaimerVisible }) => {   
+const ModalContent = ({ setDisclaimerVisible }) => {   
     const [activeItem, setActiveItem] = useState('welcome');
 
     const handleItemClick = (e, { name }) => {
@@ -104,4 +104,4 @@ const InfoModalContent = ({ setDisclaimerVisible }) => {
     )
 }
 
-export default memo(InfoModalContent);
+export default memo(ModalContent);

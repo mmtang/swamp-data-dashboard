@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef  } from 'react';
 import ChartModal from '../../components/station-page/chart-modal';
-import ErrorFullscreen from '../../components/common/error-fullscreen';
+import ErrorFullscreen from '../../components/layout/error-fullscreen';
 import LayoutMap from '../../components/layout/layout-map';
-import LoaderDashboard from '../../components/common/loader-dashboard';
+import LoaderDashboard from '../../components/loaders/loader-dashboard';
 import MapStation from '../../components/map/map-station';
 import Metadata from '../../components/layout/metadata';
 import Navbar from '../../components/navbar/navbar';

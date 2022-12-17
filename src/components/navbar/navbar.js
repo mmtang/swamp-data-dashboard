@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import { withPrefix } from 'gatsby';
-import InfoModalContent from '../common/info-modal-content';
+import ModalContent from '../common/modal-content';
 import { Icon, Modal } from 'semantic-ui-react';
 import { 
     iconWrapper, 
@@ -59,7 +59,7 @@ const Navbar = ({ search }) => {
                     size='small'
                 >
                     <Modal.Content scrolling>
-                        <InfoModalContent setDisclaimerVisible={setDisclaimerVisible} />
+                        <ModalContent setDisclaimerVisible={setDisclaimerVisible} />
                     </Modal.Content>
                 </Modal> 
             : '' }

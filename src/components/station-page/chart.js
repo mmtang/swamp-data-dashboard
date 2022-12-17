@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import LoaderBlock from '../common/loader-block';
+import LoaderBlock from '../loaders/loader-block';
 import * as d3 from 'd3';
 import { analyteYMax, analyteScoringCategories, analytes } from '../../constants/constants-data';
 import { colorPaletteViz } from '../../constants/constants-app';

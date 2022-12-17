@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Icon, Popup, Segment } from 'semantic-ui-react';
 import { colorPaletteViz, popupStyle } from '../../constants/constants-app';
-// Import styles
-import { compareContainer, compareRow, popupContainer, popupTitle, rowLeft } from './compare-sites.module.css';
 
+// Import styles
+import { 
+    compareContainer, 
+    compareRow, 
+    popupContainer, 
+    popupTitle, 
+    rowLeft 
+} from './compare-sites.module.css';
 
 export default function CompareSites({ 
     comparisonSites, 
     selecting, 
-    setSelecting, 
     setComparisonSites,
+    setSelecting, 
     setVizColors,
     station,
     vizColors

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import LoaderPanel from '../common/loader-panel';
+import LoaderPanel from '../loaders/loader-panel';
 import MapIndex2 from '../map/map-index2';
 import PanelMapMenu from '../panel-menu/panel-map-menu';
 import Table2 from '../table/table2';

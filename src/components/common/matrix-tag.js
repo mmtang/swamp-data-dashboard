@@ -1,7 +1,5 @@
 import React from 'react';
-
 import { matrixColor } from '../../constants/constants-app';
-
 import { tagBox, tagWrapper } from './matrix-tag.module.css';
 
 export default function MatrixTag({ matrix, height }) {

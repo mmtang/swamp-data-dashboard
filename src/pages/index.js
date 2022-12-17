@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import InfoModalContent from '../components/common/info-modal-content';
+import ModalContent from '../components/common/modal-content';
 import LayoutMap from '../components/layout/layout-map';
 import Metadata from '../components/layout/metadata';
 import PanelIndex from '../components/panels/panel-index';
@@ -243,7 +243,7 @@ export default function Index() {
           >
             <Modal.Content scrolling>
               <Modal.Description>
-                <InfoModalContent setDisclaimerVisible={setDisclaimerVisible} />
+                <ModalContent setDisclaimerVisible={setDisclaimerVisible} />
               </Modal.Description>
             </Modal.Content>
           </Modal> 

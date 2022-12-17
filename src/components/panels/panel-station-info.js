@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ChartPanel from '../chart/chart-panel';
 import CompareSites from '../compare-sites/compare-sites';
 import DownloadSection from '../station-page/download-section';
-import LoaderBlock from '../common/loader-block';
+import LoaderBlock from '../loaders/loader-block';
 import AnalyteMenu from '../station-page/analyte-menu';
 import { Segment } from 'semantic-ui-react';
 

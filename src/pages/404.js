@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorFullscreen from '../components/common/error-fullscreen';
+import ErrorFullscreen from '../components/layout/error-fullscreen';
 import LayoutMap from '../components/layout/layout-map';
 import Metadata from '../components/layout/metadata';
 
