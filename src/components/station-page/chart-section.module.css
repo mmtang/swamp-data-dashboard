@@ -1,9 +1,3 @@
-.sectionContainer {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
 .analyteHeader {
     display: flex;
     flex-direction: row;
@@ -18,4 +12,10 @@
 .analyteTitle {
     margin: 0;
     font-size: 1em;
+}
+
+.sectionContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }

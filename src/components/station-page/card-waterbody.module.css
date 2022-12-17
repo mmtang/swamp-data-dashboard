@@ -7,22 +7,6 @@
     height: auto;
 }
 
-.leftContainer {
-    color:#707070;
-    font-weight: 500;
-    text-transform: uppercase;
-    font-size: 1rem;
-    padding: .75rem;
-}
-
-.waterbody {
-    background-color: #247ba0;
-}
-
-.station {
-    background-color: #f15f2b;
-}
-
 .cardBody {
     width: 100%;
     display: flex;
@@ -39,6 +23,14 @@
     line-height: 1.3em;
 }
 
+.leftContainer {
+    color:#707070;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 1rem;
+    padding: .75rem;
+}
+
 .listingWrapper {
     margin-top: 0.35em;
     font-size: 0.8em;
@@ -48,4 +40,8 @@
 .smallText {
     font-size: 0.8em;
     line-height: 1.3em;
+}
+
+.waterbody {
+    background-color: #247ba0;
 }

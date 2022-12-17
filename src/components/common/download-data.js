@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import LoaderMenu from '../map-controls/loader-menu';
 
 import { Button, Icon } from 'semantic-ui-react';
 import { timeFormat } from 'd3';

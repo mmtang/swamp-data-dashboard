@@ -1,6 +1,15 @@
 import React from 'react';
 import { IconRipple } from '@tabler/icons';
-import { card, leftContainer, cardBody, cardTitle, waterbody, smallText, listingWrapper } from './card.module.css';
+// Import styles
+import { 
+    card, 
+    cardBody, 
+    cardTitle, 
+    leftContainer, 
+    listingWrapper,
+    smallText, 
+    waterbody
+} from './card-waterbody.module.css';
 
 export default function CardWaterbody({ feature }) {
 

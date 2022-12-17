@@ -3,7 +3,7 @@ import LoaderBlock from '../common/loader-block';
 import * as d3 from 'd3';
 import { analyteYMax, analyteScoringCategories, analytes } from '../../constants/constants-data';
 import { colorPaletteViz } from '../../constants/constants-app';
-import { chartContainer, customTooltip, chart } from './chart.module.css';
+import { chart, chartContainer, customTooltip } from './chart.module.css';
 
 export default function Chart({ analyte, data, dateExtent, unit }) {
     const [loading, setLoading] = useState(true);
@@ -44,9 +44,6 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
         // get container + svg aspect ratio
         const container = d3.select('#' + chartId).node();
         const targetWidth = parseInt(container.getBoundingClientRect().width);
-
-        //const width = 645 + margin.left + margin.right;
-        //const height = 220 + margin.top + margin.bottom;
         const width = targetWidth;
         const height = 220 + margin.top + margin.bottom;
         const clipPadding = 5;

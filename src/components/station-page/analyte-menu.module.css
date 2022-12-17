@@ -1,0 +1,26 @@
+.labelContainer {
+    align-items: center;
+    display: flex;
+}
+
+.labelMain {
+    align-items: center; 
+    border-radius: 0;
+    color: #fff;
+    display: flex;
+    font-size: 12px;
+    justify-content: center; 
+    margin-right: 10px;
+    max-width: 80px; 
+    min-width: 80px;
+    padding: 0 6px;
+}
+
+.labelText {
+    font-size: 14px;
+    overflow-wrap: break-word;
+}
+
+.selectWrapper {
+    margin-top: 2px;
+}

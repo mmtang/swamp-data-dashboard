@@ -3,7 +3,7 @@ import ChartPanel from '../chart-index/chart-panel';
 import CompareSites from '../compare-sites/compare-sites';
 import DownloadSection from '../station-page/download-section';
 import LoaderBlock from '../common/loader-block';
-import StationAnalyteMenu from '../station-page/station-analyte-menu';
+import AnalyteMenu from '../station-page/analyte-menu';
 import { Segment } from 'semantic-ui-react';
 
 import { 
@@ -203,7 +203,7 @@ export default function PanelStationInfo({
         <div>
             {/* ----- Panel Analyte Menu */}
             <div>View data:</div>
-            <StationAnalyteMenu 
+            <AnalyteMenu 
                 panelAnalyte={panelAnalyte} 
                 program={program}
                 setPanelAnalyte={setPanelAnalyte} 

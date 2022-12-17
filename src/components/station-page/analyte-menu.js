@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react';
 import LoaderMenu from '../map-controls/loader-menu';
 import Select from 'react-select';
 import { matrixColor } from '../../constants/constants-app';
-import { capitalizeFirstLetter, chemistryResourceId, customSelectStyle, habitatResourceId, toxicityResourceId } from '../../utils/utils';
+import { 
+    capitalizeFirstLetter, 
+    chemistryResourceId, 
+    customSelectStyle, 
+    habitatResourceId, 
+    toxicityResourceId 
+} from '../../utils/utils';
 
-export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnalyte, station }) {
+// Import styles
+import { labelContainer, labelMain, labelText, selectWrapper } from './analyte-menu.module.css';
+
+export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, station }) {
     const [analyteList, setAnalyteList] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    const wrapperStyle = {
-        marginTop: '2px'
-    }
 
     const getData = (params, dataType) => {
         return new Promise((resolve, reject) => {
@@ -92,11 +97,11 @@ export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnal
     const formatOptionLabel = ({ value, label, matrix }) => {
         const boxColor = matrixColor[matrix] ? matrixColor[matrix] : matrixColor['other'];
         return (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '80px', minWidth: '80px', marginRight: '10px', padding: '0 6px', borderRadius: '0', fontSize: '12px', backgroundColor: `${boxColor}`, color: '#fff' }}>
+            <div className={labelContainer}>
+                <div className={labelMain} style={{ backgroundColor: `${boxColor}` }}>
                     {matrix}
                 </div>
-                <div style={{ fontSize: '14px', overflowWrap: 'break-word' }}>{label}</div>
+                <div className={labelText}>{label}</div>
             </div>
         )
     };
@@ -111,7 +116,7 @@ export default function StationAnalyteMenu({ panelAnalyte, program, setPanelAnal
     }
 
     return (
-        <div style={wrapperStyle}>
+        <div className={selectWrapper}>
             { !loading ? 
                 <Select
                     options={analyteList} 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import CardWaterbody from './card-waterbody';
 import HelpIcon from '../../components/icons/help-icon';
 import LoaderBlock from '../common/loader-block';
-import { title } from './nearby.module.css';
+import { title } from './nearby-waterbodies.module.css';
 
 // This component queries for the nearby waterbodies of a given set of coordinates (representing a monitoring station). It uses the REST API on the Water Boards ArcGIS Portal to perform a spatial query on the Integrated Report 2018 line and polygon layers. It renders the subcomponent CardWaterbody based on the number of nearby waterbody features returned from the API queries
 export default function NearbyWaterbodies({ coordinates }) {

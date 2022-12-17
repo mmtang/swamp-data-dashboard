@@ -1,41 +1,28 @@
 import React, { useEffect, useState, useRef } from 'react';
-//import { withPrefix } from 'gatsby';
 import Chart from './chart';
 import DownloadData from '../common/download-data';
 import MatrixTag from '../common/matrix-tag';
-import MessageDismissible from '../common/message-dismissible';
 
 import { timeParse, extent } from 'd3';
 import { chemDataFields, habitatDataFields, toxicityDataFields } from '../../constants/constants-data';
 import { chemistryResourceId, habitatResourceId, toxicityResourceId } from '../../utils/utils';
 
-import { sectionContainer, analyteHeader, analyteTitle } from './chart-section.module.css';
-
+import { analyteHeader, analyteTitle, sectionContainer } from './chart-section.module.css';
 
 export default function ChartSection({ station, selectedAnalytes }) {
+    // State variables
     const [data, setData] = useState(null);
-    const [overSelectionLimit, setOverSelectionLimit] = useState(false);
     const [vizAnalytes, setVizAnalytes] = useState([]);
-
+    // Reference variables
     const dateExtentRef = useRef(null);
-    const limitRef = useRef(5); // Limit number of analytes that can be graphed
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
-
-    const overLimitMessage = `A maximum of ${limitRef.current.toLocaleString()} parameters can be graphed at one time. ${limitRef.current.toLocaleString()} of the ${selectedAnalytes.length} indicators you selected are graphed below.`;
 
     useEffect(() => {
         // Get data for all selected analytes
         if (station && selectedAnalytes) {
             if (data) { setData(null) };
             let analyteList = selectedAnalytes;
-            if (selectedAnalytes.length > limitRef.current) {
-                analyteList = selectedAnalytes.slice(0, limitRef.current);
-                setOverSelectionLimit(true);
-            } else {
-                analyteList = selectedAnalytes;
-                setOverSelectionLimit(false);
-            }
             // Sort list ascending so that the graphed analytes are displayed in alphabetical order
             if (analyteList.length > 1) {
                 analyteList.sort((a, b) => a['Analyte'].localeCompare(b['Analyte']));
@@ -154,10 +141,6 @@ export default function ChartSection({ station, selectedAnalytes }) {
 
     return (
         <div className={sectionContainer}>
-            {/* Display message if user selects too many sites */}
-            { overSelectionLimit ? 
-                <MessageDismissible color='red' message={overLimitMessage} />
-            : null }
             { vizAnalytes.map(analyteObj => 
                 <div key={analyteObj.Key}>
                     <div className={analyteHeader}>
@@ -165,11 +148,6 @@ export default function ChartSection({ station, selectedAnalytes }) {
                             { analyteObj.Matrix ? <MatrixTag matrix={analyteObj.Matrix} height={25} /> : null }
                             <h4 className={analyteTitle}>
                                 {analyteObj.Analyte}
-                                {/*
-                                { analyteObj.Analyte === 'pH' ? null : 
-                                data ? ` (${data[analyteObj.Key].unit})` :
-                                null }
-                                */}
                             </h4>
                         </div>
                         <DownloadData 
