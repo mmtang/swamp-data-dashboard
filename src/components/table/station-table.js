@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-// Import components
 import MatrixTag from '../common/matrix-tag';
 import DataTable from 'react-data-table-component';
-// Import styles
 import { tableWrapper } from './station-table.module.css';
 
 // This component renders the table on the station page using data passed from index, the parent component
 export default function StationTable({ data, selectedAnalytes, setSelectedAnalytes }) {
-    // State
     const [toggledClearRows, setToggledClearRows] = useState(false);
 
     // Style overrides:
