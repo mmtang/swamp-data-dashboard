@@ -1,21 +1,11 @@
 import React from 'react';
 import { Loader } from 'semantic-ui-react';
+import { container } from './loader-menu.module.css';
 
+// This component generates a loader that looks like the select menus on index. This loader is used as placeholder, displayed while the actual select menus are rendering
 export default function LoaderMenu() {
-    const containerStyle = {
-        alignItems: 'center',
-        border: '1px solid #6e6e6e',
-        color: '#808080',
-        display: 'flex',
-        fontSize: '13px',
-        height: '34px',
-        justifyContent: 'space-between',
-        padding: '2px 8px',
-        width: '100%'
-    };
-
     return (
-        <div style={containerStyle}>
+        <div className={container}>
             <div>Loading</div>
             <div>
                 <Loader active inline size='mini' />

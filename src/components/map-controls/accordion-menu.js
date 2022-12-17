@@ -9,10 +9,18 @@ import RegionMenu from '../map-controls/region-menu';
 import { Accordion, Icon } from 'semantic-ui-react';
 import { capitalizeFirstLetter, programDict, regionDict } from '../../utils/utils';
 
-import { analyteWrapper, buttonContainer, customAccordion, customTitle, leadingIcon, pLabel, titleWrapper} from './accordion-menu.module.css';
+import { 
+    analyteWrapper, 
+    buttonContainer, 
+    customAccordion, 
+    customTitle, 
+    leadingIcon, 
+    pLabel, 
+    titleWrapper
+} from './accordion-menu.module.css';
 
-// This component generates the structure for the accordion menu on the explore_data index page
-// It calls upon other componenets to fill the content for each panel
+// This component generates the structure for the accordion menu on the index page
+// It fetches data that is used by multiple child componenets
 export default function AccordionMenu({ 
     analyte, 
     program, 

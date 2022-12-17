@@ -4,7 +4,6 @@ import LoaderMenu from '../loaders/loader-menu';
 import Select from 'react-select';
 import { customSelectStyle, programDict } from '../../utils/utils';
 
-
 export default function ProgramMenu({ program, programList, setProgram }) {   
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
@@ -12,7 +11,7 @@ export default function ProgramMenu({ program, programList, setProgram }) {
     const handleChange = (selection) => {
         if (selection ) {
             const value = selection.value;
-            // Line below used to navigate to another page in the dashboard, sved for reference
+            // Line below used to navigate to another page in the dashboard, saved for reference
             // navigate(`/programs/${value}`);
             setProgram(value);
         } else {

@@ -1,3 +1,8 @@
+.analyteWrapper {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
 .buttonContainer {
     display: flex;
     justify-content: flex-end;
@@ -9,19 +14,13 @@
     margin-bottom: 1em;
 }
 
-.customTitle {
-    font-weight: 500 !important;
-    background-color: #f0f1f1 !important;
-}
-
 .customAccordion p {
     font-size: 0.9em !important;
 }
 
-.titleWrapper {
-    display: flex;
-    justify-content: space-between;
-    color: #5d5d5d;
+.customTitle {
+    font-weight: 500 !important;
+    background-color: #f0f1f1 !important;
 }
 
 .leadingIcon {
@@ -34,7 +33,8 @@
     font-weight: 600;
 }
 
-.analyteWrapper {
+.titleWrapper {
     display: flex;
-    flex-wrap: nowrap;
+    justify-content: space-between;
+    color: #5d5d5d;
 }

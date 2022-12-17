@@ -125,7 +125,6 @@ export default function BulkDownload({ analyte, program, region }) {
             >
                 Download data
             </Button>
-
             {/* Modal popup */}
             <Modal
               closeOnDimmerClick={false}
@@ -211,8 +210,6 @@ export default function BulkDownload({ analyte, program, region }) {
                     </Button>
                 </Modal.Actions>
           </Modal> 
-
         </div>
-        
     );
 }

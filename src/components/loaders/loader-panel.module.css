@@ -4,7 +4,7 @@
     height: calc(100vh - 110px); /* 110px is the combined navbar + map panel menu height */
     justify-content: center;
     position: fixed;
-    top: 110px;
+    top: 110px; /* 110px is the combined navbar + map panel menu height */
     width: 65vw;
     z-index: 900;
 }
