@@ -4,7 +4,6 @@ import LoaderMenu from '../loaders/loader-menu';
 import Select from 'react-select';
 import { customSelectStyle, regionDict, regionNumDict } from '../../utils/utils';
 
-
 export default function RegionMenu({ region, regionList, setRegion }) {   
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);

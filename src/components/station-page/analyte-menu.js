@@ -24,9 +24,9 @@ export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, st
                 .then((resp) => resp.json())
                 .then((json) => json.result.records)
                 .then((records) => {
-                    // Process the returned data based on the data source/type
                     let data = records;
                     data.forEach(d => {
+                        // Add source field, makes it easier to get data from portal if the analyte is selected
                         d.Source = dataType;
                     });
                     resolve(data);
@@ -37,7 +37,7 @@ export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, st
     useEffect(() => {
         if (station) {
             setLoading(true);
-
+            /* The following SQL statements get the unique analytes from each portal resource for the selected station code */
             // Chemistry
             let sqlChem = `SELECT DISTINCT ON ("AnalyteDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
@@ -47,7 +47,6 @@ export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, st
                 resource_id: chemistryResourceId,
                 sql: sqlChem
             };
-
             // Habitat
             let sqlHabitat = `SELECT DISTINCT ON ("AnalyteDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
@@ -57,7 +56,6 @@ export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, st
                 resource_id: habitatResourceId,
                 sql: sqlHabitat
             };
-
             // Toxicity
             let sqlTox = `SELECT DISTINCT ON ("AnalyteDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {

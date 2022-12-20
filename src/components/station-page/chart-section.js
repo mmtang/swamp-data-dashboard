@@ -54,7 +54,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                 for (let i = 0; i < results.length; i++) {
                     const analyteKey = results[i][0].Analyte + ' ' + results[i][0].MatrixDisplay;
                     // Get unique units for display in modal header
-                    // Can have multiple (equivalent) units in one dataset
+                    // Can have multiple (equivalent) units in one parameter dataset
                     const units = [...new Set(results[i].map(d => d.Unit))];
                     const unitString = units.join(', ');
                     const data = results[i];

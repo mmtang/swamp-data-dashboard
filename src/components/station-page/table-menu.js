@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
-
 import Select, { components } from 'react-select';
 import { Icon } from 'semantic-ui-react';
-
 import { customSelectStyle } from '../../utils/utils';
+
+import { container } from './table-menu.module.css';
 
 export default function TableMenu({ categories, selectedCategory, setSelectedCategory }) {
     const [options, setOptions] = useState(null);
-
-    const containerStyle = {
-        marginBottom: '0.4em',
-        marginRight: '0.32em',
-        width: '185px'
-    }
 
     const handleChange = (selection) => {
         if (selection) {
@@ -36,7 +30,7 @@ export default function TableMenu({ categories, selectedCategory, setSelectedCat
     }, [categories]);
 
     return (
-        <div style={containerStyle}>
+        <div className={container}>
             <Select
                 components={{
                     Control: ({ ...props }) => (
@@ -47,7 +41,7 @@ export default function TableMenu({ categories, selectedCategory, setSelectedCat
                             {props.children}
                         </components.Control>
                     ),
-                    ValueContainer: ({ ... props }) => (
+                    ValueContainer: ({ ...props }) => (
                         <components.ValueContainer {...props}>
                             <span style={{ padding: '0' }}>
                                 {props.children}

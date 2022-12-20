@@ -2,17 +2,12 @@ import React, { useState } from 'react';
 import ChartSection from './chart-section';
 import { Button, Header, Icon, Modal, Popup } from 'semantic-ui-react';
 import { popupStyle } from '../../constants/constants-app';
-import { rowButton } from './chart-modal.module.css';
-
+import { container, rowButton } from './chart-modal.module.css';
 
 export default function ChartModal({ station, stationName, selectedAnalytes }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(true);
     const selectLimit = 5;
-
-    const containerStyle = {
-        marginBottom: '0.4em'
-    }
 
     const handleClick = () => {
         if (modalVisible === false) {
@@ -23,7 +18,7 @@ export default function ChartModal({ station, stationName, selectedAnalytes }) {
     }
 
     return (
-        <div style={containerStyle}>
+        <div className={container}>
             {/* Wrap button in span in order for the popup to show when the button is disabled: https://github.com/Semantic-Org/Semantic-UI-React/issues/1413 */}
             <Popup
                 inverted
@@ -40,7 +35,6 @@ export default function ChartModal({ station, stationName, selectedAnalytes }) {
                             onKeyPress={handleClick}
                         >
                             <Icon name='chart bar' />
-                            {/* Graph {selectedAnalytes.length > 0 ? `(${selectedAnalytes.length})` : '(0)' } */}
                             &nbsp;&nbsp;Graph
                         </Button>
                     </span>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import LoaderBlock from '../loaders/loader-block';
+
 import * as d3 from 'd3';
-import { analyteYMax, analyteScoringCategories, analytes } from '../../constants/constants-data';
 import { colorPaletteViz } from '../../constants/constants-app';
+import { analytes, analyteScoringCategories, analyteYMax  } from '../../constants/constants-data';
+
 import { chart, chartContainer, customTooltip } from './chart.module.css';
 
 export default function Chart({ analyte, data, dateExtent, unit }) {
@@ -10,6 +12,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
 
     const formatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
+
     // Generate random 6 digit integer to serve as ID for this chart instance
     const randomId = Math.floor(100000 + Math.random() * 900000);
     const chartId = `chart-${randomId}`;
@@ -68,6 +71,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             .attr('y', 0)
             .attr('width', width - margin.left - margin.right)
             .attr('height', height - margin.bottom);
+
         // Initialize tooltip
         const tooltip = d3.select('body').append('div')
             .attr('id', `tooltip-${randomId}`)
@@ -133,7 +137,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                 // Get reference values
                 const categories = analyteScoringCategories[analytes[analyte].code];
                 if (categories.length > 0) {
-                    // Rectangles
+                    // Rectangles (area graphs)
                     const rects = categories.filter(d => d['type'] === 'area');
                     if (rects.length > 0) {
                         const rectGroup = chart.append('g')
@@ -144,7 +148,6 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                             .enter().append('rect')
                             .attr('width', width - margin.left - margin.right)
                             .attr('height', d => {
-                                //console.log(yScale(d.lowerValue) - yScale(d.upperValue));
                                 return yScale(d.lowerValue) - yScale(d.upperValue);
                             })
                             .attr('x', 0 + margin.left)

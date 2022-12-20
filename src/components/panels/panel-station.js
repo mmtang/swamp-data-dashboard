@@ -6,9 +6,10 @@ import PanelStationInfo from './panel-station-info';
 
 import { Icon, Loader } from 'semantic-ui-react';
 
-import { mainContainer, infoContainer } from '../../pages/index.module.css';
-import { buttonContainer, buttonGrid, contentSection, iconContainer, infoSubText, stationCover, stationHeader, stationSubText, topContainer } from './panel-station.module.css';
+import { infoContainer, mainContainer  } from '../../pages/index.module.css';
+import { buttonContainer, buttonGrid, contentSection, iconContainer, infoSubText, /* stationCover, */ stationHeader, stationSubText, topContainer } from './panel-station.module.css';
 
+// This component generates the template for when a station is selected; it renders the station info part (top). The subcomponent, PanelStationInfo, loads the main content (analyte menu, chart, comparison sites, etc.)
 export default function PanelStation({ 
     analyte,
     comparisonSites,
@@ -21,8 +22,9 @@ export default function PanelStation({
     station
 }) {   
     const [stationLoading, setStationLoading] = useState(false);
-    const stationRef = useRef(null); // Have to use a ref, instead of the state value (station), in order to control when all the panel elements load (*after* the loader, not before). Otherwise, all the station info changes before the loader is shownx
+    const stationRef = useRef(null); // Have to use a ref, instead of the state value (station), in order to control when all the panel elements load (*after* the loader, not before). Otherwise, all the station info changes before the loader is shown
 
+    // Control visibility of station content using styles. Do not use conditional rendering or else the index content panel will always rerender when the user exits out of the station view
     const stationStyle = {
         display: 'none'
     }
@@ -33,15 +35,11 @@ export default function PanelStation({
             stationRef.current = station;
             setTimeout(() => {
                 setStationLoading(false);
-            }, 1500);
+            }, 1500); // Delay loading to show loader
         } else {
             stationRef.current = null;
         }
     }, [station])
-
-    useEffect(() => {
-
-    }, [])
 
     if (stationLoading) {
         return (
@@ -61,7 +59,7 @@ export default function PanelStation({
     } else if (!stationLoading) {
         return (
             <div className={mainContainer} style={ !station ? stationStyle : null }>
-                {/*
+                {/* Station picture, will add later
                 <div>
                     <img
                         src='https://www.waterboards.ca.gov/water_issues/programs/swamp/bioassessment/images/csci_scores_map/105ps0468.jpg'
@@ -109,14 +107,6 @@ export default function PanelStation({
                                 station={stationRef.current} 
                             />
                         : null }
-                        {/*
-                        { station && analyte ? 
-                            // Check for both station and analyte before trying to draw chart
-                            // this will try to render if analyte is selected but station is not
-                            <ChartContainer station={station.StationCode} analyte={analyte} />
-                            // Show nothing if an analyte is not selected
-                        : null }
-                        */}
                     </section>
                 </div>
             </div>

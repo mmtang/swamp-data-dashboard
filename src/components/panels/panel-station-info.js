@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
+import AnalyteMenu from '../station-page/analyte-menu';
 import ChartPanel from '../chart/chart-panel';
 import CompareSites from '../compare-sites/compare-sites';
 import DownloadSection from '../station-page/download-section';
 import LoaderBlock from '../loaders/loader-block';
-import AnalyteMenu from '../station-page/analyte-menu';
 import { Segment } from 'semantic-ui-react';
 
 import { 
@@ -16,6 +16,7 @@ import {
 
 import { colorPaletteViz } from '../../constants/constants-app';
 
+// This component generates the main content (below the site info) for when a station is selected. The dashboard loads different content based on whether or not an analyte/parameter was selected beforehand (or not)
 export default function PanelStationInfo({ 
     analyte, 
     comparisonSites, 
@@ -26,14 +27,12 @@ export default function PanelStationInfo({
     station 
 }) {  
     const [allSites, setAllSites] = useState([]);  // list of station objects, no data
-    const [allSitesData, setAllSitesData] = useState({}); // dictionary for site data
+    const [allSitesData, setAllSitesData] = useState({}); // dictionary for site data, data is stored here to prevent requerying the same data over and over again
     const [chartData, setChartData] = useState(null); // list of objects that combine allSitesData into the correct format for charting
-
-     // Make a copy of the colorPaletteViz array. Used to keep track of what colors are being used and not being used in the current render. We don't want color to be tied to array position; or else the color of a site will change everytime a site before it is removed from the comparisonSites selection. Will use a fresh copy everytime the selected station changes.
-     const [vizColors, setVizColors] = useState(colorPaletteViz);  
-
     const [loading, setLoading] = useState(true);
     const [panelAnalyte, setPanelAnalyte] = useState(analyte);
+    // Make a copy of the colorPaletteViz array. Used to keep track of what colors are being used and not being used in the current render. We don't want color to be tied to array position; or else the color of a site will change every time a site is removed from the comparisonSites selection. Will use a fresh copy everytime the selected station changes
+    const [vizColors, setVizColors] = useState(colorPaletteViz);  
 
     const unitRef = useRef(null);
 
@@ -91,22 +90,6 @@ export default function PanelStationInfo({
         });
     }
 
-    // This function packages the chart data into a form that is ready for download.
-    // It combines multiple sites' data into one array. No need to worry about different data structures because all sites under the same analyte should have the same structure.
-    /*
-    const processDataForDownload = (obj) => {
-        if (obj.sites) {
-            const siteDicts = obj.sites;
-            let dictValues = [];
-            Object.keys(siteDicts).forEach(key => {
-                dictValues.push(siteDicts[key]);
-            });
-            const mergedData = [].concat(...dictValues);
-            setDownloadData(mergedData);
-        }
-    }
-    */
-
     useEffect(() => {
         setLoading(true);
         setSelecting(false);
@@ -159,14 +142,12 @@ export default function PanelStationInfo({
                     const units = res[i].map(d => d.Unit);
                     allUnitValues = [...allUnitValues, ...units];
                 }
-
                 // Get unique units, convert unit array to set. Can have multiple units for the same analyte
                 const unitSet = new Set(allUnitValues);
-                // Back to an array
+                // Convert set back to an array
                 const uniqueUnits = Array.from(unitSet);
                 const unitString = uniqueUnits.join(', ');
                 unitRef.current = unitString;
-
                 setAllSitesData(dataDict);
             });
         }
@@ -228,8 +209,6 @@ export default function PanelStationInfo({
                     <div style={{ fontStyle: 'italic' }}>Select a parameter</div>
                 : null }
             </Segment>
-            { console.log(analyte) }
-            { console.log(panelAnalyte) }
             {/* ----- Compare Sites
             If analyte selection matches analyte selection in map, then show the "Compare sites" content 
             Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used

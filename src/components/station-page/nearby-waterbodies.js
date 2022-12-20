@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react';
 import CardWaterbody from './card-waterbody';
 import HelpIcon from '../../components/icons/help-icon';
 import LoaderBlock from '../loaders/loader-block';
-import { title } from './nearby-waterbodies.module.css';
+import { popupContent, title } from './nearby-waterbodies.module.css';
 
 // This component queries for the nearby waterbodies of a given set of coordinates (representing a monitoring station). It uses the REST API on the Water Boards ArcGIS Portal to perform a spatial query on the Integrated Report 2018 line and polygon layers. It renders the subcomponent CardWaterbody based on the number of nearby waterbody features returned from the API queries
 export default function NearbyWaterbodies({ coordinates }) {
     const [loading, setLoading] = useState('true');
     const [features, setFeatures] = useState(null);
     const distance = 500; // meters
+
+    // Limit the number of nearby waterbodies shown to 3 max
+    // This number is arbitrary and can be changed
+    const maxCards = 3;
 
     useEffect(() => {
         const getLines = (meters) => {
@@ -45,10 +49,9 @@ export default function NearbyWaterbodies({ coordinates }) {
         ]).then(responses => {
             const data = responses[0].features.concat(responses[1].features);
             let features = data.map(d => d.attributes);
-            if (features.length > 3) { 
-                // Limit the number of nearby waterbodies shown to 3 max
-                // The number is arbitrary and can be changed
-                features = features.slice(0, 3);
+            // Limit the number of nearby waterbodies shown, trim array
+            if (features.length > maxCards) { 
+                features = features.slice(0, maxCards);
             }
             setFeatures(features);
             setLoading('false');
@@ -64,7 +67,7 @@ export default function NearbyWaterbodies({ coordinates }) {
             <h3 className={title}>
                 Nearby waterbodies
                 <HelpIcon position='right center' color='grey'>
-                    <div style={{ fontSize: '13px' }}>
+                    <div className={popupContent}>
                         Waterbodies located within {distance} meters of the station. Queried from the <a href="https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/CA_2018_Integrated_Report_Assessed_Lines_and_Polys/FeatureServer" target="_blank" rel="noreferrer noopener">Integrated Report 2018 dataset</a>.
                     </div>
                 </HelpIcon>

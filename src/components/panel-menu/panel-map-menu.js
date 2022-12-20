@@ -1,6 +1,5 @@
 import React from 'react';
 import { Icon } from 'semantic-ui-react';
-// Import styles
 import { 
     container, 
     menuItem, 
@@ -8,7 +7,6 @@ import {
     statContainer, 
     statLabel 
 } from './panel-map-menu.module.css';
-
 
 export default function PanelMapMenu({ 
     setView, 
@@ -28,6 +26,7 @@ export default function PanelMapMenu({
     return (
         <div className={container}>
             <div className={menuWrapper}>
+                {/* Map */}
                 <div 
                     className={menuItem} 
                     style={view === 'map' ? selectedStyle : null}
@@ -39,6 +38,7 @@ export default function PanelMapMenu({
                     />
                     <span>Map</span>
                 </div>
+                {/* Table */}
                 <div 
                     className={menuItem} 
                     style={view === 'table' ? selectedStyle : null}
@@ -51,6 +51,7 @@ export default function PanelMapMenu({
                     <span>Table</span>
                 </div>
             </div>
+            {/* Station count */} 
             <div>
                 { stationData ? 
                     <div className={statContainer}>

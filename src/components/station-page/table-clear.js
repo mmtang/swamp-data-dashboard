@@ -1,6 +1,8 @@
 import React from 'react';
 import { Icon, Label } from 'semantic-ui-react'
 
+import { wrapper } from './table-clear.module.css';
+
 export default function TableClear({ selectedAnalytes, setSelectedAnalytes }) {
     const labelStyle = {
         borderRadius: 0
@@ -11,7 +13,7 @@ export default function TableClear({ selectedAnalytes, setSelectedAnalytes }) {
     }
 
     return (
-        <div style={{ marginTop: '0.5em' }}>
+        <div className={wrapper}>
             { selectedAnalytes.length > 0 ? 
                 <Label basic color='blue' size='small' style={labelStyle}>
                     {selectedAnalytes.length} selected

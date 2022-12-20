@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DownloadData from '../common/download-data';
 
+// These imported variables define the column names (and their order) for the CSV downloads
 import { chemDataFields, habitatDataFields, toxicityDataFields } from '../../constants/constants-data';
 
 export default function DownloadSection({ data, loading }) {
     const [downloadData, setDownloadData] = useState(null);
-
     const fieldsRef = useRef(null);
 
     useEffect(() => {
@@ -13,7 +13,7 @@ export default function DownloadSection({ data, loading }) {
             // Reset state
             fieldsRef.current = null;
             setDownloadData(null);
-            // Set fields reference
+            // Set fields based on data source
             const dataSource = data.analyte.source;
             if (dataSource === 'chemistry') { 
                 fieldsRef.current = chemDataFields;

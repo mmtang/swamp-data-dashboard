@@ -30,7 +30,6 @@ export default function PanelMap({
     stationData,
     zoomToStation
 }) {   
-    // State
     const [view, setView] = useState('map');
 
     return (
@@ -40,6 +39,7 @@ export default function PanelMap({
                 stationData={stationData} 
                 view={view}
             />
+            {/* Load the map and table components at the same time and control visibility through styles + state. Do not do conditional loading (loading one at a time) because it will force the component to reload every time a new selection is clicked */}
             <div style={view !== 'map' ? { display: 'none' } : null }>
                 { !mapLoaded ? <LoaderPanel /> : null }
                 <MapIndex2 
