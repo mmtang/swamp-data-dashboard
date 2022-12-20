@@ -38,7 +38,6 @@ export default function Station(props) {
     const [loading, setLoading] = useState('true');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
-    const [disclaimerVisible, setDisclaimerVisible] = useState(false);
     const [tableData, setTableData] = useState(null);
 
     const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
@@ -92,7 +91,7 @@ export default function Station(props) {
 
     const getCategories = (data) => {
         const categories = data.map(d => d.AnalyteGroup1);
-        let uniqueCategories = [... new Set(categories)];
+        let uniqueCategories = [...new Set(categories)];
         uniqueCategories.sort();
         // Filter out null values, don't want this value to show in the select menu
         uniqueCategories = uniqueCategories.filter(d => d !== null);
@@ -207,7 +206,7 @@ export default function Station(props) {
         return (
             <div className={mainGrid}>
                 <div className={header}>
-                    <Navbar setDisclaimerVisible={setDisclaimerVisible} />
+                    <Navbar setDisclaimerVisible={false} />
                 </div>
                 <div className={contentGrid}>
                     <div className={leftContainer}>
