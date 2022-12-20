@@ -1,14 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 
-
 export default function MapStation({ coordinates }) {
     const stationMapDivRef = useRef(null);
     const stationMapRef = useRef(null);
     const stationViewRef = useRef(null);
     const markerRef = useRef(null);
     const markerLayerRef = useRef(null);
-
 
     useEffect(() => {
         const initializeMap = () => {
@@ -37,10 +35,10 @@ export default function MapStation({ coordinates }) {
 
         const drawMarker = () => {
             loadModules([
-                'esri/layers/GraphicsLayer',
-                'esri/Graphic',
-                'esri/symbols/CIMSymbol'
-            ]).then(([GraphicsLayer, Graphic, CIMSymbol]) => {
+              'esri/symbols/CIMSymbol',
+              'esri/Graphic',
+              'esri/layers/GraphicsLayer'
+            ]).then(([CIMSymbol, Graphic, GraphicsLayer]) => {
                 const cimSymbol = new CIMSymbol({
                     "data": {
                       "type": "CIMSymbolReference",
@@ -240,7 +238,7 @@ export default function MapStation({ coordinates }) {
             });
         }
 
-        setDefaultOptions({ version: '4.22' });
+        setDefaultOptions({ version: '4.25' });
         loadCss();
         initializeMap()
         .then(() => {
