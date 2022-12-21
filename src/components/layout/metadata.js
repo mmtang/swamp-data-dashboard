@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useStaticQuery, graphql } from 'gatsby';
 
-
+// This component adds a custom title to the page that appears in the browser's tab/window
 const Metadata = ({ title, description }) => {
     const data = useStaticQuery(
         graphql`

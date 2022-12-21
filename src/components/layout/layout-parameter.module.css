@@ -1,3 +1,7 @@
+.menuContainer {
+    display: block;
+}
+
 .parent {
     display: grid;
     grid-template-columns: 64px auto 280px ;
@@ -7,15 +11,11 @@
     padding: 0 1.4em 0 1.1em;
 }
 
-.menuContainer {
-    display: block;
-}
-
 @media screen and (max-width: 800px) {
-    .parent {
-        grid-template-columns: 64px auto;
-    }
     .menuContainer {
         display: none;
+    }
+    .parent {
+        grid-template-columns: 64px auto;
     }
 }

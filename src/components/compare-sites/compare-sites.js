@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Icon, Popup, Segment } from 'semantic-ui-react';
 import { colorPaletteViz, popupStyle } from '../../constants/constants-app';
-
 // Import styles
 import { 
     compareContainer, 
@@ -67,7 +66,7 @@ export default function CompareSites({
             const removeValue = newArr[allSiteIndex];
             // Remove value at index
             newArr.splice(allSiteIndex, 1);
-            // Add value to end of array
+            // Add value to end of array so that it can be reused again if enough sites are added again
             newArr.push(removeValue);
         }
         return newArr;

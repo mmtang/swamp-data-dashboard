@@ -9,20 +9,20 @@
     height: auto;
 }
 
-.header {
-    grid-area: header;
-}
-
-.mainContainer {
-    grid-area: main;
-    font-size: 0.95rem;
-}
-
 .footer {
     grid-area: footer;
+}
+
+.header {
+    grid-area: header;
 }
 
 .lineAccent {
     height: 25px;
     background-color: #20639b;
+}
+
+.mainContainer {
+    grid-area: main;
+    font-size: 0.95rem;
 }

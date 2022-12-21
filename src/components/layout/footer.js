@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
 import { withPrefix } from 'gatsby';
-import { container, contactContainer, logoContainer, logo, copyright } from './footer.module.css';
+import { contactContainer, container, copyright, logo, logoContainer } from './footer.module.css';
 
+// No longer in use 0.2.0; kept here for reference, may be used in the future
 function Footer() {
     const yearRef = useRef(new Date().getFullYear());
 
