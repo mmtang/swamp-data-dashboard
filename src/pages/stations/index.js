@@ -12,7 +12,8 @@ import TableClear from '../../components/station-page/table-clear';
 import TableMenu from '../../components/station-page/table-menu';
 import TableSearch from '../../components/station-page/table-search';
 
-import { regionDict, fetchData } from '../../utils/utils';
+import { linkColorAlt } from '../../constants/constants-app';
+import { regionDict } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 import { 
     appContainer, 
@@ -30,10 +31,10 @@ import {
 export default function Station(props) {
     const allDataRef = useRef(null);  // Save all analyte data points for this station; for filtering
     const categoriesRef = useRef(null);
-    const errorRef = useRef(null);
     const stationCodeRef = useRef(null);
     const stationObjRef = useRef(null);
 
+    const [errorMessage, setErrorMessage] = useState(null);
     const [filterText, setFilterText] = useState('');
     const [loading, setLoading] = useState('true');
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -51,8 +52,9 @@ export default function Station(props) {
                 stationCodeRef.current = stationCode;
                 resolve(stationCode);
             } else {
-                console.error('Error parsing station code');
-                errorRef.current = 'Error: Not a valid station code.'
+                // Error catching for when there is not an id param in the page request (cannot parse id value). Does not check if the station value/code is valid (see getStationInfo)
+                console.error('Error parsing id value');
+                setErrorMessage(<div>Error: Not a valid request.<br />Check the URL and try again.</div>);
                 setLoading('error');
             };
         });
@@ -67,10 +69,15 @@ export default function Station(props) {
                 };
                 console.log(url + new URLSearchParams(params));
                 fetch(url + new URLSearchParams(params))
-                .then((resp) => resp.json())
+                .then((resp) => {
+                    if (!resp.ok) {
+                        throw new Error('Network response error');
+                    }
+                    return resp.json();
+                })
                 .then((json) => json.result.records)
                 .then((records) => {
-                    if (records) {
+                    if (records.length > 0) {
                         records.forEach(d => {
                             d.RegionName = regionDict[d.Region];
                             d.TargetLatitude = +d.TargetLatitude;
@@ -80,10 +87,18 @@ export default function Station(props) {
                         stationObjRef.current = records[0];
                         resolve();
                     } else {
-                        console.error('Error getting station information');
-                    errorRef.current = 'Error: Could not retrieve station information.'
-                    setLoading('error');
+                        // Error catching for if the response from API is empty
+                        // No matches or data returned will return an empty array
+                        console.error('Error getting station information. Not a valid station code.');
+                        setErrorMessage('Error: Not a valid station code.');
+                        setLoading('error');
                     }
+                })
+                // Error catching for when there is not a valid response from the API
+                .catch((error) => {
+                    setErrorMessage(<div>There was an issue with the request.<br />Try again later or contact us at <a href="mailto:swamp@waterboards.ca.gov" style={linkColorAlt}>swamp@waterboards.ca.gov</a>.</div>);
+                    setLoading('error');
+                    console.error('Issue with the network response:', error);
                 });
             };
         })
@@ -103,7 +118,13 @@ export default function Station(props) {
             if (params) {
                 const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
                 console.log(url + new URLSearchParams(params));
-                fetchData(url + new URLSearchParams(params))
+                fetch(url + new URLSearchParams(params))
+                .then((resp) => {
+                    if (!resp.ok) {
+                        throw new Error('Network response error');
+                    }
+                    return resp.json();
+                })
                 .then(json => json.result.records)
                 .then(records => {
                     if (records.length > 0) {
@@ -120,10 +141,11 @@ export default function Station(props) {
                     }
                     resolve(records);
                 })
+                // Error catching for when there is not a valid response from the API
                 .catch(error => {
-                    console.error(error);
-                    //errorRef.current = 'Error getting station data. Reload or try again later.'
-                    //setLoading('error');
+                    setErrorMessage(<div>There was an issue with the request.<br />Try again later or contact us at <a href="mailto:swamp@waterboards.ca.gov" style={linkColorAlt}>swamp@waterboards.ca.gov</a>.</div>);
+                    setLoading('error');
+                    console.error('Issue with the network response:', error);
                 });
             }
         })
@@ -262,10 +284,18 @@ export default function Station(props) {
     return (
         <div className={appContainer}>
             <Metadata title='Monitoring Station' />
-            { loading === 'true' ? <LayoutMap search={false}><LoaderDashboard /></LayoutMap> :
-            loading === 'error' ? <LayoutMap search={false}><ErrorFullscreen>{errorRef.current}</ErrorFullscreen></LayoutMap> :
-            loading === 'false' && stationObjRef.current ? pageContent() :
-            <LoaderDashboard /> // Catch all other values
+            { loading === 'true' ? 
+                <LayoutMap search={false}>
+                    <LoaderDashboard />
+                </LayoutMap> 
+            : loading === 'error' ? 
+                <LayoutMap search={false}>
+                    <ErrorFullscreen>
+                        <div>{errorMessage}</div>
+                    </ErrorFullscreen>
+                </LayoutMap> 
+            : loading === 'false' && stationObjRef.current ? pageContent() :
+                <LoaderDashboard /> 
             }
         </div>
     )

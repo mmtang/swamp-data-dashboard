@@ -10,6 +10,7 @@ import PanelStation from '../components/panels/panel-station';
 
 import { Modal } from 'semantic-ui-react';
 
+import { linkColorAlt } from '../constants/constants-app';
 import { 
   capitalizeFirstLetter, 
   chemistryResourceId,
@@ -37,10 +38,6 @@ export default function Index() {
   const [station, setStation] = useState(null);
   const [stationData, setStationData] = useState(null);
   const [zoomToStation, setZoomToStation] = useState(false);
-
-  const linkColor = {
-    color: '#75e6da'
-  };
 
   const getAllStations = () => {
     return new Promise((resolve, reject) => {
@@ -236,7 +233,7 @@ export default function Index() {
       { loaded === 'error' ? 
         <ErrorFullscreen>
           <div>There was an issue with the request.</div>
-          <div>Try again later or contact us at <a href="mailto:swamp@waterboards.ca.gov" style={linkColor}>swamp@waterboards.ca.gov</a>.</div>
+          <div>Try again later or contact us at <a href="mailto:swamp@waterboards.ca.gov" style={linkColorAlt}>swamp@waterboards.ca.gov</a>.</div>
           <div><ButtonReload /></div>
         </ErrorFullscreen> 
         : null 
