@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ButtonReload from '../components/common/button-reload';
+import ErrorFullscreen from '../components/layout/error-fullscreen';
 import ModalContent from '../components/common/modal-content';
 import LayoutMap from '../components/layout/layout-map';
 import Metadata from '../components/layout/metadata';
@@ -36,6 +38,10 @@ export default function Index() {
   const [stationData, setStationData] = useState(null);
   const [zoomToStation, setZoomToStation] = useState(false);
 
+  const linkColor = {
+    color: '#75e6da'
+  };
+
   const getAllStations = () => {
     return new Promise((resolve, reject) => {
       const params = {
@@ -45,7 +51,12 @@ export default function Index() {
       };
       const url = 'https://data.ca.gov/api/3/action/datastore_search?';
       fetch(url + new URLSearchParams(params))
-      .then((resp) => resp.json())
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error('Network response error');
+        }
+        return resp.json();
+      })
       .then((json) => json.result.records)
       .then((records) => {
         if (records) {
@@ -58,6 +69,10 @@ export default function Index() {
           resolve(records);
         }
       })
+      .catch((error) => {
+        setLoaded('error');
+        console.log('Issue with the network response:', error);
+      });
     });
   }
 
@@ -66,7 +81,12 @@ export default function Index() {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
       console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
-      .then((resp) => resp.json())
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error('Network response error');
+        }
+        return resp.json();
+      })
       .then((json) => json.result.records)
       .then((records) => {
         if (records) {
@@ -79,6 +99,10 @@ export default function Index() {
           });
           resolve(records);
         }
+      })
+      .catch((error) => {
+        setLoaded('error');
+        console.log('Issue with the network response:', error);
       });
     })
   }
@@ -209,9 +233,14 @@ export default function Index() {
           zoomToStation={zoomToStation}
         />
       </div>
-      {/*
-      { !loaded ? <LoaderDashboard /> : null }
-      */}
+      { loaded === 'error' ? 
+        <ErrorFullscreen>
+          <div>There was an issue with the request.</div>
+          <div>Try again later or contact us at <a href="mailto:swamp@waterboards.ca.gov" style={linkColor}>swamp@waterboards.ca.gov</a>.</div>
+          <div><ButtonReload /></div>
+        </ErrorFullscreen> 
+        : null 
+      }
       {/* Render both panels at the same time but control visibility using styles around the parent divs in each component. Conditional rendering, which is what was in place before, causes the PanelIndex component and all select menus to re-render after closing out the station panel, which is not desirable. https://stackoverflow.com/questions/69009266/react-hiding-vs-removing-components */}
       <PanelIndex 
         analyte={analyte}

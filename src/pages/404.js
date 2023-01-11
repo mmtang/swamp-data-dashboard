@@ -7,7 +7,8 @@ const NotFound = () => (
     <LayoutMap>
         <Metadata />
         <ErrorFullscreen>
-            404: Page not found!
+            <div>404: Page not found</div>
+            <div>The page you were looking for could not be found.</div>
         </ErrorFullscreen>
     </LayoutMap>
 )
