@@ -68,7 +68,7 @@ export default function Index() {
       })
       .catch((error) => {
         setLoaded('error');
-        console.log('Issue with the network response:', error);
+        console.error('Issue with the network response:', error);
       });
     });
   }
@@ -99,7 +99,7 @@ export default function Index() {
       })
       .catch((error) => {
         setLoaded('error');
-        console.log('Issue with the network response:', error);
+        console.error('Issue with the network response:', error);
       });
     })
   }

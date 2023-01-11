@@ -64,7 +64,7 @@ export const irRegionDict = {
     'San Diego': 'Regional Board 9 - San Diego Region'
 }
 
-/* 1/11/23 - Delete this after finding and changing the componenets still using it */
+/* 1/11/23 - Delete this after finding and changing the components still using it */
 export const fetchData = (url) => {
     return new Promise((resolve, reject) => {
         fetch(url)
