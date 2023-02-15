@@ -52,6 +52,20 @@ export const regionNumDict = {
     'San Diego': '9'
 }
 
+// Region values that are valid for use as url params
+// Ex: ?region=north_coast
+export const regionUrlDict = {
+    'north_coast': 1,
+    'sf_bay': 2,
+    'central_coast': 3,
+    'los_angeles': 4,
+    'central_valley': 5,
+    'lahontan': 6,
+    'colorado_river': 7,
+    'santa_ana': 8,
+    'san_diego': 9
+}
+
 export const irRegionDict = {
     'North Coast': 'Regional Board 1 - North Coast Region',
     'San Francisco Bay': 'Regional Board 2 - San Francisco Bay Region',

@@ -85,10 +85,6 @@ a {
   border: 3px solid #f2f2f2;
 }
 
-.ui.modal {
-  border-radius: 0 !important;
-}
-
 .ui.modal > .header {
   color: #5d5d5d !important;
 }

@@ -17,7 +17,9 @@ import {
   formatDate, 
   habitatResourceId,
   parseDate, 
+  programDict,
   regionDict,
+  regionUrlDict,
   toxicityResourceId
 } from '../utils/utils';
 
@@ -102,6 +104,65 @@ export default function Index() {
         console.error('Issue with the network response:', error);
       });
     })
+  }
+
+  // Check if url includes params for program or region, runs on initial load
+  const checkForParams = () => {
+    return new Promise((resolve, reject) => {
+      const params = new URLSearchParams(document.location.search);
+      // Convert to obj/dict
+      const paramsDict = Object.fromEntries(params);
+      const paramsKeys = Object.keys(paramsDict);
+      const paramsValues = Object.values(paramsDict);
+      // Resolve if no parameter is passed in
+      if (paramsKeys.length === 0) {
+        return resolve();
+      }
+      if (paramsKeys.length > 1) {
+        // Show an error if more than one parameter is passed in (not allowed yet - maybe in the future?)
+        setLoaded('error');
+        console.error('Error: Too many URL params');
+      } else if (paramsValues[0] === '') {
+        // Show an error if the parameter value is an empty string (this results if the user does something like ?region=)
+        setLoaded('error');
+        console.error('Error: Parameter value is an empty string');
+      } else {
+        // The only params currently allowed are 'program' and 'region'
+        if (paramsKeys[0] === 'program') {
+          const program = params.get('program');
+          // Check that the program is a valid match
+          if (Object.keys(programDict).includes(program)) {
+            return resolve({ type: 'program', value: program }) // There is a match
+          } else {
+            // There is no match, show an error
+            setLoaded('error');
+            console.error('Error: URL param value is not valid')
+          }
+        } else if (paramsKeys[0] === 'region') {
+          const region = params.get('region');
+          // Check that the region is a valid/matching value
+          // Region could be a string (e.g., north_coast) or it could be a string number (e.g., 1)
+          // Number from params is always captured as a string
+          if (Object.keys(regionUrlDict).includes(region)) {
+            // There is a match (string)
+            return resolve({ type: 'region', value: regionUrlDict[region] }) 
+          } else if (Object.keys(regionDict).includes(region)) {
+            // There is a match (num/int)
+            // The key values in regionDict are actually in number data type, but they get converted to string with the Object.keys operation
+            // Because of this, there is no need to convert region to num/int when doing the comparison in the if clause, but it should be converted when resolving/passing the object
+            return resolve({ type: 'region', value: +region }) 
+          } else {
+            // There is no match, show an error
+            setLoaded('error');
+            console.error('Error: URL param value is not valid')
+          }
+        } else {
+          // Param is not 'program' or 'region' - show an error
+          setLoaded('error');
+          console.error('Error: URL param is not valid')
+        }
+      }
+    });
   }
 
   const createParams = (resource) => {
@@ -192,9 +253,31 @@ export default function Index() {
   useEffect(() => {
     getAllStations()
     .then((data) => {
-      allStationRef.current = data;
-      setStationData(data);
-      setDisclaimerVisible(true); // Show welcome modal
+      //allStationRef.current = data; // moved below - delete this is all works well
+      checkForParams()
+      .then((selection) => {
+        allStationRef.current = data;
+        if (selection) {
+          if (selection.type === 'program') {
+              setProgram(selection.value);
+          }
+          else if (selection.type === 'region') {
+              if (typeof selection.value === 'string') {
+                setRegion(regionUrlDict[selection.value]);
+              } else if (typeof selection.value === 'number') {
+                setRegion(selection.value);
+              }
+          }
+          else {
+            // If there is no region or program value, set stations to all data (default)
+            setStationData(data);
+          }
+        } else {
+          // If there is no region or program value, set stations to all data (default)
+          setStationData(data);
+        }
+        setDisclaimerVisible(true); // Show welcome modal
+      });
     });
   }, []);
 

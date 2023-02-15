@@ -68,6 +68,7 @@ export default function MapIndex2({
             if (mapRef) {
                 loadModules(['esri/layers/FeatureLayer'])
                 .then(([FeatureLayer]) => {
+                    // Initialize layer
                     regionLayerRef.current = new FeatureLayer({
                         id: 'region-layer',
                         url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Regional_Board_Boundary_Features/FeatureServer/1',
@@ -75,7 +76,13 @@ export default function MapIndex2({
                         listMode: 'hide', 
                         renderer: regionRenderer
                     });
+                    // Add to map instance
                     mapRef.current.add(regionLayerRef.current);
+                    // Zoom to region if a region is pre-selected (url params used)
+                    if (region) {
+                        zoomToRegion(regionDict[region]);
+                        // viewRef.current.center = [-119.3624, 37.4204]
+                    }
                     resolve();
                 });
             }
@@ -294,7 +301,7 @@ export default function MapIndex2({
                 viewRef.current = new MapView({
                     container: divRef.current,
                     map: mapRef.current,
-                    center: [-119.3624, 37.4204], // centered California
+                    center: [-119.3624, 37.4204], // centered California for initial load
                     zoom: 6,
                     constraints: {
                         minZoom: 5
@@ -306,11 +313,12 @@ export default function MapIndex2({
                         collapseEnabled: false,
                     }
                 });
+
                 // Define search widget
                 searchRef.current = new Search({
                     view: viewRef.current,
                     container: 'searchContainer',
-                    //allPlaceholder: 'Find a station, waterbody',
+                    // allPlaceholder: 'Find a station, waterbody',
                     allPlaceholder: '',
                     includeDefaultSources: false, // default sources include ArcGIS world geocoding service
                     locationEnabled: false, // pinpoint user location using browser
@@ -374,7 +382,9 @@ export default function MapIndex2({
                         irLayer2020Ref.current,
                         stationLayerRef.current
                     ]);
-                    resetSearchSources(); // Initialize search sources
+                    // Initialize search sources
+                    resetSearchSources(); 
+                    refreshIntegratedReport();
                     setMapLoaded(true);
                 });
             });
@@ -533,18 +543,6 @@ export default function MapIndex2({
     }, [station]);
 
     useEffect(() => {
-        const zoomToRegion = (regionName) => {
-            if (viewRef.current) {
-                viewRef.current.whenLayerView(regionLayerRef.current).then(() => {
-                    const query = regionLayerRef.current.createQuery();
-                    query.where = `rb_name = '${regionName}'`;
-                    regionLayerRef.current.queryFeatures(query).then(results => {
-                        const feature = results.features[0];
-                        viewRef.current.goTo(feature.geometry);
-                    })
-                })
-            }
-        }
         const addBasinPlanRegionLayer = (region) => {
             // The popup header that shows for each BP waterbody (when clicked)
             const templateTitle = (feature) => {
@@ -842,6 +840,23 @@ export default function MapIndex2({
                 zoomScale: 14000
             }
         ];
+    }
+
+    const zoomToRegion = (regionName) => {
+        if (viewRef.current) {
+            viewRef.current.whenLayerView(regionLayerRef.current).then(() => {
+                const query = regionLayerRef.current.createQuery();
+                query.where = `rb_name = '${regionName}'`;
+                regionLayerRef.current.queryFeatures(query).then(results => {
+                    const feature = results.features[0];
+                    const goto_ops = {
+                        animate: false,
+                        duration: 0
+                    }
+                    viewRef.current.goTo(feature.geometry, goto_ops);
+                })
+            })
+        }
     }
 
     return (
