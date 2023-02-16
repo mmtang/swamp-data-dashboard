@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Icon, Popup, Segment } from 'semantic-ui-react';
+import { Button, Icon, List, Popup, Segment } from 'semantic-ui-react';
 import { colorPaletteViz, popupStyle } from '../../constants/constants-app';
 // Import styles
 import { 
     compareContainer, 
     compareRow, 
+    leftContainer,
     popupContainer, 
     popupTitle, 
-    rowLeft 
+    stationCode,
+    stationName,
+    stationWrapper
 } from './compare-sites.module.css';
 
 export default function CompareSites({ 
@@ -110,10 +113,17 @@ export default function CompareSites({
                 <div className={compareContainer}>
                     { allSites.map((d, i) => {
                         return (
-                            <div className={compareRow}>
-                                <div className={rowLeft}>
-                                    <div style={{ color: `${vizColors[i]}`, fontWeight: '600', marginRight: '0.8em' }}>{d.StationCode}</div>
-                                    <div>{d.StationName}</div>
+                            <div className={compareRow} key={d.StationCode}>
+                                <div className={leftContainer}>
+                                    <div>
+                                        <Icon name='map marker' />&nbsp;
+                                    </div>
+                                    <div className={stationWrapper}>
+                                        <div className={stationCode} style={{ color: `${vizColors[i]}` }}>
+                                            {d.StationCode}
+                                        </div>
+                                        <div className={stationName}>{d.StationName}</div>
+                                    </div>
                                 </div>
                                 <div>
                                     { i > 0 ? 
@@ -123,6 +133,7 @@ export default function CompareSites({
                                             name='x' 
                                             onClick={() => handleRemove(d.StationCode)}
                                             onKeyPress={() => handleRemove(d.StationCode)}
+                                            tabIndex={0}
                                         />
                                     : null }
                                 </div>
