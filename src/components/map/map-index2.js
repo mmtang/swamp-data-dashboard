@@ -258,6 +258,69 @@ export default function MapIndex2({
         })
     };
 
+    const addStationPopupListener = () => {
+        loadModules(['esri/core/promiseUtils'])
+            .then(([promiseUtils]) => {
+                // Add event listener for popup on hover
+                // The popup still flickers and there is this diamond shape that appears to the left
+                // https://codepen.io/laurenb14/pen/YzargEx?editors=1000
+                viewRef.current.whenLayerView(stationLayerRef.current).then((layerView) => {
+                    let highlight;
+                    let objectId;;
+                    // Use the promiseUtils.debounce method to ensure the pointer-move event
+                    // is not simultaneously invoked more than once at a time
+                    const debouncedUpdate = promiseUtils.debounce((event) => {
+                        // Set the options to only include hitTest results from feature layer
+                        const opts = {
+                            include: stationLayerRef.current
+                        }
+                        // Perform a hitTest on the View
+                        viewRef.current.hitTest(event, opts).then((event) => {
+                            if (event.results.length > 0) {
+                                // Make sure graphic has a popupTemplate
+                                const results = event.results.filter((result) => {
+                                    return result.graphic.layer.popupTemplate;
+                                });
+                                const result = results[0];
+                                const newObjectId =
+                                    result && result.graphic.attributes[stationLayerRef.current.objectIdField];
+                                if (!newObjectId) {
+                                    highlight && highlight.remove();
+                                } else if (objectId !== newObjectId) {
+                                    highlight && highlight.remove();
+                                    objectId = newObjectId;
+                                    highlight = layerView.highlight(result.graphic);
+                                    viewRef.current.popup.features = [result.graphic];
+                                    // set the location of the popup - using the geometry of the event result
+                                    viewRef.current.popup.location = {
+                                        latitude: result.graphic.geometry.latitude,
+                                        longitude: result.graphic.geometry.longitude
+                                    };
+                                    if (!viewRef.current.popup.visible) {
+                                        viewRef.current.popup.visible = true;
+                                    }
+                                }
+                            } else {
+                                viewRef.current.popup.visible = false;
+                                highlight && highlight.remove();
+                                objectId = null;
+                            }
+                        });
+                    });
+                    // Listen for the pointer-move event on the View
+                    // and make sure that function is not invoked more
+                    // than one at a time
+                    viewRef.current.on('pointer-move', (event) => {
+                        debouncedUpdate(event).catch((err) => {
+                            if (!promiseUtils.isAbortError(err)) {
+                                throw err;
+                            }
+                        });
+                    });
+                });
+            });
+    }
+
     // This function updates the SWAMP station layer 
     // Updating layer data without flicker effect: https://community.esri.com/t5/arcgis-api-for-javascript-questions/is-there-a-way-to-load-update-the-data-without/td-p/251114
     const refreshStationLayer = async (data) => {
@@ -382,6 +445,7 @@ export default function MapIndex2({
                         irLayer2020Ref.current,
                         stationLayerRef.current
                     ]);
+                    addStationPopupListener();
                     // Initialize search sources
                     resetSearchSources(); 
                     refreshIntegratedReport();
@@ -526,21 +590,6 @@ export default function MapIndex2({
             setZoomToStation(false);
         }
     }, [zoomToStation]);
-
-    // This function runs every time the selected station changes (another monitoring station or the selection is cleared). It removes stale highlights and adds a new highlight.
-    useEffect(() => {
-        if (viewRef.current) {
-            const layer = stationLayerRef.current;
-                viewRef.current.whenLayerView(layer).then(() => {
-                    removeSiteHighlights();
-                    if (station) {
-                        setTimeout(() => {
-                            addSiteHighlight(layer, station); 
-                        }, 500)
-                    }
-                });
-        }
-    }, [station]);
 
     useEffect(() => {
         const addBasinPlanRegionLayer = (region) => {
@@ -782,30 +831,6 @@ export default function MapIndex2({
             }
         }
     }, [region]);
-
-    const addSiteHighlight = (layer, station) => {
-        viewRef.current.whenLayerView(layer).then((layerView) => {
-            const query = layer.createQuery();
-            query.where = `StationCode = '${station.StationCode}'`; // SQL where statement for query
-            // Run query
-            layer.queryFeatures(query)
-            .then(results => {
-                if (results.features.length > 0) {
-                    const feature = results.features[0].attributes.ObjectId; // There should be only one matching result
-                    layerView.highlight(feature);
-                }
-            });
-        })
-    };
-
-    // Function for removing all station highlights from map
-    const removeSiteHighlights = () => {
-        // Have to do an extra query here for removing the highlight, see end of function (can't use the passed layer object)
-        const layerId = 'station-layer';
-        const stationLayer = viewRef.current.allLayerViews.items.filter(d => d.layer.id === layerId)[0];   
-        stationLayer._highlightIds.clear();
-        stationLayer._updateHighlight(); // Have to run updateHighlight after clearing for this to work
-    }
 
     const resetSearchSources = () => {
         // Data sources can not be removed from the search widget individually (by id or some identifier). In order to reset all the sources, replace the current list of sources with a new list, which is the original list used for initiating the search widget
