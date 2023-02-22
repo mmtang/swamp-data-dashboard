@@ -151,6 +151,8 @@ export default function ChartSection({ station, selectedAnalytes }) {
                             </h4>
                         </div>
                         <DownloadData 
+                            basic={true}
+                            color='grey'
                             data={data ? data[analyteObj.Key].data : null}
                             fields={ 
                                 analyteObj.Source === 'chemistry' ? chemDataFields 
@@ -158,7 +160,6 @@ export default function ChartSection({ station, selectedAnalytes }) {
                                 : analyteObj.Source === 'toxicity' ? toxicityDataFields
                                 : chemDataFields
                             }
-                            color='grey'
                         >
                             Download data
                         </DownloadData>

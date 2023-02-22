@@ -111,7 +111,7 @@ export default function DownloadData({
             size={size}
             onClick={handleClick} 
             onKeyPress={handleClick}
-            disabled={!dataLoaded}
+            loading={!dataLoaded}
         >
             <Icon name='download' />
             {children}

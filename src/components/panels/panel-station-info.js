@@ -15,6 +15,7 @@ import {
 } from '../../utils/utils';
 
 import { colorPaletteViz } from '../../constants/constants-app';
+import { chartContainer } from './panel-station-info.module.css';
 
 // This component generates the main content (below the site info) for when a station is selected. The dashboard loads different content based on whether or not an analyte/parameter was selected beforehand (or not)
 export default function PanelStationInfo({ 
@@ -190,13 +191,14 @@ export default function PanelStationInfo({
                 setPanelAnalyte={setPanelAnalyte} 
                 station={station} 
             />
-            {/* ----- Download data */}
-            { panelAnalyte ? 
-                <DownloadSection data={chartData} loading={loading} />
-            : null }
             {/* ------ Chart */}
-            <Segment placeholder textAlign='center'>
+            <Segment className={chartContainer} placeholder textAlign='center'>
+                {/* ----- Download data */}
+                { panelAnalyte ? 
+                    <DownloadSection data={chartData} loading={loading} />
+                : null }
                 { panelAnalyte && !loading ?  // If an analyte is selected and there is no loading status, show the chart
+                    // ----- Chart
                     <ChartPanel 
                         analyte={panelAnalyte} 
                         data={chartData}

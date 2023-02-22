@@ -42,11 +42,10 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             const targetWidth = parseInt(container.getBoundingClientRect().width);
 
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 30, right: 35, bottom: 30, left: 55 };
+            const margin = { top: 25, right: 35, bottom: 30, left: 55 };
             const width = targetWidth;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 5;
-
             // Remove old svg elements
             d3.select('.chart').remove();
             d3.select('.legend').remove();

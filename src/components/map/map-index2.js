@@ -258,24 +258,26 @@ export default function MapIndex2({
         })
     };
 
+    /* This function is for generating station popups on hover
+    Not using since 2/17/23 - Issue with the functions in this listener closing the popups of the other layers (IR, BP) on cursor movement. If there is a way to stop it from doing this, then will reinstate, but I have not yet found a way yet. The alternative (no mouseover popups, all persistent popups) is better than keeping this. The issue is rooted in how ArcGIS JS implements popups - one popup per view only.
     const addStationPopupListener = () => {
         loadModules(['esri/core/promiseUtils'])
             .then(([promiseUtils]) => {
                 // Add event listener for popup on hover
-                // The popup still flickers and there is this diamond shape that appears to the left
                 // https://codepen.io/laurenb14/pen/YzargEx?editors=1000
                 viewRef.current.whenLayerView(stationLayerRef.current).then((layerView) => {
                     let highlight;
-                    let objectId;;
+                    let objectId;
                     // Use the promiseUtils.debounce method to ensure the pointer-move event
                     // is not simultaneously invoked more than once at a time
                     const debouncedUpdate = promiseUtils.debounce((event) => {
                         // Set the options to only include hitTest results from feature layer
                         const opts = {
-                            include: stationLayerRef.current
+                            include: [stationLayerRef.current, irPoly2020Ref.current]
                         }
                         // Perform a hitTest on the View
                         viewRef.current.hitTest(event, opts).then((event) => {
+                            console.log(event);
                             if (event.results.length > 0) {
                                 // Make sure graphic has a popupTemplate
                                 const results = event.results.filter((result) => {
@@ -320,6 +322,7 @@ export default function MapIndex2({
                 });
             });
     }
+    */
 
     // This function updates the SWAMP station layer 
     // Updating layer data without flicker effect: https://community.esri.com/t5/arcgis-api-for-javascript-questions/is-there-a-way-to-load-update-the-data-without/td-p/251114
@@ -445,7 +448,7 @@ export default function MapIndex2({
                         irLayer2020Ref.current,
                         stationLayerRef.current
                     ]);
-                    addStationPopupListener();
+                    // addStationPopupListener();
                     // Initialize search sources
                     resetSearchSources(); 
                     refreshIntegratedReport();

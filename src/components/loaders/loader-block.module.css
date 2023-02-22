@@ -1,6 +1,8 @@
 .blockContainer {
-    width: 100%;
+    align-items: center;
     display: flex;
     justify-content: center;
-    align-items: center;
+    min-height: 270px;
+    width: 100%;
+    
 }

@@ -204,11 +204,7 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
   max-width: 250px !important;
 }
 
-.esri-popup__main-container {
-  background-color: rgba(0, 0, 0, 0) !important;
-}
-
-/* To remove the popup pointer pointer, use .esri-popup__pointer 
+/* To remove the popup pointer pointer, use .esri-popup__pointer and change display to none
 To change the pointer color, use .esri-popup__pointer-direction and change the background-color
 Unfortunately, this still does not fix the flickering issue */
 /* https://ericsamson.com/projects/SnowDepth-SkiResorts.html */
