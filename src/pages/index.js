@@ -30,6 +30,7 @@ export default function Index() {
   const allStationRef = useRef();
 
   const [analyte, setAnalyte] = useState(null);
+  const [cursor, setCursor] = useState('auto');
   const [disclaimerVisible, setDisclaimerVisible] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -291,12 +292,21 @@ export default function Index() {
     setComparisonSites([]);
   }, [station]);
 
+  useEffect(() => {
+    if (selecting) {
+      setCursor('crosshair');
+    } else if (!selecting) {
+      setCursor('auto');
+    }
+  }, [selecting])
+
   return (
     <LayoutMap> 
       <div className={mapContainer}>
         <Metadata />
         <PanelMap
           analyte={analyte}
+          cursor={cursor}
           mapLoaded={mapLoaded}
           program={program}
           region={region}
@@ -334,6 +344,7 @@ export default function Index() {
       <PanelStation 
         analyte={analyte} 
         comparisonSites={comparisonSites}
+        cursor={cursor}
         program={program}
         selecting={selecting}
         setComparisonSites={setComparisonSites}

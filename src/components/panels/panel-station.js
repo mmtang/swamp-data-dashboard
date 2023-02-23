@@ -13,6 +13,7 @@ import { buttonContainer, buttonGrid, contentSection, iconContainer, infoSubText
 export default function PanelStation({ 
     analyte,
     comparisonSites,
+    cursor,
     program,
     selecting,
     setComparisonSites,
@@ -68,7 +69,7 @@ export default function PanelStation({
                     />
                 </div>
                 */}
-                <div className={infoContainer}>
+                <div className={infoContainer} style={{ cursor: cursor }}>
                     <div className={topContainer}>
                         <div className={iconContainer}>
                             <Icon name='map marker' color='grey' />

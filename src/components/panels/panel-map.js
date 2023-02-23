@@ -16,6 +16,7 @@ const tableContainerStyle = {
 export default function PanelMap({ 
     analyte,
     comparisonSites,
+    cursor,
     mapLoaded,
     region, 
     program,
@@ -33,7 +34,7 @@ export default function PanelMap({
     const [view, setView] = useState('map');
 
     return (
-        <div className={content}>
+        <div className={content} style={{ cursor: cursor }}>
             <PanelMapMenu 
                 setView={setView}
                 stationData={stationData} 
