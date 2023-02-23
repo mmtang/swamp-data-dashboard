@@ -8,6 +8,12 @@ export default function DownloadSection({ data, loading }) {
     const [downloadData, setDownloadData] = useState(null);
     const fieldsRef = useRef(null);
 
+    const wrapper = {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        width: '100%'
+    }
+
     useEffect(() => {
         if (data) {
             // Reset state
@@ -32,9 +38,9 @@ export default function DownloadSection({ data, loading }) {
     }, [data]);
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+        <div style={wrapper}>
             <DownloadData
-                basic={false}
+                basic={true}
                 compact={true}
                 data={downloadData}
                 fields={fieldsRef.current}
@@ -42,7 +48,7 @@ export default function DownloadSection({ data, loading }) {
                 loading={loading}
                 size='mini'
             >
-                Data
+                Download data
             </DownloadData>
         </div>
     )

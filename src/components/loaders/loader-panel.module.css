@@ -11,8 +11,8 @@
 
 @media screen and (max-width: 800px) {
     .loaderContainer {
-        /* 50vh is the height of the map as defined in the map component; 44px is the height of the map panel menu */
-        height: calc(50vh - 44px); 
+        /* 45vh is the height of the map as defined in the map component; 44px is the height of the map panel menu */
+        height: calc(45vh - 44px); 
         top: 60px;
         width: 100vw;
     }
