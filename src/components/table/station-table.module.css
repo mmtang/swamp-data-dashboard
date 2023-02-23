@@ -1,3 +1,7 @@
 .tableWrapper {
+    height: auto;
     margin: 1em 0 50px 0;
+    overflow-x: auto;
+    overflow-y: auto;
+    width: 100%;
 }

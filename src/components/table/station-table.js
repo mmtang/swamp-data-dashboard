@@ -136,7 +136,7 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
                 columns={columns} 
                 customStyles={customStyles}
                 data={data} 
-                fixedHeader
+                //fixedHeader
                 highlightOnHover
                 selectableRows
                 selectableRowsHighlight

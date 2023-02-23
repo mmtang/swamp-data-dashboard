@@ -7,7 +7,7 @@ export default function ButtonExploreData({ stationCode }) {
         <a href={withPrefix('/stations/?id=' + encodeURIComponent(stationCode))} target="_blank" rel="noopener noreferrer">
             <Button compact size='tiny'>
                 <Icon name='external alternate' />
-                Explore all data
+                Station page
             </Button>
         </a>
     )
