@@ -840,21 +840,21 @@ export default function MapIndex2({
         // At some point, want to change this so it's not hard-coded
         searchRef.current.sources = [
             {
-                layer: irLine2018Ref.current,
-                searchFields: ['wbid', 'wbname'],
-                displayField: 'wbname',
+                layer: irLine2020Ref.current,
+                searchFields: ['waterbody_id', 'waterbody_name'],
+                displayField: 'waterbody_name',
                 exactMatch: false,
-                outFields: ['wbname'],
-                name: '2018 Integrated Report Streams, Rivers, Beaches',
+                outFields: ['waterbody_name'],
+                name: '2020-2022 Integrated Report Streams, Rivers, Beaches',
                 placeholder: 'Example: Burney Creek'
             },
             {
-                layer: irPoly2018Ref.current,
-                searchFields: ['wbid', 'wbname'],
-                displayField: 'wbname',
+                layer: irPoly2020Ref.current,
+                searchFields: ['waterbody_id', 'waterbody_name'],
+                displayField: 'waterbody_name',
                 exactMatch: false,
-                outFields: ['wbname'],
-                name: '2018 Integrated Report Lakes, Bays, Reservoirs',
+                outFields: ['waterbody_name'],
+                name: '2020-2022 Integrated Report Lakes, Bays, Reservoirs',
                 placeholder: 'Example: Folsom Lake'
             },
             {
