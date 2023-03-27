@@ -39,7 +39,7 @@ export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, st
             setLoading(true);
             /* The following SQL statements get the unique analytes from each portal resource for the selected station code */
             // Chemistry
-            let sqlChem = `SELECT DISTINCT ON ("AnalyteDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            let sqlChem = `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
                 sqlChem += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
             };
@@ -48,7 +48,7 @@ export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, st
                 sql: sqlChem
             };
             // Habitat
-            let sqlHabitat = `SELECT DISTINCT ON ("AnalyteDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            let sqlHabitat = `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
                 sqlHabitat += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
             };
@@ -57,7 +57,7 @@ export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, st
                 sql: sqlHabitat
             };
             // Toxicity
-            let sqlTox = `SELECT DISTINCT ON ("AnalyteDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            let sqlTox = `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
             if (program) {
                 sqlTox += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
             }

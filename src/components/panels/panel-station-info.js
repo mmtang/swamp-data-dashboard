@@ -135,7 +135,6 @@ export default function PanelStationInfo({
                 let dataDict = {}; // Dictionary to store data (key = StationCode)
                 let allUnitValues = []; // Dictionary to store all unit values, will be used to find unique values
                 // Assign arrays to dictionary using station name as key
-                console.log(res);
                 for (let i = 0; i < res.length; i++) {
                     const stationCode = res[i][0]['StationCode'];
                     dataDict[stationCode] = res[i];
