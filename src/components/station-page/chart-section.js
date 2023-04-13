@@ -81,7 +81,6 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     resource_id: chemistryResourceId,
                     sql: `SELECT * FROM "${chemistryResourceId}" WHERE "AnalyteDisplay" = '${analyte}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
                 }
-                console.log(url + new URLSearchParams(params));
                 fetch(url + new URLSearchParams(params))
                     .then(resp => resp.json())
                     .then(json => json.result.records)
@@ -103,7 +102,6 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     resource_id: habitatResourceId,
                     sql: `SELECT * FROM "${habitatResourceId}" WHERE "AnalyteDisplay" = '${analyte}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
                 }
-                console.log(url + new URLSearchParams(params));
                 fetch(url + new URLSearchParams(params))
                     .then(resp => resp.json())
                     .then(json => json.result.records)
@@ -122,7 +120,6 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     resource_id: toxicityResourceId,
                     sql: `SELECT * FROM "${toxicityResourceId}" WHERE "AnalyteDisplay" = '${analyte}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
                 }
-                console.log(url + new URLSearchParams(params));
                 fetch(url + new URLSearchParams(params))
                     .then(resp => resp.json())
                     .then(json => json.result.records)

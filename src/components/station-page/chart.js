@@ -184,15 +184,14 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
             .on('mouseover', function(currentEvent, d) {
                 let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": ";
-                if (['<', '>', '<=', '>='].includes(d.ResultQualCode)) {
-                    content += d.ResultQualCode + ' ';
+                if (['<', '>', '<=', '>='].includes(d.DisplayText)) {
+                    content += d.DisplayText + ' ';
                 }
                 content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
-                if (d.Censored) {
-                    if (d.ResultQualCode === 'ND') {
-                        content += '<br><i>Non-detect</i>';
-                    } else if (d.ResultQualCode === 'DNQ') {
-                        content += '<br><i>Detected not quantified</i>';
+                if (d.DisplayText) {
+                    // Look for values of greater than 2 to exclude values like '<' and '<='
+                    if (d.DisplayText.length > 2) {
+                        content += '<br><i>* ' + d.DisplayText + '</i>';
                     }
                 }
                 return tooltip

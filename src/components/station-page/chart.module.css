@@ -8,13 +8,15 @@
 }
 
 .customTooltip {
-    position: absolute;
     background-color: #1a252f;
+    border: 1px solid #5d5d5d;
     color: #fff;
     font-size: 0.8em;
-    border: 1px solid #5d5d5d;
-    padding: 0.6em 1em;
     line-height: 1.4;
-    z-index: 9000;
+    max-width: 210px;
+    padding: 0.6em 1em;
     pointer-events: none;
+    position: absolute;
+    z-index: 9000;
+    
 }
