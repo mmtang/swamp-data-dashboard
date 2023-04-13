@@ -132,10 +132,16 @@ export default function Table2({
                         <HeaderCell>Last Sample</HeaderCell>
                         <Cell dataKey='LastSampleDate' />
                     </Column>
+                    {/* MeanDisplay used for toxicity data; LastResult for everything else */}
                     { stationData[0].LastResult ?  
                         <Column sortable width={90} align='left'>
                             <HeaderCell>Result</HeaderCell>
                             <Cell dataKey='LastResult' />
+                        </Column>
+                    : stationData[0].MeanDisplay ? 
+                        <Column sortable width={90} align='left'>
+                            <HeaderCell>Result</HeaderCell>
+                            <Cell dataKey='MeanDisplay' />
                         </Column>
                     : null }
                     { stationData[0].Unit ?  
