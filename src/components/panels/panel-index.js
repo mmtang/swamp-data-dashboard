@@ -8,7 +8,8 @@ export default function PanelIndex({
     setAnalyte, 
     setProgram, 
     setRegion, 
-    station
+    station,
+    stationData
 }) {   
     const getContent = () => {
         return (
@@ -20,6 +21,7 @@ export default function PanelIndex({
                 setProgram={setProgram}
                 setRegion={setRegion} 
                 station={station}
+                stationData={stationData}
             />
         )
     }

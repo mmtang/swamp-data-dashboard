@@ -1,0 +1,12 @@
+.buttonRow {
+    display: flex;
+}
+
+.downloadButton {
+    margin-right: 0.25em;
+}
+
+.downloadTable {
+    color: #5d5d5d !important;
+    font-size: 0.9em !important;
+}

@@ -27,7 +27,8 @@ export default function AccordionMenu({
     region, 
     setAnalyte, 
     setProgram,
-    setRegion
+    setRegion,
+    stationData
 }) {  
     // Open all panels upon initial load; keep track of selection and save to state
     const [activeIndex, setActiveIndex] = useState([0, 1, 2]);
@@ -342,15 +343,6 @@ export default function AccordionMenu({
                         </div>
                     </div>
                     <div className={buttonContainer}>
-                        {/* Bulk download */}
-                        { analyte ? 
-                            <BulkDownload
-                                analyte={analyte}
-                                program={program}
-                                region={region}
-                            />
-                            : null
-                        }
                         {/* Clear all filters */}
                         <ClearFilters 
                             setAnalyte={setAnalyte}
@@ -361,6 +353,38 @@ export default function AccordionMenu({
                     </div>
                 </Accordion.Content>
             </Accordion> 
+
+            {/* Download data */}
+            <Accordion 
+                className={customAccordion}
+                exclusive={false}
+                fluid
+                styled
+            >
+                <Accordion.Title
+                    className={customTitle}
+                    active={activeIndex.includes(1)}
+                    index={1}
+                    onClick={handleClick}
+                >
+                    <div className={titleWrapper}>
+                        <div>
+                            <Icon className={leadingIcon} name='download' />
+                            Download data
+                        </div>
+                        { activeIndex.includes(1) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
+                    </div>
+                </Accordion.Title>
+                <Accordion.Content active={activeIndex.includes(1)}>
+                    {/* Bulk download */}
+                    <BulkDownload
+                        analyte={analyte}
+                        program={program}
+                        region={region}
+                        stationData={stationData}
+                    />
+                </Accordion.Content>
+            </Accordion>
 
             {/* Layers */}
             <Accordion 

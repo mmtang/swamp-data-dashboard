@@ -10,7 +10,8 @@ export default function ContentIndex({
     setAnalyte, 
     setProgram,
     setRegion,
-    station
+    station,
+    stationData
 }) {  
     const yearRef = useRef(new Date().getFullYear());
 
@@ -31,6 +32,7 @@ export default function ContentIndex({
                         setAnalyte={setAnalyte}
                         program={program}
                         setProgram={setProgram}
+                        stationData={stationData}
                     />
                 </section>
             </div>

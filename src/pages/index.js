@@ -79,7 +79,6 @@ export default function Index() {
   const getStations = (params) => {
     return new Promise((resolve, reject) => {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-      console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => {
         if (!resp.ok) {
@@ -91,7 +90,6 @@ export default function Index() {
       .then((records) => {
         if (records) {
           records.forEach(d => {
-            d.Analyte = d.AnalyteDisplay;
             d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
             d.RegionName = regionDict[d.Region];
             d.TargetLatitude = +d.TargetLatitude;
@@ -340,6 +338,7 @@ export default function Index() {
         setProgram={setProgram}
         setRegion={setRegion}
         station={station}
+        stationData={stationData}
       />
       <PanelStation 
         analyte={analyte} 
