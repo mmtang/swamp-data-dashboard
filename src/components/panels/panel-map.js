@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import LoaderPanel from '../loaders/loader-panel';
 import MapIndex2 from '../map/map-index2';
 import PanelMapMenu from '../panel-menu/panel-map-menu';
@@ -26,18 +26,20 @@ export default function PanelMap({
     setSelecting,
     setStation,
     setStationData,
+    setTableData,
+    setView,
     setZoomToStation,
     station,
     stationData,
+    tableData,
+    view,
     zoomToStation
 }) {   
-    const [view, setView] = useState('map');
-
     return (
         <div className={content} style={{ cursor: cursor }}>
             <PanelMapMenu 
                 setView={setView}
-                stationData={stationData} 
+                tableData={tableData} 
                 view={view}
             />
             {/* Load the map and table components at the same time and control visibility through styles + state. Do not do conditional loading (loading one at a time) because it will force the component to reload every time a new selection is clicked */}
@@ -54,6 +56,7 @@ export default function PanelMap({
                     setSelecting={setSelecting}
                     setStation={setStation}
                     setStationData={setStationData}
+                    setTableData={setTableData}
                     setZoomToStation={setZoomToStation}
                     station={station}
                     stationData={stationData}
@@ -62,13 +65,16 @@ export default function PanelMap({
             </div>
             <div style={view !== 'table' ? { display: 'none' } : tableContainerStyle }>
                 <Table2
+                    analyte={analyte}
                     comparisonSites={comparisonSites}
+                    program={program}
+                    region={region}
                     selecting={selecting}
                     setComparisonSites={setComparisonSites}
                     setSelecting={setSelecting}
                     setStation={setStation}
                     station={station}
-                    stationData={stationData} 
+                    tableData={tableData} 
                 />
             </div>  
         </div>

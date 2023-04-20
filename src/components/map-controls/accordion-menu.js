@@ -395,8 +395,8 @@ export default function AccordionMenu({
             >
                 <Accordion.Title
                     className={customTitle}
-                    active={activeIndex.includes(1)}
-                    index={1}
+                    active={activeIndex.includes(2)}
+                    index={2}
                     onClick={handleClick}
                 >
                     <div className={titleWrapper}>
@@ -404,10 +404,10 @@ export default function AccordionMenu({
                             <Icon className={leadingIcon} name='map' />
                             Map Layers
                         </div>
-                        { activeIndex.includes(1) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
+                        { activeIndex.includes(2) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
                     </div>
                 </Accordion.Title>
-                <Accordion.Content active={activeIndex.includes(1)}>
+                <Accordion.Content active={activeIndex.includes(2)}>
                     <div id="layerListContainer" />
                 </Accordion.Content>
             </Accordion>

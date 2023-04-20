@@ -301,7 +301,6 @@ export const chemDataFields = [
     'Analyte',
     'Unit',
     'Result',
-    'ResultDisplay',
     'Observation',
     'MDL',
     'RL',
@@ -478,7 +477,6 @@ export const toxicityDataFields = [
     'DataQuality',
     'DataQualityIndicator',
     'MeanDisplay',
-    'Region'
 ];
 
 // Data categories to use in app

@@ -70,14 +70,13 @@ export const convertStationDataToGraphics = async (data) => {
                     ObjectId: d.StationCode,
                     StationCode: d.StationCode,
                     StationName: d.StationName,
+                    TargetLatitude: +d.TargetLatitude,
+                    TargetLongitude: +d.TargetLongitude,
                     Region: d.Region.toString(),
                     RegionName: regionDict[d.Region],
                     LastSampleDate: d.LastSampleDate,
-                    // probably no longer need these because I am changing data structure, but still needed for older components
-                    //bioaccumulation: d.Bioaccumulation, 
-                    //bioassessment: d.Bioassessment,
-                    //fhab: d.Fhab,
-                    //spot: d.Spot
+                    ResultDisplay: +d.ResultDisplay || null, // Use null if value is not avail; otherwise, ArcGIS JS will use NaN or undefined, which does not match the data type assigned in stationDataFields
+                    Unit: d.Unit || null
                 }
             };
         });
@@ -85,6 +84,7 @@ export const convertStationDataToGraphics = async (data) => {
     })
 }
 
+// This schema defines what the attributes look like when data is converted to map graphics - and when features are queried from the station layer
 export const stationDataFields = [
     {
         name: 'ObjectId',
@@ -102,6 +102,21 @@ export const stationDataFields = [
         type: 'string'
     },
     {
+        name: 'TargetLatitude',
+        alias: 'Latitude',
+        type: 'double'
+    },
+    {
+        name: 'TargetLongitude',
+        alias: 'Longitude',
+        type: 'double'
+    },
+    {
+        name: 'Region',
+        alias: 'RegionNum',
+        type: 'string'
+    },
+    {
         name: 'RegionName',
         alias: 'Region',
         type: 'string'
@@ -112,23 +127,20 @@ export const stationDataFields = [
         type: 'string'
     },
     {
-        name: 'bioaccumulation',
-        alias: 'Bioaccumulation',
-        type: 'string'
+        name: 'ResultDisplay',
+        alias: 'Result',
+        type: 'double'
     },
+    /*
     {
-        name: 'bioassessment',
-        alias: 'Bioassessment',
-        type: 'string'
+        name: 'MeanDisplay',
+        alias: 'Mean',
+        type: 'double'
     },
+    */
     {
-        name: 'fhab',
-        alias: 'Fhab',
-        type: 'string'
-    },
-    {
-        name: 'spot',
-        alias: 'Spot',
+        name: 'Unit',
+        alias: 'unit',
         type: 'string'
     }
 ]

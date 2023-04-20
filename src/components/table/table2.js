@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Cell, Column, HeaderCell, Table,  } from 'rsuite-table';
 // Import styles
 import 'rsuite-table/dist/css/rsuite-table.css';
@@ -8,13 +8,16 @@ import { tableContainer } from './table2.module.css';
 // It makes use of the react-data-table-component library
 // https://github.com/jbetancur/react-data-table-component
 export default function Table2({ 
+    analyte,
     comparisonSites, 
+    program,
+    region,
     selecting,
     setComparisonSites, 
     setSelecting,
     setStation, 
     station, 
-    stationData 
+    tableData
 }) {
     // State
     const [loading, setLoading] = useState(false)
@@ -27,7 +30,7 @@ export default function Table2({
     // https://rsuite.github.io/rsuite-table/#10
     const getSortedData = () => {
         if (sortColumn && sortType) {
-            return stationData.sort((a, b) => {
+            return tableData.sort((a, b) => {
                 let x = a[sortColumn];
                 let y = b[sortColumn];
                 if (typeof x === 'number') {
@@ -47,7 +50,7 @@ export default function Table2({
                 }
             });
         } else {
-            return stationData;
+            return tableData;
         }
     }
 
@@ -91,15 +94,23 @@ export default function Table2({
         setLoading(true);
         // Add a half second delay to show loading indicator
         setTimeout(() => {
+            setLoading(false);
             setSortColumn(sortColumn);
             setSortType(sortType);
         }, 500)
-        setLoading(false);
     }
+
+    useEffect(() => {
+        setLoading(true);
+        // Reset state
+        setSortColumn('LastSampleDate');
+        setSortType('desc')
+        setLoading(false);
+    }, [analyte, program, region]);  // Using tableData as the sole dependency doesn't work. State needs to be reset before the new data is passed into the component. Else, the table will try to sort on a column like "ResultDisplay" when that column may not exist in the new dataset
 
     return (
         <div ref={containerRef} className={tableContainer}>
-            { stationData &&
+            { tableData &&
                 <Table 
                     virtualized
                     data={getSortedData()}
@@ -132,19 +143,14 @@ export default function Table2({
                         <HeaderCell>Last Sample</HeaderCell>
                         <Cell dataKey='LastSampleDate' />
                     </Column>
-                    {/* MeanDisplay used for toxicity data; LastResult for everything else */}
-                    { stationData[0].LastResult ?  
+                    {/* Check for null values here, not truthy/falsy because 0 is a valid result but it's not truthy */}
+                    { tableData[0].ResultDisplay !== null ?  
                         <Column sortable width={90} align='left'>
                             <HeaderCell>Result</HeaderCell>
-                            <Cell dataKey='LastResult' />
-                        </Column>
-                    : stationData[0].MeanDisplay ? 
-                        <Column sortable width={90} align='left'>
-                            <HeaderCell>Result</HeaderCell>
-                            <Cell dataKey='MeanDisplay' />
+                            <Cell dataKey='ResultDisplay' />
                         </Column>
                     : null }
-                    { stationData[0].Unit ?  
+                    { tableData[0].Unit !== null ?  
                         <Column sortable width={90} align='left'>
                             <HeaderCell>Unit</HeaderCell>
                             <Cell dataKey='Unit' />

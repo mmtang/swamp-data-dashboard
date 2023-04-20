@@ -33,6 +33,7 @@ export default function MapIndex2({
     setMapLoaded, 
     setSelecting,
     setStation,
+    setTableData,
     setZoomToStation,
     station,
     stationData,
@@ -259,7 +260,7 @@ export default function MapIndex2({
     };
 
     /* This function is for generating station popups on hover
-    Not using since 2/17/23 - Issue with the functions in this listener closing the popups of the other layers (IR, BP) on cursor movement. If there is a way to stop it from doing this, then will reinstate, but I have not yet found a way yet. The alternative (no mouseover popups, all persistent popups) is better than keeping this. The issue is rooted in how ArcGIS JS implements popups - one popup per view only.
+    Not using since 2/17/23 - Issue with the functions in this listener closing the popups of the other layers (IR, BP) on cursor movement. If there is a way to stop it from doing this, then will reinstate, but I have not found a way yet. The alternative (no mouseover popups, all persistent popups) is better than keeping this. The issue is rooted in how ArcGIS JS implements popups - one popup per view only.
     const addStationPopupListener = () => {
         loadModules(['esri/core/promiseUtils'])
             .then(([promiseUtils]) => {
@@ -559,9 +560,51 @@ export default function MapIndex2({
     useEffect(() => {
         if (stationLayerRef.current) {
             refreshStationLayer(stationData);
+            refreshTableData();
         }
     }
     , [stationData]);
+
+    const refreshTableData = () => {
+        if (viewRef.current && stationLayerRef.current) {
+            viewRef.current.whenLayerView(stationLayerRef.current).then(layerView => {
+                layerView.watch('updating', function(value) {
+                    if (!value) {
+                        // Query features in the current map extent
+                        layerView.queryFeatures({
+                            geometry: viewRef.current.extent
+                        }).then(results => {
+                            // Get feature attributes
+                            const features = results.features;
+                            const featureData = features.map(d => d.attributes);
+                            setTableData(featureData);
+                        })
+                    }
+                })
+            })
+        }
+    }
+
+    // Listener for map extent changes - updating station list
+    useEffect(() => {
+        if (viewRef.current && stationLayerRef.current) {
+            viewRef.current.whenLayerView(stationLayerRef.current).then(layerView => {
+                layerView.watch('updating', function(value) {
+                    if (!value) {
+                        // Query features in the current map extent
+                        layerView.queryFeatures({
+                            geometry: viewRef.current.extent
+                        }).then(results => {
+                            // Get feature attributes
+                            const features = results.features;
+                            const featureData = features.map(d => d.attributes);
+                            setTableData(featureData);
+                        })
+                    }
+                })
+            })
+        }
+    }, [stationLayerRef.current]);
 
     // Zoom to the selected station on the map
     useEffect(() => {

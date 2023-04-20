@@ -39,7 +39,9 @@ export default function Index() {
   const [comparisonSites, setComparisonSites] = useState([]);
   const [selecting, setSelecting] = useState(false);
   const [station, setStation] = useState(null);
-  const [stationData, setStationData] = useState(null);
+  const [stationData, setStationData] = useState(null); // Data queried from the API and then passed to the map component
+  const [tableData, setTableData] = useState(null); // The same station data from StationData but queried from the map (by current map extent) and passed to the table component
+  const [view, setView] = useState('map');
   const [zoomToStation, setZoomToStation] = useState(false);
 
   const getAllStations = () => {
@@ -91,6 +93,7 @@ export default function Index() {
         if (records) {
           records.forEach(d => {
             d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
+            d.ResultDisplay = +d.resultdisplay
             d.RegionName = regionDict[d.Region];
             d.TargetLatitude = +d.TargetLatitude;
             d.TargetLongitude = +d.TargetLongitude;
@@ -169,7 +172,7 @@ export default function Index() {
     if (!analyte) {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "${ resource === toxicityResourceId ? 'MeanDisplay' : 'ResultDisplay' }", "Unit" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "${ resource === toxicityResourceId ? 'MeanDisplay' : 'ResultDisplay' }" as ResultDisplay, "Unit" FROM "${resource}"`;
     };
     if (analyte || program || region) {
         // This block constucts the "WHERE" part of the select query
@@ -208,6 +211,7 @@ export default function Index() {
     };
 
     setMapLoaded(false);
+    setView('map') // We need to reset the view every time analyte, region, or program changes because the map must be in view in order to retrieve the extent (and then update tableData)
     // If none of the filters are selected, change state to the full station dataset
     if (!program && !region && !analyte) {
       setStationData(allStationRef.current);
@@ -236,7 +240,7 @@ export default function Index() {
               uniqueStations.push(row);
             }
           }
-          if (uniqueStations[0].ResultDisplay) {
+          if (uniqueStations[0].resultdisplay) {
             uniqueStations.forEach(d => {
               d.LastResult = parseFloat((+d.ResultDisplay).toFixed(3));
             });
@@ -315,9 +319,13 @@ export default function Index() {
           setSelecting={setSelecting}
           setStation={setStation}
           setStationData={setStationData}
+          setTableData={setTableData}
+          setView={setView}
           setZoomToStation={setZoomToStation}
           station={station}
           stationData={stationData}
+          tableData={tableData}
+          view={view}
           zoomToStation={zoomToStation}
         />
       </div>

@@ -11,7 +11,7 @@ import { buttonRow, downloadTable } from './bulk-download.module.css';
 export default function BulkDownload({ analyte, program, region, stationData }) {
     return (
         <div>
-            <p>Download data (.csv) for all SWAMP stations based on the current selection:</p>
+            <p>Download data (.csv) for all SWAMP stations based on the current selection listed below. Includes stations outside the current map extent.</p>
             <Table 
                 celled
                 className={downloadTable} 

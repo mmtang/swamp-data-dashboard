@@ -10,7 +10,7 @@ import {
 
 export default function PanelMapMenu({ 
     setView, 
-    stationData, 
+    tableData,
     view
 }) {   
     const selectedStyle = {
@@ -53,9 +53,9 @@ export default function PanelMapMenu({
             </div>
             {/* Station count */} 
             <div>
-                { stationData ? 
+                { tableData ? 
                     <div className={statContainer}>
-                        <span className={statLabel}>{stationData.length}&nbsp;&nbsp;stations</span>
+                        <span className={statLabel}>{tableData.length}&nbsp;&nbsp;stations</span>
                     </div> 
                     : null 
                 }

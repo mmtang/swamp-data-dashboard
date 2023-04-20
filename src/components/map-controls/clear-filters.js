@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, Icon } from 'semantic-ui-react';
 
-export default function ClearFilters({ setAnalyte, setCategory, setProgram, setRegion }) {   
+import { rightButton } from './clear-filters.module.css';
+
+export default function ClearFilters({ setAnalyte, setCategory, setProgram, setRegion }) {  
     const handleClick = () => {
         setAnalyte(null);
         setCategory(null);
@@ -11,6 +13,7 @@ export default function ClearFilters({ setAnalyte, setCategory, setProgram, setR
 
     return (
         <Button 
+            className={rightButton}
             compact 
             onClick={handleClick} 
             onKeyPress={handleClick}
