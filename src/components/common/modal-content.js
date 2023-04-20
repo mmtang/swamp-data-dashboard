@@ -1,9 +1,9 @@
 import React, { memo, useState } from 'react';
 import UpdateMessage from './update-message';
 
-import downloadParameter from '../../../static/download-parameter.png';
-import downloadStation from '../../../static/download-station.png';
-import swampLogo from '../../../static/swamp-logo-black-small.png';
+import downloadMain from '../../../static/download-main.jpg';
+import downloadStation from '../../../static/download-station.jpg';
+import swampLogo from '../../../static/swamp-logo-black.png';
 import { Button, Icon, Menu, Segment } from 'semantic-ui-react';
 
 import { imageSetContainer, modalButton, modalContent, swampIcon } from './modal-content.module.css';
@@ -41,12 +41,12 @@ const ModalContent = ({ setDisclaimerVisible }) => {
                 <h3>Download</h3>
                 <p>Result data can be downloaded directly from the dashboard as comma-separated values (CSV) files.</p>
                 <figure className={imageSetContainer}>
-                    <img src={downloadParameter} />
-                    <figcaption>Download parameter data for all stations</figcaption>
+                    <img src={downloadMain} />
+                    <figcaption>Download bulk data based on filters</figcaption>
                 </figure>
                 <figure className={imageSetContainer}>
                     <img src={downloadStation} />
-                    <figcaption>Download parameter data for one or more stations</figcaption>
+                    <figcaption>Download parameter data from the station view</figcaption>
                 </figure>
                 <p>The full datasets (including all data quality categories) are available for download on the <a href='https://data.ca.gov/dataset/surface-water-ambient-monitoring-program' rel='noreferrer noopener' target='_blank'>California Open Data Portal</a>. The portal offers an OData connection and a REST application programming interface (API) interface for accessing the data via HTTP requests.</p>
                 <p>The original, unmodified datasets are available for download on the CEDEN website. Navigate to the <a href='https://ceden.waterboards.ca.gov/AdvancedQueryTool' target='_blank' rel='noreferrer noopener'>CEDEN Advanced Query Tool</a>, select a result category, and then select "Surface Water Ambient Monitoring Program" from the Programs select menu.</p>
