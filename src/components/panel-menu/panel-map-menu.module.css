@@ -19,9 +19,9 @@
 }
 
 .menuItem:hover {
-    cursor: pointer;
-    background-color: #00b5ad;
+    background-color: #00857F;
     color: #fff;
+    cursor: pointer;
 }
 
 .menuItem span {

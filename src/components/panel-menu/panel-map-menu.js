@@ -14,7 +14,7 @@ export default function PanelMapMenu({
     view
 }) {   
     const selectedStyle = {
-        backgroundColor: '#00b5ad'
+        backgroundColor: '#00857F'
     }
 
     const handleClick = (val) => {

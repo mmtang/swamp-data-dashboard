@@ -260,10 +260,10 @@ Unfortunately, this still does not fix the flickering issue */
   border-radius: 0;
 }
 
-/* Search bar */
+/* Search bar - style changes for accessibility */
 #searchContainer .esri-input {
-  background-color: #f5f4f3 !important;  /* #103350 */
-  color: #757575 !important;
+  background-color: #fff !important; 
+  color: #383838 !important;
   font-family: inherit;
 }
 

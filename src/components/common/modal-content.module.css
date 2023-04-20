@@ -25,7 +25,7 @@
     padding: 0.8em 1em;
     outline: none;
     color: #fff;
-    background-color: #2185d0;
+    background-color: #20639b;
     border: none;
     border-radius: 0;
     font-size: 0.95em;
@@ -54,4 +54,5 @@
     -ms-filter: opacity(75%);
     -o-filter: opacity(75%);
     filter: opacity(75%);
+    width: 104px;
 }

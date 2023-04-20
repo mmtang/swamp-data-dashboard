@@ -2,7 +2,7 @@ export const colorPaletteViz = ['#1f77b4', '#ff7f0e', '#2ca02c', '#af7aa1', '#17
 
 // An alternative color to use (light turquoise/seafoam) for links on a dark background
 export const linkColorAlt = {
-    color: '#75e6da'
+    color: '#8beae0'
 }
 
 // Matrix colors

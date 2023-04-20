@@ -28,8 +28,8 @@ const Navbar = ({ search }) => {
         <div className={navBar}>
             {/* Wrap navbar header text in span */}
             <div className={titleContainer}>
-                <a href='https://www.waterboards.ca.gov/' target='_blank' rel='noreferrer noopener'><img className={logo} src={withPrefix('/wb-logo-white.png')} /></a>
-                <a href='https://www.waterboards.ca.gov/water_issues/programs/swamp/' target='_blank' rel='noreferrer noopener'><img className={logo} src={withPrefix('/swamp-logo-white.png')} /></a>
+                <a href='https://www.waterboards.ca.gov/' target='_blank' rel='noreferrer noopener'><img alt='Water Boards logo' className={logo} src={withPrefix('/wb-logo-white.png')} /></a>
+                <a href='https://www.waterboards.ca.gov/water_issues/programs/swamp/' target='_blank' rel='noreferrer noopener'><img alt='SWAMP logo' className={logo} src={withPrefix('/swamp-logo-white.png')} /></a>
                 <a href={withPrefix('/')}><span className={navTitle}>SWAMP Data Dashboard</span></a>
             </div>
             <div className={rightContainer}>
