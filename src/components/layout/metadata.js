@@ -24,6 +24,7 @@ const Metadata = ({ title, description }) => {
         <Helmet>
             <title>{`${data.site.siteMetadata.title} ${metaTitle}`}</title>
             <meta name='description' content={metaDescription} />
+            <html lang='en' />
         </Helmet>
     )
 }
