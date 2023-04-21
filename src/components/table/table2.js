@@ -143,14 +143,14 @@ export default function Table2({
                         <HeaderCell>Last Sample</HeaderCell>
                         <Cell dataKey='LastSampleDate' />
                     </Column>
-                    {/* Check for null values here, not truthy/falsy because 0 is a valid result but it's not truthy */}
-                    { tableData[0].ResultDisplay !== null ?  
+                    {/* Check for undefined and null values here, not truthy/falsy because 0 is a valid result but it's not truthy */}
+                    { tableData.length > 0 && tableData[0].ResultDisplay !== null ?  
                         <Column sortable width={90} align='left'>
                             <HeaderCell>Result</HeaderCell>
                             <Cell dataKey='ResultDisplay' />
                         </Column>
                     : null }
-                    { tableData[0].Unit !== null ?  
+                    { tableData.length > 0 && tableData[0].Unit !== null ?  
                         <Column sortable width={90} align='left'>
                             <HeaderCell>Unit</HeaderCell>
                             <Cell dataKey='Unit' />

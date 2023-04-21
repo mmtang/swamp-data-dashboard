@@ -27,6 +27,10 @@ export default function BulkDownloadResults({ analyte, program, region }) {
 
     const fieldsRef = useRef(null);
 
+    const wrapperStyle = {
+        marginRight: '2px'
+    }
+
     const getData = (analyte, program, region) => {
         return new Promise((resolve, reject) => {
             if (analyte) {
@@ -124,7 +128,7 @@ export default function BulkDownloadResults({ analyte, program, region }) {
     }, [analyte, program, region]);
 
     return (
-        <div>
+        <div style={wrapperStyle}>
             { downloadData ?
                 <DownloadData 
                     basic={true}

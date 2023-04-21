@@ -59,26 +59,48 @@ export const bpLayerDict = {
 // Converts JSON station data to graphics structure used by ArcGIS JS
 export const convertStationDataToGraphics = async (data) => {
     return new Promise((resolve, reject) => {
+        // If there is a valid ResultDisplay value, then include the ResultDisplay and Unit fields. If not, then don't include these fields. These fields are displayed only when a parameter has been selected.
+        // Before, tried to fill these columns with null values, but there was an issue with both the data type conversion that ArcGIS uses and another issue with the station table. The table tries to sort on null values, which it cannot do, and this results in a crash. Using an if statement (like below) seems to work better than using conditionals to insert/include keys
         const features = data.map((d, i) => {
-            return {
-                geometry: {
-                    type: 'point',
-                    latitude: +d.TargetLatitude,
-                    longitude: +d.TargetLongitude
-                },
-                attributes: {
-                    ObjectId: d.StationCode,
-                    StationCode: d.StationCode,
-                    StationName: d.StationName,
-                    TargetLatitude: +d.TargetLatitude,
-                    TargetLongitude: +d.TargetLongitude,
-                    Region: d.Region.toString(),
-                    RegionName: regionDict[d.Region],
-                    LastSampleDate: d.LastSampleDate,
-                    ResultDisplay: +d.ResultDisplay || null, // Use null if value is not avail; otherwise, ArcGIS JS will use NaN or undefined, which does not match the data type assigned in stationDataFields
-                    Unit: d.Unit || null
-                }
-            };
+            if (data[0].ResultDisplay) {
+                return {
+                    geometry: {
+                        type: 'point',
+                        latitude: +d.TargetLatitude,
+                        longitude: +d.TargetLongitude
+                    },
+                    attributes: {
+                        ObjectId: d.StationCode,
+                        StationCode: d.StationCode,
+                        StationName: d.StationName,
+                        TargetLatitude: +d.TargetLatitude,
+                        TargetLongitude: +d.TargetLongitude,
+                        Region: d.Region.toString(),
+                        RegionName: regionDict[d.Region],
+                        LastSampleDate: d.LastSampleDate,
+                        ResultDisplay: +d.ResultDisplay,
+                        Unit: d.Unit,
+                    }
+                };
+            } else {
+                return {
+                    geometry: {
+                        type: 'point',
+                        latitude: +d.TargetLatitude,
+                        longitude: +d.TargetLongitude
+                    },
+                    attributes: {
+                        ObjectId: d.StationCode,
+                        StationCode: d.StationCode,
+                        StationName: d.StationName,
+                        TargetLatitude: +d.TargetLatitude,
+                        TargetLongitude: +d.TargetLongitude,
+                        Region: d.Region.toString(),
+                        RegionName: regionDict[d.Region],
+                        LastSampleDate: d.LastSampleDate
+                    }
+                };
+            }
         });
         resolve(features);
     })
@@ -131,13 +153,6 @@ export const stationDataFields = [
         alias: 'Result',
         type: 'double'
     },
-    /*
-    {
-        name: 'MeanDisplay',
-        alias: 'Mean',
-        type: 'double'
-    },
-    */
     {
         name: 'Unit',
         alias: 'unit',
