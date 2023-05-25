@@ -98,27 +98,32 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
                 .scale(xScale)
                 .ticks(numTicks);
 
-            // Get results from all sites to define domain for y-axis
-            let allResults = [];
-            for (let i = 0; i < siteKeys.length; i++) {
-                const results = data.sites[siteKeys[i]].map(d => d.ResultDisplay);
-                allResults = [...allResults, ...results];
-            }
-            // Get max value
-            // For some analytes (see analyteYMax dictionary), we will want to show the full range and will use a pre-determined max
+            // ** Calculate y-axis max
+            // For toxicity, fix y-axis to 0-100
+            // For some analytes (see analyteYMax dictionary in constants), we will use a pre-determined max
+            // For everything else, use the max result value
             let yMax;
-            if (Object.keys(analyteYMax).includes(analyte.label)) {
+            if (analyte.source === 'toxicity') {
+                yMax = 100;
+            } else if (Object.keys(analyteYMax).includes(analyte.label)) {
                 yMax = analyteYMax[analyte.label];
             } else {
+                let allResults = [];
+                for (let i = 0; i < siteKeys.length; i++) {
+                    const results = data.sites[siteKeys[i]].map(d => d.ResultDisplay);
+                    allResults = [...allResults, ...results];
+                }
                 yMax = d3.max(allResults);
             }
+
             const yScale = d3.scaleLinear()
                 .domain([0, yMax])
                 .range([height - margin.bottom, margin.top]);
+
             // Define y-axis
             const yAxis = d3.axisLeft()
                 .scale(yScale)
-                .ticks(5);
+                .ticks(6);
 
             // Draw x-axis
             chart.append('g')
