@@ -117,15 +117,25 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             .attr('class', 'y axis')
             .attr('transform', 'translate(' + margin.left + ', 0)')
             .call(yAxis)
-            .append('text') // Add y-axis label (unit)
-            .attr('transform', 'rotate(-90)')
-            .attr('dy', '0.75em')
-            .attr('x' , 0 - margin.top)
-            .attr('y', 6)
-            .style('fill', '#5d5d5d')
-            .style('font-size', '12px')
-            .style('text-anchor', 'end')
-            .text(unit);
+            .append('text') // Add y-axis label (unit) on top of y-axis
+                .attr('dy', '0.75em')
+                .attr('x' , 0 - margin.left + 5) // Position text at the very left edge of the graph + 5 pixels right
+                .attr('y', 6)
+                .style('fill', '#5d5d5d')
+                .style('font-size', '12px')
+                .style('text-anchor', 'start')
+                .text(unit);
+            /*
+            .append('text') // Add y-axis label (unit) on inside of y-axis
+                .attr('transform', 'rotate(-90)')
+                .attr('dy', '0.75em')
+                .attr('x' , 0 - margin.top)
+                .attr('y', 6)
+                .style('fill', '#5d5d5d')
+                .style('font-size', '12px')
+                .style('text-anchor', 'end')
+                .text(unit);
+            */
 
         // Restyle axis text elements
         d3.selectAll('.axis > .tick > text')

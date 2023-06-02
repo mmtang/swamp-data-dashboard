@@ -43,7 +43,7 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             const targetWidth = parseInt(container.getBoundingClientRect().width);
 
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 25, right: 20, bottom: 30, left: 55 };
+            const margin = { top: 30, right: 20, bottom: 30, left: 55 };
             const width = targetWidth;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 5;
@@ -132,28 +132,20 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
                 .attr('class', 'x axis')
                 .attr('transform', 'translate(0,' + (height - margin.bottom) + ')')
                 .call(xAxis)
-                /*
-                .selectAll('text') // rotate x-axis labels
-                    .style('text-anchor', 'end')
-                    .attr('dx', '-0.8em')
-                    .attr('dy', '.15em')
-                    .attr('transform', 'rotate(-45)');
-                */
     
             // Draw y-axis
             chart.append('g')
                 .attr('class', 'y axis')
                 .attr('transform', 'translate(' + margin.left + ', 0)')
                 .call(yAxis)
-                .append('text') // Add y-axis label (unit)
-                .attr('transform', 'rotate(-90)')
-                .attr('dy', '0.75em')
-                .attr('x' , 0 - margin.top)
-                .attr('y', 6)
-                .style('fill', '#5d5d5d')
-                .style('font-size', '12px')
-                .style('text-anchor', 'end')
-                .text(unit);
+                .append('text') // Add y-axis label (unit) on top of y-axis
+                    .attr('dy', '0.75em')
+                    .attr('x' , 0 - margin.left + 5) // Position text at the very left edge of the graph + 5 pixels right
+                    .attr('y', 6)
+                    .style('fill', '#5d5d5d')
+                    .style('font-size', '12px')
+                    .style('text-anchor', 'start')
+                    .text(unit);
 
             // Restyle axis text elements
             d3.selectAll('.axis > .tick > text')
