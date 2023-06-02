@@ -10,7 +10,8 @@ import { chart, chartContainer, customTooltip } from './chart.module.css';
 export default function Chart({ analyte, data, dateExtent, unit }) {
     const [loading, setLoading] = useState(true);
 
-    const formatDate = d3.timeFormat('%b %e, %Y');
+    const axisFormatDate = d3.timeFormat('%-m/%-d/%y');
+    const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
 
     // Generate random 6 digit integer to serve as ID for this chart instance
@@ -101,7 +102,8 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
         const numTicks = targetWidth < 600 ? 5 : null;
         const xAxis = d3.axisBottom()
             .scale(xScale)
-            .ticks(numTicks);
+            .ticks(numTicks)
+            .tickFormat(axisFormatDate);
         chart.append('g')
             .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + (height - margin.bottom) + ')')
@@ -183,7 +185,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             .attr('stroke-width', d => d.Censored ? 2 : 1)
             .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
             .on('mouseover', function(currentEvent, d) {
-                let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": ";
+                let content = '<span style="color: #a6a6a6">' + tooltipFormatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": ";
                 if (['<', '>', '<=', '>='].includes(d.DisplayText)) {
                     content += d.DisplayText + ' ';
                 }

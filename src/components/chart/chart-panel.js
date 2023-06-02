@@ -6,7 +6,8 @@ import { customTooltip, modalContent } from './chart-panel.module.css';
 // Component for rendering graph on the dashboard index page (station panel)
 export default function ChartPanel({ analyte, data, unit, vizColors }) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
-    const formatDate = d3.timeFormat('%b %e, %Y');
+    const axisFormatDate = d3.timeFormat('%-m/%-d/%y');
+    const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
 
     useEffect(() => {
@@ -42,7 +43,7 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             const targetWidth = parseInt(container.getBoundingClientRect().width);
 
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 25, right: 35, bottom: 30, left: 55 };
+            const margin = { top: 25, right: 20, bottom: 30, left: 55 };
             const width = targetWidth;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 5;
@@ -91,12 +92,13 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
                 .range([margin.left, width - margin.right]);
 
             // Limit number of ticks based on width of chart (screen size)
-            const numTicks = targetWidth < 600 ? 5 : null;
+            const numTicks = targetWidth < 600 ? 4 : null;
 
             // Define x-axis
             const xAxis = d3.axisBottom()
                 .scale(xScale)
-                .ticks(numTicks);
+                .ticks(numTicks)
+                .tickFormat(axisFormatDate);
 
             // ** Calculate y-axis max
             // For toxicity, fix y-axis to 0-100
@@ -129,7 +131,14 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             chart.append('g')
                 .attr('class', 'x axis')
                 .attr('transform', 'translate(0,' + (height - margin.bottom) + ')')
-                .call(xAxis);
+                .call(xAxis)
+                /*
+                .selectAll('text') // rotate x-axis labels
+                    .style('text-anchor', 'end')
+                    .attr('dx', '-0.8em')
+                    .attr('dy', '.15em')
+                    .attr('transform', 'rotate(-45)');
+                */
     
             // Draw y-axis
             chart.append('g')
@@ -226,7 +235,7 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
                     .attr('stroke-width', d => d.Censored ? 2 : 1)
                     .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                     .on('mouseover', function(currentEvent, d) {
-                        let content = '<span style="color: #a6a6a6">' + formatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": ";
+                        let content = '<span style="color: #a6a6a6">' + tooltipFormatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": ";
                         if (['<', '>', '>=', '<='].includes(d.DisplayText)) {
                             content += d.ResultQualCode + ' ';
                         }
