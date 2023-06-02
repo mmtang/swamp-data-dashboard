@@ -6,7 +6,7 @@ import { customTooltip, modalContent } from './chart-panel.module.css';
 // Component for rendering graph on the dashboard index page (station panel)
 export default function ChartPanel({ analyte, data, unit, vizColors }) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
-    const axisFormatDate = d3.timeFormat('%-m/%-d/%y');
+    const axisFormatDate = d3.timeFormat('%Y-%m-%d');
     const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
 
@@ -43,7 +43,7 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             const targetWidth = parseInt(container.getBoundingClientRect().width);
 
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 30, right: 20, bottom: 30, left: 55 };
+            const margin = { top: 35, right: 20, bottom: 60, left: 55 };
             const width = targetWidth;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 5;
@@ -132,6 +132,12 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
                 .attr('class', 'x axis')
                 .attr('transform', 'translate(0,' + (height - margin.bottom) + ')')
                 .call(xAxis)
+                // Rotate axis labels
+                .selectAll('text')
+                    .style('text-anchor', 'end')
+                    .attr('dx', -8)
+                    .attr('dy', 6)
+                    .attr('transform', 'rotate(-40)');
     
             // Draw y-axis
             chart.append('g')

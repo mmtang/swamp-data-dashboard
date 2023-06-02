@@ -10,7 +10,7 @@ import { chart, chartContainer, customTooltip } from './chart.module.css';
 export default function Chart({ analyte, data, dateExtent, unit }) {
     const [loading, setLoading] = useState(true);
 
-    const axisFormatDate = d3.timeFormat('%-m/%-d/%y');
+    const axisFormatDate = d3.timeFormat('%Y-%m-%d');
     const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
 
@@ -44,7 +44,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
     }
 
     const drawChart = () => {
-        const margin = { top: 30, right: 40, bottom: 30, left: 55 };
+        const margin = { top: 30, right: 40, bottom: 65, left: 55 };
         // get container + svg aspect ratio
         const container = d3.select('#' + chartId).node();
         const targetWidth = parseInt(container.getBoundingClientRect().width);
@@ -107,7 +107,13 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
         chart.append('g')
             .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + (height - margin.bottom) + ')')
-            .call(xAxis);
+            .call(xAxis)
+            // Rotate axis labels
+            .selectAll('text')
+                .style('text-anchor', 'end')
+                .attr('dx', -8)
+                .attr('dy', 6)
+                .attr('transform', 'rotate(-40)');
         
         // Draw y-axis
         const yAxis = d3.axisLeft()
