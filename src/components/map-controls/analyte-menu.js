@@ -11,10 +11,14 @@ export default function AnalyteMenu({
     category, 
     categoryList, 
     setAnalyte, 
-    setCategory 
+    setCategory,
+    setSpecies,
+    species,
+    speciesList
 }) {
     const [loadingAnalyte, setLoadingAnalyte] = useState(true);
     const [loadingCategory, setLoadingCategory] = useState(true);
+    const [loadingSpecies, setLoadingSpecies] = useState(true);
 
     const wrapperStyle = {
         marginBottom: '10px'
@@ -32,9 +36,20 @@ export default function AnalyteMenu({
         )
     };
 
+    const handleAnalyteChange = (selection) => {
+        // If there is a selection, the passed object is formatted as { label: 'fhab', value: 'fhab'}
+        if (selection) {
+            setAnalyte(selection);
+        } else {
+            setAnalyte(null);
+        }
+    }
+
     const handleCategoryChange = (selection) => {
         // The object passed to this function is formatted as { label: 'group', value: 'group'}
         // Will be null if the selection was cleared
+        setAnalyte(null);
+        setSpecies(null);
         if (selection) {
             setCategory(selection.value);
         } else {
@@ -42,12 +57,14 @@ export default function AnalyteMenu({
         }
     }
 
-    const handleAnalyteChange = (selection) => {
-        // If there is a selection, the passed object is formatted as { label: 'fhab', value: 'fhab'}
+    const handleSpeciesChange = (selection) => {
+        // The object passed to this function is formatted as { label: 'group', value: 'group'}
+        // Will be null if the selection was cleared
+        setAnalyte(null);
         if (selection) {
-            setAnalyte(selection);
+            setSpecies(selection.value);
         } else {
-            setAnalyte(null);
+            setSpecies(null);
         }
     }
 
@@ -63,8 +80,15 @@ export default function AnalyteMenu({
         }
     }, [categoryList]);
 
+    useEffect(() => {
+        if (speciesList) {
+            setLoadingSpecies(false);
+        }
+    }, [speciesList]);
+
     return (
         <div>
+            {/* Category Menu */}
             { !loadingCategory ? 
                 <div style={wrapperStyle}>
                     <Select
@@ -80,6 +104,23 @@ export default function AnalyteMenu({
                     />
                 </div>
             : <div style={wrapperStyle}><LoaderMenu /></div> }
+            {/* Species */}
+            { category === 'Toxicity' | category === 'Tissue' ?
+              <div style={wrapperStyle}>
+                    <Select 
+                        options={speciesList} 
+                        isClearable={true}
+                        isLoading={loadingSpecies}
+                        isSearchable={true}
+                        placeholder='All species'
+                        onChange={handleSpeciesChange}
+                        styles={customSelectStyle}
+                        maxMenuHeight={200}
+                        value={species ? { label: species, value: species } : null}
+                    />
+              </div>    
+            : null }
+            {/* Analyte/Parameter */}
             { !loadingAnalyte ? 
                 <Select
                     isClearable={true}

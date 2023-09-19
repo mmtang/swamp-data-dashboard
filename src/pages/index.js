@@ -20,6 +20,7 @@ import {
   programDict,
   regionDict,
   regionUrlDict,
+  tissueResourceId,
   toxicityResourceId
 } from '../utils/utils';
 
@@ -38,6 +39,7 @@ export default function Index() {
   const [region, setRegion] = useState(null);
   const [comparisonSites, setComparisonSites] = useState([]);
   const [selecting, setSelecting] = useState(false);
+  const [species, setSpecies] = useState(null);
   const [station, setStation] = useState(null);
   const [stationData, setStationData] = useState(null); // Data queried from the API and then passed to the map component
   const [tableData, setTableData] = useState(null); // The same station data from StationData but queried from the map (by current map extent) and passed to the table component
@@ -49,7 +51,7 @@ export default function Index() {
       const params = {
         // SWAMP Stations: https://data.ca.gov/dataset/surface-water-ambient-monitoring-program/resource/df69fdd7-1475-4e57-9385-bb1514f0291e
         resource_id: 'df69fdd7-1475-4e57-9385-bb1514f0291e',
-        limit: 6000
+        limit: 8000
       };
       const url = 'https://data.ca.gov/api/3/action/datastore_search?';
       fetch(url + new URLSearchParams(params))
@@ -81,6 +83,37 @@ export default function Index() {
   const getStations = (params) => {
     return new Promise((resolve, reject) => {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
+      fetch(url + new URLSearchParams(params))
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error('Network response error');
+        }
+        return resp.json();
+      })
+      .then((json) => json.result.records)
+      .then((records) => {
+        if (records) {
+          records.forEach(d => {
+            d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
+            d.ResultDisplay = +d.resultdisplay
+            d.RegionName = regionDict[d.Region];
+            d.TargetLatitude = +d.TargetLatitude;
+            d.TargetLongitude = +d.TargetLongitude;
+          });
+          resolve(records);
+        }
+      })
+      .catch((error) => {
+        setLoaded('error');
+        console.error('Issue with the network response:', error);
+      });
+    })
+  }
+
+  const getTissueStations = (params) => {
+    return new Promise((resolve, reject) => {
+      const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
+      console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => {
         if (!resp.ok) {
@@ -174,13 +207,13 @@ export default function Index() {
     } else {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "${ resource === toxicityResourceId ? 'MeanDisplay' : 'ResultDisplay' }" as ResultDisplay, "Unit" FROM "${resource}"`;
     };
-    if (analyte || program || region) {
+    if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
         // There can be one or more filters
         const whereStatements = [];
         if (analyte) {
-          whereStatements.push(`"AnalyteDisplay" = '${analyte.label}'`);
-          whereStatements.push(`"MatrixName" = '${analyte.matrix}'`);
+          whereStatements.push(`"Analyte" = '${analyte.label}'`);
+          whereStatements.push(`"MatrixDisplay" = '${analyte.matrix}'`);
         }
         if (program) {
           whereStatements.push(`"${capitalizeFirstLetter(program)}" = 'True'`);
@@ -203,7 +236,47 @@ export default function Index() {
     return { resource_id: resource, sql: querySql };
   }
 
-  // This function runs whenever any of the three states (program, region, analyte) change
+  const createTissueParams = (resource) => {
+    let querySql;
+    if (!analyte) {
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "${resource}"`;
+    } else {
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultAdjusted" as ResultDisplay, "Unit" FROM "${resource}"`;
+    };
+    if (analyte || program || region || species) {
+        // This block constucts the "WHERE" part of the select query
+        // There can be one or more filters
+        const whereStatements = [];
+        if (analyte) {
+          whereStatements.push(`"Analyte" = '${analyte.label}'`);
+          whereStatements.push(`"MatrixDisplay" = '${analyte.matrix}'`);
+        }
+        if (program) {
+          whereStatements.push(`"${capitalizeFirstLetter(program)}" = 'True'`);
+        }
+        if (region) {
+          // Region value on open data portal is string; convert value before appending to query string
+          let regionVal = region;
+          if (typeof regionVal === 'number') {
+            regionVal = region.toString();
+          }
+          whereStatements.push(`"Region" = '${regionVal}'`);
+        }
+        if (species) {
+          whereStatements.push(`"CommonName" = '${species}'`);
+        }
+        console.log(whereStatements);
+        // Concat multiple join statements
+        const concat = whereStatements.join(' AND ');
+        querySql += ' WHERE ';
+        querySql += concat;
+        querySql += ` ORDER BY "StationCode", "LastSampleDate" DESC`
+        console.log(querySql);
+    }
+    return { resource_id: resource, sql: querySql };
+  }
+
+  // This function runs whenever any of the three states (program, region, analyte, species) change
   // It resets the station dataset OR re-queries the open data portal for new data and initiates changing the underlying data populating the map and table
   useEffect(() => {
     const isDuplicate = (row, arr) => {
@@ -213,23 +286,27 @@ export default function Index() {
     setMapLoaded(false);
     setView('map') // We need to reset the view every time analyte, region, or program changes because the map must be in view in order to retrieve the extent (and then update tableData)
     // If none of the filters are selected, change state to the full station dataset
-    if (!program && !region && !analyte) {
+    if (!program && !region && !analyte && !species) {
       setStationData(allStationRef.current);
     } else {
       const paramsChem = createParams(chemistryResourceId);
       const paramsHabitat = createParams(habitatResourceId);
       const paramsTox = createParams(toxicityResourceId);
+      const paramsTissue = createTissueParams(tissueResourceId);
       Promise.all([
         // Chemistry dataset
         getStations(paramsChem),
         // Habitat dataset
         getStations(paramsHabitat),
         // Tox dataset
-        getStations(paramsTox)
+        getStations(paramsTox),
+        // Tissue dataset
+        getTissueStations(paramsTissue)
       ]).then((res) => {
         if (res.length > 0) {
+          console.log(res);
           // Concatenate the records into one array
-          let allData = res[0].concat(res[1], res[2]);
+          let allData = res[0].concat(res[1], res[2], res[3]);
           // Sort desc by last sample date
           allData.sort((a, b) => new Date(b.LastSampleDate).getTime() - new Date(a.LastSampleDate).getTime());
           // Iterate and find unique stations
@@ -249,7 +326,7 @@ export default function Index() {
         }
       })
     }
-  }, [analyte, program, region])
+  }, [analyte, program, region, /*species*/ ])
 
   // This function runs upon initial load
   // Get full station dataset - data for use in map and table
@@ -345,6 +422,8 @@ export default function Index() {
         setAnalyte={setAnalyte}
         setProgram={setProgram}
         setRegion={setRegion}
+        setSpecies={setSpecies}
+        species={species}
         station={station}
         stationData={stationData}
       />

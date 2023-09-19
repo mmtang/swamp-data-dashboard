@@ -5,6 +5,7 @@ import { message } from './update-message.module.css';
 
 // This component shows the data last updated date on the main dashboard page.
 // It calls the open data portal API where the data is hosted and gets the date from the metadata.
+// 6-13-23: This component may also print a message under the date
 const UpdateMessage = () => {   
     const [status, setStatus] = useState('loading');
     const dateRef = useRef('');

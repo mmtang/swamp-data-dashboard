@@ -2,48 +2,47 @@ import React, { useEffect, useState } from 'react';
 import LoaderMenu from '../loaders/loader-menu';
 
 import Select from 'react-select';
-import { customSelectStyle, programDict } from '../../utils/utils';
+import { customSelectStyle } from '../../utils/utils';
 
-export default function ProgramMenu({ program, programList, setAnalyte, setCategory, setProgram }) {   
+export default function SpeciesMenu({ setSpecies, species, speciesList }) {   
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
 
     const handleChange = (selection) => {
-        // Clear user selection for cross filtering
         if (selection ) {
             const value = selection.value;
             // Line below used to navigate to another page in the dashboard, saved for reference
             // navigate(`/programs/${value}`);
-            setProgram(value);
+            setSpecies(value);
         } else {
             // Clear the program selection
-            setProgram(null)
+            setSpecies(null)
         }
     }
 
     useEffect(() => {
-        if (program) {
+        if (species) {
             setSelected({ label: programDict[program], value: program });
         } else {
             setSelected(null);
         }
-    }, [program]);
+    }, [species]);
 
     useEffect(() => {
-        if (programList) {
+        if (speciesList) {
             setLoading(false);
         }
-    }, [programList]);
+    }, [speciesList]);
 
     if (!loading) {
         return (
             <React.Fragment>
                 <Select
-                    options={programList} 
+                    options={speciesList} 
                     isClearable={true}
                     isLoading={loading}
                     isSearchable={true}
-                    placeholder='Program'
+                    placeholder='Species'
                     onChange={handleChange}
                     styles={customSelectStyle}
                     maxMenuHeight={200}

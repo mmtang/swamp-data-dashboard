@@ -8,6 +8,8 @@ export default function PanelIndex({
     setAnalyte, 
     setProgram, 
     setRegion, 
+    setSpecies,
+    species,
     station,
     stationData
 }) {   
@@ -20,6 +22,8 @@ export default function PanelIndex({
                 setAnalyte={setAnalyte}
                 setProgram={setProgram}
                 setRegion={setRegion} 
+                setSpecies={setSpecies}
+                species={species}
                 station={station}
                 stationData={stationData}
             />

@@ -7,7 +7,16 @@ import ProgramMenu from '../map-controls/program-menu';
 import RegionMenu from '../map-controls/region-menu';
 
 import { Accordion, Icon } from 'semantic-ui-react';
-import { capitalizeFirstLetter, programDict, regionDict } from '../../utils/utils';
+
+import { 
+    capitalizeFirstLetter, 
+    chemistryResourceId,
+    habitatResourceId,
+    programDict, 
+    regionDict,
+    tissueResourceId,
+    toxicityResourceId
+} from '../../utils/utils';
 
 import { 
     analyteWrapper, 
@@ -28,6 +37,8 @@ export default function AccordionMenu({
     setAnalyte, 
     setProgram,
     setRegion,
+    setSpecies,
+    species,
     stationData
 }) {  
     // Open all panels upon initial load; keep track of selection and save to state
@@ -42,24 +53,29 @@ export default function AccordionMenu({
     const [categoryList, setCategoryList] = useState(null);
     const [programList, setProgramList] = useState(null);
     const [regionList, setRegionList] = useState(null);
+    const [speciesList, setSpeciesList] = useState(null);
 
     const getAllAnalyteOptions = () => {
         return new Promise((resolve, reject) => {
             const chemParams = {
-                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                sql: `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${chemistryResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             }
             const habitatParams = {
-                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "6d9a828a-d539-457e-922c-3cb54a6d4f9b" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                sql: `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${habitatResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             };
             const toxParams = {
-                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay", "AnalyteGroup1", "AnalyteGroup2", "AnalyteGroup3", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "a6dafb52-3671-46fa-8d42-13ddfa36fd49" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                sql: `SELECT DISTINCT ON ("Analyte", "OrganismName", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "OrganismName" AS "Species", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${toxicityResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             }
-            Promise.all([
+            const tissueParams = {
+                sql: `SELECT DISTINCT ON ("Analyte", "CommonName", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "CommonName" AS "Species", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${tissueResourceId}"`
+            }
+            Promise.all([   
                 getData(chemParams, 'chemistry'),
                 getData(habitatParams, 'habitat'),
-                getData(toxParams, 'toxicity')
+                getData(toxParams, 'toxicity'),
+                getData(tissueParams, 'tissue')
             ]).then((res) => {
-                const allOptions = res[0].concat(res[1], res[2]);
+                const allOptions = res[0].concat(res[1], res[2], res[3]);
                 allOptions.forEach(d => {
                     d.Region = '' + parseInt(d.Region)
                 });
@@ -77,7 +93,6 @@ export default function AccordionMenu({
             .then((json) => json.result.records)
             .then((records) => {
                 records.forEach(d => {
-                    d.Analyte = d.AnalyteDisplay
                     d.Source = dataSource;
                 });
                 resolve(records);
@@ -107,7 +122,7 @@ export default function AccordionMenu({
             // Pick a subset of columns rather than working with all columns = better performance and easier to work with
             const analyteRecords = data.map(d => {
                 return { 
-                    label: d.Analyte, 
+                    label: d.Analyte,
                     value: d.Analyte + '$' + d.MatrixDisplay, 
                     matrix: d.MatrixDisplay, 
                     category: d.AnalyteGroup1,
@@ -136,6 +151,22 @@ export default function AccordionMenu({
                 return {label: d, value: d};
             });
             setCategoryList(categoryOptions);
+        }
+    }
+
+    const updateSpeciesList = (data) => {
+        if (data) {
+            // Get list of unique species based on the filtered data (data)
+            const speciesRecords = data.map(d => d.Species);
+            let uniqueSpecies = [...new Set(speciesRecords)];
+            uniqueSpecies.sort((a, b) => a.localeCompare(b));
+            // Filter out null values so they don't show in the select menu
+            uniqueSpecies = uniqueSpecies.filter(d => d !== null);
+            // Build array of objects for the select menu
+            const speciesOptions = uniqueSpecies.map(d => {
+                return {label: d, value: d};
+            });
+            setSpeciesList(speciesOptions);
         }
     }
 
@@ -209,80 +240,93 @@ export default function AccordionMenu({
         updateProgram,
         updateRegion,
         updateCategory,
+        updateSpecies,
         updateAnalyte
     }) => {
         // Check that the data reference already exists; otherwise, this will run on intial load with the reference = null
         if (allAnalyteCombosRef.current) {
-            // Get new data based on user selections
-            let newData = allAnalyteCombosRef.current;
-            if (program) {
-                newData = newData.filter(d => d[capitalizeFirstLetter(program)] === 'True')
-            }
-            if (region) {
-                newData = newData.filter(d => d['Region'] === region);
-            }
-            if (category) {
-                newData = newData.filter(d => d.AnalyteGroup1 === category);
-            }
-            if (analyte) {
-                newData = newData.filter(d => d.Analyte === analyte.label);
-                newData = newData.filter(d => d.MatrixDisplay === analyte.matrix);
-            }
-            // Update select menu lists
+            // Interrelated filters - Update the select menu lists in isolation from each other. Start with the original dataset (all combinations) and filter using the same state variables (program, region, category, species, analyte) across all filter menus. Each block of code under the if statements will return the possible values that can be selected based on the current user selection. 
             if (updateProgram) {
-                updateProgramList(newData);
+                // Omit filtering by selected program  valuefor the block of code below because you want the program filter menu to refresh showing all possible values for program. Repeat this same pattern in the other if statements
+                let newPrograms = allAnalyteCombosRef.current;
+                if (region) { newPrograms = newPrograms.filter(d => d['Region'] === region) };
+                if (category) { newPrograms = newPrograms.filter(d => d.AnalyteGroup1 === category) };
+                if (species) { newPrograms = newPrograms.filter(d => d.Species === species) };
+                if (analyte) {
+                    newPrograms = newPrograms.filter(d => d.Analyte === analyte.label);
+                    newPrograms = newPrograms.filter(d => d.MatrixDisplay === analyte.matrix);
+                }
+                updateProgramList(newPrograms);
             }
             if (updateRegion) {
-                updateRegionList(newData);
+                let newRegions = allAnalyteCombosRef.current;
+                if (program) { newRegions = newRegions.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
+                if (category) { newRegions = newRegions.filter(d => d.AnalyteGroup1 === category) };
+                if (species) { newRegions = newRegions.filter(d => d.Species === species) };
+                if (analyte) {
+                    newRegions = newRegions.filter(d => d.Analyte === analyte.label);
+                    newRegions = newRegions.filter(d => d.MatrixDisplay === analyte.matrix);
+                }
+                updateRegionList(newRegions);
             }
             if (updateCategory) {
-                updateCategoryList(newData);
+                let newCategories = allAnalyteCombosRef.current;
+                if (program) { newCategories = newCategories.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
+                if (region) { newCategories = newCategories.filter(d => d['Region'] === region) };
+                if (species) { newCategories = newCategories.filter(d => d.Species === species) };
+                if (analyte) {
+                    newCategories = newCategories.filter(d => d.Analyte === analyte.label);
+                    newCategories = newCategories.filter(d => d.MatrixDisplay === analyte.matrix);
+                }
+                updateCategoryList(newCategories);
+            }
+            if (updateSpecies) {
+                let newSpecies = allAnalyteCombosRef.current;
+                if (program) { newSpecies = newSpecies.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
+                if (region) { newSpecies = newSpecies.filter(d => d['Region'] === region) };
+                if (category) { newSpecies = newSpecies.filter(d => d.AnalyteGroup1 === category) };
+                if (analyte) {
+                    newSpecies = newSpecies.filter(d => d.Analyte === analyte.label);
+                    newSpecies = newSpecies.filter(d => d.MatrixDisplay === analyte.matrix);
+                }
+                updateSpeciesList(newSpecies);
             }
             if (updateAnalyte) {
-                updateAnalyteList(newData);
+                let newAnalytes = allAnalyteCombosRef.current;
+                if (program) { newAnalytes = newAnalytes.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
+                if (region) { newAnalytes = newAnalytes.filter(d => d['Region'] === region) };
+                if (category) { newAnalytes = newAnalytes.filter(d => d.AnalyteGroup1 === category) };
+                if (species) { newAnalytes = newAnalytes.filter(d => d.Species === species) };
+                updateAnalyteList(newAnalytes);
             };
         }
     };
 
     useEffect(() => {
-        if (program) {
-            // If program is updated
-            updateMenuOptions({ updateProgram: false, updateRegion: true, updateCategory: true, updateAnalyte: true });
-        } else {
-            // If program is cleared
-            updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateAnalyte: true });
-        }
+        updateMenuOptions({ updateProgram: false, updateRegion: true, updateCategory: true, updateSpecies: true, updateAnalyte: true });
     }, [program]);
 
     useEffect(() => {
-        if (region) {
-            // If region is updated
-            updateMenuOptions({ updateProgram: true, updateRegion: false, updateCategory: true, updateAnalyte: true });
-        } else {
-            // If region is cleared
-            updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateAnalyte: true });
-        }
+        updateMenuOptions({ updateProgram: true, updateRegion: false, updateCategory: true, updateSpecies: true, updateAnalyte: true });
     }, [region]);
 
     useEffect(() => {
+        // Must differentiate between whether a new category value was selected or if the previous category value was cleared
         if (category) {
-            // If category is updated
-            updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: false, updateAnalyte: true })
+            // If a new category was selected, do not update/refresh the category menu
+            updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: false, updateSpecies: true, updateAnalyte: true });
         } else {
-            // If category is cleared
-            updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateAnalyte: true });
+            // If the category filter was cleared, update/refresh the category menu or else it may continue to show stale values
+            updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateSpecies: true, updateAnalyte: true });
         }
     }, [category]);
 
     useEffect(() => {
-        if (analyte) {
-            // If analyte is updated
-            updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateAnalyte: false });
-        } else {
-            // If analyte is cleared
-            setCategory(null);
-            updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateAnalyte: true });
-        }
+        updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: false, updateSpecies: false, updateAnalyte: true });
+    }, [species]);
+
+    useEffect(() => {
+        updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: false, updateSpecies: false, updateAnalyte: true });
     }, [analyte]);
 
     return (
@@ -312,7 +356,13 @@ export default function AccordionMenu({
                     <p className={pLabel} style={{ marginTop: '10px' }}>
                         Statewide monitoring program
                     </p>
-                    <ProgramMenu program={program} programList={programList} setProgram={setProgram} />
+                    <ProgramMenu 
+                        program={program} 
+                        programList={programList} 
+                        setAnalyte={setAnalyte}
+                        setCategory={setCategory}
+                        setProgram={setProgram} 
+                    />
                     <p className={pLabel}>
                         Region
                         <HelpIcon wide='very'>
@@ -339,6 +389,9 @@ export default function AccordionMenu({
                                 categoryList={categoryList}
                                 setAnalyte={setAnalyte} 
                                 setCategory={setCategory}
+                                setSpecies={setSpecies}
+                                species={species}
+                                speciesList={speciesList}
                             />
                         </div>
                     </div>
@@ -349,6 +402,7 @@ export default function AccordionMenu({
                             setCategory={setCategory}
                             setProgram={setProgram}
                             setRegion={setRegion}
+                            setSpecies={setSpecies}
                         />
                     </div>
                 </Accordion.Content>
