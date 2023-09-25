@@ -326,7 +326,8 @@ export default function AccordionMenu({
     }, [species]);
 
     useEffect(() => {
-        updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: false, updateSpecies: false, updateAnalyte: true });
+        // Refresh the species menu for all cases even when analyte is not selected. 'Always refresh but control when to show the menu' is the more straight forward approach (as opposed to only refreshing it under certain conditions; for example, when a tissue or toxicity analyte is selected)
+        updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: false, updateSpecies: true, updateAnalyte: true }); 
     }, [analyte]);
 
     return (

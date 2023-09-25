@@ -83,6 +83,7 @@ export default function Index() {
   const getStations = (params) => {
     return new Promise((resolve, reject) => {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
+      console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => {
         if (!resp.ok) {
@@ -113,7 +114,7 @@ export default function Index() {
   const getTissueStations = (params) => {
     return new Promise((resolve, reject) => {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-      console.log(url + new URLSearchParams(params));
+      console.log('tissue:', url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => {
         if (!resp.ok) {
@@ -205,9 +206,9 @@ export default function Index() {
     if (!analyte) {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "${ resource === toxicityResourceId ? 'MeanDisplay' : 'ResultDisplay' }" as ResultDisplay, "Unit" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultDisplay", "Unit" FROM "${resource}"`;
     };
-    if (analyte || program || region || species) {
+    if (analyte || program || region) {
         // This block constucts the "WHERE" part of the select query
         // There can be one or more filters
         const whereStatements = [];
@@ -265,13 +266,49 @@ export default function Index() {
         if (species) {
           whereStatements.push(`"CommonName" = '${species}'`);
         }
-        console.log(whereStatements);
         // Concat multiple join statements
         const concat = whereStatements.join(' AND ');
         querySql += ' WHERE ';
         querySql += concat;
         querySql += ` ORDER BY "StationCode", "LastSampleDate" DESC`
-        console.log(querySql);
+    }
+    return { resource_id: resource, sql: querySql };
+  }
+
+  const createToxicityParams = (resource) => {
+    let querySql;
+    if (!analyte) {
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "${resource}"`;
+    } else {
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as ResultDisplay, "Unit" FROM "${resource}"`;
+    };
+    if (analyte || program || region || species) {
+        // This block constucts the "WHERE" part of the select query
+        // There can be one or more filters
+        const whereStatements = [];
+        if (analyte) {
+          whereStatements.push(`"Analyte" = '${analyte.label}'`);
+          whereStatements.push(`"MatrixDisplay" = '${analyte.matrix}'`);
+        }
+        if (program) {
+          whereStatements.push(`"${capitalizeFirstLetter(program)}" = 'True'`);
+        }
+        if (region) {
+          // Region value on open data portal is string; convert value before appending to query string
+          let regionVal = region;
+          if (typeof regionVal === 'number') {
+            regionVal = region.toString();
+          }
+          whereStatements.push(`"Region" = '${regionVal}'`);
+        }
+        if (species) {
+          whereStatements.push(`"OrganismName" = '${species}'`);
+        }
+        // Concat multiple join statements
+        const concat = whereStatements.join(' AND ');
+        querySql += ' WHERE ';
+        querySql += concat;
+        querySql += ` ORDER BY "StationCode", "SampleDate" DESC`
     }
     return { resource_id: resource, sql: querySql };
   }
@@ -283,6 +320,29 @@ export default function Index() {
       return arr.some(x => (row.StationCode === x.StationCode))
     };
 
+    const processData = (data) => {
+      if (data && data.length > 0) {
+        let newData = data.sort((a, b) => new Date(b.LastSampleDate).getTime() - new Date(a.LastSampleDate).getTime());
+        // Iterate and find unique stations
+        // https://stackoverflow.com/questions/61183837/how-to-remove-duplicate-from-array-of-objects-with-multiple-properties-as-unique
+        const uniqueStations = [];
+        for (const row of newData) {
+          if (!isDuplicate(row, uniqueStations)) { 
+            uniqueStations.push(row);
+          }
+        }
+        if (uniqueStations[0].resultdisplay) {
+          uniqueStations.forEach(d => {
+            d.LastResult = parseFloat((+d.ResultDisplay).toFixed(3));
+          });
+        };
+        return uniqueStations;
+      } else {
+        setLoaded('error');
+        console.error('Station data is empty');
+      }
+    }
+
     setMapLoaded(false);
     setView('map') // We need to reset the view every time analyte, region, or program changes because the map must be in view in order to retrieve the extent (and then update tableData)
     // If none of the filters are selected, change state to the full station dataset
@@ -291,42 +351,87 @@ export default function Index() {
     } else {
       const paramsChem = createParams(chemistryResourceId);
       const paramsHabitat = createParams(habitatResourceId);
-      const paramsTox = createParams(toxicityResourceId);
+      const paramsTox = createToxicityParams(toxicityResourceId);
       const paramsTissue = createTissueParams(tissueResourceId);
-      Promise.all([
-        // Chemistry dataset
-        getStations(paramsChem),
-        // Habitat dataset
-        getStations(paramsHabitat),
-        // Tox dataset
-        getStations(paramsTox),
-        // Tissue dataset
-        getTissueStations(paramsTissue)
-      ]).then((res) => {
-        if (res.length > 0) {
-          console.log(res);
-          // Concatenate the records into one array
-          let allData = res[0].concat(res[1], res[2], res[3]);
-          // Sort desc by last sample date
-          allData.sort((a, b) => new Date(b.LastSampleDate).getTime() - new Date(a.LastSampleDate).getTime());
-          // Iterate and find unique stations
-          // https://stackoverflow.com/questions/61183837/how-to-remove-duplicate-from-array-of-objects-with-multiple-properties-as-unique
-          const uniqueStations = [];
-          for (const row of allData) {
-            if (!isDuplicate(row, uniqueStations)) { 
-              uniqueStations.push(row);
-            }
-          }
-          if (uniqueStations[0].resultdisplay) {
-            uniqueStations.forEach(d => {
-              d.LastResult = parseFloat((+d.ResultDisplay).toFixed(3));
-            });
+      // If the user selects a species, then the data must be sourced from the toxicity or tissue dataset. Reduce the number of API calls to these two resources only.
+      if (species) {
+        Promise.all([
+          getStations(paramsTox), // Tox dataset
+          getTissueStations(paramsTissue) // Tissue dataset
+        ]).then((res) => {
+          if (res.length > 0) {
+            // Concatenate the records into one array
+            const allData = res[0].concat(res[1]);
+            const uniqueStations = processData(allData); 
+            setStationData(uniqueStations);
+          } else {
+            setLoaded('error');
+            console.error('Station data is empty');
           };
-          setStationData(uniqueStations);
+        });
+      // If the user selects an analyte, then use the "source" property from the analyte state to determine which dataset we should pull from. This allows us to reduce the number of API calls to one dataset/resource.
+      } else if (analyte) {
+        if (analyte.source === 'chemistry') {
+          getStations(paramsChem)
+          .then((res) => {
+            if (res.length > 0) {
+              const uniqueStations = processData(res);
+              setStationData(uniqueStations);
+            } else {
+              setLoaded('error');
+              console.error('Station data is empty');
+            }
+          });
+        } else if (analyte.source === 'habitat') {
+          getStations(paramsHabitat)
+          .then((res) => {
+            if (res.length > 0) {
+              const uniqueStations = processData(res);
+              setStationData(uniqueStations);
+            } else {
+              setLoaded('error');
+              console.error('Station data is empty');
+            }
+          });
+        } else if (analyte.source === 'toxicity') {
+          getStations(paramsTox)
+          .then((res) => {
+            if (res.length > 0) {
+              const uniqueStations = processData(res);
+              setStationData(uniqueStations);
+            } else {
+              setLoaded('error');
+              console.error('Station data is empty');
+            }
+          });
+        } else if (analyte.source === 'tissue') {
+          getTissueStations(paramsTissue)
+          .then((res) => {
+            if (res.length > 0) {
+              const uniqueStations = processData(res);
+              setStationData(uniqueStations);
+            } else {
+              setLoaded('error');
+              console.error('Station data is empty');
+            }
+          });
         }
-      })
+      } else {
+        Promise.all([
+          getStations(paramsChem), // Chemistry dataset
+          getStations(paramsHabitat), // Habitat dataset
+          getStations(paramsTox), // Tox dataset
+          getTissueStations(paramsTissue) // Tissue dataset
+        ]).then((res) => {
+          if (res.length > 0) {
+            let allData = res[0].concat(res[1], res[2], res[3]);
+            const uniqueStations = processData(allData);
+            setStationData(uniqueStations);
+          }
+        });
+      }
     }
-  }, [analyte, program, region, /*species*/ ])
+  }, [analyte, program, region, species ])
 
   // This function runs upon initial load
   // Get full station dataset - data for use in map and table

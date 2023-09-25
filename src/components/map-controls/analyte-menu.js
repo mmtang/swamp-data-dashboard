@@ -60,7 +60,6 @@ export default function AnalyteMenu({
     const handleSpeciesChange = (selection) => {
         // The object passed to this function is formatted as { label: 'group', value: 'group'}
         // Will be null if the selection was cleared
-        setAnalyte(null);
         if (selection) {
             setSpecies(selection.value);
         } else {
@@ -105,7 +104,7 @@ export default function AnalyteMenu({
                 </div>
             : <div style={wrapperStyle}><LoaderMenu /></div> }
             {/* Species */}
-            { category === 'Toxicity' | category === 'Tissue' ?
+            { category === 'Toxicity' || category === 'Tissue' || species || (analyte && ((analyte.source === 'tissue') || (analyte.source === 'toxicity')) ) ?
               <div style={wrapperStyle}>
                     <Select 
                         options={speciesList} 

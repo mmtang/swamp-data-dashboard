@@ -920,11 +920,17 @@ export default function MapIndex2({
                 query.where = `rb_name = '${regionName}'`;
                 regionLayerRef.current.queryFeatures(query).then(results => {
                     const feature = results.features[0];
-                    const goto_ops = {
-                        animate: false,
-                        duration: 0
+                    // Feature will be null if the map service is down or not available. 
+                    // Don't zoom to region (because it's an empty feature), but log the error
+                    if (feature) {
+                        const goto_ops = {
+                            animate: false,
+                            duration: 0
+                        }
+                        viewRef.current.goTo(feature.geometry, goto_ops);
+                    } else {
+                        console.error('Query for region feature is empty');
                     }
-                    viewRef.current.goTo(feature.geometry, goto_ops);
                 })
             })
         }

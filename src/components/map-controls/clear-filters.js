@@ -20,7 +20,6 @@ export default function ClearFilters({ setAnalyte, setCategory, setProgram, setR
             onKeyPress={handleClick}
             size='tiny'
         >
-            <Icon name='x' />
             Clear all
         </Button>
     )
