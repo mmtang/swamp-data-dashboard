@@ -33,6 +33,7 @@ export default function Index() {
   const [analyte, setAnalyte] = useState(null);
   const [cursor, setCursor] = useState('auto');
   const [disclaimerVisible, setDisclaimerVisible] = useState(false);
+  const [highlightReferenceSites, setHighlightReferenceSites] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [program, setProgram] = useState(null);
@@ -204,9 +205,9 @@ export default function Index() {
   const createParams = (resource) => {
     let querySql;
     if (!analyte) {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultDisplay", "Unit" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultDisplay", "Unit", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region) {
         // This block constucts the "WHERE" part of the select query
@@ -240,9 +241,9 @@ export default function Index() {
   const createTissueParams = (resource) => {
     let querySql;
     if (!analyte) {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultAdjusted" as ResultDisplay, "Unit" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultAdjusted" as ResultDisplay, "Unit", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
@@ -278,9 +279,9 @@ export default function Index() {
   const createToxicityParams = (resource) => {
     let querySql;
     if (!analyte) {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as ResultDisplay, "Unit" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as ResultDisplay, "Unit, "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
@@ -490,11 +491,12 @@ export default function Index() {
         <Metadata />
         <PanelMap
           analyte={analyte}
+          comparisonSites={comparisonSites}
           cursor={cursor}
+          highlightReferenceSites={highlightReferenceSites}
           mapLoaded={mapLoaded}
           program={program}
           region={region}
-          comparisonSites={comparisonSites}
           selecting={selecting}
           setMapLoaded={setMapLoaded}
           setComparisonSites={setComparisonSites}
@@ -525,6 +527,7 @@ export default function Index() {
         program={program}
         region={region}
         setAnalyte={setAnalyte}
+        setHighlightReferenceSites={setHighlightReferenceSites}
         setProgram={setProgram}
         setRegion={setRegion}
         setSpecies={setSpecies}

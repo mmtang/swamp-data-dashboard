@@ -13,6 +13,7 @@ export default function ButtonClearStation({ setComparisonSites, setSelecting, s
         <div className={outerContainer}>
             <div className={container} onClick={handleClick}>
                 <Icon
+                    fitted
                     size='large'
                     name='close' 
                     color='grey'

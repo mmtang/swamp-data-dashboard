@@ -8,6 +8,7 @@ export default function ContentIndex({
     program, 
     region, 
     setAnalyte, 
+    setHighlightReferenceSites,
     setProgram,
     setRegion,
     setSpecies,
@@ -32,6 +33,7 @@ export default function ContentIndex({
                         region={region}
                         program={program}
                         setAnalyte={setAnalyte}
+                        setHighlightReferenceSites={setHighlightReferenceSites}
                         setProgram={setProgram}
                         setRegion={setRegion}
                         setSpecies={setSpecies}

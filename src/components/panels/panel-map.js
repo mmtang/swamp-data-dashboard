@@ -17,6 +17,7 @@ export default function PanelMap({
     analyte,
     comparisonSites,
     cursor,
+    highlightReferenceSites,
     mapLoaded,
     region, 
     program,
@@ -47,9 +48,10 @@ export default function PanelMap({
                 { !mapLoaded ? <LoaderPanel /> : null }
                 <MapIndex2 
                     analyte={analyte} 
+                    comparisonSites={comparisonSites}
+                    highlightReferenceSites={highlightReferenceSites}
                     program={program}
                     region={region} 
-                    comparisonSites={comparisonSites}
                     selecting={selecting}
                     setMapLoaded={setMapLoaded}
                     setComparisonSites={setComparisonSites}

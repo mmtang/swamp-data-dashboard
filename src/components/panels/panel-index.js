@@ -6,6 +6,7 @@ export default function PanelIndex({
     program, 
     region, 
     setAnalyte, 
+    setHighlightReferenceSites,
     setProgram, 
     setRegion, 
     setSpecies,
@@ -20,6 +21,7 @@ export default function PanelIndex({
                 program={program}
                 region={region}
                 setAnalyte={setAnalyte}
+                setHighlightReferenceSites={setHighlightReferenceSites}
                 setProgram={setProgram}
                 setRegion={setRegion} 
                 setSpecies={setSpecies}

@@ -35,6 +35,7 @@ export default function AccordionMenu({
     program, 
     region, 
     setAnalyte, 
+    setHighlightReferenceSites,
     setProgram,
     setRegion,
     setSpecies,
@@ -166,7 +167,10 @@ export default function AccordionMenu({
             const speciesOptions = uniqueSpecies.map(d => {
                 return {label: d, value: d};
             });
-            setSpeciesList(speciesOptions);
+            // Add 'All species' option to the top
+            const defaultOption = [{label: 'All species', value: null}];
+            const allSpeciesOptions = defaultOption.concat(speciesOptions);
+            setSpeciesList(allSpeciesOptions);
         }
     }
 
@@ -361,6 +365,7 @@ export default function AccordionMenu({
                         program={program} 
                         programList={programList} 
                         setAnalyte={setAnalyte}
+                        setHighlightReferenceSites={setHighlightReferenceSites}
                         setCategory={setCategory}
                         setProgram={setProgram} 
                     />

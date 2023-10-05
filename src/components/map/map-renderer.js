@@ -1,3 +1,5 @@
+import { referenceSiteColor } from "../../constants/constants-app"
+
 export const bpLineRenderer = {
     type: 'unique-value',
     field: 'wbid_t',
@@ -164,4 +166,32 @@ export const stationRenderer = {
             width: 1
         }
     }
+}
+
+export const bioassessmentStationRenderer = {
+    type: 'unique-value',
+    field: 'SiteType',
+    uniqueValueInfos: [{
+        value: 'Monitoring site',
+        symbol: {
+            type: 'simple-marker',
+            size: 7.7,
+            color: '#046b99',
+            outline: {
+                color: '#fff',
+                width: 1
+            }
+        }
+    }, {
+        value: 'Reference site',
+        symbol: {
+            type: 'simple-marker',
+            size: 7.7,
+            color: referenceSiteColor,
+            outline: {
+                color: '#fff',
+                width: 1
+            }
+        }
+    }]
 }

@@ -2,9 +2,17 @@ import React, { useEffect, useState } from 'react';
 import LoaderMenu from '../loaders/loader-menu';
 
 import Select from 'react-select';
+import { Checkbox } from 'semantic-ui-react';
 import { customSelectStyle, programDict } from '../../utils/utils';
 
-export default function ProgramMenu({ program, programList, setAnalyte, setCategory, setProgram }) {   
+import { subMenu} from './program-menu.module.css';
+
+export default function ProgramMenu({ 
+    program, 
+    programList, 
+    setHighlightReferenceSites,
+    setProgram 
+}) {   
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
 
@@ -18,6 +26,15 @@ export default function ProgramMenu({ program, programList, setAnalyte, setCateg
         } else {
             // Clear the program selection
             setProgram(null)
+        }
+    }
+
+    const handleReferenceChange = (val) => {
+        if (val === true) {
+            // If user toggles to highlight reference sites
+            setHighlightReferenceSites(true);
+        } else {
+            setHighlightReferenceSites(false);
         }
     }
 
@@ -49,6 +66,14 @@ export default function ProgramMenu({ program, programList, setAnalyte, setCateg
                     maxMenuHeight={200}
                     value={selected}
                 />
+                <div className={subMenu}>
+                    <Checkbox 
+                        label='Highlight reference sites' 
+                        onChange={(e, data) => handleReferenceChange(data.checked)}
+                        style={{ color: '#828282', fontSize: '0.9em', zIndex: 5 }}
+                        toggle 
+                    />
+                </div>
             </React.Fragment>
         )
     } else {

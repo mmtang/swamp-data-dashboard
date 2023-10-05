@@ -18,7 +18,8 @@ export default function AnalyteMenu({
 }) {
     const [loadingAnalyte, setLoadingAnalyte] = useState(true);
     const [loadingCategory, setLoadingCategory] = useState(true);
-    const [loadingSpecies, setLoadingSpecies] = useState(true);
+
+    const speciesDisabled = (category !== 'Tissue' && category !== 'Toxicity' && !species && (!analyte || (analyte.source !== 'tissue' && analyte.source !== 'toxicity')));
 
     const wrapperStyle = {
         marginBottom: '10px'
@@ -79,12 +80,6 @@ export default function AnalyteMenu({
         }
     }, [categoryList]);
 
-    useEffect(() => {
-        if (speciesList) {
-            setLoadingSpecies(false);
-        }
-    }, [speciesList]);
-
     return (
         <div>
             {/* Category Menu */}
@@ -104,21 +99,19 @@ export default function AnalyteMenu({
                 </div>
             : <div style={wrapperStyle}><LoaderMenu /></div> }
             {/* Species */}
-            { category === 'Toxicity' || category === 'Tissue' || species || (analyte && ((analyte.source === 'tissue') || (analyte.source === 'toxicity')) ) ?
-              <div style={wrapperStyle}>
-                    <Select 
-                        options={speciesList} 
-                        isClearable={true}
-                        isLoading={loadingSpecies}
-                        isSearchable={true}
-                        placeholder='All species'
-                        onChange={handleSpeciesChange}
-                        styles={customSelectStyle}
-                        maxMenuHeight={200}
-                        value={species ? { label: species, value: species } : null}
-                    />
-              </div>    
-            : null }
+            {/* Don't need a loader for species */}
+            <div style={wrapperStyle}>
+                <Select 
+                    options={speciesList} 
+                    isClearable={false}
+                    isDisabled={speciesDisabled}
+                    isSearchable={true}
+                    onChange={handleSpeciesChange}
+                    styles={customSelectStyle}
+                    maxMenuHeight={200}
+                    value={species ? { label: species, value: species } : { label: 'All species', value: null }}
+                />
+            </div>   
             {/* Analyte/Parameter */}
             { !loadingAnalyte ? 
                 <Select

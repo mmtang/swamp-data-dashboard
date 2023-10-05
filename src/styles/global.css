@@ -280,3 +280,9 @@ Unfortunately, this still does not fix the flickering issue */
 .esri-popup__main-container {
   padding: 0 !important;
 }
+
+/* Color for Semantic UI toggle checkbox */
+.ui.toggle.checkbox input[type=checkbox]:checked~label::before,
+.ui.toggle.checkbox input[type=checkbox]:checked:focus~label::before {
+  background: #2f9b96 !important;
+}

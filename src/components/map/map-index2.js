@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
 // Load helper functions and constants
 import { 
+    bioassessmentStationRenderer,
     bpLineRenderer, 
     bpPolyRenderer, 
     irLineRenderer2020, 
@@ -27,6 +28,7 @@ import { container } from './map-index2.module.css';
 
 export default function MapIndex2({ 
     comparisonSites,
+    highlightReferenceSites,
     region,
     selecting,
     setComparisonSites,
@@ -46,10 +48,7 @@ export default function MapIndex2({
     const comparisonSitesRef = useRef(null); // Used to store the old array of site code strings. Will be compared to the new array
     const divRef = useRef(null); // Map container
     const expandGalleryRef = useRef(null); // Used for basemap gallery
-    // const irLayer2018Ref = useRef(null); // Integrated Report group layer ref
     // IR Sublayers - Need to have separate refs for both layers because the features in each layer will be filtered by region based on user selection. The refs are needed to change the layer's definition expression
-    const irLine2018Ref = useRef(null);
-    const irPoly2018Ref = useRef(null); 
     const irLayer2020Ref = useRef(null);
     const irLine2020Ref = useRef(null);
     const irPoly2020Ref = useRef(null);
@@ -257,6 +256,12 @@ export default function MapIndex2({
                 }
             });
         })
+    };
+
+    const setRenderer = (layer, renderer) => {
+        if (layer && renderer) {
+            layer.renderer = renderer;
+        }
     };
 
     /* This function is for generating station popups on hover
@@ -912,6 +917,20 @@ export default function MapIndex2({
             }
         ];
     }
+
+    // This function fires when highlightReferenceSites state changes based on user interaction
+    // Changes the renderer (symbology) for the SWAMP station layer
+    useEffect(() => {
+        if (stationLayerRef) {
+            if (highlightReferenceSites === true) {
+                setRenderer(stationLayerRef.current, bioassessmentStationRenderer);
+            } else if (highlightReferenceSites === false) {
+                setRenderer(stationLayerRef.current, stationRenderer);
+            } else {
+                setRenderer(stationLayerRef.current, stationRenderer);
+            }
+        }
+    }, [highlightReferenceSites]);
 
     const zoomToRegion = (regionName) => {
         if (viewRef.current) {

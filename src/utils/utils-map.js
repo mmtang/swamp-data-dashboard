@@ -80,6 +80,7 @@ export const convertStationDataToGraphics = async (data) => {
                         LastSampleDate: d.LastSampleDate,
                         ResultDisplay: +d.ResultDisplay,
                         Unit: d.Unit,
+                        SiteType: d.SiteType
                     }
                 };
             } else {
@@ -97,7 +98,8 @@ export const convertStationDataToGraphics = async (data) => {
                         TargetLongitude: +d.TargetLongitude,
                         Region: d.Region.toString(),
                         RegionName: regionDict[d.Region],
-                        LastSampleDate: d.LastSampleDate
+                        LastSampleDate: d.LastSampleDate,
+                        SiteType: d.SiteType
                     }
                 };
             }
@@ -156,6 +158,11 @@ export const stationDataFields = [
     {
         name: 'Unit',
         alias: 'unit',
+        type: 'string'
+    },
+    {
+        name: 'SiteType',
+        alias: 'Station Type',
         type: 'string'
     }
 ]

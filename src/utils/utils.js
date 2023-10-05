@@ -282,6 +282,9 @@ export const customSelectStyle = {
         ...base,
         paddingTop: 0,
         paddingBottom: 0
+    }),
+    menu: (provided) => ({ 
+        ...provided, zIndex: 9999 
     })
 }
 

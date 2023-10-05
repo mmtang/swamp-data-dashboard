@@ -63,9 +63,9 @@
         padding: 8px 16px;
     }
     .navTitle {
-        font-size: 1.05em;
+        font-size: 1em;
     }
     .searchContainer {
-        width: 186px !important;
+        width: 182px !important;
     }
 }

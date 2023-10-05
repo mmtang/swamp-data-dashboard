@@ -20,3 +20,5 @@ export const popupStyle = {
     color: '#ffffff',
     fontSize: '0.8em'
 };
+
+export const referenceSiteColor = '#f2711c';

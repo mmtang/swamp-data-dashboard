@@ -1,0 +1,56 @@
+.centerImage {
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+    overflow: auto;
+    object-fit: contain;
+    -o-object-fit: contain;
+    position: fixed;
+    z-index: 999;
+}
+
+.closeIcon {
+    color: #fff;
+    cursor: pointer;
+    font-size: 2em;
+    margin: 1em;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.closeIcon:hover {
+    color: #767676;
+}
+
+.expandIcon {
+    color: #fff;
+    cursor: pointer;
+    margin: 1em;
+    position: absolute;
+    opacity: 80%;
+    right: 0;
+    top: 0;
+}
+
+.fsWindow {
+    align-items: center;
+    background-color: rgba(12, 13, 14, 0.9);
+    bottom: 0;
+    display: flex;
+    height: calc(100vh - 60px);
+    justify-content: center;
+    left: 0;
+    margin: 0;
+    position: fixed;
+    right: 0;
+    top: 60; /* Height of the nav bar */
+    width: 100vw;
+    z-index: 900;
+}
+
+.wrapper {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+}
