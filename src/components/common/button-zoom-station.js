@@ -10,13 +10,12 @@ export default function ButtonZoomStation({ setZoomToStation, station }) {
 
     return (
         <Button 
-            compact 
+            basic
+            color='grey'
+            icon='zoom'
             onClick={handleClick} 
             onKeyPress={handleClick}
-            size='tiny'
-        >
-            <Icon name='zoom' />
-            Zoom to
-        </Button>
+            size='mini'
+        />
     )
 }

@@ -26,6 +26,7 @@ export default function PanelMap({
     setMapLoaded,
     setSelecting,
     setStation,
+    setStationLoading,
     setStationData,
     setTableData,
     setView,
@@ -57,6 +58,7 @@ export default function PanelMap({
                     setComparisonSites={setComparisonSites}
                     setSelecting={setSelecting}
                     setStation={setStation}
+                    setStationLoading={setStationLoading}
                     setStationData={setStationData}
                     setTableData={setTableData}
                     setZoomToStation={setZoomToStation}

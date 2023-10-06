@@ -5,7 +5,7 @@ import ButtonZoomStation from '../common/button-zoom-station';
 import FullScreenImage from '../common/full-screen-image';
 import PanelStationInfo from './panel-station-info';
 
-import { Icon, Loader } from 'semantic-ui-react';
+import { Icon, Label, Loader } from 'semantic-ui-react';
 
 import { infoContainer, mainContainer } from '../../pages/index.module.css';
 import { 
@@ -17,6 +17,7 @@ import {
     stationCover,
     stationHeader, 
     stationSubText, 
+    tagContainer,
     topContainer 
 } from './panel-station.module.css';
 
@@ -30,11 +31,12 @@ export default function PanelStation({
     setComparisonSites,
     setSelecting,
     setStation, 
+    setStationLoading,
     setZoomToStation,
-    station
+    station,
+    stationLoading
 }) {   
     const [stationImage, setStationImage] = useState(null);
-    const [stationLoading, setStationLoading] = useState(false);
     const stationRef = useRef(null); // Have to use a ref, instead of the state value (station), in order to control when all the panel elements load (*after* the loader, not before). Otherwise, all the station info changes before the loader is shown
 
     // Control visibility of station content using styles. Do not use conditional rendering or else the index content panel will always rerender when the user exits out of the station view
@@ -61,7 +63,8 @@ export default function PanelStation({
     }
 
     useEffect(() => {
-        setStationLoading(true);
+        // Moved the below line to the map
+        //setStationLoading(true); 
         setStationImage(null);
         if (station) {
             stationRef.current = station;
@@ -111,6 +114,13 @@ export default function PanelStation({
                         {stationRef.current ? stationRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{stationRef.current ? stationRef.current.RegionName : null}  Region
                     </span>
                     <div className={buttonGrid}>
+                        { station && station.SiteType === 'Reference site' ? 
+                            <div className={tagContainer}>
+                                <Label basic color='orange' style={{ borderRadius: 0 }}>
+                                    Reference site
+                                </Label>
+                            </div>
+                        : null }
                         <div className={buttonContainer}>
                             <ButtonExploreData stationCode={stationRef.current ? stationRef.current.StationCode : null} />
                         </div>

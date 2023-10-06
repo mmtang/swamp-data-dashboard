@@ -70,7 +70,7 @@ export default function ProgramMenu({
                     <Checkbox 
                         label='Highlight reference sites' 
                         onChange={(e, data) => handleReferenceChange(data.checked)}
-                        style={{ color: '#828282', fontSize: '0.9em', zIndex: 5 }}
+                        style={{ color: '#828282', fontSize: '0.86em', zIndex: 5 }}
                         toggle 
                     />
                 </div>

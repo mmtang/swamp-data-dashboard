@@ -35,6 +35,7 @@ export default function MapIndex2({
     setMapLoaded, 
     setSelecting,
     setStation,
+    setStationLoading,
     setTableData,
     setZoomToStation,
     station,
@@ -503,6 +504,7 @@ export default function MapIndex2({
                             // Clicking on an empty part of the map still returns an object with attributes (ID). Check for a station attribute
                             if (graphic.attributes.StationCode) {
                                 //addToSelectedList({ code: graphic.attributes.StationCode, name: graphic.attributes.StationName });
+                                setStationLoading(true);
                                 setStation(graphic.attributes);
                             }
                         });
@@ -525,6 +527,7 @@ export default function MapIndex2({
                         // Clicking on an empty part of the map still returns an object with attributes (ID). Check for a station attribute
                         if (graphic.attributes.StationCode) {
                             //addToSelectedList({ code: graphic.attributes.StationCode, name: graphic.attributes.StationName });
+                            setStationLoading(true);
                             setStation(graphic.attributes);
                         }
                     });

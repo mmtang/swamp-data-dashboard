@@ -1,9 +1,10 @@
 .buttonContainer {
-    margin: 1.4em 0 0 0;
+    margin-left: 0.1em;
 }
 
 .buttonGrid {
     display: flex;
+    margin-top: 1em;
 }
 
 .contentSection {
@@ -42,6 +43,10 @@
     font-weight: 600;
     margin: 0.4em 0.4em 0.4em 0;
     text-transform: uppercase;
+}
+
+.tagContainer {
+    margin-right: 0.24em;
 }
 
 .topContainer {
