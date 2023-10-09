@@ -20,6 +20,7 @@ import {
   programDict,
   regionDict,
   regionUrlDict,
+  stationsResourceId,
   tissueResourceId,
   toxicityResourceId
 } from '../utils/utils';
@@ -165,7 +166,7 @@ export default function Index() {
         setLoaded('error');
         console.error('Error: Parameter value is an empty string');
       } else {
-        // The only params currently allowed are 'program' and 'region'
+        // The only params currently allowed are 'program', 'region', and 'station'
         if (paramsKeys[0] === 'program') {
           const program = params.get('program');
           // Check that the program is a valid match
@@ -194,14 +195,61 @@ export default function Index() {
             setLoaded('error');
             console.error('Error: URL param value is not valid')
           }
+        } else if (paramsKeys[0] === 'station') {
+            const stationCode = params.get('station');
+            checkStation(stationCode)
+            .then((res) => {
+              if (res) {
+                return resolve({ type: 'station', value: res });
+              }
+            });
         } else {
-          // Param is not 'program' or 'region' - show an error
+          // Param is not 'program' or 'region' or 'station' - show an error
           setLoaded('error');
-          console.error('Error: URL param is not valid')
+          console.error('Error: URL param is not valid');
         }
       }
     });
   }
+
+  const checkStation = (stationCode) => {
+    return new Promise((resolve, reject) => {
+        if (stationCode) {
+            let url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
+            const params = {
+                sql: `SELECT "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", "SiteType" FROM "${stationsResourceId}" WHERE UPPER("StationCode")=UPPER('${stationCode}')`
+            };
+            fetch(url + new URLSearchParams(params))
+            .then((resp) => {
+                if (!resp.ok) {
+                  // There is a unexpected response from the server
+                  throw new Error('Network response error');
+                }
+                return resp.json();
+            })
+            .then((json) => json.result.records)
+            .then((records) => {
+                if (records.length > 0) {
+                    // There is a match (string). Return the entire record with all attributes - this is needed for the setStation value
+                    records.forEach(d => {
+                      d.RegionName = regionDict[d.Region];
+                      d.TargetLatitude = +d.TargetLatitude;
+                      d.TargetLongitude = +d.TargetLongitude;
+                  });
+                    resolve(records[0]);
+                } else {
+                  setLoaded('error');
+                  console.error('Error: No station data. Not a valid station code');
+                }
+            })
+            // Error catching for when there is not a valid response from the API
+            .catch((error) => {
+                setLoaded('error');
+                console.error('Issue with the network response:', error);
+            });
+        };
+    })
+}
 
   const createParams = (resource) => {
     let querySql;
@@ -455,9 +503,12 @@ export default function Index() {
                 setRegion(selection.value);
               }
           }
-          else {
-            // If there is no region or program value, set stations to all data (default)
-            setStationData(data);
+          else if (selection.type === 'station') {
+            setStation(selection.value);    
+            setStationData(data);   
+            setTimeout(() => {
+              setZoomToStation(selection.value.StationCode);    
+            }, 5000);
           }
         } else {
           // If there is no region or program value, set stations to all data (default)

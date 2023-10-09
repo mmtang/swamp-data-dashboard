@@ -13,7 +13,7 @@ import TableMenu from '../../components/station-page/table-menu';
 import TableSearch from '../../components/station-page/table-search';
 
 import { linkColorAlt } from '../../constants/constants-app';
-import { regionDict } from '../../utils/utils';
+import { regionDict, stationsResourceId } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 import { 
     appContainer, 
@@ -65,9 +65,8 @@ export default function Station(props) {
             if (stationCode) {
                 let url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
                 const params = {
-                    sql: `SELECT "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region" FROM "df69fdd7-1475-4e57-9385-bb1514f0291e" WHERE "StationCode"='${stationCode}'`
+                    sql: `SELECT "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region" FROM "${stationsResourceId}" WHERE "StationCode"='${stationCode}'`
                 };
-                console.log(url + new URLSearchParams(params));
                 fetch(url + new URLSearchParams(params))
                 .then((resp) => {
                     if (!resp.ok) {

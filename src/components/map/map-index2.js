@@ -171,7 +171,7 @@ export default function MapIndex2({
                     irLayer2020Ref.current = new GroupLayer({
                         id: 'ir-group-layer-2020',
                         title: '2020-2022 Integrated Report',
-                        visible: true,
+                        visible: false,
                         layers: [irLine2020Ref.current, irPoly2020Ref.current],
                         listMode: 'show',
                         visibilityMode: 'inherited'
@@ -375,7 +375,7 @@ export default function MapIndex2({
                     container: divRef.current,
                     map: mapRef.current,
                     center: [-119.3624, 37.4204], // centered California for initial load
-                    zoom: 6,
+                    zoom: 6, 
                     constraints: {
                         minZoom: 5
                     },
@@ -448,10 +448,13 @@ export default function MapIndex2({
                     drawIntegratedReport(),
                     drawLandUse()
                 ]).then(values => {
+                    // If a station has been pre-selected (url params), then zoom to station
+                    if (station) {
+                        goToStation(station.StationCode);
+                    };
                     // Add layers in order
                     mapRef.current.addMany([
                         landUseLayerRef.current, 
-                        //irLayer2018Ref.current, 
                         irLayer2020Ref.current,
                         stationLayerRef.current
                     ]);
@@ -614,11 +617,8 @@ export default function MapIndex2({
         }
     }, [stationLayerRef.current]);
 
-    // Zoom to the selected station on the map
-    useEffect(() => {
-        if (zoomToStation) {
-            const stationCode = zoomToStation; // zoomToStation is the state variable that holds the station code of the selected site
-            // Get the layer ID of the current station layer
+    const goToStation = (stationCode) => {
+        if (stationLayerRef.current && stationCode) {
             const layer = stationLayerRef.current;
             // Query features from the layer and then get the Object ID for features that match the selected station code
             const query = layer.createQuery();
@@ -640,6 +640,16 @@ export default function MapIndex2({
                     });
                 });
             });
+        }
+        
+    }
+
+    // Zoom to the selected station on the map
+    useEffect(() => {
+        if (zoomToStation) {
+            const stationCode = zoomToStation; // zoomToStation is the state variable that holds the station code of the selected site
+            // Get the layer ID of the current station layer
+            goToStation(stationCode);
             // Reset state
             setZoomToStation(false);
         }

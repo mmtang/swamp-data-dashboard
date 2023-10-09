@@ -8,7 +8,7 @@ export default function ButtonExploreData({ stationCode }) {
             <Button 
                 basic 
                 color='grey' 
-                icon='external alternative' 
+                icon='external alternate' 
                 size='mini'
             />
         </a>

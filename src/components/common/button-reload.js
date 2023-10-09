@@ -8,8 +8,8 @@ export default function ButtonReload() {
         <div className={container}>
             <a href={withPrefix('/')}>
                 <Button compact size='tiny'>
-                    <Icon name='refresh' />
-                    Reload
+                    <Icon name='home' />
+                    Home
                 </Button>
             </a>
         </div>

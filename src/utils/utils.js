@@ -14,6 +14,7 @@ export const chemistryResourceId = '2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e';
 export const habitatResourceId = '6d9a828a-d539-457e-922c-3cb54a6d4f9b';
 export const tissueResourceId = '6f848c25-c1cf-44d0-80a0-5f63b9939a41';
 export const toxicityResourceId = 'a6dafb52-3671-46fa-8d42-13ddfa36fd49';
+export const stationsResourceId = 'df69fdd7-1475-4e57-9385-bb1514f0291e';
 
 export const programDict = {
     'bioaccumulation': 'Bioaccumulation Monitoring Program',
