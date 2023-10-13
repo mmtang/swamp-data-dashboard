@@ -55,13 +55,28 @@
 }
 
 .siteMapContainer {
-    margin: 1.7em 0 1.8em 0;
+    margin: 1.5em 0 1.8em 0;
+}
+
+.stationCover {
+    height: 180px;
+    object-fit: cover;
+    margin-bottom: -10px;
+    width: 100%;
+}
+
+.stationCover:hover {
+    cursor: pointer;
 }
 
 .stationName {
     margin-bottom: 4px;
     font-size: 1.2em !important;
     line-height: 1.35;
+}
+
+.tagContainer {
+    margin-top: 0.8em;
 }
 
 @media screen and (max-width: 970px) {

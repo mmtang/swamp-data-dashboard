@@ -23,7 +23,7 @@
 }
 
 .stationCover {
-    height: 180px;
+    height: 150px;
     object-fit: cover;
     margin-bottom: -10px;
     width: 100%;

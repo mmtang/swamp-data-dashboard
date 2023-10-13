@@ -5,7 +5,7 @@ import { centerImage, closeIcon, expandIcon, fsWindow, wrapper } from './full-sc
 
 // This component renders a thumbnail image that, when clicked, is expanded full screen
 // The imgClass for the thumbnail picture can be passed in from the parent component (can include hover) so to fit in with the style needed for the parent component
-export default function FullScreenImage({ image, imgClass, alt }) {
+export default function FullScreenImage({ image, imgClass, alt, showIcon=true }) {
     const [expandImage, setExpandImage] = useState(false);
 
     const handleParentClick = (e) => {
@@ -33,9 +33,11 @@ export default function FullScreenImage({ image, imgClass, alt }) {
                         alt={alt ? alt : null}
                         onClick={handleThumbnailClick}
                     />
-                    <span className={expandIcon} onClick={handleThumbnailClick}>
-                        <Icon name='expand' size='large' />
-                    </span>
+                    { showIcon ? 
+                        <span className={expandIcon} onClick={handleThumbnailClick}>
+                            <Icon name='expand' size='large' />
+                        </span>
+                    : null }
                 </div>
                 
                 { expandImage ? 

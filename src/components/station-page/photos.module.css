@@ -1,0 +1,9 @@
+.stationThumbnail {
+    height: 100px;
+    object-fit: cover;
+    width: 100px;
+}
+
+.stationThumbnail:hover {
+    cursor: pointer;
+}

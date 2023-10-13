@@ -36,7 +36,7 @@ export default function PanelStation({
     station,
     stationLoading
 }) {   
-    const [stationImage, setStationImage] = useState(null);
+    const [stationImageUrl, setStationImageUrl] = useState(null);
     const stationRef = useRef(null); // Have to use a ref, instead of the state value (station), in order to control when all the panel elements load (*after* the loader, not before). Otherwise, all the station info changes before the loader is shown
 
     // Control visibility of station content using styles. Do not use conditional rendering or else the index content panel will always rerender when the user exits out of the station view
@@ -51,7 +51,7 @@ export default function PanelStation({
             const imgUrl = baseUrl + stationCode.toLowerCase() + '.jpg';
             const image = new Image();
             image.onload = () => {
-                setStationImage(imgUrl);
+                setStationImageUrl(imgUrl);
             };
             image.onerror = () => {
                 console.log('Site does not have an image');
@@ -65,7 +65,7 @@ export default function PanelStation({
     useEffect(() => {
         // Moved the below line to the map
         //setStationLoading(true); 
-        setStationImage(null);
+        setStationImageUrl(null);
         if (station) {
             stationRef.current = station;
             checkImage(station.StationCode);
@@ -96,7 +96,7 @@ export default function PanelStation({
         return (
             <div className={mainContainer} style={ !station ? stationStyle : null }>
                 {/* Cover image */}
-                <FullScreenImage image={stationImage} imgClass={stationCover} alt='Site picture' /> 
+                <FullScreenImage image={stationImageUrl} imgClass={stationCover} alt='Site picture' /> 
                 <div className={infoContainer} style={{ cursor: cursor }}>
                     <div className={topContainer}>
                         <div className={iconContainer}>

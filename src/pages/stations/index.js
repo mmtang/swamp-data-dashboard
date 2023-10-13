@@ -1,17 +1,20 @@
 import React, { useEffect, useState, useRef  } from 'react';
 import ChartModal from '../../components/station-page/chart-modal';
 import ErrorFullscreen from '../../components/layout/error-fullscreen';
+import FullScreenImage from '../../components/common/full-screen-image';
 import LayoutMap from '../../components/layout/layout-map';
 import LoaderDashboard from '../../components/loaders/loader-dashboard';
 import MapStation from '../../components/map/map-station';
 import Metadata from '../../components/layout/metadata';
 import Navbar from '../../components/navbar/navbar';
 import NearbyWaterbodies from '../../components/station-page/nearby-waterbodies';
+import Photos from '../../components/station-page/photos';
 import StationTable from '../../components/table/station-table';
 import TableClear from '../../components/station-page/table-clear';
 import TableMenu from '../../components/station-page/table-menu';
 import TableSearch from '../../components/station-page/table-search';
 
+import { Label } from 'semantic-ui-react';
 import { linkColorAlt } from '../../constants/constants-app';
 import { regionDict, stationsResourceId } from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
@@ -24,9 +27,10 @@ import {
     mainGrid, 
     rightContainer, 
     siteMapContainer, 
-    stationName 
+    stationCover,
+    stationName,
+    tagContainer
 } from './index.module.css';
-
 
 export default function Station(props) {
     const allDataRef = useRef(null);  // Save all analyte data points for this station; for filtering
@@ -36,6 +40,7 @@ export default function Station(props) {
 
     const [errorMessage, setErrorMessage] = useState(null);
     const [filterText, setFilterText] = useState('');
+    const [imageStationUrl, setImageStationUrl] = useState(null);
     const [loading, setLoading] = useState('true');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedAnalytes, setSelectedAnalytes] = useState([]);
@@ -49,7 +54,7 @@ export default function Station(props) {
             const params = new URLSearchParams(document.location.search);
             const stationCode = params.get('id');
             if (stationCode) {
-                stationCodeRef.current = stationCode;
+                stationCodeRef.current = stationCode.toUpperCase();
                 resolve(stationCode);
             } else {
                 // Error catching for when there is not an id param in the page request (cannot parse id value). Does not check if the station value/code is valid (see getStationInfo)
@@ -60,12 +65,30 @@ export default function Station(props) {
         });
     };
 
+    // This function checks to see if an image exists (on the Water Boards web server) for the given station. If it exists, then it will change the reference variable
+    const checkImage = (stationCode) => {
+        if (stationCode) {
+            const baseUrl = 'https://www.waterboards.ca.gov/water_issues/programs/swamp/bioassessment/images/csci_scores_map/';
+            const imgUrl = baseUrl + stationCode.toLowerCase() + '.jpg';
+            const image = new Image();
+            image.onload = () => {
+                setImageStationUrl(imgUrl);
+            };
+            image.onerror = () => {
+                console.log('Site does not have an image');
+            }
+            image.src = imgUrl;
+        } else {
+            console.error('Empty station code')
+        }
+    }
+
     const getStationInfo = (stationCode) => {
         return new Promise((resolve, reject) => {
             if (stationCode) {
                 let url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
                 const params = {
-                    sql: `SELECT "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region" FROM "${stationsResourceId}" WHERE "StationCode"='${stationCode}'`
+                    sql: `SELECT "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", "SiteType" FROM "${stationsResourceId}" WHERE UPPER("StationCode")=UPPER('${stationCode}')`
                 };
                 fetch(url + new URLSearchParams(params))
                 .then((resp) => {
@@ -182,6 +205,7 @@ export default function Station(props) {
                     getCategories(allRecords);
                     allDataRef.current = allRecords; // Save for use later (filtering)
                     setTableData(allRecords);
+                    checkImage(stationCodeRef.current);
                     setLoading('false');
                 });
             });
@@ -234,12 +258,20 @@ export default function Station(props) {
                         <section>
                             <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>
                             <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{stationObjRef.current.RegionName} Region</span>
+                            { stationObjRef.current && stationObjRef.current.SiteType === 'Reference site' ? 
+                            <div className={tagContainer}>
+                                <Label basic color='orange' size='small' style={{ borderRadius: 0 }}>
+                                    Reference site
+                                </Label>
+                            </div>
+                            : null }
                         </section>
                         <div className={siteMapContainer}>
                             <MapStation coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
                         </div>
                         <section style={{ margin: '1.1em 0' }}>
                             <NearbyWaterbodies coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
+                            <Photos image={imageStationUrl} />
                         </section>
                     </div>
                     <div className={rightContainer}>
