@@ -10,6 +10,7 @@ const tableContainerStyle = {
     height: '100%', // subtract height of main navbar and sub navbar
     overflowX: 'auto',
     overflowY: 'auto',
+    position: 'relative',
     width: '100%'
 }
 
@@ -51,6 +52,7 @@ export default function PanelMap({
                     analyte={analyte} 
                     comparisonSites={comparisonSites}
                     highlightReferenceSites={highlightReferenceSites}
+                    mapLoaded={mapLoaded}
                     program={program}
                     region={region} 
                     selecting={selecting}

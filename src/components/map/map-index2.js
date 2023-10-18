@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
+import MapLegend from './map-legend';
+
 // Load helper functions and constants
 import { 
     bioassessmentStationRenderer,
@@ -24,11 +26,12 @@ import {
 } from '../../utils/utils';
 
 // Load styles
-import { container } from './map-index2.module.css';
+import { container, mapLegendContainer } from './map-index2.module.css';
 
 export default function MapIndex2({ 
     comparisonSites,
     highlightReferenceSites,
+    mapLoaded,
     region,
     selecting,
     setComparisonSites,
@@ -401,7 +404,7 @@ export default function MapIndex2({
                 // Define layer list widget
                 layerListRef.current = new LayerList({
                     view: viewRef.current,
-                    container: 'layerListContainer', // external div, outside of component
+                    container: 'map-legend-container', // external div, outside of component
                     listItemCreatedFunction: function(event) {
                         const item = event.item;
                         // keep for reference
@@ -969,9 +972,14 @@ export default function MapIndex2({
     }
 
     return (
-        <div
-            className={container}
-            ref={divRef}
-        />
+        <React.Fragment>
+             <div className={mapLegendContainer}>
+                <MapLegend mapLoaded={mapLoaded} />
+            </div>
+            <div
+                className={container}
+                ref={divRef}
+            />
+        </React.Fragment>
     )
 }

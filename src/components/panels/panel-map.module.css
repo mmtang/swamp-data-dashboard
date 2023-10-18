@@ -6,6 +6,14 @@
     width: 100%;
 }
 
+.mapLegendContainer {
+    background-color: #fff;
+    position: absolute;
+    right: 100px;
+    top: 100px;
+    width: 200px;
+}
+
 @media screen and (max-width: 800px) {
     .content {
         flex-direction: column-reverse;

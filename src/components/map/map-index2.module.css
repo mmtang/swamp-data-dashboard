@@ -2,11 +2,23 @@
     width: 62vw;
     /* Subtract 60px for navbar (navbar.js) and 50px for sub-navbar (panel-menu.js) */
     height: calc(100vh - 60px - 50px);  
+    position: relative;
+}
+
+.mapLegendContainer {
+    position: absolute;
+    right: 20px;
+    top: calc(50px + 15px); /* 50px is the sub nav bar height + 15px (to align with ArcGIS nav buttons */
+    z-index: 399;
 }
 
 @media screen and (max-width: 800px) {
     .container {
         width: 100vw;
         height: calc(45vh - 44px); /* Subtract height of map panel menu 44px) */
+    }
+    .mapLegendContainer {
+        right: 15px;
+        top: 15px; /* 50px is the sub nav bar height + 15px (to align with ArcGIS nav buttons */
     }
 }

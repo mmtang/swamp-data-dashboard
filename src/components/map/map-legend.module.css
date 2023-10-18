@@ -1,0 +1,27 @@
+.container {
+    background-color: #fff;
+    border: 1px solid #b6b6b6;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    font-size: 0.9em;
+    max-width: 180px;
+    width: 180px;
+}
+
+.content {
+    max-height: 300px;
+    overflow: auto;
+    padding: 1em;
+}
+
+.expandArrow:hover {
+    cursor: pointer;
+}
+
+.header {
+    background-color: #fff;
+    color: #616161;
+    display: flex;
+    font-weight: 600;
+    justify-content: space-between;
+    padding: 0.3em 0.6em;
+}

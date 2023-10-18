@@ -445,32 +445,6 @@ export default function AccordionMenu({
                     />
                 </Accordion.Content>
             </Accordion>
-
-            {/* Layers */}
-            <Accordion 
-                className={customAccordion}
-                exclusive={false}
-                fluid
-                styled
-            >
-                <Accordion.Title
-                    className={customTitle}
-                    active={activeIndex.includes(2)}
-                    index={2}
-                    onClick={handleClick}
-                >
-                    <div className={titleWrapper}>
-                        <div>
-                            <Icon className={leadingIcon} name='map' />
-                            Map Layers
-                        </div>
-                        { activeIndex.includes(2) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
-                    </div>
-                </Accordion.Title>
-                <Accordion.Content active={activeIndex.includes(2)}>
-                    <div id="layerListContainer" />
-                </Accordion.Content>
-            </Accordion>
         </div>
     )
 }

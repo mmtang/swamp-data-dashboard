@@ -106,14 +106,16 @@ a {
   padding: 4px 4px 4px 0 !important;
 }
 
+/*
 .esri-layer-list__item-container:hover {
   background-color: #e2f1fb;
 }
+*/
 
 /* Layer title */
 .esri-layer-list__item-title {
   font-family: 'Source Sans Pro', sans-serif;
-  font-size: 0.92em;
+  font-size: 0.9em;
 }
 
 /* Sub-layer title */
@@ -124,6 +126,11 @@ a {
 /* Layer list item container, including legend */
 .esri-layer-list__item {
   border-bottom: 0 !important;
+}
+
+/* Category name for symbology, or sub list item */
+.esri-legend__layer-caption {
+  font-size: 0.88em !important;
 }
 
 /* Hide layer list icon on right */
@@ -222,11 +229,11 @@ Unfortunately, this still does not fix the flickering issue */
 }
 
 .map-popup-subtitle {
-  font-size: 11px;
+  font-size: 10px;
 }
 
 #legend-container {
-  font-size: 0.85em;
+  font-size: 0.8em;
 }
 
 .ui.button {
