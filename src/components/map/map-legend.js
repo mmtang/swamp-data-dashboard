@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import HighlightReference from '../map-controls/highlight-reference';
+
 import { Icon } from 'semantic-ui-react';
 
-import { container, content, expandArrow, header } from './map-legend.module.css';
+import { container, content, contentWrapper, expandArrow, header } from './map-legend.module.css';
 
-export default function MapLegend({ mapLoaded }) {
+export default function MapLegend({ highlightReferenceSites, mapLoaded, setHighlightReferenceSites }) {
     const [expanded, setExpanded] = useState(false);
     const displayStyle = expanded === true ? 'block' : 'none';
 
@@ -31,7 +33,13 @@ export default function MapLegend({ mapLoaded }) {
                     onClick={handleClick}
                 />
             </div>
-            <div id='map-legend-container' className={content} style={{ display: displayStyle }} />
+            <div className={contentWrapper} style={{ display: displayStyle }}>
+                <HighlightReference 
+                    highlightReferenceSites={highlightReferenceSites} 
+                    setHighlightReferenceSites={setHighlightReferenceSites}  
+                />
+                <div id='map-legend-container' className={content} />
+            </div>    
         </div>
     )
 }

@@ -9,32 +9,15 @@
     margin-top: 1em;
 }
 
-.customAccordion {
-    border-radius: 0 !important;
+.island {
+    background-color: #f4f2f2;
     margin-bottom: 1em;
-}
-
-.customAccordion p {
-    font-size: 0.9em !important;
-}
-
-.customTitle {
-    font-weight: 500 !important;
-    background-color: #f0f1f1 !important;
-}
-
-.leadingIcon {
-    margin-right: 0.6em !important;
+    padding: 1.1em;
+    width: 100%;
 }
 
 .pLabel {
     margin: 1em 0 0.4em 0;
     font-size: 0.84rem;
     font-weight: 600;
-}
-
-.titleWrapper {
-    display: flex;
-    justify-content: space-between;
-    color: #5d5d5d;
 }

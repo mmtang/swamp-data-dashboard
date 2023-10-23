@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef  } from 'react';
 import ChartModal from '../../components/station-page/chart-modal';
 import ErrorFullscreen from '../../components/layout/error-fullscreen';
-import FullScreenImage from '../../components/common/full-screen-image';
 import LayoutMap from '../../components/layout/layout-map';
 import LoaderDashboard from '../../components/loaders/loader-dashboard';
 import MapStation from '../../components/map/map-station';
@@ -27,7 +26,6 @@ import {
     mainGrid, 
     rightContainer, 
     siteMapContainer, 
-    stationCover,
     stationName,
     tagContainer
 } from './index.module.css';

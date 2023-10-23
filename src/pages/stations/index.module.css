@@ -58,17 +58,6 @@
     margin: 1.5em 0 1.8em 0;
 }
 
-.stationCover {
-    height: 180px;
-    object-fit: cover;
-    margin-bottom: -10px;
-    width: 100%;
-}
-
-.stationCover:hover {
-    cursor: pointer;
-}
-
 .stationName {
     margin-bottom: 4px;
     font-size: 1.2em !important;

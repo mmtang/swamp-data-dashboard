@@ -4,6 +4,7 @@ import Select from 'react-select';
 
 import { matrixColor } from '../../constants/constants-app';
 import { customSelectStyle } from '../../utils/utils';
+import { pLabel } from './accordion-menu.module.css';
 
 export default function AnalyteMenu({ 
     analyte, 
@@ -98,9 +99,27 @@ export default function AnalyteMenu({
                     />
                 </div>
             : <div style={wrapperStyle}><LoaderMenu /></div> }
+            <p className={pLabel}>Select analyte and/or species:</p>
+            {/* Analyte/Parameter */}
+            { !loadingAnalyte ? 
+                <div style={wrapperStyle}>
+                    <Select
+                        isClearable={true}
+                        isLoading={loadingAnalyte}
+                        isSearchable={true}
+                        placeholder='Analyte'
+                        onChange={handleAnalyteChange}
+                        options={analyteList} 
+                        styles={customSelectStyle}
+                        maxMenuHeight={200}
+                        formatOptionLabel={formatOptionLabel}
+                        value={analyte ? analyte : null}
+                    />
+                </div>
+            : <LoaderMenu /> }
             {/* Species */}
-            {/* Don't need a loader for species */}
-            <div style={wrapperStyle}>
+            {/* Don't need a loader for species but need to add the same amount of margin */}
+            <div style={{ marginTop: '10px' }}>
                 <Select 
                     options={speciesList} 
                     isClearable={false}
@@ -112,21 +131,6 @@ export default function AnalyteMenu({
                     value={species ? { label: species, value: species } : { label: 'All species', value: null }}
                 />
             </div>   
-            {/* Analyte/Parameter */}
-            { !loadingAnalyte ? 
-                <Select
-                    isClearable={true}
-                    isLoading={loadingAnalyte}
-                    isSearchable={true}
-                    placeholder='Parameter'
-                    onChange={handleAnalyteChange}
-                    options={analyteList} 
-                    styles={customSelectStyle}
-                    maxMenuHeight={200}
-                    formatOptionLabel={formatOptionLabel}
-                    value={analyte ? analyte : null}
-                />
-            : <LoaderMenu /> }
         </div>
     )
 }

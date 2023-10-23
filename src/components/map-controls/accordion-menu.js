@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import AnalyteMenu from '../map-controls/analyte-menu';
-import BulkDownload from './bulk-download';
 import ClearFilters from './clear-filters';
 import HelpIcon from '../icons/help-icon';
 import ProgramMenu from '../map-controls/program-menu';
 import RegionMenu from '../map-controls/region-menu';
-
-import { Accordion, Icon } from 'semantic-ui-react';
 
 import { 
     capitalizeFirstLetter, 
@@ -21,11 +18,8 @@ import {
 import { 
     analyteWrapper, 
     buttonContainer, 
-    customAccordion, 
-    customTitle, 
-    leadingIcon, 
-    pLabel, 
-    titleWrapper
+    island,
+    pLabel
 } from './accordion-menu.module.css';
 
 // This component generates the structure for the accordion menu on the index page
@@ -35,16 +29,11 @@ export default function AccordionMenu({
     program, 
     region, 
     setAnalyte, 
-    setHighlightReferenceSites,
     setProgram,
     setRegion,
     setSpecies,
-    species,
-    stationData
+    species
 }) {  
-    // Open all panels upon initial load; keep track of selection and save to state
-    const [activeIndex, setActiveIndex] = useState([0, 1, 2]);
-
     // State for select menus
     const allAnalyteCombosRef = useRef(null);
     const allAnalyteOptionsRef = useRef(null);
@@ -99,23 +88,6 @@ export default function AccordionMenu({
                 resolve(records);
             });
         })
-    }
-
-    // Function for opening and closing the accordion panels
-    const handleClick = (e, titleProps) => {
-        const { index } = titleProps
-        const newIndex = activeIndex;
-        
-        const currentIndexPosition = activeIndex.indexOf(index);
-        if (currentIndexPosition > -1) {
-            // If the clicked index number is already in the array, remove it
-            newIndex.splice(currentIndexPosition, 1);
-        } else {
-            // Otherwise, add it
-            newIndex.push(index);
-        }
-        // Use the spread operator to ensure the state reference is updated and the componenet re-renders
-        setActiveIndex([...newIndex]);
     }
 
     const updateAnalyteList = (data) => {
@@ -335,57 +307,9 @@ export default function AccordionMenu({
     }, [analyte]);
 
     return (
-        <div>
-            <Accordion 
-                className={customAccordion}
-                exclusive={false}
-                fluid
-                styled
-            >
-                {/* Filter */}
-                <Accordion.Title
-                    className={customTitle}
-                    active={activeIndex.includes(0)}
-                    index={0}
-                    onClick={handleClick}
-                >
-                    <div className={titleWrapper}>
-                        <div>
-                            <Icon className={leadingIcon} name='filter' />
-                            Filters
-                        </div>
-                        { activeIndex.includes(0) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
-                    </div>
-                </Accordion.Title>
-                <Accordion.Content active={activeIndex.includes(0)}>
-                    <p className={pLabel} style={{ marginTop: '10px' }}>
-                        Statewide monitoring program
-                    </p>
-                    <ProgramMenu 
-                        program={program} 
-                        programList={programList} 
-                        setAnalyte={setAnalyte}
-                        setHighlightReferenceSites={setHighlightReferenceSites}
-                        setCategory={setCategory}
-                        setProgram={setProgram} 
-                    />
-                    <p className={pLabel}>
-                        Region
-                        <HelpIcon wide='very'>
-                            <p>SWAMP’s regional assessments are planned and executed by each of the nine Regional Water Quality Control Boards. Each region identifies its own monitoring priorities and designs assessments to answer specific monitoring questions.</p>
-                            <img src=".\rb-map-small.jpg" alt='Statewide map of regional water board boundaries' style={{ display: 'block', margin: 'auto', maxWidth: '300px' }} />
-                            <p><a href="https://www.waterboards.ca.gov/publications_forms/publications/factsheets/docs/boardoverview.pdf" target="_blank" rel="noreferrer noopener">Source</a></p>
-                        </HelpIcon>
-                    </p>
-                    <RegionMenu 
-                        region={region}
-                        regionList={regionList}
-                        setRegion={setRegion} 
-                    />
-                    <p className={pLabel}>
-                        Parameter
-                    </p>
-                    <div className={analyteWrapper}>
+        <div style={{ marginTop: '1.4em' }}>
+            <div className={island}>
+                <div className={analyteWrapper}>
                         {/* A high value is needed for flex-basis so that the select box doesn't collapse under flexbox. The actual value is seemingly not that important, only that it's a high value. It might be better to set the width of the select. */}
                         <div style={{ flexBasis: '100%'}}>
                             <AnalyteMenu 
@@ -401,50 +325,42 @@ export default function AccordionMenu({
                             />
                         </div>
                     </div>
-                    <div className={buttonContainer}>
-                        {/* Clear all filters */}
-                        <ClearFilters 
-                            setAnalyte={setAnalyte}
-                            setCategory={setCategory}
-                            setProgram={setProgram}
-                            setRegion={setRegion}
-                            setSpecies={setSpecies}
-                        />
-                    </div>
-                </Accordion.Content>
-            </Accordion> 
-
-            {/* Download data */}
-            <Accordion 
-                className={customAccordion}
-                exclusive={false}
-                fluid
-                styled
-            >
-                <Accordion.Title
-                    className={customTitle}
-                    active={activeIndex.includes(1)}
-                    index={1}
-                    onClick={handleClick}
-                >
-                    <div className={titleWrapper}>
-                        <div>
-                            <Icon className={leadingIcon} name='download' />
-                            Download data
-                        </div>
-                        { activeIndex.includes(1) ? <Icon name='angle up' /> : <Icon name='angle down' /> }
-                    </div>
-                </Accordion.Title>
-                <Accordion.Content active={activeIndex.includes(1)}>
-                    {/* Bulk download */}
-                    <BulkDownload
-                        analyte={analyte}
-                        program={program}
-                        region={region}
-                        stationData={stationData}
-                    />
-                </Accordion.Content>
-            </Accordion>
+                </div>
+            <div className={island}>
+                <p className={pLabel}>
+                    Statewide monitoring program
+                </p>
+                <ProgramMenu 
+                    program={program} 
+                    programList={programList} 
+                    setAnalyte={setAnalyte}
+                    setCategory={setCategory}
+                    setProgram={setProgram} 
+                />
+                <p className={pLabel}>
+                    Region
+                    <HelpIcon wide='very'>
+                        <p>SWAMP’s regional assessments are planned and executed by each of the nine Regional Water Quality Control Boards. Each region identifies its own monitoring priorities and designs assessments to answer specific monitoring questions.</p>
+                        <img src=".\rb-map-small.jpg" alt='Statewide map of regional water board boundaries' style={{ display: 'block', margin: 'auto', maxWidth: '300px' }} />
+                        <p><a href="https://www.waterboards.ca.gov/publications_forms/publications/factsheets/docs/boardoverview.pdf" target="_blank" rel="noreferrer noopener">Source</a></p>
+                    </HelpIcon>
+                </p>
+                <RegionMenu 
+                    region={region}
+                    regionList={regionList}
+                    setRegion={setRegion} 
+                />
+            </div>
+            <div className={buttonContainer}>
+                {/* Clear all filters */}
+                <ClearFilters 
+                    setAnalyte={setAnalyte}
+                    setCategory={setCategory}
+                    setProgram={setProgram}
+                    setRegion={setRegion}
+                    setSpecies={setSpecies}
+                />
+            </div>
         </div>
     )
 }

@@ -552,6 +552,7 @@ export default function Index() {
           selecting={selecting}
           setMapLoaded={setMapLoaded}
           setComparisonSites={setComparisonSites}
+          setHighlightReferenceSites={setHighlightReferenceSites}
           setSelecting={setSelecting}
           setStation={setStation}
           setStationData={setStationData}

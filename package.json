@@ -1,7 +1,7 @@
 {
   "name": "swamp-data-dashboard",
   "private": true,
-  "description": "A dashboard for explorting SWAMP data",
+  "description": "A dashboard for exploring SWAMP data",
   "version": "0.1.0",
   "license": "0BSD",
   "scripts": {

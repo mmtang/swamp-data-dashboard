@@ -35,6 +35,7 @@ export default function MapIndex2({
     region,
     selecting,
     setComparisonSites,
+    setHighlightReferenceSites,
     setMapLoaded, 
     setSelecting,
     setStation,
@@ -974,7 +975,11 @@ export default function MapIndex2({
     return (
         <React.Fragment>
              <div className={mapLegendContainer}>
-                <MapLegend mapLoaded={mapLoaded} />
+                <MapLegend 
+                    highlightReferenceSites={highlightReferenceSites}
+                    mapLoaded={mapLoaded}   
+                    setHighlightReferenceSites={setHighlightReferenceSites}
+                />
             </div>
             <div
                 className={container}

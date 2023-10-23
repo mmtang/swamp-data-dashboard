@@ -24,6 +24,7 @@ export default function PanelMap({
     program,
     selecting,
     setComparisonSites,
+    setHighlightReferenceSites,
     setMapLoaded,
     setSelecting,
     setStation,
@@ -58,6 +59,7 @@ export default function PanelMap({
                     selecting={selecting}
                     setMapLoaded={setMapLoaded}
                     setComparisonSites={setComparisonSites}
+                    setHighlightReferenceSites={setHighlightReferenceSites}
                     setSelecting={setSelecting}
                     setStation={setStation}
                     setStationLoading={setStationLoading}

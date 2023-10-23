@@ -176,6 +176,11 @@ https://stackoverflow.com/questions/67654247/single-layer-visible-toggle-in-laye
   display: none;
 }
 
+/* This element is populated to the right of the layer title. Takes up space and causes the title to wrap unnecessarily */
+.esri-layer-list__status-indicator {
+  display: none;
+}
+
 /* End Layer List Styles */
 
 /* Data table style for changing styles in header row. Could not find a way to through it through the library styles. */
@@ -288,8 +293,29 @@ Unfortunately, this still does not fix the flickering issue */
   padding: 0 !important;
 }
 
-/* Color for Semantic UI toggle checkbox */
-.ui.toggle.checkbox input[type=checkbox]:checked~label::before,
-.ui.toggle.checkbox input[type=checkbox]:checked:focus~label::before {
-  background: #2f9b96 !important;
+/* Styles for Semantic UI checkbox - unchecked style */
+.ui.checkbox .box::before, .ui.checkbox label::before {
+  border: 1px solid #6e6e6e !important; /* without !important, the box turns blue after unchecking */
+  border-radius: 0;
+  height: 14px;
+  width: 14px;
+}
+
+/* Checked style
+https://stackoverflow.com/questions/2639373/css-html-how-do-i-change-the-color-of-the-check-mark-within-the-checkbox-input */
+.ui.checkbox input:checked ~ .box::after, .ui.checkbox input:checked ~ label::after {
+  border: 1px solid #6e6e6e;
+  border-radius: 0;
+  border-top: none;
+  border-right: none;
+  content: '';
+  width: 1.15ex;
+  height: 0.55ex;
+  top: 0.4ex;
+  left: 0.25ex;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
