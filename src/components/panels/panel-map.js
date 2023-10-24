@@ -42,7 +42,11 @@ export default function PanelMap({
     return (
         <div className={content} style={{ cursor: cursor }}>
             <PanelMapMenu 
+                analyte={analyte}
+                program={program}
+                region={region}
                 setView={setView}
+                stationData={stationData}
                 tableData={tableData} 
                 view={view}
             />

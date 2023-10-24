@@ -84,6 +84,7 @@ export default function AnalyteMenu({
     return (
         <div>
             {/* Category Menu */}
+            <p className={pLabel}>Analyte category:</p>
             { !loadingCategory ? 
                 <div style={wrapperStyle}>
                     <Select

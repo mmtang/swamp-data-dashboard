@@ -15,12 +15,13 @@ export default function ClearFilters({ setAnalyte, setCategory, setProgram, setR
     return (
         <Button 
             className={rightButton}
+            color='grey'
             compact 
             onClick={handleClick} 
             onKeyPress={handleClick}
-            size='tiny'
+            size='small'
         >
-            Clear all
+            Reset
         </Button>
     )
 }

@@ -157,7 +157,7 @@ export default function BulkDownloadResults({ analyte, program, region }) {
                 </Button>
             :
                 <Popup
-                    content={'Select a parameter'}
+                    content={'Select an analyte'}
                     disabled={analyte ? true : false}
                     inverted
                     size='tiny'

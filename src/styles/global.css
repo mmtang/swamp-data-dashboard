@@ -293,7 +293,13 @@ Unfortunately, this still does not fix the flickering issue */
   padding: 0 !important;
 }
 
-/* Styles for Semantic UI checkbox - unchecked style */
+/* Styles for Semantic UI checkbox */
+/* Aligns label in map layer list (for reference list) to the same padding as ArcGIS's items */
+.ui.checkbox .box, .ui.checkbox label {
+  padding-left: 1.8em;
+}
+
+/* Unchecked style */
 .ui.checkbox .box::before, .ui.checkbox label::before {
   border: 1px solid #6e6e6e !important; /* without !important, the box turns blue after unchecking */
   border-radius: 0;

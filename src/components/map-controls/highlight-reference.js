@@ -3,9 +3,9 @@ import { Checkbox } from 'semantic-ui-react';
 
 export default function HighlightReference({ setHighlightReferenceSites }) {
     const calciteMatch = {
+        color: '#323232',
         fontSize: '0.96em',
-        padding: '9px 9px 4px 9px', 
-        zIndex: 5
+        padding: '9px 9px 4px 9px'
     }
 
     const handleReferenceChange = (val) => {
@@ -23,7 +23,6 @@ export default function HighlightReference({ setHighlightReferenceSites }) {
                 label='Show reference sites' 
                 onChange={(e, data) => handleReferenceChange(data.checked)}
                 style={calciteMatch}
-                /* color: '#323232' */
             />
         </div>
     )

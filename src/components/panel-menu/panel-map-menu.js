@@ -1,4 +1,5 @@
 import React from 'react';
+import BulkDownload from '../map-controls/bulk-download';
 import { Icon } from 'semantic-ui-react';
 import { 
     container, 
@@ -9,46 +10,43 @@ import {
 } from './panel-map-menu.module.css';
 
 export default function PanelMapMenu({ 
+    analyte,
+    program,
+    region,
     setView, 
+    stationData,
     tableData,
     view
 }) {   
-    const selectedStyle = {
-        backgroundColor: '#00857F'
-    }
-
-    const handleClick = (val) => {
-        if (val !== view) {
-            setView(val);
+    const handleViewClick = () => {
+        if (view === 'map') {
+            setView('table');
+        } else {
+            setView('map');
         }
     }
 
     return (
         <div className={container}>
             <div className={menuWrapper}>
-                {/* Map */}
-                <div 
-                    className={menuItem} 
-                    style={view === 'map' ? selectedStyle : null}
-                    onClick={() => handleClick('map')}
-                >
-                    <Icon fitted inverted 
-                        size='large'
-                        name='map' 
-                    />
-                    <span>Map</span>
+                {/* Map & Table */}
+                <div className={menuItem} onClick={handleViewClick}>
+                    <div>
+                        <Icon fitted inverted 
+                            size='large'
+                            name={ view === 'map' ? 'table' : 'map' }
+                        />
+                        <span>{ view === 'map' ? 'Table' : 'Map' }</span>
+                    </div>
                 </div>
-                {/* Table */}
-                <div 
-                    className={menuItem} 
-                    style={view === 'table' ? selectedStyle : null}
-                    onClick={() => handleClick('table')}
-                >
-                    <Icon fitted inverted 
-                        size='large'
-                        name='table' 
+                {/* Download */}
+                <div className={menuItem}>
+                    <BulkDownload 
+                        analyte={analyte} 
+                        program={program} 
+                        region={region} 
+                        stationData={stationData} 
                     />
-                    <span>Table</span>
                 </div>
             </div>
             {/* Station count */} 
