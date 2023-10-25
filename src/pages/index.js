@@ -292,7 +292,7 @@ export default function Index() {
     if (!analyte) {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultAdjusted" as ResultDisplay, "Unit", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "Result" as ResultDisplay, "Unit", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
@@ -314,7 +314,7 @@ export default function Index() {
           whereStatements.push(`"Region" = '${regionVal}'`);
         }
         if (species) {
-          whereStatements.push(`"CommonName" = '${species}'`);
+          whereStatements.push(`"CommonName" = '${species.value}'`);
         }
         // Concat multiple join statements
         const concat = whereStatements.join(' AND ');
@@ -330,7 +330,7 @@ export default function Index() {
     if (!analyte) {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as ResultDisplay, "Unit, "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as ResultDisplay, "Unit", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
@@ -352,7 +352,7 @@ export default function Index() {
           whereStatements.push(`"Region" = '${regionVal}'`);
         }
         if (species) {
-          whereStatements.push(`"OrganismName" = '${species}'`);
+          whereStatements.push(`"OrganismName" = '${species.value}'`);
         }
         // Concat multiple join statements
         const concat = whereStatements.join(' AND ');
@@ -559,8 +559,9 @@ export default function Index() {
           setTableData={setTableData}
           setView={setView}
           setZoomToStation={setZoomToStation}
-          station={station}
           setStationLoading={setStationLoading}
+          species={species}
+          station={station}
           stationData={stationData}
           tableData={tableData}
           view={view}

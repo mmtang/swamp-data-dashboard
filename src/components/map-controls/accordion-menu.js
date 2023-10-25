@@ -130,18 +130,22 @@ export default function AccordionMenu({
     const updateSpeciesList = (data) => {
         if (data) {
             // Get list of unique species based on the filtered data (data)
-            const speciesRecords = data.map(d => d.Species);
-            let uniqueSpecies = [...new Set(speciesRecords)];
-            uniqueSpecies.sort((a, b) => a.localeCompare(b));
-            // Filter out null values so they don't show in the select menu
-            uniqueSpecies = uniqueSpecies.filter(d => d !== null);
-            // Build array of objects for the select menu
-            const speciesOptions = uniqueSpecies.map(d => {
-                return {label: d, value: d};
+            const speciesRecords = data.map(d => {
+                return {
+                    label: d.Species,
+                    value: d.Species,
+                    source: d.Source
+                }
             });
+            // Build array of objects
+            let uniqueSpecies = [... new Map(speciesRecords.map((item) => [item['value'], item])).values(),];
+            // Filter out null values so they don't show in the select menu
+            uniqueSpecies = uniqueSpecies.filter(d => d.label != null);
+            // Sort alphabetical order
+            uniqueSpecies.sort((a, b) => a['label'].localeCompare(b['label']));
             // Add 'All species' option to the top
-            const defaultOption = [{label: 'All species', value: null}];
-            const allSpeciesOptions = defaultOption.concat(speciesOptions);
+            const defaultOption = [{ label: 'All species', value: null, source: null }];
+            const allSpeciesOptions = defaultOption.concat(uniqueSpecies);
             setSpeciesList(allSpeciesOptions);
         }
     }
@@ -227,7 +231,7 @@ export default function AccordionMenu({
                 let newPrograms = allAnalyteCombosRef.current;
                 if (region) { newPrograms = newPrograms.filter(d => d['Region'] === region) };
                 if (category) { newPrograms = newPrograms.filter(d => d.AnalyteGroup1 === category) };
-                if (species) { newPrograms = newPrograms.filter(d => d.Species === species) };
+                if (species) { newPrograms = newPrograms.filter(d => d.Species === species.value) };
                 if (analyte) {
                     newPrograms = newPrograms.filter(d => d.Analyte === analyte.label);
                     newPrograms = newPrograms.filter(d => d.MatrixDisplay === analyte.matrix);
@@ -238,7 +242,7 @@ export default function AccordionMenu({
                 let newRegions = allAnalyteCombosRef.current;
                 if (program) { newRegions = newRegions.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
                 if (category) { newRegions = newRegions.filter(d => d.AnalyteGroup1 === category) };
-                if (species) { newRegions = newRegions.filter(d => d.Species === species) };
+                if (species) { newRegions = newRegions.filter(d => d.Species === species.value) };
                 if (analyte) {
                     newRegions = newRegions.filter(d => d.Analyte === analyte.label);
                     newRegions = newRegions.filter(d => d.MatrixDisplay === analyte.matrix);
@@ -249,7 +253,7 @@ export default function AccordionMenu({
                 let newCategories = allAnalyteCombosRef.current;
                 if (program) { newCategories = newCategories.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
                 if (region) { newCategories = newCategories.filter(d => d['Region'] === region) };
-                if (species) { newCategories = newCategories.filter(d => d.Species === species) };
+                if (species) { newCategories = newCategories.filter(d => d.Species === species.value) };
                 if (analyte) {
                     newCategories = newCategories.filter(d => d.Analyte === analyte.label);
                     newCategories = newCategories.filter(d => d.MatrixDisplay === analyte.matrix);
@@ -272,7 +276,7 @@ export default function AccordionMenu({
                 if (program) { newAnalytes = newAnalytes.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
                 if (region) { newAnalytes = newAnalytes.filter(d => d['Region'] === region) };
                 if (category) { newAnalytes = newAnalytes.filter(d => d.AnalyteGroup1 === category) };
-                if (species) { newAnalytes = newAnalytes.filter(d => d.Species === species) };
+                if (species) { newAnalytes = newAnalytes.filter(d => d.Species === species.value) };
                 updateAnalyteList(newAnalytes);
             };
         }

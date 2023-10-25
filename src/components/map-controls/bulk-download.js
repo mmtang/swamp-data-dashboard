@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import BulkDownloadResults from './bulk-download-results';
 import BulkDownloadStations from './bulk-download-stations';
 import MatrixTag from '../common/matrix-tag';
@@ -8,12 +8,18 @@ import { Button, Icon, Modal, Table } from 'semantic-ui-react';
 import { buttonRow, downloadTable } from './bulk-download.module.css';
 
 // This component generates the table in the Download section and calls the two components for downloading site data and results data. The table automatically updates to show the user's current filter selection. 
-export default function BulkDownload({ analyte, program, region, stationData }) {
-    const [modalVisible, setModalVisible] = useState(false);
-
+export default function BulkDownload({ 
+    analyte, 
+    dataModalVisible,
+    program, 
+    region, 
+    setDataModalVisible,
+    species,
+    stationData 
+}) {
     const handleClick = () => {
-        if (modalVisible === false) {
-            setModalVisible(true);
+        if (dataModalVisible === false) {
+            setDataModalVisible(true);
         }
     }
 
@@ -26,18 +32,18 @@ export default function BulkDownload({ analyte, program, region, stationData }) 
                     />
                 <span>Data</span>
             </div>
-            { modalVisible ? 
+            { dataModalVisible ? 
                 <Modal
                     /* closeIcon */
                     closeOnDimmerClick={true}
-                    open={modalVisible}
-                    onClose={() => setModalVisible(false)}
+                    open={dataModalVisible}
+                    onClose={() => setDataModalVisible(false)}
                     size='tiny'
                 >
                     <Modal.Content scrolling>
                         <Modal.Description>
                             <div>
-                                <p>Download data (.csv) for all SWAMP stations based on the current selection listed below. Includes stations outside the current map extent.</p>
+                                <p>Download data (.csv) for all SWAMP stations based on the selection listed below. To change the current selection, close out of this window and select new filter values. The data file includes stations outside the current map extent.</p>
                                 <Table 
                                     celled
                                     className={downloadTable} 
@@ -46,6 +52,17 @@ export default function BulkDownload({ analyte, program, region, stationData }) 
                                 >
                                     <Table.Body>
                                         <Table.Row>
+                                            <Table.Cell>Analyte:</Table.Cell>
+                                            <Table.Cell>
+                                                { analyte ? <MatrixTag matrix={analyte.matrix} /> : null }
+                                                <i>{ analyte ? `${analyte.label}` : 'All' }</i>
+                                            </Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row>
+                                            <Table.Cell>Species:</Table.Cell>
+                                            <Table.Cell><i>{ species && species.value ? species.value : 'All' }</i></Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row>
                                             <Table.Cell>Program:</Table.Cell>
                                             <Table.Cell><i>{ program ? programDict[program] : 'All' }</i></Table.Cell>
                                         </Table.Row>
@@ -53,17 +70,15 @@ export default function BulkDownload({ analyte, program, region, stationData }) 
                                             <Table.Cell>Region:</Table.Cell>
                                             <Table.Cell><i>{ region ? regionDict[region] : 'All' }</i></Table.Cell>
                                         </Table.Row>
-                                        <Table.Row>
-                                            <Table.Cell>Analyte:</Table.Cell>
-                                            <Table.Cell>
-                                                { analyte ? <MatrixTag matrix={analyte.matrix} /> : null }
-                                                <i>{ analyte ? `${analyte.label}` : 'All' }</i>
-                                            </Table.Cell>
-                                        </Table.Row>
                                     </Table.Body>
                                 </Table>
                                 <div className={buttonRow}>
-                                    <BulkDownloadResults analyte={analyte} program={program} region={region} />
+                                    <BulkDownloadResults 
+                                        analyte={analyte} 
+                                        program={program} 
+                                        region={region} 
+                                        species={species} 
+                                    />
                                     <BulkDownloadStations stationData={stationData} />
                                 </div>
                             </div>
@@ -72,7 +87,7 @@ export default function BulkDownload({ analyte, program, region, stationData }) 
                     <Modal.Actions>
                         <Button
                             color='grey'
-                            onClick={() => setModalVisible(false)}
+                            onClick={() => setDataModalVisible(false)}
                             size='small'
                         >
                             Close

@@ -301,6 +301,7 @@ export const chemDataFields = [
     'Analyte',
     'Unit',
     'Result',
+    'ResultDisplay',
     'Observation',
     'MDL',
     'RL',
@@ -353,7 +354,7 @@ export const chemDataFields = [
     'Datum',
     'DataQuality',
     'DataQualityIndicator',
-    'ResultDisplay'
+    'Region'
 ];
 
 export const habitatDataFields = [
@@ -372,6 +373,7 @@ export const habitatDataFields = [
     'Analyte',
     'Unit',
     'Result',
+    'ResultDisplay',
     'ResultQualCode',
     'VariableResult',
     'QACode',
@@ -399,7 +401,7 @@ export const habitatDataFields = [
     'Datum',
     'DataQuality',
     'DataQualityIndicator',
-    'ResultDisplay',
+    'Region'
 ];
 
 export const toxicityDataFields = [
@@ -456,6 +458,7 @@ export const toxicityDataFields = [
     'PctControl',
     'RepCount',
     'Mean',
+    'MeanDisplay',
     'StdDev',
     'StatMethod',
     'CalcValueType',
@@ -476,7 +479,33 @@ export const toxicityDataFields = [
     'Datum',
     'DataQuality',
     'DataQualityIndicator',
-    'MeanDisplay',
+    'Region'
+];
+
+export const tissueDataFields = [
+    'Program',
+    'ParentProject',
+    'Project',
+    'StationCode',
+    'StationName',
+    'CommonName',
+    'FinalID',
+    'TissueName',
+    'TissuePrep',
+    'CompositeIndividual',
+    'Analyte',
+    'Result',
+    'Unit',
+    'SampleYear',
+    'TargetLatitude',
+    'TargetLongitude',
+    'TLAvgLength(mm)',
+    'DataQuality',
+    'DataQualityIndicator',
+    'MatrixDisplay',
+    'NonDetectCount',
+    'NumberOfResults',
+    'Region'
 ];
 
 // Data categories to use in app
@@ -485,5 +514,6 @@ export const dataQualityCategories = [
     'Some review needed',
     'Spatial accuracy unknown',
     'Unknown data quality',
-    'Extensive review needed'
+    'Extensive review needed',
+    'Not assessed'
 ]

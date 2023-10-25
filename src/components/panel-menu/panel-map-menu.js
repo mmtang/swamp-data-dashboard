@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import BulkDownload from '../map-controls/bulk-download';
 import { Icon } from 'semantic-ui-react';
 import { 
@@ -14,10 +14,20 @@ export default function PanelMapMenu({
     program,
     region,
     setView, 
+    species,
     stationData,
     tableData,
     view
 }) {   
+    // Set state in the parent component (panel-map-menu) instead of the child component (bulk-download) because 
+    const [dataModalVisible, setDataModalVisible] = useState(false);
+
+    const handleDataClick = () => {
+        if (dataModalVisible === false) {
+            setDataModalVisible(true);
+        }
+    }
+
     const handleViewClick = () => {
         if (view === 'map') {
             setView('table');
@@ -40,11 +50,14 @@ export default function PanelMapMenu({
                     </div>
                 </div>
                 {/* Download */}
-                <div className={menuItem}>
+                <div className={menuItem} onClick={handleDataClick}>
                     <BulkDownload 
                         analyte={analyte} 
+                        dataModalVisible={dataModalVisible}
                         program={program} 
                         region={region} 
+                        species={species}
+                        setDataModalVisible={setDataModalVisible}
                         stationData={stationData} 
                     />
                 </div>

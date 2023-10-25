@@ -85,7 +85,7 @@ export default function BulkDownloadStations({ stationData }) {
                     onKeyPress={handleDownload}
                     size='tiny'
                 >
-                    Get stations
+                    Get station data
                 </Button>
             }
         </div>

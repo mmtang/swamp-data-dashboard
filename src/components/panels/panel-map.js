@@ -33,6 +33,7 @@ export default function PanelMap({
     setTableData,
     setView,
     setZoomToStation,
+    species,
     station,
     stationData,
     tableData,
@@ -46,6 +47,7 @@ export default function PanelMap({
                 program={program}
                 region={region}
                 setView={setView}
+                species={species}
                 stationData={stationData}
                 tableData={tableData} 
                 view={view}

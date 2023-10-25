@@ -62,8 +62,8 @@ export default function AnalyteMenu({
     const handleSpeciesChange = (selection) => {
         // The object passed to this function is formatted as { label: 'group', value: 'group'}
         // Will be null if the selection was cleared
-        if (selection) {
-            setSpecies(selection.value);
+        if (selection && selection.value) {
+            setSpecies(selection);
         } else {
             setSpecies(null);
         }
@@ -129,7 +129,7 @@ export default function AnalyteMenu({
                     onChange={handleSpeciesChange}
                     styles={customSelectStyle}
                     maxMenuHeight={200}
-                    value={species ? { label: species, value: species } : { label: 'All species', value: null }}
+                    value={species ? { label: species.value, value: species } : { label: 'All species', value: null }}
                 />
             </div>   
         </div>
