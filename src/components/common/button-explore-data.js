@@ -1,6 +1,6 @@
 import React from 'react';
 import { withPrefix } from 'gatsby';
-import { Button, Icon } from 'semantic-ui-react';
+import { Button } from 'semantic-ui-react';
 
 export default function ButtonExploreData({ stationCode }) {   
     return (

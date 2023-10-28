@@ -4,9 +4,10 @@ import { analytes, analyteScoringCategories, analyteYMax } from '../../constants
 import { customTooltip, modalContent } from './chart-panel.module.css';
 
 // Component for rendering graph on the dashboard index page (station panel)
-export default function ChartPanel({ analyte, data, unit, vizColors }) {
+export default function ChartPanel({ analyte, data, species, unit, vizColors }) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
-    const axisFormatDate = d3.timeFormat('%Y-%m-%d');
+    const axisFormatDate = d3.timeFormat('%Y/%m/%d');
+    const axisFormatDateYear = d3.timeFormat('%Y');
     const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
 
@@ -94,11 +95,20 @@ export default function ChartPanel({ analyte, data, unit, vizColors }) {
             // Limit number of ticks based on width of chart (screen size)
             const numTicks = targetWidth < 600 ? 4 : null;
 
+            // Calculate number of data points across all selected sites
+            let countResults = 0;
+            for (let i = 0; i < siteKeys.length; i++) {
+                countResults += data.sites[siteKeys[i]].length;
+            }
+            
+            // Check multiple criteria to see if the x-axis should be formatted as year or as the full date
+            const formatAsYear = (countResults > 1 || data.analyte.source === 'tissue') && (xExtent[0] != xExtent[1]);
+
             // Define x-axis
             const xAxis = d3.axisBottom()
                 .scale(xScale)
                 .ticks(numTicks)
-                .tickFormat(axisFormatDate);
+                .tickFormat(formatAsYear ? axisFormatDateYear : axisFormatDate);
 
             // ** Calculate y-axis max
             // For toxicity, fix y-axis to 0-100

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import LoaderMenu from '../loaders/loader-menu';
 import Select from 'react-select';
 import { matrixColor } from '../../constants/constants-app';
@@ -7,15 +7,42 @@ import {
     chemistryResourceId, 
     customSelectStyle, 
     habitatResourceId, 
+    tissueResourceId, 
     toxicityResourceId 
 } from '../../utils/utils';
 
 // Import styles
 import { labelContainer, labelMain, labelText, selectWrapper } from './analyte-menu.module.css';
 
-export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, station }) {
+export default function AnalyteMenu({ 
+    panelAnalyte, 
+    panelSpecies, 
+    program, 
+    setPanelAnalyte, 
+    setPanelSpecies, 
+    station 
+}) {
+    // Ref for storing all Analyte-Species combinations, to be used for the cross-filtering
+    const allCombosRef = useRef(null);
     const [analyteList, setAnalyteList] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loadingAnalyte, setLoadingAnalyte] = useState(true);
+    const [loadingSpecies, setLoadingSpecies] = useState(false);
+    const [speciesDisabled, setSpeciesDisabled] = useState(false);
+    const [speciesList, setSpeciesList] = useState(null);
+
+    const defaultSpecies = { label: 'All species', source: null, value: null };
+
+    const formatOptionLabel = ({ value, label, matrix }) => {
+        const boxColor = matrixColor[matrix] ? matrixColor[matrix] : matrixColor['other'];
+        return (
+            <div className={labelContainer}>
+                <div className={labelMain} style={{ backgroundColor: `${boxColor}` }}>
+                    {matrix}
+                </div>
+                <div className={labelText}>{label}</div>
+            </div>
+        )
+    };
 
     const getData = (params, dataType) => {
         return new Promise((resolve, reject) => {
@@ -34,74 +61,43 @@ export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, st
         });
     }
 
-    useEffect(() => {
+    // Get all Analyte-Species combinations from toxicity and tissue dataset
+    const getAllCombos = (station) => {
         if (station) {
-            setLoading(true);
-            /* The following SQL statements get the unique analytes from each portal resource for the selected station code */
-            // Chemistry
-            let sqlChem = `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
-            if (program) {
-                sqlChem += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
-            };
-            const paramsChem = {
+            // --- Chemistry
+            const chemistrySql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte" AS "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
+            const chemistryParams = {
                 resource_id: chemistryResourceId,
-                sql: sqlChem
+                sql: chemistrySql
             };
-            // Habitat
-            let sqlHabitat = `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
-            if (program) {
-                sqlHabitat += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
-            };
-            const paramsHabitat = {
+            // --- Habitat
+            const habitatSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte" AS "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
+            const habitatParams = {
                 resource_id: habitatResourceId,
-                sql: sqlHabitat
+                sql: habitatSql
             };
-            // Toxicity
-            let sqlTox = `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
-            if (program) {
-                sqlTox += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
-            }
-            const paramsTox = {
+            // --- Toxicity
+            const toxSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "OrganismName") "StationCode", "Analyte" AS "AnalyteDisplay", "OrganismName" AS "Species", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            const toxParams = {
                 resource_id: toxicityResourceId,
-                sql: sqlTox
+                sql: toxSql
             };
+            // --- Tissue
             Promise.all([
-                // Chemistry dataset
-                getData(paramsChem, 'chemistry'),
-                // Habitat dataset
-                getData(paramsHabitat, 'habitat'),
-                // Tox dataset
-                getData(paramsTox, 'toxicity')
+                getData(chemistryParams, 'chemistry'),
+                getData(habitatParams, 'habitat'),
+                getData(toxParams, 'toxicity')
+                // Add tissue here
             ]).then((res) => {
                 // Concatenate the records into one array
                 let allData = res[0].concat(res[1], res[2]);
-                // Sort desc by last sample date
-                allData.sort((a, b) => a['AnalyteDisplay'].localeCompare(b['AnalyteDisplay']));
-                const analyteOptions = allData.map(d => {
-                    return { 
-                        label: d.AnalyteDisplay, 
-                        value: d.AnalyteDisplay + '$' + d.MatrixDisplay, 
-                        matrix: d.MatrixDisplay, 
-                        category: d.AnalyteGroup1,
-                        source: d.Source
-                    }
-                })
-                setAnalyteList(analyteOptions);
-                setLoading(false);
+                // Add ID field, this is to allow us to filter by analyte and matrix based off one field
+                allData.forEach(d => {
+                    d.id = d.AnalyteDisplay + '$' + d.MatrixDisplay;
+                });
+                allCombosRef.current = allData;
             });
         }
-    }, [station]);
-
-    const formatOptionLabel = ({ value, label, matrix }) => {
-        const boxColor = matrixColor[matrix] ? matrixColor[matrix] : matrixColor['other'];
-        return (
-            <div className={labelContainer}>
-                <div className={labelMain} style={{ backgroundColor: `${boxColor}` }}>
-                    {matrix}
-                </div>
-                <div className={labelText}>{label}</div>
-            </div>
-        )
     };
 
     const handleAnalyteChange = (selection) => {
@@ -113,22 +109,132 @@ export default function AnalyteMenu({ panelAnalyte, program, setPanelAnalyte, st
         }
     }
 
+    const handleSpeciesChange = (selection) => {
+        // If there is a selection,
+        if (selection) {
+            setPanelSpecies(selection);
+        } else {
+            setPanelSpecies(null);
+        }
+    }
+
+    const updateSpeciesList = () => {
+        setLoadingSpecies(true);
+        let options;
+        if (panelSpecies) {
+            options = allCombosRef.current.filter(d => d.Species === panelSpecies.value);
+        } else {
+            options = allCombosRef.current;
+        }
+        // Filter out null values
+        options = options.filter(d => d.Species != null);
+        // Get unique objects from an array of objects based on object attribute value
+        // https://yagisanatode.com/2021/07/03/get-a-unique-list-of-objects-in-an-array-of-object-in-javascript/
+        const uniqueSpecies = [...new Map(options.map((item) => [item['Species'], item])).values(),];
+        // Sort alphabetical by species name
+        uniqueSpecies.sort((a, b) => a['Species'].localeCompare(b['Species']));
+        const speciesOptions = uniqueSpecies.map(d => {
+            return { 
+                label: d.Species, 
+                value: d.Species, 
+                source: d.Source
+            }
+        });
+        // Add 'All species' option to the top
+        const defaultOption = [{ label: 'All species', value: null, source: null }];
+        const allSpeciesOptions = defaultOption.concat(speciesOptions);
+        setSpeciesList(allSpeciesOptions);
+        setLoadingSpecies(false);       
+    };
+
+    const updateAnalyteList = () => {
+        setLoadingAnalyte(true);
+        const options = allCombosRef.current;
+        // Get unique objects from an array of objects based on object attribute value
+        // https://yagisanatode.com/2021/07/03/get-a-unique-list-of-objects-in-an-array-of-object-in-javascript/
+        const uniqueOptions = [...new Map(options.map((item) => [item['id'], item])).values(),];
+        // Sort alphabetical by id (analyte name + matrix name)
+        uniqueOptions.sort((a, b) => a['id'].localeCompare(b['id']));
+        const analyteOptions = uniqueOptions.map(d => {
+            return { 
+                label: d.AnalyteDisplay, 
+                value: d.AnalyteDisplay, 
+                matrix: d.MatrixDisplay, 
+                category: d.AnalyteGroup1,
+                source: d.Source,
+                id: d.id
+            }
+        });
+        setAnalyteList(analyteOptions);
+        setLoadingAnalyte(false);
+    };
+
+    useEffect(() => {
+        if (station) {
+            getAllCombos(station);
+        }
+    }, [station]);
+
+    useEffect(() => {
+        if (allCombosRef.current) {
+            updateAnalyteList();
+            updateSpeciesList();
+        }
+    }, [allCombosRef.current]);
+
+    useEffect(() => {
+        if (allCombosRef.current) {
+            if (panelAnalyte) {
+                setPanelSpecies(null);
+                // Analyte has been selected/changed
+                if (panelAnalyte.source === 'toxicity' || panelAnalyte.source === 'tissue') {
+                    setSpeciesDisabled(false);
+                    updateSpeciesList(panelAnalyte);
+                } else {
+                    setSpeciesDisabled(true);
+                }
+            } else {
+                // Analyte has been cleared
+                updateSpeciesList(panelAnalyte);
+                setSpeciesDisabled(false);
+            }
+        }
+    }, [panelAnalyte]);
+
     return (
-        <div className={selectWrapper}>
-            { !loading ? 
-                <Select
-                    options={analyteList} 
-                    isClearable={true}
-                    isLoading={loading}
-                    isSearchable={true}
-                    placeholder='Parameter'
-                    onChange={handleAnalyteChange}
-                    styles={customSelectStyle}
-                    maxMenuHeight={200}
-                    formatOptionLabel={formatOptionLabel}
-                    value={panelAnalyte ? panelAnalyte : null}
-                />
-            : <LoaderMenu /> }
+        <div>
+            <div className={selectWrapper}>
+                { !loadingAnalyte ? 
+                    <Select
+                        options={analyteList} 
+                        isClearable={true}
+                        isLoading={loadingAnalyte}
+                        isSearchable={true}
+                        placeholder='Analyte'
+                        onChange={handleAnalyteChange}
+                        styles={customSelectStyle}
+                        maxMenuHeight={200}
+                        formatOptionLabel={formatOptionLabel}
+                        value={ panelAnalyte ? panelAnalyte : null }
+                    />
+                : <LoaderMenu /> }
+            </div>
+            <div className={selectWrapper}>
+                { panelAnalyte && (panelAnalyte.source === 'tissue' || panelAnalyte.source === 'toxicity') ? 
+                    <Select
+                        options={speciesList} 
+                        isClearable={false}
+                        isDisabled={speciesDisabled}
+                        isLoading={loadingSpecies}
+                        isSearchable={true}
+                        placeholder='Species'
+                        onChange={handleSpeciesChange}
+                        styles={customSelectStyle}
+                        maxMenuHeight={200}
+                        value={panelSpecies ? panelSpecies : defaultSpecies}
+                    />
+                : null }
+            </div>
         </div>
     )
 }

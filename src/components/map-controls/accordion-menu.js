@@ -105,6 +105,8 @@ export default function AccordionMenu({
             // Get unique objects from an array of objects based on object attribute value
             // https://yagisanatode.com/2021/07/03/get-a-unique-list-of-objects-in-an-array-of-object-in-javascript/
             const uniqueAnalytes = [...new Map(analyteRecords.map((item) => [item['value'], item])).values(),];
+            // Sort alphabetical order by "value", which combines the analyte and matrix names
+            uniqueAnalytes.sort((a, b) => a['value'].localeCompare(b['value']));
             setAnalyteList(uniqueAnalytes);
         } else {
             console.error('Empty or null data');

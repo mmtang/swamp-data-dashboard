@@ -86,7 +86,7 @@ export default function Index() {
   const getStations = (params) => {
     return new Promise((resolve, reject) => {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-      console.log(url + new URLSearchParams(params));
+      // console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => {
         if (!resp.ok) {
@@ -314,7 +314,9 @@ export default function Index() {
           whereStatements.push(`"Region" = '${regionVal}'`);
         }
         if (species) {
-          whereStatements.push(`"CommonName" = '${species.value}'`);
+          if (species.source === 'tissue') {
+            whereStatements.push(`"CommonName" = '${species.value}'`);
+          };
         }
         // Concat multiple join statements
         const concat = whereStatements.join(' AND ');
@@ -352,7 +354,9 @@ export default function Index() {
           whereStatements.push(`"Region" = '${regionVal}'`);
         }
         if (species) {
-          whereStatements.push(`"OrganismName" = '${species.value}'`);
+          if (species.source === 'toxicity') {
+            whereStatements.push(`"OrganismName" = '${species.value}'`);
+          }
         }
         // Concat multiple join statements
         const concat = whereStatements.join(' AND ');
@@ -601,6 +605,7 @@ export default function Index() {
         setStation={setStation} 
         setStationLoading={setStationLoading}
         setZoomToStation={setZoomToStation}
+        species={species}
         station={station} 
         stationLoading={stationLoading}
       />

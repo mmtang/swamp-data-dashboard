@@ -25,6 +25,7 @@ export default function PanelStationInfo({
     selecting, 
     setComparisonSites, 
     setSelecting, 
+    species,
     station 
 }) {  
     const [allSites, setAllSites] = useState([]);  // list of station objects, no data
@@ -32,6 +33,7 @@ export default function PanelStationInfo({
     const [chartData, setChartData] = useState(null); // list of objects that combine allSitesData into the correct format for charting
     const [loading, setLoading] = useState(true);
     const [panelAnalyte, setPanelAnalyte] = useState(analyte);
+    const [panelSpecies, setPanelSpecies] = useState(species);
     // Make a copy of the colorPaletteViz array. Used to keep track of what colors are being used and not being used in the current render. We don't want color to be tied to array position; or else the color of a site will change every time a site is removed from the comparisonSites selection. Will use a fresh copy everytime the selected station changes
     const [vizColors, setVizColors] = useState(colorPaletteViz);  
 
@@ -42,18 +44,28 @@ export default function PanelStationInfo({
             if (dataAnalyte) {
                 // Get the data source for data query
                 let resource;
+                let sql;
                 if (dataAnalyte.source === 'chemistry') {
                     resource = chemistryResourceId;
+                    sql = `SELECT * FROM "${resource}" WHERE "AnalyteDisplay" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 } else if (dataAnalyte.source === 'habitat') {
                     resource = habitatResourceId;
+                    sql = `SELECT * FROM "${resource}" WHERE "AnalyteDisplay" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 } else if (dataAnalyte.source === 'toxicity') {
                     resource = toxicityResourceId;
+                    sql = `SELECT * FROM "${resource}" WHERE "Analyte" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 }
                 // Build query string
                 const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-                let sql = `SELECT * FROM "${resource}" WHERE "AnalyteDisplay" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 if (program) {
                     sql += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
+                }
+                if (dataAnalyte.source in ['toxicity', 'tissue'] && species) {
+                    if (species.source === 'toxicity') {
+                        sql += ` AND "OrganismName" = '${species.value}'`;
+                    } else if (species.source === 'tissue') {
+                        sql += ` AND "CommonName" = '${species.value}'`;
+                    }
                 }
                 sql += ' ORDER BY "SampleDate" DESC'
                 const params = {
@@ -186,8 +198,10 @@ export default function PanelStationInfo({
             <div>View data:</div>
             <AnalyteMenu 
                 panelAnalyte={panelAnalyte} 
+                panelSpecies={panelSpecies}
                 program={program}
                 setPanelAnalyte={setPanelAnalyte} 
+                setPanelSpecies={setPanelSpecies}
                 station={station} 
             />
             {/* ------ Chart */}
@@ -201,13 +215,14 @@ export default function PanelStationInfo({
                     <ChartPanel 
                         analyte={panelAnalyte} 
                         data={chartData}
+                        species={panelSpecies}
                         unit={unitRef.current}
                         vizColors={vizColors}
                     />
                 : panelAnalyte && loading ?  // If an analyte is selected but still loading, show the loader
                     <LoaderBlock />
                 : !panelAnalyte ?  // If an analyte is not selected, show a message
-                    <div style={{ fontStyle: 'italic' }}>Select a parameter</div>
+                    <div style={{ fontStyle: 'italic' }}>Select an analyte</div>
                 : null }
             </Segment>
             {/* ----- Compare Sites

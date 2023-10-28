@@ -33,6 +33,7 @@ export default function PanelStation({
     setStation, 
     setStationLoading,
     setZoomToStation,
+    species,
     station,
     stationLoading
 }) {   
@@ -140,6 +141,7 @@ export default function PanelStation({
                                 selecting={selecting}
                                 setComparisonSites={setComparisonSites}
                                 setSelecting={setSelecting}
+                                species={species}
                                 station={stationRef.current} 
                             />
                         : null }
