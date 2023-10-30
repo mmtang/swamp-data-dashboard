@@ -17,7 +17,6 @@ import { labelContainer, labelMain, labelText, selectWrapper } from './analyte-m
 export default function AnalyteMenu({ 
     panelAnalyte, 
     panelSpecies, 
-    program, 
     setPanelAnalyte, 
     setPanelSpecies, 
     station 
@@ -120,11 +119,9 @@ export default function AnalyteMenu({
 
     const updateSpeciesList = () => {
         setLoadingSpecies(true);
-        let options;
-        if (panelSpecies) {
-            options = allCombosRef.current.filter(d => d.Species === panelSpecies.value);
-        } else {
-            options = allCombosRef.current;
+        let options = allCombosRef.current;
+        if (panelAnalyte) {
+            options = options.filter(d => d.MatrixDisplay === panelAnalyte.matrix);
         }
         // Filter out null values
         options = options.filter(d => d.Species != null);
@@ -170,8 +167,12 @@ export default function AnalyteMenu({
     };
 
     useEffect(() => {
-        if (station) {
+        if (station && !allCombosRef.current) {
             getAllCombos(station);
+        }
+        if (station && allCombosRef.current) {
+            updateAnalyteList();
+            updateSpeciesList();
         }
     }, [station]);
 

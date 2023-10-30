@@ -28,6 +28,7 @@ export default function PanelStationInfo({
     species,
     station 
 }) {  
+    const unitRef = useRef(null);
     const [allSites, setAllSites] = useState([]);  // list of station objects, no data
     const [allSitesData, setAllSitesData] = useState({}); // dictionary for site data, data is stored here to prevent requerying the same data over and over again
     const [chartData, setChartData] = useState(null); // list of objects that combine allSitesData into the correct format for charting
@@ -36,8 +37,6 @@ export default function PanelStationInfo({
     const [panelSpecies, setPanelSpecies] = useState(species);
     // Make a copy of the colorPaletteViz array. Used to keep track of what colors are being used and not being used in the current render. We don't want color to be tied to array position; or else the color of a site will change every time a site is removed from the comparisonSites selection. Will use a fresh copy everytime the selected station changes
     const [vizColors, setVizColors] = useState(colorPaletteViz);  
-
-    const unitRef = useRef(null);
 
     const getData = (station, dataAnalyte) => {
         return new Promise((resolve, reject) => {
@@ -60,11 +59,11 @@ export default function PanelStationInfo({
                 if (program) {
                     sql += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
                 }
-                if (dataAnalyte.source in ['toxicity', 'tissue'] && species) {
-                    if (species.source === 'toxicity') {
-                        sql += ` AND "OrganismName" = '${species.value}'`;
-                    } else if (species.source === 'tissue') {
-                        sql += ` AND "CommonName" = '${species.value}'`;
+                if ((dataAnalyte.source === 'toxicity' || dataAnalyte.source ==='tissue') && panelSpecies) {
+                    if (panelSpecies.source === 'toxicity') {
+                        sql += ` AND "OrganismName" = '${panelSpecies.value}'`;
+                    } else if (panelSpecies.source === 'tissue') {
+                        sql += ` AND "CommonName" = '${panelSpecies.value}'`;
                     }
                 }
                 sql += ' ORDER BY "SampleDate" DESC'
@@ -90,10 +89,11 @@ export default function PanelStationInfo({
                                 }
                             });
                         }
-                        if (dataAnalyte.source === 'toxicity') {
+                        if (dataAnalyte.source === 'toxicity' || dataAnalyte.source === 'tissue') {
                             data.forEach(d => {
                                 d.SampleDate = parseDate(d.SampleDate);
                                 d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(3)));  // Use the ResultDisplay name for consistency when reusing chart component
+                                d.Species = d.OrganismName || d.CommonName;
                                 d.Censored = false;  // Convert string to boolean                            
                             });
                         }
@@ -111,6 +111,16 @@ export default function PanelStationInfo({
         setComparisonSites([]);
         unitRef.current = null;
     }, [panelAnalyte]);
+
+    useEffect(() => {
+        setLoading(true);
+        setSelecting(false);
+        setVizColors(colorPaletteViz);
+        setAllSites([station]);
+        setAllSitesData({});
+        setComparisonSites([]);
+        unitRef.current = null;
+    }, [panelSpecies]);
 
     useEffect(() => {
         setLoading(true);
@@ -188,6 +198,7 @@ export default function PanelStationInfo({
             setLoading(true);
             // Reset analyte when another point is selected on map
             setPanelAnalyte(analyte);
+            setPanelSpecies(species);
             setAllSites([station]);
         }
     }, [station]);
@@ -199,7 +210,6 @@ export default function PanelStationInfo({
             <AnalyteMenu 
                 panelAnalyte={panelAnalyte} 
                 panelSpecies={panelSpecies}
-                program={program}
                 setPanelAnalyte={setPanelAnalyte} 
                 setPanelSpecies={setPanelSpecies}
                 station={station} 
