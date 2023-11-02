@@ -140,7 +140,7 @@ export default function AccordionMenu({
                 }
             });
             // Build array of objects
-            let uniqueSpecies = [... new Map(speciesRecords.map((item) => [item['value'], item])).values(),];
+            let uniqueSpecies = [...new Map(speciesRecords.map((item) => [item['value'], item])).values(),];
             // Filter out null values so they don't show in the select menu
             uniqueSpecies = uniqueSpecies.filter(d => d.label != null);
             // Sort alphabetical order

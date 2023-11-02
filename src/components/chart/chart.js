@@ -4,12 +4,14 @@ import { analytes, analyteScoringCategories, analyteYMax } from '../../constants
 import { customTooltip, modalContent } from './chart-panel.module.css';
 
 // Component for rendering graph on the dashboard index page (station panel)
-export default function Chart({ analyte, data, species, unit, vizColors }) {
+export default function Chart({ analyte, data, unit, vizColors }) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
     const axisFormatDate = d3.timeFormat('%Y/%m/%d');
     const axisFormatDateYear = d3.timeFormat('%Y');
     const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
+
+    const divContainer = '#index-chart-container';
 
     useEffect(() => {
         const responsive = (id) => {
@@ -40,7 +42,7 @@ export default function Chart({ analyte, data, species, unit, vizColors }) {
 
         const drawChart = (data) => {
             // get container + svg aspect ratio
-            const container = d3.select('#index-chart-container').node();
+            const container = d3.select(divContainer).node();
             const targetWidth = parseInt(container.getBoundingClientRect().width);
 
             const chartId = 'chart-' + randomId.current;
@@ -52,7 +54,7 @@ export default function Chart({ analyte, data, species, unit, vizColors }) {
             d3.select('.chart').remove();
             d3.select('.legend').remove();
 
-            const chart = d3.select('#index-chart-container').append('svg')
+            const chart = d3.select(divContainer).append('svg')
                 .attr('id', chartId)
                 .attr('class', 'chart')
                 .attr('width', width)
@@ -102,7 +104,7 @@ export default function Chart({ analyte, data, species, unit, vizColors }) {
             }
             
             // Check multiple criteria to see if the x-axis should be formatted as year or as the full date
-            const formatAsYear = (countResults > 1 || data.analyte.source === 'tissue') && (xExtent[0] != xExtent[1]);
+            const formatAsYear = (countResults > 1 || data.analyte.source === 'tissue') && (xExtent[0] !== xExtent[1]);
 
             // Define x-axis
             const xAxis = d3.axisBottom()

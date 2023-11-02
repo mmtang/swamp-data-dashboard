@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LoaderMenu from '../loaders/loader-menu';
 import Select from 'react-select';
 import { matrixColor } from '../../constants/constants-app';
 import { 
-    capitalizeFirstLetter, 
     chemistryResourceId, 
     customSelectStyle, 
     habitatResourceId, 
@@ -22,7 +21,7 @@ export default function AnalyteMenu({
     station 
 }) {
     // Ref for storing all Analyte-Species combinations, to be used for the cross-filtering
-    const allCombosRef = useRef(null);
+    const [allCombos, setAllCombos] = useState(null);
     const [analyteList, setAnalyteList] = useState(null);
     const [loadingAnalyte, setLoadingAnalyte] = useState(true);
     const [loadingSpecies, setLoadingSpecies] = useState(false);
@@ -82,19 +81,25 @@ export default function AnalyteMenu({
                 sql: toxSql
             };
             // --- Tissue
+            const tissueSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "CommonName") "StationCode", "Analyte" AS "AnalyteDisplay", "CommonName" AS "Species", "MatrixDisplay", "AnalyteGroup1" FROM "${tissueResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+            const tissueParams = {
+                resource_id: tissueResourceId,
+                sql: tissueSql
+            }
             Promise.all([
                 getData(chemistryParams, 'chemistry'),
                 getData(habitatParams, 'habitat'),
-                getData(toxParams, 'toxicity')
+                getData(toxParams, 'toxicity'),
+                getData(tissueParams, 'tissue')
                 // Add tissue here
             ]).then((res) => {
                 // Concatenate the records into one array
-                let allData = res[0].concat(res[1], res[2]);
+                let allData = res[0].concat(res[1], res[2], res[3]);
                 // Add ID field, this is to allow us to filter by analyte and matrix based off one field
                 allData.forEach(d => {
                     d.id = d.AnalyteDisplay + '$' + d.MatrixDisplay;
                 });
-                allCombosRef.current = allData;
+                setAllCombos(allData);
             });
         }
     };
@@ -119,9 +124,9 @@ export default function AnalyteMenu({
 
     const updateSpeciesList = () => {
         setLoadingSpecies(true);
-        let options = allCombosRef.current;
+        let options = allCombos;
         if (panelAnalyte) {
-            options = options.filter(d => d.MatrixDisplay === panelAnalyte.matrix);
+            options = options.filter(d => (d.AnalyteDisplay === panelAnalyte.label) && (d.MatrixDisplay === panelAnalyte.matrix));
         }
         // Filter out null values
         options = options.filter(d => d.Species != null);
@@ -146,7 +151,7 @@ export default function AnalyteMenu({
 
     const updateAnalyteList = () => {
         setLoadingAnalyte(true);
-        const options = allCombosRef.current;
+        const options = allCombos;
         // Get unique objects from an array of objects based on object attribute value
         // https://yagisanatode.com/2021/07/03/get-a-unique-list-of-objects-in-an-array-of-object-in-javascript/
         const uniqueOptions = [...new Map(options.map((item) => [item['id'], item])).values(),];
@@ -155,11 +160,10 @@ export default function AnalyteMenu({
         const analyteOptions = uniqueOptions.map(d => {
             return { 
                 label: d.AnalyteDisplay, 
-                value: d.AnalyteDisplay, 
+                value: d.id,
                 matrix: d.MatrixDisplay, 
                 category: d.AnalyteGroup1,
-                source: d.Source,
-                id: d.id
+                source: d.Source
             }
         });
         setAnalyteList(analyteOptions);
@@ -167,40 +171,48 @@ export default function AnalyteMenu({
     };
 
     useEffect(() => {
-        if (station && !allCombosRef.current) {
+        if (station && !allCombos) {
             getAllCombos(station);
         }
-        if (station && allCombosRef.current) {
+        if (station && allCombos) {
             updateAnalyteList();
             updateSpeciesList();
         }
     }, [station]);
 
     useEffect(() => {
-        if (allCombosRef.current) {
+        if (allCombos) {
             updateAnalyteList();
             updateSpeciesList();
         }
-    }, [allCombosRef.current]);
+    }, [allCombos]);
 
     useEffect(() => {
-        if (allCombosRef.current) {
+        if (allCombos) {
             if (panelAnalyte) {
                 setPanelSpecies(null);
                 // Analyte has been selected/changed
                 if (panelAnalyte.source === 'toxicity' || panelAnalyte.source === 'tissue') {
                     setSpeciesDisabled(false);
-                    updateSpeciesList(panelAnalyte);
+                    updateSpeciesList();
                 } else {
                     setSpeciesDisabled(true);
                 }
             } else {
                 // Analyte has been cleared
-                updateSpeciesList(panelAnalyte);
+                updateSpeciesList();
                 setSpeciesDisabled(false);
             }
         }
     }, [panelAnalyte]);
+
+    /*
+    useEffect(() => {
+        if (allCombosRef.current) {
+            console.log('hi');
+        }
+    }, [panelSpecies]);
+    */
 
     return (
         <div>

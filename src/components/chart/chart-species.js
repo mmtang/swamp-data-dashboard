@@ -3,30 +3,40 @@ import * as d3 from 'd3';
 import { analytes, analyteScoringCategories, analyteYMax } from '../../constants/constants-data';
 import { customTooltip, modalContent } from './chart-panel.module.css';
 
-// Component for rendering graph on the dashboard index page (station panel)
-export default function ChartSpecies({ analyte, data, species, unit, vizColors }) {
+// Component for rendering graph on the dashboard index page (station panel) for toxicity and tissue data
+export default function ChartSpecies({ analyte, data, unit, vizColors }) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
     const speciesColorDict = useRef(null);
     const axisFormatDate = d3.timeFormat('%Y/%m/%d');
     const axisFormatDateYear = d3.timeFormat('%Y');
     const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
+    const yearFormatDate = d3.timeFormat('%Y');
     const formatNumber = d3.format(',');
 
+    const divContainer = '#index-chart-species-container';
+    const divLegend = '#index-chart-legend';
     const siteKeys = Object.keys(data.sites);
-    const siteData = data.sites[siteKeys[0]];
 
+    const margin = { top: 35, right: 20, bottom: 60, left: 55 };
+
+    // Instantiate this variable if only one site has been selected; otherwise set speciesColorDict to null
+    // If displaying multiple species, we need to preassign the species values to colors first
     const mapColorsToSpecies = (data) => {
-        if (data) {
-            // Use siteKey[0] because we are only mapping one station in the chart species component
-            const allSpecies = (siteData.map(d => d.Species));
-            const uniqueSpecies = [...new Set(allSpecies),];
-            // Initialize new dictionary to store species:color pairs
-            const speciesDict = {};
-            for (let i = 0; i < uniqueSpecies.length; i++) {
-                speciesDict[uniqueSpecies[i]] = vizColors[i];
+        return new Promise((resolve, reject) => {
+            if (data && siteKeys.length === 1) {
+                const siteData = data.sites[siteKeys[0]];
+                const allSpecies = (siteData.map(d => d.Species));
+                const uniqueSpecies = [...new Set(allSpecies),];
+                // Initialize new dictionary to store species:color pairs
+                const speciesDict = {};
+                for (let i = 0; i < uniqueSpecies.length; i++) {
+                    speciesDict[uniqueSpecies[i]] = vizColors[i];
+                }
+                resolve(speciesDict);
+            } else {
+                resolve({}); // Set to an empty dictionary instead of null so that speciesColorDict.current can still be accessed and not throw an error. This is needed for the part of the code that draws the points
             }
-            speciesColorDict.current = speciesDict;
-        }
+        })
     }
 
     useEffect(() => {
@@ -58,19 +68,17 @@ export default function ChartSpecies({ analyte, data, species, unit, vizColors }
 
         const drawChart = (data) => {
             // get container + svg aspect ratio
-            const container = d3.select('#index-chart-container').node();
+            const container = d3.select(divContainer).node();
             const targetWidth = parseInt(container.getBoundingClientRect().width);
 
             const chartId = 'chart-' + randomId.current;
-            const margin = { top: 35, right: 20, bottom: 60, left: 55 };
             const width = targetWidth;
             const height = 220 + margin.top + margin.bottom;
             const clipPadding = 5;
             // Remove old svg elements
             d3.select('.chart').remove();
-            d3.select('.legend').remove();
 
-            const chart = d3.select('#index-chart-container').append('svg')
+            const chart = d3.select(divContainer).append('svg')
                 .attr('id', chartId)
                 .attr('class', 'chart')
                 .attr('width', width)
@@ -99,8 +107,12 @@ export default function ChartSpecies({ analyte, data, species, unit, vizColors }
             // --- Define scales
             const siteKeys = Object.keys(data.sites);
 
-            // Get sample dates from all sites to define domain for x-axix
-            const allDates = siteData.map(d => d.SampleDate);
+            // Get sample dates from all sites to define domain for x-axis
+            let allDates = [];
+            for (let i = 0; i < siteKeys.length; i++) {
+                const dates = data.sites[siteKeys[i]].map(d => d.SampleDate);
+                allDates = [...allDates, ...dates];
+            }
 
             const xExtent = d3.extent(allDates);
             const xScale = d3.scaleTime()
@@ -110,11 +122,14 @@ export default function ChartSpecies({ analyte, data, species, unit, vizColors }
             // Limit number of ticks based on width of chart (screen size)
             const numTicks = targetWidth < 600 ? 4 : null;
 
-            // Calculate number of data points
-            let countResults = siteData.length;
+            // Calculate number of data points across all selected sites
+            let countResults = 0;
+            for (let i = 0; i < siteKeys.length; i++) {
+                countResults += data.sites[siteKeys[i]].length;
+            }
             
             // Check multiple criteria to see if the x-axis should be formatted as year or as the full date
-            const formatAsYear = (countResults > 1 || data.analyte.source === 'tissue') && (xExtent[0] != xExtent[1]);
+            const formatAsYear = (((countResults > 1) && (xExtent[0] != xExtent[1])) || data.analyte.source === 'tissue' );
 
             // Define x-axis
             const xAxis = d3.axisBottom()
@@ -132,7 +147,11 @@ export default function ChartSpecies({ analyte, data, species, unit, vizColors }
             } else if (Object.keys(analyteYMax).includes(analyte.label)) {
                 yMax = analyteYMax[analyte.label];
             } else {
-                const allResults = siteData.map(d => d.ResultDisplay);
+                let allResults = [];
+                for (let i = 0; i < siteKeys.length; i++) {
+                    const results = data.sites[siteKeys[i]].map(d => d.ResultDisplay);
+                    allResults = [...allResults, ...results];
+                }
                 yMax = d3.max(allResults);
             }
 
@@ -207,83 +226,110 @@ export default function ChartSpecies({ analyte, data, species, unit, vizColors }
                 }
             }
 
-            // Add points
-            const points = chart.append('g')
-                .attr('clip-path', 'url(#clip)');
-            points.selectAll('.circle')
-                .data(siteData)
-                .enter().append('circle')
-                .attr('class', 'circle')
-                .attr('r', 4)
-                .attr('cx', d => xScale(d.SampleDate))
-                .attr('cy', d => yScale(d.ResultDisplay))
-                .attr('fill', d => d.Censored ? '#e3e4e6' : speciesColorDict.current[d.Species])
-                .attr('stroke', d => d.Censored ? vizColors[0] : '#fff')
-                .attr('stroke-width', d => d.Censored ? 2 : 1)
-                .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
-                .on('mouseover', function(currentEvent, d) {
-                    let content = '<span style="color: #a6a6a6">' + tooltipFormatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": ";
-                    if (['<', '>', '>=', '<='].includes(d.DisplayText)) {
-                        content += d.ResultQualCode + ' ';
-                    }
-                    content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
-                    if (d.DisplayText) {
-                        // Look for values of greater than 2 to exclude values like '<' and '<='
-                        if (d.DisplayText.length > 2) {
-                            content += '<br><i>* ' + d.DisplayText + '</i>';
+            // Loops through each site and draw lines + points
+            for (let i = 0; i < siteKeys.length; i++) {
+                // Add points
+                const points = chart.append('g')
+                    .attr('clip-path', 'url(#clip)');
+                points.selectAll('.circle')
+                    .data(data.sites[siteKeys[i]])
+                    .enter().append('circle')
+                    .attr('class', 'circle')
+                    .attr('r', 4)
+                    .attr('cx', d => xScale(d.SampleDate))
+                    .attr('cy', d => yScale(d.ResultDisplay))
+                    .attr('fill', d => d.Censored ? '#e3e4e6' : speciesColorDict.current[d.Species] || vizColors[i] ) // If drawing one site, use the assigned species color; if drawing multiple sites, use the vizColor array
+                    .attr('stroke', d => d.Censored ? speciesColorDict.current[d.Species] || vizColors[i] : '#fff')
+                    .attr('stroke-width', d => d.Censored ? 2 : 1)
+                    .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
+                    .on('mouseover', function(currentEvent, d) {
+                        const displayDate = analyte.source !== 'tissue' ? tooltipFormatDate(d.SampleDate) : yearFormatDate(d.SampleDate);
+                        let content = '<span style="color: #a6a6a6">' + displayDate + '</span><br>' + d.Analyte + ": ";
+                        if (['<', '>', '>=', '<='].includes(d.DisplayText)) {
+                            content += d.ResultQualCode + ' ';
                         }
-                    }
-                    if (d.Species) {
-                        // Look for values of greater than 2 to exclude values like '<' and '<='
-                        content += `<br>${d.Species}`;
-                    }
-                    return tooltip
-                        .style('opacity', 1)
-                        .style('left', (currentEvent.pageX) + 'px')
-                        .style('top', (currentEvent.pageY - 28) + 'px')
-                        .html(content);
-                })
-                .on('mousemove', function(currentEvent, d) {
-                    return tooltip
-                        .style('opacity', 1)
-                        .style('left', (currentEvent.pageX) + 'px')
-                        .style('top', (currentEvent.pageY - 28) + 'px');
-                })
-                .on('mouseout', () => {
-                    return tooltip.style('opacity', 0);
-                })
-                .merge(points)
-                .attr('cx', d => xScale(d.SampleDate))
-                .attr('cy', d => yScale(d.ResultDisplay));
-            points.exit()
-                .remove();
+                        content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
+                        if (d.Species) {
+                            content += '<br>' + d.Species;
+                        }
+                        if (d.DisplayText) {
+                            // Look for values of greater than 2 to exclude values like '<' and '<='
+                            if (d.DisplayText.length > 2) {
+                                content += '<br><i>* ' + d.DisplayText + '</i>';
+                            }
+                        }
+                        return tooltip
+                            .style('opacity', 1)
+                            .style('left', (currentEvent.pageX) + 'px')
+                            .style('top', (currentEvent.pageY - 28) + 'px')
+                            .html(content);
+                    })
+                    .on('mousemove', function(currentEvent, d) {
+                        return tooltip
+                            .style('opacity', 1)
+                            .style('left', (currentEvent.pageX) + 'px')
+                            .style('top', (currentEvent.pageY - 28) + 'px');
+                    })
+                    .on('mouseout', () => {
+                        return tooltip.style('opacity', 0);
+                    })
+                    .merge(points)
+                    .attr('cx', d => xScale(d.SampleDate))
+                    .attr('cy', d => yScale(d.ResultDisplay));
+                points.exit()
+                    .remove();
+            }
 
-            /*
-            // Add labels to lines
-            lines.append('text')
-                .attr('class', 'series-label')
-                .data(data.sites[siteKeys[i]])
-                .attr('transform', d => {
-                        return 'translate(' + (xScale(d.SampleDate) + 10)  
-                        + ',' + (yScale(d.ResultDisplay) + 5 ) + ')';
-                })
-                .attr('x', 5)
-                .style('fill', vizColors[i])
-                .style('font-size', '0.83em')
-                .style('font-weight', 600)
-                .text(d => d.StationCode);
-            */
+            drawLegend(speciesColorDict);
         };
 
+        const drawLegend = (speciesColorDict) => {
+            if (speciesColorDict && speciesColorDict.current) {
+                // Remove old legend elements
+                d3.select('.legend').remove();
+                // Get species values and sort by alphabetical order
+                const species = Object.keys(speciesColorDict.current).sort((a, b) => a.localeCompare(b));
+                // Create accompany array with matching colors
+                const colors = species.map(d => speciesColorDict.current[d]);
+                const legendColor = d3.scaleOrdinal(colors).domain(species);
+                // Draw legend
+                const svg = d3.select(divLegend).append('svg')
+                    .attr('class', 'legend')
+                    .attr('width', '100%')
+                    .attr('height', species.length * 18)
+                    .style('font', '0.8em Source Sans Pro');
+                const legend = svg.append('g')
+                    .selectAll('g')
+                    .data(species)
+                    .join('g')
+                    .attr('transform', (d, i) => `translate(0, ${i * 18})`);
+                legend.append('rect')
+                    .attr('width', 20)
+                    .attr('height', 20)
+                    .attr('fill', d => legendColor(d));
+                legend.append('text')
+                    .attr('x', 24)
+                    .attr('y', 9)
+                    .attr('text-anchor', 'start')
+                    .attr('dy', '0.35em')
+                    .text(d => d);
+            }
+        }
+
         if (data) {
-            mapColorsToSpecies(data);
-            drawChart(data);
+            mapColorsToSpecies(data)
+            .then((res) => {
+                speciesColorDict.current = res;
+                drawChart(data);
+                drawLegend(speciesColorDict);
+            });
         }
     }, [data])
     
     return (
         <div className={modalContent}>
-            <div id="index-chart-container"></div>
+            <div id="index-chart-species-container"></div>
+            <div id="index-chart-legend"></div>
         </div>
     );
 }

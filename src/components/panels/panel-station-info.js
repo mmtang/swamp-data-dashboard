@@ -11,6 +11,7 @@ import {
     chemistryResourceId, 
     habitatResourceId, 
     parseDate, 
+    tissueResourceId, 
     toxicityResourceId 
 } from '../../utils/utils';
 
@@ -38,6 +39,22 @@ export default function PanelStationInfo({
     // Make a copy of the colorPaletteViz array. Used to keep track of what colors are being used and not being used in the current render. We don't want color to be tied to array position; or else the color of a site will change every time a site is removed from the comparisonSites selection. Will use a fresh copy everytime the selected station changes
     const [vizColors, setVizColors] = useState(colorPaletteViz);  
 
+    // To show the CompareSites component, the selected analyte in the station panel must match the selected analyte in the filters. Also, an analyte must be selected. Also, the show all species option must not be selected when viewing toxicity or tissue data
+    const showCompareSites = (panelAnalyte && panelAnalyte.value != null) && (analyte && analyte.value === panelAnalyte.value) && (panelSpecies && panelSpecies.value != null && panelSpecies.label !== 'All species');
+
+    // This function converts a JavaScript datetime object to the beginning of the year (01/01/YYYY).
+    // This is used to ensure that tissue data points get plotted at the year tick and not in between ticks
+    const dateToYear = (datetime) => {
+        if (datetime) {
+            let newDate = datetime;
+            newDate.setMonth(0); // Set month to January
+            newDate.setDate(1); // Set day to the 1st
+            return newDate;
+        } else {
+            return datetime;
+        }
+    }
+
     const getData = (station, dataAnalyte) => {
         return new Promise((resolve, reject) => {
             if (dataAnalyte) {
@@ -53,6 +70,9 @@ export default function PanelStationInfo({
                 } else if (dataAnalyte.source === 'toxicity') {
                     resource = toxicityResourceId;
                     sql = `SELECT * FROM "${resource}" WHERE "Analyte" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                } else if (dataAnalyte.source === 'tissue') {
+                    resource = tissueResourceId;
+                    sql = `SELECT * FROM "${resource}" WHERE "Analyte" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 }
                 // Build query string
                 const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
@@ -61,12 +81,16 @@ export default function PanelStationInfo({
                 }
                 if ((dataAnalyte.source === 'toxicity' || dataAnalyte.source ==='tissue') && panelSpecies) {
                     if (panelSpecies.source === 'toxicity') {
-                        sql += ` AND "OrganismName" = '${panelSpecies.value}'`;
+                        sql += ` AND "OrganismName" = '${panelSpecies.label}'`;
                     } else if (panelSpecies.source === 'tissue') {
-                        sql += ` AND "CommonName" = '${panelSpecies.value}'`;
+                        sql += ` AND "CommonName" = '${panelSpecies.label}'`;
                     }
                 }
-                sql += ' ORDER BY "SampleDate" DESC'
+                if (dataAnalyte.source === 'tissue') {
+                    sql += ' ORDER BY "LastSampleDate" DESC'
+                } else {
+                    sql += ' ORDER BY "SampleDate" DESC'
+                }
                 const params = {
                     resource_id: resource,
                     sql: sql
@@ -88,13 +112,19 @@ export default function PanelStationInfo({
                                     d.Unit = '';  // for pH records
                                 }
                             });
-                        }
-                        if (dataAnalyte.source === 'toxicity' || dataAnalyte.source === 'tissue') {
+                        } else if (dataAnalyte.source === 'toxicity') {
                             data.forEach(d => {
                                 d.SampleDate = parseDate(d.SampleDate);
                                 d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(3)));  // Use the ResultDisplay name for consistency when reusing chart component
-                                d.Species = d.OrganismName || d.CommonName;
+                                d.Species = d.OrganismName;
                                 d.Censored = false;  // Convert string to boolean                            
+                            });
+                        } else if (dataAnalyte.source === 'tissue') {
+                            data.forEach(d => {
+                                d.SampleDate = dateToYear(parseDate(d.LastSampleDate));
+                                d.ResultDisplay = parseFloat(((+d.Result).toFixed(3)));  // Use the ResultDisplay name for consistency when reusing chart component
+                                d.Species = d.CommonName;
+                                d.Censored = false;  // Convert string to boolean   
                             });
                         }
                         resolve(data);
@@ -240,7 +270,7 @@ export default function PanelStationInfo({
             Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used
             There is no easy way to compare objects except to convert the object to string; this will work as long as the order of the attribute fields in both objects are the same
             */}
-            { (JSON.stringify(analyte) === JSON.stringify(panelAnalyte)) && (analyte !== null) ? 
+            { showCompareSites ? 
                 <CompareSites 
                     comparisonSites={comparisonSites} 
                     selecting={selecting}

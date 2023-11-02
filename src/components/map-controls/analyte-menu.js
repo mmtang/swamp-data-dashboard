@@ -84,7 +84,6 @@ export default function AnalyteMenu({
     return (
         <div>
             {/* Category Menu */}
-            <p className={pLabel}>Analyte category:</p>
             { !loadingCategory ? 
                 <div style={wrapperStyle}>
                     <Select
@@ -123,7 +122,7 @@ export default function AnalyteMenu({
             <div style={{ marginTop: '10px' }}>
                 <Select 
                     options={speciesList} 
-                    isClearable={false}
+                    isClearable={true}
                     isDisabled={speciesDisabled}
                     isSearchable={true}
                     onChange={handleSpeciesChange}

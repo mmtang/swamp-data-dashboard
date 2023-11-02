@@ -479,7 +479,8 @@ export const toxicityDataFields = [
     'Datum',
     'DataQuality',
     'DataQualityIndicator',
-    'Region'
+    'Region',
+    'DisplayText'
 ];
 
 export const tissueDataFields = [

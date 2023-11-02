@@ -86,7 +86,7 @@ export default function Index() {
   const getStations = (params) => {
     return new Promise((resolve, reject) => {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-      // console.log(url + new URLSearchParams(params));
+      console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => {
         if (!resp.ok) {
@@ -279,9 +279,11 @@ export default function Index() {
         }
         // Data quality
         whereStatements.push(`"DataQuality" NOT IN ('MetaData', 'Reject record')`);
-        const concat = whereStatements.join(' AND ');
-        querySql += ' WHERE ';
-        querySql += concat;
+        if (whereStatements.length > 0) {
+          const concat = whereStatements.join(' AND ');
+          querySql += ' WHERE ';
+          querySql += concat;
+        }
         querySql += ` ORDER BY "StationCode", "SampleDate" DESC`
     }
     return { resource_id: resource, sql: querySql };
@@ -319,9 +321,11 @@ export default function Index() {
           };
         }
         // Concat multiple join statements
-        const concat = whereStatements.join(' AND ');
-        querySql += ' WHERE ';
-        querySql += concat;
+        if (whereStatements.length > 0) {
+          const concat = whereStatements.join(' AND ');
+          querySql += ' WHERE ';
+          querySql += concat;
+        }
         querySql += ` ORDER BY "StationCode", "LastSampleDate" DESC`
     }
     return { resource_id: resource, sql: querySql };
@@ -359,9 +363,11 @@ export default function Index() {
           }
         }
         // Concat multiple join statements
-        const concat = whereStatements.join(' AND ');
-        querySql += ' WHERE ';
-        querySql += concat;
+        if (whereStatements.length > 0) {
+          const concat = whereStatements.join(' AND ');
+          querySql += ' WHERE ';
+          querySql += concat;
+        }
         querySql += ` ORDER BY "StationCode", "SampleDate" DESC`
     }
     return { resource_id: resource, sql: querySql };
