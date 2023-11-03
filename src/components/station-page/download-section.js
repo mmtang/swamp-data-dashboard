@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import DownloadData from '../common/download-data';
 
 // These imported variables define the column names (and their order) for the CSV downloads
-import { chemDataFields, habitatDataFields, toxicityDataFields } from '../../constants/constants-data';
+import { chemDataFields, habitatDataFields, toxicityDataFields, tissueDataFields } from '../../constants/constants-data';
 
 export default function DownloadSection({ data, loading }) {
     const [downloadData, setDownloadData] = useState(null);
@@ -27,6 +27,8 @@ export default function DownloadSection({ data, loading }) {
                 fieldsRef.current = habitatDataFields;
             } else if (dataSource === 'toxicity') {
                 fieldsRef.current = toxicityDataFields;
+            } else if (dataSource === 'tissue') {
+                fieldsRef.current = tissueDataFields;
             }
             // Compile all site data into a single array
             let dataArr = [];
