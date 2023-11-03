@@ -15,7 +15,14 @@ import TableSearch from '../../components/station-page/table-search';
 
 import { Label } from 'semantic-ui-react';
 import { linkColorAlt } from '../../constants/constants-app';
-import { regionDict, stationsResourceId } from '../../utils/utils';
+import { 
+    chemistryResourceId, 
+    habitatResourceId, 
+    regionDict, 
+    stationsResourceId, 
+    tissueResourceId, 
+    toxicityResourceId 
+} from '../../utils/utils';
 import { timeParse, timeFormat } from 'd3';
 import { 
     appContainer, 
@@ -177,19 +184,24 @@ export default function Station(props) {
             .then(() => {
                 // Chemistry
                 const chemParams = { 
-                    resource_id: '2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e', 
-                    sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "Analyte", "MatrixDisplay") as MaxSampleDate, "ResultDisplay", "Unit", COUNT("AnalyteDisplay") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay"), AVG("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as AvgResult, MIN("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MinResult, MAX("ResultDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay") as MaxResult FROM "2bfd92aa-7256-4fd9-bfe4-a6eff7a8019e" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "AnalyteDisplay", "MatrixDisplay", "SampleDate" DESC` 
-                }
+                    resource_id: chemistryResourceId, 
+                    sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxSampleDate, "ResultDisplay", "Unit", COUNT("AnalyteDisplay") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay"), AVG("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as AvgResult, MIN("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MinResult, MAX("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxResult FROM "${chemistryResourceId}" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "AnalyteDisplay", "MatrixDisplay", "SampleDate" DESC` 
+                };
                 // Habitat
                 const habitatParams = { 
-                    resource_id: '6d9a828a-d539-457e-922c-3cb54a6d4f9b', 
-                    sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxSampleDate, "ResultDisplay", "Unit", COUNT("AnalyteDisplay") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay"), AVG("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as AvgResult, MIN("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MinResult, MAX("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxResult FROM "6d9a828a-d539-457e-922c-3cb54a6d4f9b" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "AnalyteDisplay", "MatrixDisplay", "SampleDate" DESC` 
-                }
+                    resource_id: habitatResourceId, 
+                    sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxSampleDate, "ResultDisplay", "Unit", COUNT("AnalyteDisplay") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay"), AVG("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as AvgResult, MIN("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MinResult, MAX("ResultDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxResult FROM "${habitatResourceId}" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "AnalyteDisplay", "MatrixDisplay", "SampleDate" DESC` 
+                };
+                // Tissue
+                const tissueParams = {
+                    resource_id: tissueResourceId,
+                    sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxSampleDate, "MeanDisplay" as "ResultDisplay", "Unit", COUNT("AnalyteDisplay") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay"), AVG("MeanDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as AvgResult, MIN("MeanDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MinResult, MAX("MeanDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxResult FROM "${toxicityResourceId}" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "AnalyteDisplay", "MatrixDisplay", "SampleDate" DESC` 
+                };
                 // Toxicity
                 const toxParams = {
-                    resource_id: 'a6dafb52-3671-46fa-8d42-13ddfa36fd49',
-                    sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxSampleDate, "MeanDisplay" as "ResultDisplay", "Unit", COUNT("AnalyteDisplay") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay"), AVG("MeanDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as AvgResult, MIN("MeanDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MinResult, MAX("MeanDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxResult FROM "a6dafb52-3671-46fa-8d42-13ddfa36fd49" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "AnalyteDisplay", "MatrixDisplay", "SampleDate" DESC` 
-                }
+                    resource_id: toxicityResourceId,
+                    sql: `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "OrganismName") "StationCode", "Analyte" as "AnalyteDisplay", "MatrixDisplay", "OrganismName" as "Species", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "Analyte", "MatrixDisplay", "OrganismName") as MaxSampleDate, "MeanDisplay" as "ResultDisplay", "Unit", COUNT("Analyte") OVER (PARTITION BY "StationCode", "Analyte", "MatrixDisplay", "OrganismName"), AVG("MeanDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay", "OrganismName") as AvgResult, MIN("MeanDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay", "OrganismName") as MinResult, MAX("MeanDisplay") OVER (Partition By "StationCode", "Analyte", "MatrixDisplay", "OrganismName") as MaxResult FROM "${toxicityResourceId}" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "Analyte", "MatrixDisplay", "OrganismName", "SampleDate" DESC` 
+                };
                 // Send all API data requests
                 Promise.all([
                     getData(chemParams, 'chemistry'),
@@ -198,7 +210,7 @@ export default function Station(props) {
                 ]).then((res) => {
                     const allRecords = res[0].concat(res[1], res[2]);
                     allRecords.forEach((d) => {
-                        d.Analyte = d.AnalyteDisplay;
+                        d.Species = d.Species || null; // Replace undefined values with null
                     });
                     getCategories(allRecords);
                     allDataRef.current = allRecords; // Save for use later (filtering)
