@@ -195,7 +195,7 @@ export default function Station(props) {
                 // Tissue
                 const tissueParams = {
                     resource_id: tissueResourceId,
-                    sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1", MAX("SampleDate") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxSampleDate, "MeanDisplay" as "ResultDisplay", "Unit", COUNT("AnalyteDisplay") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay"), AVG("MeanDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as AvgResult, MIN("MeanDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MinResult, MAX("MeanDisplay") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay") as MaxResult FROM "${toxicityResourceId}" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "AnalyteDisplay", "MatrixDisplay", "SampleDate" DESC` 
+                    sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "CommonName") "StationCode", "AnalyteDisplay", "MatrixDisplay", "CommonName" as "Species", "AnalyteGroup1", MAX("LastSampleDate") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay", "CommonName") as MaxSampleDate, "Result" as "ResultDisplay", "Unit", COUNT("AnalyteDisplay") OVER (PARTITION BY "StationCode", "AnalyteDisplay", "MatrixDisplay", "CommonName"), AVG("Result") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay", "CommonName") as AvgResult, MIN("Result") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay", "CommonName") as MinResult, MAX("Result") OVER (Partition By "StationCode", "AnalyteDisplay", "MatrixDisplay", "CommonName") as MaxResult FROM "${tissueResourceId}" WHERE "StationCode" = '${encodeURIComponent(stationCodeRef.current)}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "AnalyteDisplay", "MatrixDisplay", "CommonName", "LastSampleDate" DESC` 
                 };
                 // Toxicity
                 const toxParams = {
@@ -206,9 +206,10 @@ export default function Station(props) {
                 Promise.all([
                     getData(chemParams, 'chemistry'),
                     getData(habitatParams, 'habitat'),
+                    getData(tissueParams, 'tissue'),
                     getData(toxParams, 'toxicity')
                 ]).then((res) => {
-                    const allRecords = res[0].concat(res[1], res[2]);
+                    const allRecords = res[0].concat(res[1], res[2], res[3]);
                     allRecords.forEach((d) => {
                         d.Species = d.Species || null; // Replace undefined values with null
                     });
