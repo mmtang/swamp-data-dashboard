@@ -206,14 +206,6 @@ export default function AnalyteMenu({
         }
     }, [panelAnalyte]);
 
-    /*
-    useEffect(() => {
-        if (allCombosRef.current) {
-            console.log('hi');
-        }
-    }, [panelSpecies]);
-    */
-
     return (
         <div>
             <div className={selectWrapper}>
@@ -233,20 +225,18 @@ export default function AnalyteMenu({
                 : <LoaderMenu /> }
             </div>
             <div className={selectWrapper}>
-                { panelAnalyte && (panelAnalyte.source === 'tissue' || panelAnalyte.source === 'toxicity') ? 
-                    <Select
-                        options={speciesList} 
-                        isClearable={false}
-                        isDisabled={speciesDisabled}
-                        isLoading={loadingSpecies}
-                        isSearchable={true}
-                        placeholder='Species'
-                        onChange={handleSpeciesChange}
-                        styles={customSelectStyle}
-                        maxMenuHeight={200}
-                        value={panelSpecies ? panelSpecies : defaultSpecies}
-                    />
-                : null }
+                <Select
+                    options={speciesList} 
+                    isClearable={false}
+                    isDisabled={speciesDisabled}
+                    isLoading={loadingSpecies}
+                    isSearchable={true}
+                    placeholder='Species'
+                    onChange={handleSpeciesChange}
+                    styles={customSelectStyle}
+                    maxMenuHeight={200}
+                    value={panelSpecies ? panelSpecies : defaultSpecies}
+                />
             </div>
         </div>
     )

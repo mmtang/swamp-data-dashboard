@@ -316,9 +316,7 @@ export default function Index() {
           whereStatements.push(`"Region" = '${regionVal}'`);
         }
         if (species) {
-          if (species.source === 'tissue') {
-            whereStatements.push(`"CommonName" = '${species.value}'`);
-          };
+          whereStatements.push(`"CommonName" = '${species.value}'`);
         }
         // Concat multiple join statements
         if (whereStatements.length > 0) {
@@ -358,9 +356,7 @@ export default function Index() {
           whereStatements.push(`"Region" = '${regionVal}'`);
         }
         if (species) {
-          if (species.source === 'toxicity') {
-            whereStatements.push(`"OrganismName" = '${species.value}'`);
-          }
+          whereStatements.push(`"OrganismName" = '${species.value}'`);
         }
         // Concat multiple join statements
         if (whereStatements.length > 0) {
@@ -369,11 +365,12 @@ export default function Index() {
           querySql += concat;
         }
         querySql += ` ORDER BY "StationCode", "SampleDate" DESC`
+        console.log(querySql);
     }
     return { resource_id: resource, sql: querySql };
   }
 
-  // This function runs whenever any of the three states (program, region, analyte, species) change
+  // This function runs whenever any of the four states (program, region, analyte, species) change
   // It resets the station dataset OR re-queries the open data portal for new data and initiates changing the underlying data populating the map and table
   useEffect(() => {
     const isDuplicate = (row, arr) => {
@@ -419,6 +416,7 @@ export default function Index() {
           getStations(paramsTox), // Tox dataset
           getTissueStations(paramsTissue) // Tissue dataset
         ]).then((res) => {
+          console.log(res);
           if (res.length > 0) {
             // Concatenate the records into one array
             const allData = res[0].concat(res[1]);
