@@ -204,6 +204,7 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
                 Analyte: d.AnalyteDisplay,
                 Matrix: d.MatrixDisplay,
                 Source: d.Source,
+                Species: d.Species,
                 Key: d.AnalyteDisplay + ' ' + d.MatrixDisplay
             }
         });

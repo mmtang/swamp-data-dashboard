@@ -99,6 +99,7 @@ export default function AnalyteMenu({
                 allData.forEach(d => {
                     d.id = d.AnalyteDisplay + '$' + d.MatrixDisplay;
                 });
+
                 setAllCombos(allData);
             });
         }
@@ -151,23 +152,29 @@ export default function AnalyteMenu({
 
     const updateAnalyteList = () => {
         setLoadingAnalyte(true);
-        const options = allCombos;
-        // Get unique objects from an array of objects based on object attribute value
-        // https://yagisanatode.com/2021/07/03/get-a-unique-list-of-objects-in-an-array-of-object-in-javascript/
-        const uniqueOptions = [...new Map(options.map((item) => [item['id'], item])).values(),];
-        // Sort alphabetical by id (analyte name + matrix name)
-        uniqueOptions.sort((a, b) => a['id'].localeCompare(b['id']));
-        const analyteOptions = uniqueOptions.map(d => {
-            return { 
-                label: d.AnalyteDisplay, 
-                value: d.id,
-                matrix: d.MatrixDisplay, 
-                category: d.AnalyteGroup1,
-                source: d.Source
+        setTimeout(() => {
+            let filteredOptions = allCombos;
+            // Filter by species if species is selected
+            if (panelSpecies && panelSpecies.value) {
+                filteredOptions = filteredOptions.filter(d => d.Species === panelSpecies.value);
             }
-        });
-        setAnalyteList(analyteOptions);
-        setLoadingAnalyte(false);
+            // Get unique objects from an array of objects based on object attribute value
+            // https://yagisanatode.com/2021/07/03/get-a-unique-list-of-objects-in-an-array-of-object-in-javascript/
+            const uniqueOptions = [...new Map(filteredOptions.map((item) => [item['id'], item])).values(),];
+            // Sort alphabetical by id (analyte name + matrix name)
+            uniqueOptions.sort((a, b) => a['id'].localeCompare(b['id']));
+            const analyteOptions = uniqueOptions.map(d => {
+                return { 
+                    label: d.AnalyteDisplay, 
+                    value: d.id,
+                    matrix: d.MatrixDisplay, 
+                    category: d.AnalyteGroup1,
+                    source: d.Source
+                }
+            });
+            setAnalyteList(analyteOptions);
+            setLoadingAnalyte(false);
+        }, 200);
     };
 
     useEffect(() => {
@@ -190,7 +197,6 @@ export default function AnalyteMenu({
     useEffect(() => {
         if (allCombos) {
             if (panelAnalyte) {
-                setPanelSpecies(null);
                 // Analyte has been selected/changed
                 if (panelAnalyte.source === 'toxicity' || panelAnalyte.source === 'tissue') {
                     setSpeciesDisabled(false);
@@ -205,6 +211,12 @@ export default function AnalyteMenu({
             }
         }
     }, [panelAnalyte]);
+
+    useEffect(() => {
+        if (allCombos) {
+            updateAnalyteList();
+        }
+    }, [panelSpecies]);
 
     return (
         <div>
@@ -227,7 +239,7 @@ export default function AnalyteMenu({
             <div className={selectWrapper}>
                 <Select
                     options={speciesList} 
-                    isClearable={false}
+                    isClearable={true}
                     isDisabled={speciesDisabled}
                     isLoading={loadingSpecies}
                     isSearchable={true}

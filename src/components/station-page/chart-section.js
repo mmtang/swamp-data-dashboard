@@ -4,8 +4,8 @@ import DownloadData from '../common/download-data';
 import MatrixTag from '../common/matrix-tag';
 
 import { timeParse, extent } from 'd3';
-import { chemDataFields, habitatDataFields, toxicityDataFields } from '../../constants/constants-data';
-import { chemistryResourceId, habitatResourceId, toxicityResourceId } from '../../utils/utils';
+import { chemDataFields, habitatDataFields, tissueDataFields, toxicityDataFields } from '../../constants/constants-data';
+import { chemistryResourceId, habitatResourceId, tissueResourceId, toxicityResourceId } from '../../utils/utils';
 
 import { analyteHeader, analyteTitle, sectionContainer } from './chart-section.module.css';
 
@@ -32,7 +32,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
 
             const promises = [];
             for (let i = 0; i < analyteList.length; i++) {
-                promises.push(getData(station, analyteList[i].Analyte, analyteList[i].Matrix, analyteList[i].Source));
+                promises.push(getData(station, analyteList[i].Analyte, analyteList[i].Matrix, analyteList[i].Source, analyteList[i].Species));
             }
             Promise.all(promises)
             .then((results) => {
@@ -72,7 +72,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
         }
     }, [station, selectedAnalytes])
 
-    const getData = (station, analyte, matrix, source) => {
+    const getData = (station, analyte, matrix, source, species) => {
         return new Promise((resolve, reject) => {
             const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
             // Get data from the chemistry dataset
@@ -132,6 +132,25 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         });
                         resolve(records);
                     });
+            } else if (source === 'tissue') {
+                // Get data from the tissue dataset
+                const params = {
+                    resource_id: tissueResourceId,
+                    sql: `SELECT * FROM "${tissueResourceId}" WHERE "AnalyteDisplay" = '${analyte}' AND "CommonName" = '${species}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "LastSampleDate" DESC`
+                };
+                fetch(url + new URLSearchParams(params))
+                    .then(resp => resp.json())
+                    .then(json => json.result.records)
+                    .then(records => {
+                        console.log(records);
+                        records.forEach(d => {
+                            d.Analyte = d.AnalyteDisplay;
+                            d.SampleDate = parseDate(d.SampleDate);
+                            d.ResultDisplay = parseFloat((+d.Result).toFixed(3));
+                            d.Censored = false;  // Convert string to boolean
+                        });
+                        resolve(records);
+                    });
             }
         });
     }
@@ -155,6 +174,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                                 analyteObj.Source === 'chemistry' ? chemDataFields 
                                 : analyteObj.Source === 'habitat' ? habitatDataFields
                                 : analyteObj.Source === 'toxicity' ? toxicityDataFields
+                                : analyteObj.Source === 'tissue' ? tissueDataFields
                                 : chemDataFields
                             }
                         >
