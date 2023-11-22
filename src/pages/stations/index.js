@@ -210,6 +210,7 @@ export default function Station(props) {
                 ]).then((res) => {
                     const allRecords = res[0].concat(res[1], res[2], res[3]);
                     allRecords.forEach((d) => {
+                        d.SearchText = d.AnalyteDisplay + (d.Species ? ' ' + d.Species : ''); // Create a new attribute concatenating the analyte and species values, to be used for searches
                         d.Species = d.Species || null; // Replace undefined values with null
                     });
                     getCategories(allRecords);
@@ -242,7 +243,7 @@ export default function Station(props) {
                 records = allDataRef.current;
             }
             const newSelection = records.filter(d => {
-                return d.Analyte.toLowerCase().includes(filterText.toLowerCase());
+                return d.SearchText.toLowerCase().includes(filterText.toLowerCase());
             });
             setTableData(newSelection);
         } else {
