@@ -205,7 +205,8 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
                 Matrix: d.MatrixDisplay,
                 Source: d.Source,
                 Species: d.Species,
-                Key: d.AnalyteDisplay + ' ' + d.MatrixDisplay
+                // Adding d.Species as a string when the value is null will append the text 'null'
+                Key: d.AnalyteDisplay + ' ' + d.MatrixDisplay + ' ' + d.Species
             }
         });
         setSelectedAnalytes(newSelection);

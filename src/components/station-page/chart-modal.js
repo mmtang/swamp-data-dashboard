@@ -39,7 +39,7 @@ export default function ChartModal({ station, stationName, selectedAnalytes }) {
                         </Button>
                     </span>
                 }
-                content={selectedAnalytes.length <= selectLimit ? `Select up to ${selectLimit} parameters` : <div><Icon bordered inverted color='red' name='exclamation' size='small' />&nbsp;{`A maximum of ${selectLimit} parameters can be graphed at one time`}</div>}
+                content={selectedAnalytes.length <= selectLimit ? `Select up to ${selectLimit} analytes` : <div><Icon bordered inverted color='red' name='exclamation' size='small' />&nbsp;{`A maximum of ${selectLimit} parameters can be graphed at one time`}</div>}
                 size='tiny'
             />
             { modalVisible ? 

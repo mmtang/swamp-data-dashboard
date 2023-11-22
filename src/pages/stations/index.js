@@ -144,7 +144,6 @@ export default function Station(props) {
         return new Promise((resolve, reject) => {
             if (params) {
                 const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-                console.log(url + new URLSearchParams(params));
                 fetch(url + new URLSearchParams(params))
                 .then((resp) => {
                     if (!resp.ok) {

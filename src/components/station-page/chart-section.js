@@ -52,7 +52,9 @@ export default function ChartSection({ station, selectedAnalytes }) {
                 // *** Organize the returned data into a dictionary organized by analyte name
                 let analyteData = {};
                 for (let i = 0; i < results.length; i++) {
-                    const analyteKey = results[i][0].Analyte + ' ' + results[i][0].MatrixDisplay;
+                    const species = results[i][0].OrganismName || results[i][0].CommonName || null;
+                    // Adding d.Species to a string when the value is null will append the text 'null' to the end of the string. This will result in a value like "Ammonia as N, Total samplewater null". Looks ugly, but it will work as long as it matches the key values coming from station-table.js
+                    const analyteKey = results[i][0].Analyte + ' ' + results[i][0].MatrixDisplay + ' ' + species;
                     // Get unique units for display in modal header
                     // Can have multiple (equivalent) units in one parameter dataset
                     const units = [...new Set(results[i].map(d => d.Unit))];
@@ -118,14 +120,14 @@ export default function ChartSection({ station, selectedAnalytes }) {
                 // Get data from the toxicity dataset
                 const params = {
                     resource_id: toxicityResourceId,
-                    sql: `SELECT * FROM "${toxicityResourceId}" WHERE "AnalyteDisplay" = '${analyte}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
+                    sql: `SELECT * FROM "${toxicityResourceId}" WHERE "Analyte" = '${analyte}' AND "OrganismName" = '${species}' AND "MatrixDisplay" = '${matrix}' AND "StationCode" = '${station}' AND "DataQuality" NOT IN ('MetaData', 'Reject record') ORDER BY "SampleDate" DESC`
                 }
                 fetch(url + new URLSearchParams(params))
                     .then(resp => resp.json())
                     .then(json => json.result.records)
                     .then(records => {
                         records.forEach(d => {
-                            d.Analyte = d.AnalyteDisplay;
+                            d.Analyte = d.Analyte;
                             d.SampleDate = parseDate(d.SampleDate);
                             d.ResultDisplay = parseFloat((+d.MeanDisplay).toFixed(3));
                             d.Censored = false;  // Convert string to boolean
@@ -142,10 +144,9 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     .then(resp => resp.json())
                     .then(json => json.result.records)
                     .then(records => {
-                        console.log(records);
                         records.forEach(d => {
                             d.Analyte = d.AnalyteDisplay;
-                            d.SampleDate = parseDate(d.SampleDate);
+                            d.SampleDate = parseDate(d.LastSampleDate);
                             d.ResultDisplay = parseFloat((+d.Result).toFixed(3));
                             d.Censored = false;  // Convert string to boolean
                         });
@@ -163,7 +164,8 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             { analyteObj.Matrix ? <MatrixTag matrix={analyteObj.Matrix} height={25} /> : null }
                             <h4 className={analyteTitle}>
-                                {analyteObj.Analyte}
+                                {analyteObj.Analyte} 
+                                {analyteObj.Species ? ` (${analyteObj.Species})` : null}
                             </h4>
                         </div>
                         <DownloadData 

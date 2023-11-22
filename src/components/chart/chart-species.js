@@ -7,7 +7,7 @@ import { customTooltip, modalContent } from './chart-panel.module.css';
 export default function ChartSpecies({ analyte, data, unit, vizColors }) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
     const speciesColorDict = useRef(null);
-    const axisFormatDate = d3.timeFormat('%-m/%-d/%Y');
+    const axisFormatDate = d3.timeFormat('%m/%d/%Y');
     const axisFormatDateYear = d3.timeFormat('%Y');
     const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
     const yearFormatDate = d3.timeFormat('%Y');

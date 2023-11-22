@@ -10,8 +10,10 @@ import { chart, chartContainer, customTooltip } from './chart.module.css';
 export default function Chart({ analyte, data, dateExtent, unit }) {
     const [loading, setLoading] = useState(true);
 
-    const axisFormatDate = d3.timeFormat('%Y-%m-%d');
+    const axisFormatDate = d3.timeFormat('%m/%d/%Y');
+    const axisFormatDateYear = d3.timeFormat('%Y');
     const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
+    const yearFormatDate = d3.timeFormat('%Y');
     const formatNumber = d3.format(',');
 
     // Generate random 6 digit integer to serve as ID for this chart instance
@@ -100,10 +102,14 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
         // Draw x-axis
         // Limit number of ticks based on width of chart (screen size)
         const numTicks = targetWidth < 600 ? 5 : null;
+        
+        // Check multiple criteria to see if the x-axis should be formatted as year or as the full date
+        const formatAsYear = (((data.length > 1) && (dateExtent[0] != dateExtent[1])) && (dateExtent[0].getYear() !== dateExtent[1].getYear()) || analyte.source === 'tissue' );
+
         const xAxis = d3.axisBottom()
             .scale(xScale)
             .ticks(numTicks)
-            .tickFormat(axisFormatDate);
+            .tickFormat(formatAsYear ? axisFormatDateYear : axisFormatDate);
         chart.append('g')
             .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + (height - margin.bottom) + ')')
@@ -201,11 +207,15 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             .attr('stroke-width', d => d.Censored ? 2 : 1)
             .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
             .on('mouseover', function(currentEvent, d) {
-                let content = '<span style="color: #a6a6a6">' + tooltipFormatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": ";
+                const displayDate = analyte.source !== 'tissue' ? tooltipFormatDate(d.SampleDate) : yearFormatDate(d.SampleDate);
+                let content = '<span style="color: #a6a6a6">' + displayDate + '</span><br>' + d.Analyte + ": ";
                 if (['<', '>', '<=', '>='].includes(d.DisplayText)) {
                     content += d.DisplayText + ' ';
                 }
                 content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
+                if (d.Species) {
+                    content += '<br>' + d.Species;
+                }
                 if (d.DisplayText) {
                     // Look for values of greater than 2 to exclude values like '<' and '<='
                     if (d.DisplayText.length > 2) {
