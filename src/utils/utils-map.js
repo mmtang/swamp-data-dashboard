@@ -62,7 +62,7 @@ export const convertStationDataToGraphics = async (data) => {
         // If there is a valid ResultDisplay value, then include the ResultDisplay and Unit fields. If not, then don't include these fields. These fields are displayed only when a parameter has been selected.
         // Before, tried to fill these columns with null values, but there was an issue with both the data type conversion that ArcGIS uses and another issue with the station table. The table tries to sort on null values, which it cannot do, and this results in a crash. Using an if statement (like below) seems to work better than using conditionals to insert/include keys
         const features = data.map((d, i) => {
-            if (data[0].ResultDisplay) {
+            if (data[0].ResultDisplay !== null && data[0].ResultDisplay !== undefined) {
                 return {
                     geometry: {
                         type: 'point',
@@ -71,6 +71,8 @@ export const convertStationDataToGraphics = async (data) => {
                     },
                     attributes: {
                         ObjectId: d.StationCode,
+                        CommonName: d.CommonName,
+                        CompositeIndividual: d.CompositeIndividual,
                         StationCode: d.StationCode,
                         StationName: d.StationName,
                         TargetLatitude: +d.TargetLatitude,
@@ -78,6 +80,7 @@ export const convertStationDataToGraphics = async (data) => {
                         Region: d.Region.toString(),
                         RegionName: regionDict[d.Region],
                         LastSampleDate: d.LastSampleDate,
+                        SampleYear: d.SampleYear,
                         ResultDisplay: +d.ResultDisplay,
                         Unit: d.Unit,
                         SiteType: d.SiteType
@@ -92,6 +95,8 @@ export const convertStationDataToGraphics = async (data) => {
                     },
                     attributes: {
                         ObjectId: d.StationCode,
+                        CommonName: d.CommonName,
+                        CompositeIndividual: d.CompositeIndividual,
                         StationCode: d.StationCode,
                         StationName: d.StationName,
                         TargetLatitude: +d.TargetLatitude,
@@ -99,11 +104,13 @@ export const convertStationDataToGraphics = async (data) => {
                         Region: d.Region.toString(),
                         RegionName: regionDict[d.Region],
                         LastSampleDate: d.LastSampleDate,
+                        SampleYear: d.SampleYear,
                         SiteType: d.SiteType
                     }
                 };
             }
         });
+        console.log(features);
         resolve(features);
     })
 }
@@ -146,8 +153,23 @@ export const stationDataFields = [
         type: 'string'
     },
     {
+        name: 'CommonName',
+        alias: 'Species',
+        type: 'string'
+    },
+    {
+        name: 'CompositeIndividual',
+        alias: 'Sample Type',
+        type: 'string'
+    },
+    {
         name: 'LastSampleDate',
         alias: 'Last Sample',
+        type: 'string'
+    },
+    {
+        name: 'SampleYear',
+        alias: 'Sample Year',
         type: 'string'
     },
     {

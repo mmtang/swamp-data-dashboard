@@ -86,7 +86,6 @@ export default function Index() {
   const getStations = (params) => {
     return new Promise((resolve, reject) => {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-      console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => {
         if (!resp.ok) {
@@ -117,7 +116,7 @@ export default function Index() {
   const getTissueStations = (params) => {
     return new Promise((resolve, reject) => {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-      console.log('tissue:', url + new URLSearchParams(params));
+      console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => {
         if (!resp.ok) {
@@ -292,9 +291,9 @@ export default function Index() {
   const createTissueParams = (resource) => {
     let querySql;
     if (!analyte) {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "CompositeIndividual", "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "Result" as ResultDisplay, "Unit", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "CompositeIndividual", "Result" as ResultDisplay, "Unit", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
@@ -365,7 +364,6 @@ export default function Index() {
           querySql += concat;
         }
         querySql += ` ORDER BY "StationCode", "SampleDate" DESC`
-        console.log(querySql);
     }
     return { resource_id: resource, sql: querySql };
   }
@@ -416,7 +414,6 @@ export default function Index() {
           getStations(paramsTox), // Tox dataset
           getTissueStations(paramsTissue) // Tissue dataset
         ]).then((res) => {
-          console.log(res);
           if (res.length > 0) {
             // Concatenate the records into one array
             const allData = res[0].concat(res[1]);

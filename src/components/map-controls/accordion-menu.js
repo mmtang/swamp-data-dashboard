@@ -210,6 +210,7 @@ export default function AccordionMenu({
                 updateAnalyteList(res);
                 updateCategoryList(res);
                 updateProgramList(res);
+                updateSpeciesList(res);
                 // Save list of unique analytes, done on initial load only
                 allAnalyteOptionsRef.current = analyteList;
                 // Save list of unique analyte categories, done on initial load only

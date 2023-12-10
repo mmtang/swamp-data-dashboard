@@ -4,6 +4,7 @@ import ChartPanel from '../chart/chart-panel';
 import CompareSites from '../compare-sites/compare-sites';
 import DownloadSection from '../station-page/download-section';
 import LoaderBlock from '../loaders/loader-block';
+import PanelTable from '../table/panel-table';
 import { Segment } from 'semantic-ui-react';
 
 import { 
@@ -41,6 +42,9 @@ export default function PanelStationInfo({
 
     // To show the CompareSites component, the selected analyte in the station panel must match the selected analyte in the filters. Also, an analyte must be selected. Also, the show all species option must not be selected when viewing toxicity or tissue data
     const showCompareSites = (panelAnalyte && panelAnalyte.value != null) && (analyte && analyte.value === panelAnalyte.value) && (panelSpecies && panelSpecies.value != null && panelSpecies.label !== 'All species');
+
+    // Show the table when viewing tissue data
+    const showTable = (panelAnalyte && panelAnalyte.source === 'tissue') || (panelSpecies && panelSpecies === 'tissue');
 
     // This function converts a JavaScript datetime object to the beginning of the year (01/01/YYYY).
     // This is used to ensure that tissue data points get plotted at the year tick and not in between ticks
@@ -280,6 +284,9 @@ export default function PanelStationInfo({
                     station={station} 
                     vizColors={vizColors}
                 />
+            : null }
+            { showTable ? 
+                <PanelTable data={chartData} />
             : null }
         </div>
     )
