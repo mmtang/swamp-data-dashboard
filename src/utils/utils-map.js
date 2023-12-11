@@ -95,8 +95,6 @@ export const convertStationDataToGraphics = async (data) => {
                     },
                     attributes: {
                         ObjectId: d.StationCode,
-                        CommonName: d.CommonName,
-                        CompositeIndividual: d.CompositeIndividual,
                         StationCode: d.StationCode,
                         StationName: d.StationName,
                         TargetLatitude: +d.TargetLatitude,
@@ -104,13 +102,11 @@ export const convertStationDataToGraphics = async (data) => {
                         Region: d.Region.toString(),
                         RegionName: regionDict[d.Region],
                         LastSampleDate: d.LastSampleDate,
-                        SampleYear: d.SampleYear,
                         SiteType: d.SiteType
                     }
                 };
             }
         });
-        console.log(features);
         resolve(features);
     })
 }
