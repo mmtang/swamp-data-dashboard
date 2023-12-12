@@ -5,7 +5,7 @@ import CompareSites from '../compare-sites/compare-sites';
 import DownloadSection from '../station-page/download-section';
 import LoaderBlock from '../loaders/loader-block';
 import PanelTable from '../table/panel-table';
-import { Segment } from 'semantic-ui-react';
+import { Menu, Segment } from 'semantic-ui-react';
 
 import { 
     capitalizeFirstLetter, 
@@ -17,7 +17,7 @@ import {
 } from '../../utils/utils';
 
 import { colorPaletteViz } from '../../constants/constants-app';
-import { chartContainer } from './panel-station-info.module.css';
+import { chartContainer, menuContainer } from './panel-station-info.module.css';
 
 // This component generates the main content (below the site info) for when a station is selected. The dashboard loads different content based on whether or not an analyte/parameter was selected beforehand (or not)
 export default function PanelStationInfo({ 
@@ -31,6 +31,7 @@ export default function PanelStationInfo({
     station 
 }) {  
     const unitRef = useRef(null);
+    const [activeMenuItem, setActiveMenuItem] = useState('chart');
     const [allSites, setAllSites] = useState([]);  // list of station objects, no data
     const [allSitesData, setAllSitesData] = useState({}); // dictionary for site data, data is stored here to prevent requerying the same data over and over again
     const [chartData, setChartData] = useState(null); // list of objects that combine allSitesData into the correct format for charting
@@ -58,6 +59,10 @@ export default function PanelStationInfo({
             return datetime;
         }
     }
+
+    const displayNone = {
+        display: 'none'
+    };
 
     const getData = (station, dataAnalyte) => {
         return new Promise((resolve, reject) => {
@@ -136,6 +141,12 @@ export default function PanelStationInfo({
             }
         });
     }
+
+    const handleMenuClick = (e, { name }) => {
+        if (name) {
+            setActiveMenuItem(name);
+        }
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -248,27 +259,47 @@ export default function PanelStationInfo({
                 setPanelSpecies={setPanelSpecies}
                 station={station} 
             />
-            {/* ------ Chart */}
-            <Segment className={chartContainer} placeholder textAlign='center'>
-                {/* ----- Download data */}
-                { panelAnalyte ? 
-                    <DownloadSection data={chartData} loading={loading} />
-                : null }
-                { panelAnalyte && !loading ?  // If an analyte is selected and there is no loading status, show the chart
-                    // ----- Chart
-                    <ChartPanel 
-                        analyte={panelAnalyte} 
-                        data={chartData}
-                        species={panelSpecies}
-                        unit={unitRef.current}
-                        vizColors={vizColors}
+            <div className={menuContainer}>
+                <Menu size='tiny' tabular>
+                    <Menu.Item
+                        name='chart'
+                        active={activeMenuItem === 'chart'}
+                        onClick={handleMenuClick}
                     />
-                : panelAnalyte && loading ?  // If an analyte is selected but still loading, show the loader
-                    <LoaderBlock />
-                : !panelAnalyte ?  // If an analyte is not selected, show a message
-                    <div style={{ fontStyle: 'italic' }}>Select an analyte</div>
-                : null }
-            </Segment>
+                    <Menu.Item
+                        name='table'
+                        active={activeMenuItem === 'table'}
+                        onClick={handleMenuClick}
+                    />
+                </Menu>
+            </div>
+            {/* ------ Chart */}
+            <div className={menuContainer} style={ activeMenuItem !== 'chart' ? displayNone : null }>
+                <Segment className={chartContainer} placeholder textAlign='center'>
+                    {/* ----- Download data */}
+                    { panelAnalyte ? 
+                        <DownloadSection data={chartData} loading={loading} />
+                    : null }
+                    { panelAnalyte && !loading ?  // If an analyte is selected and there is no loading status, show the chart
+                        // ----- Chart
+                        <ChartPanel 
+                            analyte={panelAnalyte} 
+                            data={chartData}
+                            species={panelSpecies}
+                            unit={unitRef.current}
+                            vizColors={vizColors}
+                        />
+                    : panelAnalyte && loading ?  // If an analyte is selected but still loading, show the loader
+                        <LoaderBlock />
+                    : !panelAnalyte ?  // If an analyte is not selected, show a message
+                        <div style={{ fontStyle: 'italic' }}>Select an analyte</div>
+                    : null }
+                </Segment>
+            </div>
+            {/* ------ Table */}
+            <div className={menuContainer} style={ activeMenuItem !== 'table' ? displayNone : null }>
+                <PanelTable data={chartData} />
+            </div>
             {/* ----- Compare Sites
             If analyte selection matches analyte selection in map, then show the "Compare sites" content 
             Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used
@@ -284,9 +315,6 @@ export default function PanelStationInfo({
                     station={station} 
                     vizColors={vizColors}
                 />
-            : null }
-            { showTable ? 
-                <PanelTable data={chartData} />
             : null }
         </div>
     )

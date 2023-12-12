@@ -99,7 +99,6 @@ export default function AnalyteMenu({
                 allData.forEach(d => {
                     d.id = d.AnalyteDisplay + '$' + d.MatrixDisplay;
                 });
-
                 setAllCombos(allData);
             });
         }

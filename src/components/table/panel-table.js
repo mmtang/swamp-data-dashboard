@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Cell, Column, CustomHeaderCell, Table,  } from 'rsuite-table';
+import { Cell, Column, HeaderCell, Table,  } from 'rsuite-table';
 // Import styles
 import 'rsuite-table/dist/css/rsuite-table.css';
 import { container } from './panel-table.module.css';
@@ -8,7 +8,14 @@ import { container } from './panel-table.module.css';
 export default function PanelTable({ data }) {
     const [tableData, setTableData] = useState(null);
 
-    const CustomHeaderCell = props => <CustomHeaderCell {...props} style={{ backgroundColor: '#ececed' }} />;
+    const CustomHeaderCell = props => <HeaderCell {...props} style={{ 
+        alignItems: 'flex-end',
+        backgroundColor: '#f9fafb',  
+        //color: '#fff', 
+        color: '#103c68',
+        display: 'flex',
+        fontWeight: 600
+    }} />;
 
     useEffect(() => {
         if (data && data.sites) {
@@ -32,31 +39,33 @@ export default function PanelTable({ data }) {
                     cellBordered={true}
                     //loading={loading}
                     //fillHeight={true}
-                    headerHeight={38}
+                    headerHeight={60}
                     rowHeight={38}
                     //onRowClick={handleClick}
                     //onSortColumn={handleSortColumn}
                     //sortColumn={sortColumn}
-                    affixHorizontalScrollbar={true}
+                    //affixHorizontalScrollbar={true}
                 >
-                    <Column sortable width={125}>
+                    <Column sortable width={150}>
                         {/*<CustomHeaderCell>Species</CustomHeaderCell>*/}
                         <CustomHeaderCell>Species</CustomHeaderCell>
                         <Cell dataKey='Species' />
                     </Column>
-                    <Column sortable width={70} align='right'>
+                    <Column sortable width={65} align='right'>
                         <CustomHeaderCell>Year</CustomHeaderCell>
                         <Cell dataKey='SampleYear' />
                     </Column>
-                    <Column sortable width={65} align='right'>
-                        <CustomHeaderCell>Result</CustomHeaderCell>
+                    <Column sortable width={85} align='right'>
+                        <CustomHeaderCell>Result<br/>({tableData[0]['Unit']})</CustomHeaderCell>
                         <Cell dataKey='ResultDisplay' />
                     </Column>
+                    {/*
                     <Column sortable width={70} align='right'>
                         <CustomHeaderCell>Unit</CustomHeaderCell>
                         <Cell dataKey='Unit' />
                     </Column>
-                    <Column sortable width={120} align='right'>
+                    */}
+                    <Column sortable width={110} align='right'>
                         <CustomHeaderCell>Sample Type</CustomHeaderCell>
                         <Cell dataKey='CompositeIndividual' />
                     </Column>

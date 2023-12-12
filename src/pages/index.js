@@ -414,7 +414,6 @@ export default function Index() {
           getStations(paramsTox), // Tox dataset
           getTissueStations(paramsTissue) // Tissue dataset
         ]).then((res) => {
-          console.log(res);
           if (res.length > 0) {
             // Concatenate the records into one array
             const allData = res[0].concat(res[1]);
