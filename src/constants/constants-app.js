@@ -22,3 +22,5 @@ export const popupStyle = {
 };
 
 export const referenceSiteColor = '#f2711c';
+
+export const referenceSitesText = "Reference sites are sampling locations where human disturbance is absent or minimal. These sites are used to set benchmark expectations for healthy streams."

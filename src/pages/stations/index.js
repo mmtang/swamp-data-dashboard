@@ -13,8 +13,8 @@ import TableClear from '../../components/station-page/table-clear';
 import TableMenu from '../../components/station-page/table-menu';
 import TableSearch from '../../components/station-page/table-search';
 
-import { Label } from 'semantic-ui-react';
-import { linkColorAlt } from '../../constants/constants-app';
+import { Label, Popup } from 'semantic-ui-react';
+import { linkColorAlt, popupStyle,referenceSitesText } from '../../constants/constants-app';
 import { 
     chemistryResourceId, 
     habitatResourceId, 
@@ -271,9 +271,16 @@ export default function Station(props) {
                             <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{stationObjRef.current.RegionName} Region</span>
                             { stationObjRef.current && stationObjRef.current.SiteType === 'Reference site' ? 
                             <div className={tagContainer}>
-                                <Label basic color='orange' size='small' style={{ borderRadius: 0 }}>
-                                    Reference site
-                                </Label>
+                                <Popup
+                                    inverted
+                                    content={referenceSitesText}
+                                    style={popupStyle}
+                                    trigger={
+                                        <Label basic color='orange' size='small' style={{ borderRadius: 0 }}>
+                                            Reference site
+                                        </Label>
+                                    }
+                                />
                             </div>
                             : null }
                         </section>

@@ -1,5 +1,8 @@
 import React from 'react';
+import HelpIcon from '../icons/help-icon';
 import { Checkbox } from 'semantic-ui-react';
+
+import { referenceSitesText } from '../../constants/constants-app';
 
 export default function HighlightReference({ setHighlightReferenceSites }) {
     const calciteMatch = {
@@ -24,6 +27,11 @@ export default function HighlightReference({ setHighlightReferenceSites }) {
                 onChange={(e, data) => handleReferenceChange(data.checked)}
                 style={calciteMatch}
             />
+            <HelpIcon>
+                <div style={{ fontSize: '0.92em' }}>
+                    {referenceSitesText}
+                </div>
+            </HelpIcon>
         </div>
     )
 }

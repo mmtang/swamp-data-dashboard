@@ -5,7 +5,8 @@ import ButtonZoomStation from '../common/button-zoom-station';
 import FullScreenImage from '../common/full-screen-image';
 import PanelStationInfo from './panel-station-info';
 
-import { Icon, Label, Loader } from 'semantic-ui-react';
+import { popupStyle, referenceSitesText } from '../../constants/constants-app';
+import { Icon, Label, Loader, Popup } from 'semantic-ui-react';
 
 import { infoContainer, mainContainer } from '../../pages/index.module.css';
 import { 
@@ -117,9 +118,16 @@ export default function PanelStation({
                     <div className={buttonGrid}>
                         { station && station.SiteType === 'Reference site' ? 
                             <div className={tagContainer}>
-                                <Label basic color='orange' style={{ borderRadius: 0 }}>
-                                    Reference site
-                                </Label>
+                                <Popup
+                                    inverted
+                                    content={referenceSitesText}
+                                    style={popupStyle}
+                                    trigger={
+                                        <Label basic color='orange' style={{ borderRadius: 0 }}>
+                                            Reference site
+                                        </Label>
+                                    }
+                                />
                             </div>
                         : null }
                         <div className={buttonContainer}>
