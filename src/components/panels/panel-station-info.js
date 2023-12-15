@@ -31,7 +31,7 @@ export default function PanelStationInfo({
     station 
 }) {  
     const unitRef = useRef(null);
-    const [activeMenuItem, setActiveMenuItem] = useState('chart');
+    const [activeMenuItem, setActiveMenuItem] = useState('graph');
     const [allSites, setAllSites] = useState([]);  // list of station objects, no data
     const [allSitesData, setAllSitesData] = useState({}); // dictionary for site data, data is stored here to prevent requerying the same data over and over again
     const [chartData, setChartData] = useState(null); // list of objects that combine allSitesData into the correct format for charting
@@ -42,7 +42,7 @@ export default function PanelStationInfo({
     const [vizColors, setVizColors] = useState(colorPaletteViz);  
 
     // To show the CompareSites component, the selected analyte in the station panel must match the selected analyte in the filters. Also, an analyte must be selected. Also, the show all species option must not be selected when viewing toxicity or tissue data
-    const showCompareSites = (panelAnalyte && panelAnalyte.value != null) && (analyte && analyte.value === panelAnalyte.value) && (panelSpecies && panelSpecies.value != null && panelSpecies.label !== 'All species');
+    const showCompareSites = (panelAnalyte && panelAnalyte.value != null) && (analyte && analyte.value === panelAnalyte.value);
 
     // Show the table when viewing tissue data
     const showTable = (panelAnalyte && panelAnalyte.source === 'tissue') || (panelSpecies && panelSpecies === 'tissue');
@@ -255,6 +255,7 @@ export default function PanelStationInfo({
             <AnalyteMenu 
                 panelAnalyte={panelAnalyte} 
                 panelSpecies={panelSpecies}
+                setActiveMenuItem={setActiveMenuItem}
                 setPanelAnalyte={setPanelAnalyte} 
                 setPanelSpecies={setPanelSpecies}
                 station={station} 
@@ -262,8 +263,8 @@ export default function PanelStationInfo({
             <div className={menuContainer}>
                 <Menu size='tiny' tabular>
                     <Menu.Item
-                        name='chart'
-                        active={activeMenuItem === 'chart'}
+                        name='graph'
+                        active={activeMenuItem === 'graph'}
                         onClick={handleMenuClick}
                     />
                     <Menu.Item
@@ -274,7 +275,7 @@ export default function PanelStationInfo({
                 </Menu>
             </div>
             {/* ------ Chart */}
-            <div className={menuContainer} style={ activeMenuItem !== 'chart' ? displayNone : null }>
+            <div className={menuContainer} style={ activeMenuItem !== 'graph' ? displayNone : null }>
                 <Segment className={chartContainer} placeholder textAlign='center'>
                     {/* ----- Download data */}
                     { panelAnalyte ? 
@@ -295,27 +296,35 @@ export default function PanelStationInfo({
                         <div style={{ fontStyle: 'italic' }}>Select an analyte</div>
                     : null }
                 </Segment>
+                {/* ----- Compare Sites
+                If analyte selection matches analyte selection in map, then show the "Compare sites" content 
+                Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used
+                There is no easy way to compare objects except to convert the object to string; this will work as long as the order of the attribute fields in both objects are the same
+                */}
+                { showCompareSites ? 
+                    <CompareSites 
+                        comparisonSites={comparisonSites} 
+                        selecting={selecting}
+                        setSelecting={setSelecting}
+                        setComparisonSites={setComparisonSites}
+                        setVizColors={setVizColors}
+                        station={station} 
+                        vizColors={vizColors}
+                    />
+                : null }
             </div>
             {/* ------ Table */}
             <div className={menuContainer} style={ activeMenuItem !== 'table' ? displayNone : null }>
-                <PanelTable data={chartData} />
+                { panelAnalyte && !loading ?  // If an analyte is selected and there is no loading status, show the table
+                    <PanelTable analyte={panelAnalyte} data={chartData} />
+                : panelAnalyte && loading ?  // If an analyte is selected but still loading, show the loader
+                    <LoaderBlock />
+                : !panelAnalyte ?  // If an analyte is not selected, show a message
+                    <Segment className={chartContainer} placeholder textAlign='center'>
+                        <div style={{ fontStyle: 'italic' }}>Select an analyte</div>
+                    </Segment>
+                : null }
             </div>
-            {/* ----- Compare Sites
-            If analyte selection matches analyte selection in map, then show the "Compare sites" content 
-            Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used
-            There is no easy way to compare objects except to convert the object to string; this will work as long as the order of the attribute fields in both objects are the same
-            */}
-            { showCompareSites ? 
-                <CompareSites 
-                    comparisonSites={comparisonSites} 
-                    selecting={selecting}
-                    setSelecting={setSelecting}
-                    setComparisonSites={setComparisonSites}
-                    setVizColors={setVizColors}
-                    station={station} 
-                    vizColors={vizColors}
-                />
-            : null }
         </div>
     )
 }

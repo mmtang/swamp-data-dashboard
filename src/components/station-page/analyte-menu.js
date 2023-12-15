@@ -16,6 +16,7 @@ import { labelContainer, labelMain, labelText, selectWrapper } from './analyte-m
 export default function AnalyteMenu({ 
     panelAnalyte, 
     panelSpecies, 
+    setActiveMenuItem,
     setPanelAnalyte, 
     setPanelSpecies, 
     station 
@@ -105,6 +106,8 @@ export default function AnalyteMenu({
     };
 
     const handleAnalyteChange = (selection) => {
+        // Reset the panel menu to graph to ensure that the graph draws whenever the user changes the analyte or species
+        setActiveMenuItem('graph');
         // If there is a selection, the passed object is formatted as { label: 'Temperature', value: 'Temperature$samplewater', matrix: 'samplewater', source: 'chemistry'}
         if (selection) {
             setPanelAnalyte(selection);
@@ -114,7 +117,8 @@ export default function AnalyteMenu({
     }
 
     const handleSpeciesChange = (selection) => {
-        // If there is a selection,
+        // Reset the panel menu to graph to ensure that the graph draws whenever the user changes the analyte or species
+        setActiveMenuItem('graph');
         if (selection) {
             setPanelSpecies(selection);
         } else {
@@ -176,7 +180,21 @@ export default function AnalyteMenu({
         }, 200);
     };
 
+    const refreshSpeciesDisabled = () => {
+        if (panelAnalyte) {
+            if (panelAnalyte.source === 'toxicity' || panelAnalyte.source === 'tissue') {
+                setSpeciesDisabled(false);
+                updateSpeciesList();
+            } else {
+                setSpeciesDisabled(true);
+            }
+        } else {
+            setSpeciesDisabled(false);
+        }
+    }
+
     useEffect(() => {
+        refreshSpeciesDisabled();
         if (station && !allCombos) {
             getAllCombos(station);
         }

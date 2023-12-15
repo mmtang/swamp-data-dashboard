@@ -26,6 +26,7 @@
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
     "react-select": "^4.3.1",
+    "rsuite": "^5.47.0",
     "rsuite-table": "^5.7.1",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3",
