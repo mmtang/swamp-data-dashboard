@@ -931,6 +931,14 @@ export default function MapIndex2({
                 name: 'SWAMP Monitoring Stations',
                 placeholder: 'Example: Buena Vista Park',
                 zoomScale: 14000
+            },
+            // 12/26/23 - Geocoding service added to allow for searches by lat/long coordinates. Requested by FHAB program
+            {
+                url: 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer',
+                singleLineFieldName: 'SingleLine',
+                name: 'ArcGIS World Geocoding Service',
+                placeholder: 'Latitude, Longitude',
+                suggestionsEnabled: false
             }
         ];
     }
