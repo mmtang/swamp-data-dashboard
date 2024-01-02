@@ -181,7 +181,7 @@ export default function AnalyteMenu({
     };
 
     const refreshSpeciesDisabled = () => {
-        if (panelAnalyte) {
+        if (allCombos && panelAnalyte) {
             if (panelAnalyte.source === 'toxicity' || panelAnalyte.source === 'tissue') {
                 setSpeciesDisabled(false);
                 updateSpeciesList();
