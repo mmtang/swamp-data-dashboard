@@ -116,7 +116,7 @@ export default function Index() {
   const getTissueStations = (params) => {
     return new Promise((resolve, reject) => {
       const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-      console.log(url + new URLSearchParams(params));
+      //console.log(url + new URLSearchParams(params));
       fetch(url + new URLSearchParams(params))
       .then((resp) => {
         if (!resp.ok) {
@@ -291,9 +291,9 @@ export default function Index() {
   const createTissueParams = (resource) => {
     let querySql;
     if (!analyte) {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "CompositeIndividual", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "CompositeIndividual", "Result" as ResultDisplay, "Unit", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "Result" as ResultDisplay, "Unit", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query

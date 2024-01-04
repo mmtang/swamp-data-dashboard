@@ -28,27 +28,57 @@ export default function PanelMapMenu({
         }
     }
 
-    const handleViewClick = () => {
-        if (view === 'map') {
-            setView('table');
-        } else {
-            setView('map');
-        }
+    const handleMapClick = () => {
+        setView('map');
+    }
+
+    const handleTableClick = () => {
+        setView('table');
+    }
+
+    const handleSummaryClick = () => {
+        setView('summary');
     }
 
     return (
         <div className={container}>
             <div className={menuWrapper}>
-                {/* Map & Table */}
-                <div className={menuItem} onClick={handleViewClick}>
-                    <div>
-                        <Icon fitted inverted 
-                            size='large'
-                            name={ view === 'map' ? 'table' : 'map' }
-                        />
-                        <span>{ view === 'map' ? 'Table' : 'Map' }</span>
+                {/* Map */}
+                { view !== 'map' ? 
+                    <div className={menuItem} onClick={handleMapClick}>
+                        <div>
+                            <Icon fitted inverted 
+                                size='large'
+                                name='map'
+                            />
+                            <span>Map</span>
+                        </div>
                     </div>
-                </div>
+                : null }
+                {/* Table */}
+                { view !== 'table' && (analyte === null || analyte.source !== 'tissue') ?
+                    <div className={menuItem} onClick={handleTableClick}>
+                        <div>
+                            <Icon fitted inverted 
+                                size='large'
+                                name='table'
+                            />
+                            <span>Table</span>
+                        </div>
+                    </div>
+                : null }
+                {/* Tissue Summary */}
+                { view !== 'summary' && (analyte && analyte.source === 'tissue') ?
+                    <div className={menuItem} onClick={handleSummaryClick}>
+                        <div>
+                            <Icon fitted inverted 
+                                size='large'
+                                name='table'
+                            />
+                            <span>Table</span>
+                        </div>
+                    </div>
+                : null }
                 {/* Download */}
                 <div className={menuItem} onClick={handleDataClick}>
                     <BulkDownload 
