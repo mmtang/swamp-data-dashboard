@@ -19,11 +19,14 @@ export default function TissueTable({
     view
 }) {
     // State variables
+    const [flatData, setFlatData] = useState(null); // The original fetched data, flat structure, used for sorting data
     const [loading, setLoading] = useState(true);
-    const [tableData, setTableData] = useState(null);
+    const [sortColumn, setSortColumn] = useState('SampleYear');
+    const [sortType, setSortType] = useState('desc')
+    const [tableData, setTableData] = useState(null); // The original flat dataset in tree structure, used for the table
 
     const createParams = () => {
-        let querySql = `SELECT DISTINCT ON ("StationCode", "Analyte", "CommonName", "SampleYear", "ResultType") "StationCode", "StationName", "Region", "SampleYear", "Analyte", "CommonName", "ResultType", "Result" as ResultDisplay, "Unit" FROM "${tissueResourceId}"`
+        let querySql = `SELECT DISTINCT ON ("StationCode", "Analyte", "CommonName", "SampleYear", "ResultType", "TissueName", "TissuePrep") "StationCode", "StationName", "Region", "SampleYear", "Analyte", "CommonName", "ResultType", "Result", "Unit", "TissueName", "TissuePrep" FROM "${tissueResourceId}"`
         const whereStatements = [];
         if (analyte || program || region || species) {
             // This block constucts the "WHERE" part of the select query
@@ -61,8 +64,25 @@ export default function TissueTable({
     const convertToDataTree = (data) => {
         return new Promise((resolve, reject) => {
             if (data.length > 0) {
+                // Define structure of the tree dataset by renaming the fields, see Treeize package
+                const remappedData = data.map(d => {
+                    return { 
+                        'id': generateId(),
+                        'StationCode': d.StationCode,
+                        'StationName*': d.StationName,
+                        'Analyte': d.Analyte,
+                        'children:id': generateId(),
+                        'children:Species': d.CommonName,
+                        'children:SampleYear': +d.SampleYear,
+                        'children:Result': +d.Result,
+                        'children:Unit': d.Unit,
+                        'children:ResultType': d.ResultType,
+                        'children:TissuePrep': d.TissuePrep
+                    }
+                });
+                // Create tree dataset
                 const groups = new Treeize();
-                groups.grow(data);
+                groups.grow(remappedData);
                 const treeData = groups.getData();
                 resolve(treeData);
             } else {
@@ -74,6 +94,40 @@ export default function TissueTable({
     const generateId = () => {
         const randomId = Math.floor((Math.random() * 100000).toString());
         return randomId;
+    }
+
+    // Uses state variables sortColumn and sortType to return a dynamically sorted version of the stationData dataset
+    // https://rsuite.github.io/rsuite-table/#10
+    const getSortedData = () => {
+        return new Promise((resolve, reject) => {
+            if (sortColumn && sortType && flatData) {
+                const sortedData = flatData.sort((a, b) => {
+                    let x = a[sortColumn];
+                    let y = b[sortColumn];
+                    if (typeof x === 'number') {
+                        // Sort numbers
+                        if (sortType === 'asc') {
+                            return x - y;
+                        } else {
+                            return y - x;
+                        }
+                    } else {
+                        // Sort strings
+                        if (sortType === 'asc') {
+                            return x.localeCompare(y)
+                        } else {
+                            return y.localeCompare(x);
+                        }
+                    }
+                });
+                convertToDataTree(sortedData)
+                .then((data) => {
+                    resolve(data);
+                });
+            } else {
+                resolve(tableData);
+            }
+        })
     }
 
     const getTissueData = (params) => {
@@ -90,31 +144,34 @@ export default function TissueTable({
           .then((json) => json.result.records)
           .then((records) => {
             if (records.length > 0) {
-                const data = records.map(d => {
-                    return { 
-                        //'code': d.StationCode,
-                        'id': generateId(),
-                        'label*': d.StationName,
-                        //'region': regionDict[d.Region],
-                        //'analyte': d.Analyte,
-                        'children:id': generateId(),
-                        'children:species': d.CommonName,
-                        'children:year': d.SampleYear,
-                        'children:result': +d.resultdisplay,
-                        'children:unit': d.Unit,
-                        'children:resulttype': d.ResultType,
-                    }
+                records.forEach((d) => {
+                    d.Result = +d.Result;
+                    d.SampleYear = +d.SampleYear;
                 });
-                // Transform data to tree structure
-                const treeData = convertToDataTree(data);
-                resolve(treeData);
+                setFlatData(records);
+                resolve(records);
             }
           })
           .catch((error) => {
             console.error('Issue with the network response:', error);
           });
         })
-      }
+    }
+
+    // This function runs whenever a column header is clicked (user changes column sort)
+    const handleSortColumn = (sortColumn, sortType) => {
+        setLoading(true);
+        setSortColumn(sortColumn);
+        setSortType(sortType);
+    };
+
+    useEffect(() => {
+        getSortedData()
+        .then((data) => {
+            setTableData(data);
+            setLoading(false);
+        });
+    }, [sortColumn, sortType]);
 
     useEffect(() => {
         if (view === 'summary') {
@@ -154,44 +211,53 @@ export default function TissueTable({
         <div className={tableContainer}>
             { tableData ? 
                 <Table 
-                    isTree
-                    virtualized
-                    defaultExpandAllRows={true}
                     bordered
                     cellBordered
                     data={tableData}
+                    defaultExpandAllRows={true}
                     fillHeight={true}
                     height={500}
+                    isTree
+                    loading={loading}
                     rowHeight={38}
                     rowKey='id'
+                    shouldUpdateScroll={false}
+                    virtualized
                     //onRowClick={handleClick}
-                    //onSortColumn={handleSortColumn}
-                    //sortColumn={sortColumn}
-                    //affixHorizontalScrollbar={true}
+                    onSortColumn={handleSortColumn}
+                    sortColumn={sortColumn}
                 >
-                    <Column width={200} fullText treeCol>
-                        <HeaderCell>Station</HeaderCell>
-                        <Cell dataKey='label' />
+                    <Column align='left' sortable width={130}>
+                        <HeaderCell>Station Code</HeaderCell>
+                        <Cell dataKey='StationCode' />
                     </Column>
-                    <Column width={160} fullText align='left'>
+                    <Column fullText sortable width={130}>
+                        <HeaderCell>Station Name</HeaderCell>
+                        <Cell dataKey='StationName' />
+                    </Column>
+                    <Column width={150} fullText align='left'>
                         <HeaderCell>Species</HeaderCell>
-                        <Cell dataKey='species' />
+                        <Cell dataKey='Species' />
                     </Column>
-                    <Column width={70} align='center'>
+                    <Column align='center' sortable width={70}>
                         <HeaderCell>Year</HeaderCell>
-                        <Cell dataKey='year' />
+                        <Cell dataKey='SampleYear' />
                     </Column>
-                    <Column width={90} align='right'>
+                    <Column align='right' sortable width={90}>
                         <HeaderCell>Result</HeaderCell>
-                        <Cell dataKey='result' />
+                        <Cell dataKey='Result' />
                     </Column>
-                    <Column width={90} align='left'>
+                    <Column align='left' width={90} >
                         <HeaderCell>Unit</HeaderCell>
-                        <Cell dataKey='unit' />
+                        <Cell dataKey='Unit' />
                     </Column>
-                    <Column width={210}>
+                    <Column width={170} fullText>
                         <HeaderCell>Result Type</HeaderCell>
-                        <Cell dataKey='resulttype' />
+                        <Cell dataKey='ResultType' />
+                    </Column>
+                    <Column width={100} fullText>
+                        <HeaderCell>Tissue Prep</HeaderCell>
+                        <Cell dataKey='TissuePrep' />
                     </Column>
                 </Table> 
             : <div className={loaderContainer}><LoaderBlock /></div> }

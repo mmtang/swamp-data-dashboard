@@ -98,8 +98,8 @@ export default function Table2({
             setLoading(false);
             setSortColumn(sortColumn);
             setSortType(sortType);
-        }, 500)
-    }
+        }, 500);
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -111,7 +111,7 @@ export default function Table2({
 
     const tableStandard = (
         <Table 
-            virtualized
+            affixHorizontalScrollbar={true}
             data={getSortedData()}
             fillHeight={true}
             height={500}
@@ -120,7 +120,7 @@ export default function Table2({
             onRowClick={handleClick}
             onSortColumn={handleSortColumn}
             sortColumn={sortColumn}
-            affixHorizontalScrollbar={true}
+            virtualized
         >
             <Column fixed width={10}>
                 <HeaderCell></HeaderCell>
@@ -158,6 +158,7 @@ export default function Table2({
         </Table> 
     );
 
+    /*
     const tableTissue = (
         <Table 
             virtualized
@@ -195,7 +196,6 @@ export default function Table2({
                 <HeaderCell>Sample Year</HeaderCell>
                 <Cell dataKey='SampleYear' />
             </Column>
-            {/* Check for undefined and null values here, not truthy/falsy because 0 is a valid result but it's not truthy */}
             { tableData && tableData.length > 0 && tableData[0].ResultDisplay !== null ?  
                 <Column sortable width={90} align='right'>
                     <HeaderCell>Result</HeaderCell>
@@ -214,12 +214,11 @@ export default function Table2({
             </Column>
         </Table> 
     );
+    */
 
     return (
         <div ref={containerRef} className={tableContainer}>
-            { (analyte && analyte.source === 'tissue') || (species && species.source === 'tissue') ?
-                tableTissue
-                : tableData ?
+            { tableData ?
                 tableStandard 
                 : null
             }

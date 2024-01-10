@@ -325,3 +325,8 @@ https://stackoverflow.com/questions/2639373/css-html-how-do-i-change-the-color-o
   -ms-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
+
+/* Style for rsuite table headers */
+.rs-table-hover .rs-table-row:hover, .rs-table-row-header, .rs-table-row-header .rs-table-cell {
+  background-color: #f5f5f5 !important;
+}
