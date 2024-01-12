@@ -14,10 +14,6 @@ export default function SummaryContainer({
     // State variables
     const [searchText, setSearchText] = useState('');
 
-    useEffect(() => {
-        console.log(searchText);
-    }, [searchText]);
-
     return (
         <div className={container}>
             <SummarySubMenu 
@@ -27,6 +23,7 @@ export default function SummaryContainer({
                 analyte={analyte}
                 program={program}
                 region={region}
+                searchText={searchText}
                 species={species}
                 view={view}
             />

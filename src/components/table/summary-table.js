@@ -3,7 +3,7 @@ import LoaderBlock from '../loaders/loader-block';
 import { capitalizeFirstLetter, tissueResourceId } from '../../utils/utils';
 
 import Treeize from 'treeize';
-import { Cell, Column, HeaderCell, Table,  } from 'rsuite-table';
+import { Cell, Column, HeaderCell, Table  } from 'rsuite-table';
 
 // Import styles
 import 'rsuite-table/dist/css/rsuite-table.css';
@@ -15,15 +15,18 @@ export default function SummaryTable({
     analyte,
     program,
     region,
+    searchText,
     species,
     view
 }) {
     // State variables
-    const [flatData, setFlatData] = useState(null); // The original fetched data, flat structure, used for sorting data
+    const [expandedRowKeys, setExpandedRowKeys] = useState([]); // Array of row ID values for tracking which rows are expanded/collapsed
+    const [flatData, setFlatData] = useState(null); // The original dataset in flat structure, serves as a copy of the original dataset, used for filtering. This dataset gets updated whenever one of the filters from the main page are used and applied
+    const [filteredData, setFilteredData] = useState(null); // The filtered data in flat structure, used for sorting
     const [loading, setLoading] = useState(true);
     const [sortColumn, setSortColumn] = useState('SampleYear');
     const [sortType, setSortType] = useState('desc')
-    const [tableData, setTableData] = useState(null); // The original flat dataset in tree structure, used for the table
+    const [tableData, setTableData] = useState(null); // The filtered dataset in tree structure, used for the table
 
     const createParams = () => {
         let querySql = `SELECT DISTINCT ON ("StationCode", "Analyte", "CommonName", "SampleYear", "ResultType", "TissueName", "TissuePrep") "StationCode", "StationName", "Region", "SampleYear", "Analyte", "CommonName", "ResultType", "Result", "Unit", "TissueName", "TissuePrep" FROM "${tissueResourceId}"`
@@ -63,7 +66,7 @@ export default function SummaryTable({
     // This function takes an array of JSON objects and converts it to a tree structure
     const convertToDataTree = (data) => {
         return new Promise((resolve, reject) => {
-            if (data.length > 0) {
+            if (data && data.length > 0) {
                 // Define structure of the tree dataset by renaming the fields, see Treeize package
                 const remappedData = data.map(d => {
                     return { 
@@ -86,46 +89,67 @@ export default function SummaryTable({
                 const treeData = groups.getData();
                 resolve(treeData);
             } else {
-                resolve(null);
+                resolve([]);
             }
         });
     }
 
     const generateId = () => {
-        const randomId = Math.floor((Math.random() * 100000).toString());
+        const randomId = Math.floor((Math.random() * 10000000).toString());
         return randomId;
     }
 
-    // Uses state variables sortColumn and sortType to return a dynamically sorted version of the stationData dataset
-    // https://rsuite.github.io/rsuite-table/#10
-    const getSortedData = () => {
+    const getFilteredData = (data, searchString) => {
         return new Promise((resolve, reject) => {
-            if (sortColumn && sortType && flatData) {
-                const sortedData = flatData.sort((a, b) => {
-                    let x = a[sortColumn];
-                    let y = b[sortColumn];
-                    if (typeof x === 'number') {
-                        // Sort numbers
-                        if (sortType === 'asc') {
-                            return x - y;
-                        } else {
-                            return y - x;
-                        }
-                    } else {
-                        // Sort strings
-                        if (sortType === 'asc') {
-                            return x.localeCompare(y)
-                        } else {
-                            return y.localeCompare(x);
-                        }
-                    }
-                });
-                convertToDataTree(sortedData)
-                .then((data) => {
-                    resolve(data);
-                });
+            if (data && data.length > 0) {
+                // Filtering the data - return all objects where any of the object's properties includes the search term
+                const filtered = data.filter(d => Object.keys(d).some(k => String(d[k]).toLowerCase().includes(searchString.toLowerCase())));
+                setFilteredData(filtered);
+                resolve(filtered);
             } else {
-                resolve(tableData);
+                resolve([]);
+            }
+        });
+    }
+
+    // Function for getting an array of row keys/ids from the given array of data objects
+    const getRowKeys = (data) => {
+        if (data && data.length > 0) {
+            const rowKeys = data.map(d => d.id);
+            setExpandedRowKeys(rowKeys);
+        }
+    }
+
+    // Uses state variables sortColumn and sortType to return a dynamically sorted version of the stationData dataset: https://rsuite.github.io/rsuite-table/#10
+    const getSortedData = (data) => {
+        return new Promise((resolve, reject) => {
+            if (sortColumn && sortType && data) {
+                if (data.length > 0) {
+                    const sortedData = data.sort((a, b) => {
+                        let x = a[sortColumn];
+                        let y = b[sortColumn];
+                        if (typeof x === 'number') {
+                            // Sort numbers
+                            if (sortType === 'asc') {
+                                return x - y;
+                            } else {
+                                return y - x;
+                            }
+                        } else {
+                            // Sort strings
+                            if (sortType === 'asc') {
+                                return x.localeCompare(y)
+                            } else {
+                                return y.localeCompare(x);
+                            }
+                        }
+                    });
+                    resolve(sortedData);
+                } else {
+                    resolve([]);
+                }
+            } else {
+                resolve(data);
             }
         })
     }
@@ -149,6 +173,7 @@ export default function SummaryTable({
                     d.SampleYear = +d.SampleYear;
                 });
                 setFlatData(records);
+                setFilteredData(records);
                 resolve(records);
             }
           })
@@ -156,6 +181,49 @@ export default function SummaryTable({
             console.error('Issue with the network response:', error);
           });
         })
+    }
+
+    // Returns index position in array where is a match
+    const findValueInArray = (arr, value) => {
+        const matchedIndex = arr.findIndex((d) => d === value);
+        return matchedIndex;
+    }
+
+    // Add a single row key/id to the existing expanded list and update state
+    const addToExpandedList = (val) => {
+        if (val) {
+            let newArr = [...expandedRowKeys];
+            newArr.push(val);
+            setExpandedRowKeys(newArr);
+        }
+    }
+
+    // Remove a single row key/id from the existing expanded list and update state
+    const removeFromExpandedList = (key) => {
+        const matchedIndex = findValueInArray(expandedRowKeys, key);
+        // Remove site
+        const newArr = removeObjByIndex(expandedRowKeys, matchedIndex);
+        setExpandedRowKeys(newArr);
+    }
+
+    // Removes object in an array by index value, used in handleRemove function
+    const removeObjByIndex = (arr, index) => {
+        // When copying the state array, use the spread operator or slice the array to create a copy; or else, React will copy the same reference to the state array and any changes made using the set function won't trigger a rerender (https://stackoverflow.com/a/67354136)
+        let newArr = [...arr];
+        // Only splice if the item is found
+        if (index > -1) {
+            newArr.splice(index, 1);
+        }
+        return newArr;
+    }
+
+    const handleExpandToggle = (isOpen, rowData) => {
+        const rowId = rowData.id;
+        if (isOpen === false) {
+            addToExpandedList(rowId); // Add rowId to expand list
+        } else {
+            removeFromExpandedList(rowId); // Remove rowId from expand list
+        }
     }
 
     // This function runs whenever a column header is clicked (user changes column sort)
@@ -166,8 +234,10 @@ export default function SummaryTable({
     };
 
     useEffect(() => {
-        getSortedData()
+        getSortedData(filteredData)
+        .then((data) => convertToDataTree(data))
         .then((data) => {
+            getRowKeys(data);
             setTableData(data);
             setLoading(false);
         });
@@ -179,33 +249,60 @@ export default function SummaryTable({
             // Get data based on filter selection
             const params = createParams();
             getTissueData(params)
-            .then((data) => {
-                convertToDataTree(data)
-                .then((treeData) => {
-                    if (treeData) {
-                        setTableData(treeData);
-                        setLoading(false);
-                    }
-                });
+            .then((data) => convertToDataTree(data))
+            .then((treeData) => {
+                if (treeData) {
+                    getRowKeys(treeData);
+                    setTableData(treeData);
+                    setLoading(false);
+                }
             });
         }
     }, []);
 
     useEffect(() => {
+        // Reset state
         setLoading(true);
+        setExpandedRowKeys([]);
         setTableData(null);
+        setSortColumn('SampleYear');
+        setSortType('desc');
+        // Get data
         const params = createParams();
         getTissueData(params)
-        .then((data) => {
-            convertToDataTree(data)
-            .then((treeData) => {
-                if (treeData) {
-                    setTableData(treeData);
-                    setLoading(false);
-                }
-            });
+        .then((data) => getSortedData(data))
+        .then((data) => convertToDataTree(data))
+        .then((treeData) => {
+            if (treeData) {
+                getRowKeys(treeData);
+                setTableData(treeData);
+                setLoading(false);
+            }
         });
     }, [analyte, species, region, program]);
+
+    useEffect(() => {
+        // SearchText should be a string, even if a number is searched
+        // Capture empty searches (passed as an empty string ('')) in the else statement
+        if (searchText) {
+            getFilteredData(flatData, searchText)
+            .then((data) => getSortedData(data))
+            .then((data) => convertToDataTree(data))
+            .then((data) => {
+                getRowKeys(data);
+                setTableData(data);
+            });
+        } else {
+            // User cleared search - reset the filtered dataset state to the original dataset
+            setFilteredData(flatData);
+            getSortedData(flatData)
+            .then((data) => convertToDataTree(data))
+            .then((data) => {
+                getRowKeys(data);
+                setTableData(data);
+            });
+        }
+    }, [searchText]);
 
     return (
         <div className={tableContainer}>
@@ -215,8 +312,8 @@ export default function SummaryTable({
                     cellBordered
                     data={tableData}
                     defaultExpandAllRows={true}
+                    expandedRowKeys={expandedRowKeys}
                     fillHeight={true}
-                    //height={500}
                     isTree
                     loading={loading}
                     rowHeight={38}
@@ -224,14 +321,15 @@ export default function SummaryTable({
                     shouldUpdateScroll={false}
                     virtualized
                     //onRowClick={handleClick}
+                    onExpandChange={handleExpandToggle}
                     onSortColumn={handleSortColumn}
                     sortColumn={sortColumn}
                 >
-                    <Column align='left' sortable width={130}>
+                    <Column align='left' fullText sortable width={160}>
                         <HeaderCell>Station Code</HeaderCell>
                         <Cell dataKey='StationCode' />
                     </Column>
-                    <Column fullText sortable width={130}>
+                    <Column fullText sortable width={140}>
                         <HeaderCell>Station Name</HeaderCell>
                         <Cell dataKey='StationName' />
                     </Column>
@@ -255,7 +353,7 @@ export default function SummaryTable({
                         <HeaderCell>Result Type</HeaderCell>
                         <Cell dataKey='ResultType' />
                     </Column>
-                    <Column width={100} fullText>
+                    <Column width={130} fullText>
                         <HeaderCell>Tissue Prep</HeaderCell>
                         <Cell dataKey='TissuePrep' />
                     </Column>
