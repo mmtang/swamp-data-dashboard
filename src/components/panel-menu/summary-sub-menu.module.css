@@ -1,0 +1,19 @@
+.container {
+    align-items: center;
+    background-color: #00857F;
+    color: #fff;
+    display: flex;
+    flex-wrap: nowrap;
+    height: 54px;
+    justify-content: space-between;
+    padding: 0; /* required for the tab colors to work */
+}
+
+.menuItem {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    justify-content: center;
+    margin: 0 0.85em;
+}

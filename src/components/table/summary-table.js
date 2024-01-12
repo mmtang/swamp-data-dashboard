@@ -8,10 +8,10 @@ import { Cell, Column, HeaderCell, Table,  } from 'rsuite-table';
 // Import styles
 import 'rsuite-table/dist/css/rsuite-table.css';
 import { tableContainer } from './table2.module.css';
-import { loaderContainer } from './tissue-table.module.css';
+import { loaderContainer } from './summary-table.module.css';
 
 // This component generates the data table for tissue data on the dashboard index page.
-export default function TissueTable({ 
+export default function SummaryTable({ 
     analyte,
     program,
     region,
@@ -216,7 +216,7 @@ export default function TissueTable({
                     data={tableData}
                     defaultExpandAllRows={true}
                     fillHeight={true}
-                    height={500}
+                    //height={500}
                     isTree
                     loading={loading}
                     rowHeight={38}

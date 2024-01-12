@@ -243,6 +243,11 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
             setToggledClearRows(!toggledClearRows);
         }
     }, [selectedAnalytes]);
+
+    const paginationComponentOptions = {
+        selectAllRowsItem: true,
+        selectAllRowsItemText: 'All'
+    }
     
     return (
         <div className={tableWrapper}>
@@ -251,14 +256,18 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
                 columns={ showSpecies ? columnsSpecies : columns } 
                 customStyles={customStyles}
                 data={data} 
-                //fixedHeader
-                highlightOnHover
-                selectableRows
-                selectableRowsHighlight
                 defaultSortFieldId={'lastDate'}
                 defaultSortAsc={false}
-                onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
                 dense
+                //fixedHeader
+                highlightOnHover
+                onSelectedRowsChange={(rows) => handleSelectionUpdate(rows)}
+                pagination
+                paginationComponentOptions={paginationComponentOptions}
+                paginationPerPage={50}
+                paginationRowsPerPageOptions={[10, 25, 50, 100]}
+                selectableRows
+                selectableRowsHighlight
             />
         </div>
     )

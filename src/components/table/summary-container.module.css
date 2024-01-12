@@ -1,0 +1,4 @@
+.container {
+    /* 54px is the height of the summary sub menu; change as needed */
+    height: calc(100% - 54px); 
+}

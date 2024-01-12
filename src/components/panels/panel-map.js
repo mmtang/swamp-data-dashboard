@@ -3,7 +3,8 @@ import LoaderPanel from '../loaders/loader-panel';
 import MapIndex2 from '../map/map-index2';
 import PanelMapMenu from '../panel-menu/panel-map-menu';
 import Table2 from '../table/table2';
-import TissueTable from '../table/tissue-table';
+import SummaryContainer from '../table/summary-container';
+import SummaryTable from '../table/summary-table';
 
 import { content } from './panel-map.module.css';
 
@@ -94,7 +95,7 @@ export default function PanelMap({
                 />
             </div>  
             <div style={view !== 'summary' ? { display: 'none' } : tableContainerStyle }>
-                <TissueTable 
+                <SummaryContainer
                     analyte={analyte}
                     program={program}
                     region={region}

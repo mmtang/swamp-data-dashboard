@@ -2,7 +2,9 @@ import React from 'react';
 import { Icon } from 'semantic-ui-react';
 import { searchBox, searchContainer, searchMain, searchWrapper } from './table-search.module.css';
 
-export default function TableSearch({ filterText, setFilterText }) {
+export default function TableSearch({ filterText, setFilterText, theme='dark', placeholderText='' }) {
+    const themeColor =  theme === 'light' ? '#fff' : '#6e6e6e';
+
     const handleClear = () => {
         setFilterText('');
     }
@@ -14,17 +16,18 @@ export default function TableSearch({ filterText, setFilterText }) {
     }
 
     return (
-        <div className={searchContainer}>
+        <div className={searchContainer} style={{ border: `1px solid ${themeColor}` }}>
             <div className={searchMain}>
                 <span style={{ marginLeft: '10px' }}>
-                    <Icon name='search' style={{ color: '#b1b1b1' }} />
+                    <Icon name='search' style={{ color: `${themeColor}` }} />
                 </span>
                 <div className={searchWrapper}>
                     <input 
                         className={searchBox} 
                         id='station-table-search'
                         onChange={handleInputChange}
-                        placeholder=''
+                        placeholder={placeholderText}
+                        style={{ color: `${themeColor}` }}
                         type='search'
                         value={filterText}
                     />
@@ -34,7 +37,7 @@ export default function TableSearch({ filterText, setFilterText }) {
             { filterText.length > 0 ? 
                 <div style={{ marginRight: '4px' }}>
                     <Icon 
-                        color='grey' 
+                        color={theme === 'light' ? 'white' : 'grey'}
                         link
                         name='x' 
                         onClick={handleClear}
