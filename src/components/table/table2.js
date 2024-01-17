@@ -18,7 +18,7 @@ export default function Table2({
     setStation, 
     species,
     station, 
-    tableData
+    tableData,
 }) {
     // State
     const [loading, setLoading] = useState(false)
@@ -109,119 +109,56 @@ export default function Table2({
         setLoading(false);
     }, [analyte, program, region, species]);  // Using tableData as the sole dependency doesn't work. State needs to be reset before the new data is passed into the component. Else, the table will try to sort on a column like "ResultDisplay" when that column may not exist in the new dataset
 
-    const tableStandard = (
-        <Table 
-            affixHorizontalScrollbar={true}
-            data={getSortedData()}
-            fillHeight={true}
-            height={500}
-            loading={loading}
-            rowHeight={38}
-            onRowClick={handleClick}
-            onSortColumn={handleSortColumn}
-            sortColumn={sortColumn}
-            virtualized
-        >
-            <Column fixed width={10}>
-                <HeaderCell></HeaderCell>
-                <Cell></Cell>
-            </Column>
-            <Column sortable width={132}>
-                <HeaderCell>Region</HeaderCell>
-                <Cell dataKey='RegionName' />
-            </Column>
-            <Column sortable width={110}>
-                <HeaderCell>Station Code</HeaderCell>
-                <Cell dataKey='StationCode' />
-            </Column>
-            <Column sortable width={240}>
-                <HeaderCell>Station Name</HeaderCell>
-                <Cell dataKey='StationName' />
-            </Column>
-            <Column sortable width={120}>
-                <HeaderCell>Last Sample</HeaderCell>
-                <Cell dataKey='LastSampleDate' />
-            </Column>
-            {/* Check for undefined and null values here, not truthy/falsy because 0 is a valid result but it's not truthy */}
-            { tableData && tableData.length > 0 && tableData[0].ResultDisplay !== null ?  
-                <Column sortable width={90} align='right'>
-                    <HeaderCell>Result</HeaderCell>
-                    <Cell dataKey='ResultDisplay' />
-                </Column>
-            : null }
-            { tableData && tableData.length > 0 && tableData[0].Unit !== null ?  
-                <Column sortable width={90} align='left'>
-                    <HeaderCell>Unit</HeaderCell>
-                    <Cell dataKey='Unit' />
-                </Column>
-            : null }
-        </Table> 
-    );
-
-    /*
-    const tableTissue = (
-        <Table 
-            virtualized
-            data={getSortedData()}
-            fillHeight={true}
-            height={500}
-            loading={loading}
-            rowHeight={38}
-            onRowClick={handleClick}
-            onSortColumn={handleSortColumn}
-            sortColumn={sortColumn}
-            affixHorizontalScrollbar={true}
-        >
-            <Column fixed width={10}>
-                <HeaderCell></HeaderCell>
-                <Cell></Cell>
-            </Column>
-            <Column sortable width={132}>
-                <HeaderCell>Region</HeaderCell>
-                <Cell dataKey='RegionName' />
-            </Column>
-            <Column sortable width={110}>
-                <HeaderCell>Station Code</HeaderCell>
-                <Cell dataKey='StationCode' />
-            </Column>
-            <Column sortable width={240}>
-                <HeaderCell>Station Name</HeaderCell>
-                <Cell dataKey='StationName' />
-            </Column>
-            <Column sortable width={120}>
-                <HeaderCell>Species</HeaderCell>
-                <Cell dataKey='CommonName' />
-            </Column>
-            <Column sortable width={120} align='center'>
-                <HeaderCell>Sample Year</HeaderCell>
-                <Cell dataKey='SampleYear' />
-            </Column>
-            { tableData && tableData.length > 0 && tableData[0].ResultDisplay !== null ?  
-                <Column sortable width={90} align='right'>
-                    <HeaderCell>Result</HeaderCell>
-                    <Cell dataKey='ResultDisplay' />
-                </Column>
-            : null }
-            { tableData && tableData.length > 0 && tableData[0].Unit !== null ?  
-                <Column sortable width={90} align='left'>
-                    <HeaderCell>Unit</HeaderCell>
-                    <Cell dataKey='Unit' />
-                </Column>
-            : null }
-            <Column sortable width={120}>
-                <HeaderCell>Sample Type</HeaderCell>
-                <Cell dataKey='CompositeIndividual' />
-            </Column>
-        </Table> 
-    );
-    */
-
     return (
         <div ref={containerRef} className={tableContainer}>
             { tableData ?
-                tableStandard 
-                : null
-            }
+                <Table 
+                    affixHorizontalScrollbar={true}
+                    data={getSortedData()}
+                    fillHeight={true}
+                    height={500}
+                    loading={loading}
+                    rowHeight={38}
+                    onRowClick={handleClick}
+                    onSortColumn={handleSortColumn}
+                    sortColumn={sortColumn}
+                    virtualized
+                >
+                    <Column fixed width={10}>
+                        <HeaderCell></HeaderCell>
+                        <Cell></Cell>
+                    </Column>
+                    <Column sortable width={132}>
+                        <HeaderCell>Region</HeaderCell>
+                        <Cell dataKey='RegionName' />
+                    </Column>
+                    <Column sortable width={110}>
+                        <HeaderCell>Station Code</HeaderCell>
+                        <Cell dataKey='StationCode' />
+                    </Column>
+                    <Column sortable width={240}>
+                        <HeaderCell>Station Name</HeaderCell>
+                        <Cell dataKey='StationName' />
+                    </Column>
+                    <Column sortable width={120}>
+                        <HeaderCell>Last Sample</HeaderCell>
+                        <Cell dataKey='LastSampleDate' />
+                    </Column>
+                    {/* Check for undefined and null values here, not truthy/falsy because 0 is a valid result but it's not truthy */}
+                    { tableData && tableData.length > 0 && tableData[0].ResultDisplay !== null ?  
+                        <Column sortable width={90} align='right'>
+                            <HeaderCell>Result</HeaderCell>
+                            <Cell dataKey='ResultDisplay' />
+                        </Column>
+                    : null }
+                    { tableData && tableData.length > 0 && tableData[0].Unit !== null ?  
+                        <Column sortable width={90} align='left'>
+                            <HeaderCell>Unit</HeaderCell>
+                            <Cell dataKey='Unit' />
+                        </Column>
+                    : null }
+                </Table> 
+            : null }
         </div>
     )
 }

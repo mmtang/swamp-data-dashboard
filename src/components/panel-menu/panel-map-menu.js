@@ -22,6 +22,8 @@ export default function PanelMapMenu({
     // Set state in the parent component (panel-map-menu) instead of the child component (bulk-download) because 
     const [dataModalVisible, setDataModalVisible] = useState(false);
 
+    const showTable = !((analyte && analyte.source === 'tissue') || (species && species.source === 'tissue'));
+
     const handleDataClick = () => {
         if (dataModalVisible === false) {
             setDataModalVisible(true);
@@ -56,7 +58,7 @@ export default function PanelMapMenu({
                     </div>
                 : null }
                 {/* Table */}
-                { view !== 'table' && (analyte === null || analyte.source !== 'tissue') ?
+                { view !== 'table' && showTable ?
                     <div className={menuItem} onClick={handleTableClick}>
                         <div>
                             <Icon fitted inverted 
@@ -68,7 +70,7 @@ export default function PanelMapMenu({
                     </div>
                 : null }
                 {/* Tissue Summary */}
-                { view !== 'summary' && (analyte && analyte.source === 'tissue') ?
+                { view !== 'summary' && !showTable ?
                     <div className={menuItem} onClick={handleSummaryClick}>
                         <div>
                             <Icon fitted inverted 

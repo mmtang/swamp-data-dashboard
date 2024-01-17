@@ -4,7 +4,6 @@ import MapIndex2 from '../map/map-index2';
 import PanelMapMenu from '../panel-menu/panel-map-menu';
 import Table2 from '../table/table2';
 import SummaryContainer from '../table/summary-container';
-import SummaryTable from '../table/summary-table';
 
 import { content } from './panel-map.module.css';
 
@@ -100,7 +99,6 @@ export default function PanelMap({
                     program={program}
                     region={region}
                     species={species}
-                    view={view}
                 />
             </div>  
         </div>

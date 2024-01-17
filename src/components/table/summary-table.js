@@ -20,7 +20,6 @@ export default function SummaryTable({
     setAllRowKeys,
     setExpandedRowKeys,
     species,
-    view
 }) {
     // State variables
     const [flatData, setFlatData] = useState(null); // The original dataset in flat structure, serves as a copy of the original dataset, used for filtering. This dataset gets updated whenever one of the filters from the main page are used and applied
@@ -75,7 +74,7 @@ export default function SummaryTable({
                         'id': generateId(),
                         'StationCode': d.StationCode,
                         'StationName*': d.StationName,
-                        'Analyte': d.Analyte,
+                        'children:Analyte': d.Analyte,
                         'children:id': generateId(),
                         'children:Species': d.CommonName,
                         'children:SampleYear': +d.SampleYear,
@@ -116,7 +115,6 @@ export default function SummaryTable({
 
     // Function for getting an array of row keys/ids from the given array of data objects
     const getRowKeys = (data) => {
-        console.log(data);
         return new Promise((resolve, reject) => {
             if (data && data.length > 0) {
                 const rowKeys = data.map(d => d.id);
@@ -255,11 +253,35 @@ export default function SummaryTable({
     }, [sortColumn, sortType]);
 
     useEffect(() => {
-        if (view === 'summary') {
+        setLoading(true);
+        // Get data based on filter selection
+        const params = createParams();
+        getTissueData(params)
+        .then((data) => convertToDataTree(data))
+        .then((treeData) => {
+            if (treeData) {
+                getRowKeys(treeData)
+                .then((keys) => {
+                    setExpandedRowKeys(keys);
+                    setTableData(treeData);
+                    setLoading(false);
+                });
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        if ((analyte && analyte.source === 'tissue') || (species && species.source === 'tissue')) {
+            // Reset state
             setLoading(true);
-            // Get data based on filter selection
+            setExpandedRowKeys([]);
+            setTableData(null);
+            setSortColumn('SampleYear');
+            setSortType('desc');
+            // Get data
             const params = createParams();
             getTissueData(params)
+            .then((data) => getSortedData(data))
             .then((data) => convertToDataTree(data))
             .then((treeData) => {
                 if (treeData) {
@@ -272,30 +294,6 @@ export default function SummaryTable({
                 }
             });
         }
-    }, []);
-
-    useEffect(() => {
-        // Reset state
-        setLoading(true);
-        setExpandedRowKeys([]);
-        setTableData(null);
-        setSortColumn('SampleYear');
-        setSortType('desc');
-        // Get data
-        const params = createParams();
-        getTissueData(params)
-        .then((data) => getSortedData(data))
-        .then((data) => convertToDataTree(data))
-        .then((treeData) => {
-            if (treeData) {
-                getRowKeys(treeData)
-                .then((keys) => {
-                    setExpandedRowKeys(keys);
-                    setTableData(treeData);
-                    setLoading(false);
-                });
-            }
-        });
     }, [analyte, species, region, program]);
 
     useEffect(() => {
@@ -366,6 +364,10 @@ export default function SummaryTable({
                     <Column fullText sortable width={140}>
                         <HeaderCell>Station Name</HeaderCell>
                         <Cell dataKey='StationName' />
+                    </Column>
+                    <Column width={150} fullText align='left'>
+                        <HeaderCell>Analyte</HeaderCell>
+                        <Cell dataKey='Analyte' />
                     </Column>
                     <Column width={150} fullText align='left'>
                         <HeaderCell>Species</HeaderCell>

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon } from 'semantic-ui-react';
 import { searchBox, searchContainer, searchMain, searchWrapper, submitContainer } from './search-submit.module.css';
 
 // A component for rendering a search bar with a separate (dedicated) submit button
-export default function SearchSubmit({ setSearchText, theme='dark', placeholderText='' }) {
+export default function SearchSubmit({ searchText, setSearchText, theme='dark', placeholderText='' }) {
     // State variables
     const [filterText, setFilterText] = useState('');
     // Style variables
@@ -31,6 +31,12 @@ export default function SearchSubmit({ setSearchText, theme='dark', placeholderT
     const handleSubmit = () => {
         setSearchText(filterText);
     }
+
+    useEffect(() => {
+        if (searchText === '') {
+            setFilterText('');
+        }
+    }, [searchText]);
 
     return (
         <div className={searchContainer} style={{ backgroundColor: `${backgroundThemeColor}`, border: `${borderThemeColor}` }}>

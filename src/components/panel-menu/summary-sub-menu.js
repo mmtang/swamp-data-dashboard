@@ -4,7 +4,7 @@ import SearchSubmit from '../common/search-submit';
 import { Button } from 'semantic-ui-react';
 import { container, menuItem } from './summary-sub-menu.module.css';
 
-export default function SummarySubMenu({ allRowKeys, setExpandedRowKeys, setSearchText }) {   
+export default function SummarySubMenu({ allRowKeys, searchText, setExpandedRowKeys, setSearchText }) {   
     const handleCollapseClick = () => {
         setExpandedRowKeys([]);
     }
@@ -18,6 +18,7 @@ export default function SummarySubMenu({ allRowKeys, setExpandedRowKeys, setSear
             <div className={menuItem}>
                 <SearchSubmit
                     placeholderText='Search table'
+                    searchText={searchText}
                     setSearchText={setSearchText}
                     theme='light'
                 />
