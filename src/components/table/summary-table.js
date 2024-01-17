@@ -13,14 +13,16 @@ import { loaderContainer } from './summary-table.module.css';
 // This component generates the data table for tissue data on the dashboard index page.
 export default function SummaryTable({ 
     analyte,
+    expandedRowKeys,
     program,
     region,
     searchText,
+    setAllRowKeys,
+    setExpandedRowKeys,
     species,
     view
 }) {
     // State variables
-    const [expandedRowKeys, setExpandedRowKeys] = useState([]); // Array of row ID values for tracking which rows are expanded/collapsed
     const [flatData, setFlatData] = useState(null); // The original dataset in flat structure, serves as a copy of the original dataset, used for filtering. This dataset gets updated whenever one of the filters from the main page are used and applied
     const [filteredData, setFilteredData] = useState(null); // The filtered data in flat structure, used for sorting
     const [loading, setLoading] = useState(true);
@@ -114,10 +116,15 @@ export default function SummaryTable({
 
     // Function for getting an array of row keys/ids from the given array of data objects
     const getRowKeys = (data) => {
-        if (data && data.length > 0) {
-            const rowKeys = data.map(d => d.id);
-            setExpandedRowKeys(rowKeys);
-        }
+        console.log(data);
+        return new Promise((resolve, reject) => {
+            if (data && data.length > 0) {
+                const rowKeys = data.map(d => d.id);
+                resolve(rowKeys);
+            } else {
+                resolve([]);
+            }
+        })
     }
 
     // Uses state variables sortColumn and sortType to return a dynamically sorted version of the stationData dataset: https://rsuite.github.io/rsuite-table/#10
@@ -218,8 +225,9 @@ export default function SummaryTable({
     }
 
     const handleExpandToggle = (isOpen, rowData) => {
+        // A bit confusing: isOpen returns true when you click to expand a row, and it returns false when you click to collapse a row. Therefore, add the value to the expanded row list when isOpen === true
         const rowId = rowData.id;
-        if (isOpen === false) {
+        if (isOpen === true) {
             addToExpandedList(rowId); // Add rowId to expand list
         } else {
             removeFromExpandedList(rowId); // Remove rowId from expand list
@@ -237,9 +245,12 @@ export default function SummaryTable({
         getSortedData(filteredData)
         .then((data) => convertToDataTree(data))
         .then((data) => {
-            getRowKeys(data);
-            setTableData(data);
-            setLoading(false);
+            getRowKeys(data)
+            .then((keys) => {
+                setExpandedRowKeys(keys);
+                setTableData(data);
+                setLoading(false);
+            });
         });
     }, [sortColumn, sortType]);
 
@@ -252,9 +263,12 @@ export default function SummaryTable({
             .then((data) => convertToDataTree(data))
             .then((treeData) => {
                 if (treeData) {
-                    getRowKeys(treeData);
-                    setTableData(treeData);
-                    setLoading(false);
+                    getRowKeys(treeData)
+                    .then((keys) => {
+                        setExpandedRowKeys(keys);
+                        setTableData(treeData);
+                        setLoading(false);
+                    });
                 }
             });
         }
@@ -274,9 +288,12 @@ export default function SummaryTable({
         .then((data) => convertToDataTree(data))
         .then((treeData) => {
             if (treeData) {
-                getRowKeys(treeData);
-                setTableData(treeData);
-                setLoading(false);
+                getRowKeys(treeData)
+                .then((keys) => {
+                    setExpandedRowKeys(keys);
+                    setTableData(treeData);
+                    setLoading(false);
+                });
             }
         });
     }, [analyte, species, region, program]);
@@ -289,8 +306,11 @@ export default function SummaryTable({
             .then((data) => getSortedData(data))
             .then((data) => convertToDataTree(data))
             .then((data) => {
-                getRowKeys(data);
-                setTableData(data);
+                getRowKeys(data)
+                .then((keys) => {
+                    setExpandedRowKeys(keys);
+                    setTableData(data);
+                });
             });
         } else {
             // User cleared search - reset the filtered dataset state to the original dataset
@@ -298,11 +318,25 @@ export default function SummaryTable({
             getSortedData(flatData)
             .then((data) => convertToDataTree(data))
             .then((data) => {
-                getRowKeys(data);
-                setTableData(data);
+                getRowKeys(data)
+                .then((keys) => {
+                    setExpandedRowKeys(keys);
+                    setTableData(data);
+                });
             });
         }
     }, [searchText]);
+
+    useEffect(() => {
+        if (tableData) {
+            getRowKeys(tableData)
+            .then((keys) => {
+                setAllRowKeys(keys);
+            });
+        } else {
+            setAllRowKeys([]);
+        }
+    }, [tableData]);
 
     return (
         <div className={tableContainer}>

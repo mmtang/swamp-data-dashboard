@@ -272,6 +272,11 @@ Unfortunately, this still does not fix the flickering issue */
   border-radius: 0;
 }
 
+.ui.left.attached.button, 
+.ui.right.attached.button {
+  border-radius: 0;
+}
+
 /* Search bar - style changes for accessibility */
 #searchContainer .esri-input {
   background-color: #fff !important; 
