@@ -135,8 +135,9 @@ export default function AccordionMenu({
             const speciesRecords = data.map(d => {
                 return {
                     label: d.Species,
-                    value: d.Species,
-                    source: d.Source
+                    matrix: d.MatrixDisplay,
+                    source: d.Source,
+                    value: d.Species + '$' + d.MatrixDisplay,
                 }
             });
             // Build array of objects
@@ -279,7 +280,10 @@ export default function AccordionMenu({
                 if (program) { newAnalytes = newAnalytes.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
                 if (region) { newAnalytes = newAnalytes.filter(d => d['Region'] === region) };
                 if (category) { newAnalytes = newAnalytes.filter(d => d.AnalyteGroup1 === category) };
-                if (species) { newAnalytes = newAnalytes.filter(d => d.Species === species.value) };
+                if (species) { 
+                    newAnalytes = newAnalytes.filter(d => d.Species === species.label);
+                    newAnalytes = newAnalytes.filter(d => d.MatrixDisplay === species.matrix);
+                };
                 updateAnalyteList(newAnalytes);
             };
         }

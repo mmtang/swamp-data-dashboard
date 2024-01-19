@@ -29,14 +29,21 @@ export default function AnalyteMenu({
 
     const formatOptionLabel = ({ value, label, matrix }) => {
         const boxColor = matrixColor[matrix] ? matrixColor[matrix] : matrixColor['other'];
-        return (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '80px', minWidth: '80px', marginRight: '10px', padding: '0 6px', borderRadius: '0', fontSize: '12px', backgroundColor: `${boxColor}`, color: '#fff' }}>
-                    {matrix}
+        if (label === 'All species') {
+            return (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ fontSize: '14px', overflowWrap: 'break-word' }}>{label}</div>
                 </div>
-                <div style={{ fontSize: '14px', overflowWrap: 'break-word' }}>{label}</div>
-            </div>
-        )
+            )
+        } else 
+            return (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '80px', minWidth: '80px', marginRight: '10px', padding: '0 6px', borderRadius: '0', fontSize: '12px', backgroundColor: `${boxColor}`, color: '#fff' }}>
+                        {matrix}
+                    </div>
+                    <div style={{ fontSize: '14px', overflowWrap: 'break-word' }}>{label}</div>
+                </div>
+            )
     };
 
     const handleAnalyteChange = (selection) => {
@@ -111,15 +118,15 @@ export default function AnalyteMenu({
             { !loadingAnalyte ? 
                 <div style={wrapperStyle}>
                     <Select
+                        formatOptionLabel={formatOptionLabel}
                         isClearable={true}
                         isLoading={loadingAnalyte}
                         isSearchable={true}
-                        placeholder='Analyte'
+                        maxMenuHeight={200}
                         onChange={handleAnalyteChange}
                         options={analyteList} 
+                        placeholder='Analyte'
                         styles={customSelectStyle}
-                        maxMenuHeight={200}
-                        formatOptionLabel={formatOptionLabel}
                         value={analyte ? analyte : null}
                     />
                 </div>
@@ -128,15 +135,16 @@ export default function AnalyteMenu({
             { !loadingSpecies ? 
                 <div style={{ marginTop: '10px' }}>
                     <Select 
-                        options={speciesList} 
+                        formatOptionLabel={formatOptionLabel}
                         isClearable={true}
                         isLoading={loadingSpecies}
                         isDisabled={speciesDisabled}
                         isSearchable={true}
-                        onChange={handleSpeciesChange}
-                        styles={customSelectStyle}
                         maxMenuHeight={200}
-                        value={species ? { label: species.value, value: species } : { label: 'All species', value: null }}
+                        onChange={handleSpeciesChange}
+                        options={speciesList} 
+                        styles={customSelectStyle}
+                        value={species ? species : { label: 'All species', value: null }}
                     />
                 </div>   
             : <div style={{ marginTop: '10px' }}><LoaderMenu /></div> }

@@ -315,7 +315,7 @@ export default function Index() {
           whereStatements.push(`"Region" = '${regionVal}'`);
         }
         if (species) {
-          whereStatements.push(`"CommonName" = '${species.value}'`);
+          whereStatements.push(`"CommonName" = '${species.label}'`);
         }
         // Concat multiple join statements
         if (whereStatements.length > 0) {
@@ -355,7 +355,8 @@ export default function Index() {
           whereStatements.push(`"Region" = '${regionVal}'`);
         }
         if (species) {
-          whereStatements.push(`"OrganismName" = '${species.value}'`);
+          whereStatements.push(`"OrganismName" = '${species.label}'`);
+          whereStatements.push(`"MatrixDisplay" = '${species.matrix}'`);
         }
         // Concat multiple join statements
         if (whereStatements.length > 0) {
@@ -448,7 +449,7 @@ export default function Index() {
               console.error('Station data is empty');
             }
           });
-        } else if (analyte.source === 'toxicity') {
+        } else if (analyte.source === 'toxicity' || species.source === 'toxicity') {
           getStations(paramsTox)
           .then((res) => {
             if (res.length > 0) {
@@ -459,7 +460,7 @@ export default function Index() {
               console.error('Station data is empty');
             }
           });
-        } else if (analyte.source === 'tissue') {
+        } else if (analyte.source === 'tissue' || species.source === 'tissue') {
           getTissueStations(paramsTissue)
           .then((res) => {
             if (res.length > 0) {

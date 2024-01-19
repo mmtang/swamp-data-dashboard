@@ -11,7 +11,7 @@ import {
 } from '../../utils/utils';
 
 // Import styles
-import { labelContainer, labelMain, labelText, selectWrapper } from './analyte-menu.module.css';
+import { selectWrapper } from './analyte-menu.module.css';
 
 export default function AnalyteMenu({ 
     panelAnalyte, 
@@ -33,14 +33,21 @@ export default function AnalyteMenu({
 
     const formatOptionLabel = ({ value, label, matrix }) => {
         const boxColor = matrixColor[matrix] ? matrixColor[matrix] : matrixColor['other'];
-        return (
-            <div className={labelContainer}>
-                <div className={labelMain} style={{ backgroundColor: `${boxColor}` }}>
-                    {matrix}
+        if (label === 'All species') {
+            return (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ fontSize: '14px', overflowWrap: 'break-word' }}>{label}</div>
                 </div>
-                <div className={labelText}>{label}</div>
-            </div>
-        )
+            )
+        } else 
+            return (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth: '80px', minWidth: '80px', marginRight: '10px', padding: '0 6px', borderRadius: '0', fontSize: '12px', backgroundColor: `${boxColor}`, color: '#fff' }}>
+                        {matrix}
+                    </div>
+                    <div style={{ fontSize: '14px', overflowWrap: 'break-word' }}>{label}</div>
+                </div>
+            )
     };
 
     const getData = (params, dataType) => {
@@ -99,6 +106,7 @@ export default function AnalyteMenu({
                 // Add ID field, this is to allow us to filter by analyte and matrix based off one field
                 allData.forEach(d => {
                     d.id = d.AnalyteDisplay + '$' + d.MatrixDisplay;
+                    d.idSpecies = d.Species + '$' + d.MatrixDisplay;
                 });
                 setAllCombos(allData);
             });
@@ -136,14 +144,15 @@ export default function AnalyteMenu({
         options = options.filter(d => d.Species != null);
         // Get unique objects from an array of objects based on object attribute value
         // https://yagisanatode.com/2021/07/03/get-a-unique-list-of-objects-in-an-array-of-object-in-javascript/
-        const uniqueSpecies = [...new Map(options.map((item) => [item['Species'], item])).values(),];
+        const uniqueSpecies = [...new Map(options.map((item) => [item['idSpecies'], item])).values(),];
         // Sort alphabetical by species name
         uniqueSpecies.sort((a, b) => a['Species'].localeCompare(b['Species']));
         const speciesOptions = uniqueSpecies.map(d => {
             return { 
                 label: d.Species, 
-                value: d.Species, 
-                source: d.Source
+                matrix: d.MatrixDisplay,
+                source: d.Source,
+                value: d.idSpecies
             }
         });
         // Add 'All species' option to the top
@@ -159,7 +168,7 @@ export default function AnalyteMenu({
             let filteredOptions = allCombos;
             // Filter by species if species is selected
             if (panelSpecies && panelSpecies.value) {
-                filteredOptions = filteredOptions.filter(d => d.Species === panelSpecies.value);
+                filteredOptions = filteredOptions.filter(d => d.idSpecies === panelSpecies.value);
             }
             // Get unique objects from an array of objects based on object attribute value
             // https://yagisanatode.com/2021/07/03/get-a-unique-list-of-objects-in-an-array-of-object-in-javascript/
@@ -168,11 +177,11 @@ export default function AnalyteMenu({
             uniqueOptions.sort((a, b) => a['id'].localeCompare(b['id']));
             const analyteOptions = uniqueOptions.map(d => {
                 return { 
-                    label: d.AnalyteDisplay, 
-                    value: d.id,
-                    matrix: d.MatrixDisplay, 
                     category: d.AnalyteGroup1,
-                    source: d.Source
+                    label: d.AnalyteDisplay,
+                    matrix: d.MatrixDisplay, 
+                    source: d.Source,
+                    value: d.id
                 }
             });
             setAnalyteList(analyteOptions);
@@ -240,30 +249,31 @@ export default function AnalyteMenu({
             <div className={selectWrapper}>
                 { !loadingAnalyte ? 
                     <Select
-                        options={analyteList} 
+                        formatOptionLabel={formatOptionLabel}
                         isClearable={true}
                         isLoading={loadingAnalyte}
                         isSearchable={true}
-                        placeholder='Analyte'
-                        onChange={handleAnalyteChange}
-                        styles={customSelectStyle}
                         maxMenuHeight={200}
-                        formatOptionLabel={formatOptionLabel}
+                        onChange={handleAnalyteChange}
+                        options={analyteList} 
+                        placeholder='Analyte'
+                        styles={customSelectStyle}
                         value={ panelAnalyte ? panelAnalyte : null }
                     />
                 : <LoaderMenu /> }
             </div>
             <div className={selectWrapper}>
                 <Select
-                    options={speciesList} 
+                    formatOptionLabel={formatOptionLabel}
                     isClearable={true}
                     isDisabled={speciesDisabled}
                     isLoading={loadingSpecies}
                     isSearchable={true}
-                    placeholder='Species'
-                    onChange={handleSpeciesChange}
-                    styles={customSelectStyle}
                     maxMenuHeight={200}
+                    onChange={handleSpeciesChange}
+                    options={speciesList} 
+                    placeholder='Species'
+                    styles={customSelectStyle}
                     value={panelSpecies ? panelSpecies : defaultSpecies}
                 />
             </div>

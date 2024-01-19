@@ -104,7 +104,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
         const numTicks = targetWidth < 600 ? 5 : null;
         
         // Check multiple criteria to see if the x-axis should be formatted as year or as the full date
-        const formatAsYear = (((data.length > 1) && (dateExtent[0] != dateExtent[1])) && (dateExtent[0].getYear() !== dateExtent[1].getYear()) || analyte.source === 'tissue' );
+        const formatAsYear = (((data.length > 1) && (dateExtent[0] !== dateExtent[1])) && ((dateExtent[0].getYear() !== dateExtent[1].getYear()) || (analyte.source === 'tissue')));
 
         const xAxis = d3.axisBottom()
             .scale(xScale)
