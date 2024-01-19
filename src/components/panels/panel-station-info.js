@@ -16,7 +16,7 @@ import {
     toxicityResourceId 
 } from '../../utils/utils';
 
-import { colorPaletteViz } from '../../constants/constants-app';
+import { colorPaletteViz, roundPlaces } from '../../constants/constants-app';
 import { chartContainer, menuContainer } from './panel-station-info.module.css';
 
 // This component generates the main content (below the site info) for when a station is selected. The dashboard loads different content based on whether or not an analyte/parameter was selected beforehand (or not)
@@ -43,9 +43,6 @@ export default function PanelStationInfo({
 
     // To show the CompareSites component, the selected analyte in the station panel must match the selected analyte in the filters. Also, an analyte must be selected. Also, the show all species option must not be selected when viewing toxicity or tissue data
     const showCompareSites = (panelAnalyte && panelAnalyte.value != null) && (analyte && analyte.value === panelAnalyte.value);
-
-    // Show the table when viewing tissue data
-    const showTable = (panelAnalyte && panelAnalyte.source === 'tissue') || (panelSpecies && panelSpecies === 'tissue');
 
     // This function converts a JavaScript datetime object to the beginning of the year (01/01/YYYY).
     // This is used to ensure that tissue data points get plotted at the year tick and not in between ticks
@@ -115,7 +112,7 @@ export default function PanelStationInfo({
                             data.forEach(d => {
                                 d.Analyte = d.AnalyteDisplay;
                                 d.SampleDate = parseDate(d.SampleDate);
-                                d.ResultDisplay = parseFloat(((+d.ResultDisplay)).toFixed(3));
+                                d.ResultDisplay = parseFloat(((+d.ResultDisplay)).toFixed(roundPlaces));
                                 d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                                 if (d.Unit === 'none') {
                                     d.Unit = '';  // for pH records
@@ -124,14 +121,14 @@ export default function PanelStationInfo({
                         } else if (dataAnalyte.source === 'toxicity') {
                             data.forEach(d => {
                                 d.SampleDate = parseDate(d.SampleDate);
-                                d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(3)));  // Use the ResultDisplay name for consistency when reusing chart component
+                                d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(roundPlaces)));  // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Species = d.OrganismName;
                                 d.Censored = false;  // Convert string to boolean                            
                             });
                         } else if (dataAnalyte.source === 'tissue') {
                             data.forEach(d => {
                                 d.SampleDate = dateToYear(parseDate(d.LastSampleDate));
-                                d.ResultDisplay = parseFloat(((+d.Result).toFixed(3)));  // Use the ResultDisplay name for consistency when reusing chart component
+                                d.ResultDisplay = parseFloat(((+d.Result).toFixed(roundPlaces)));  // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Species = d.CommonName;
                                 d.Censored = false;  // Convert string to boolean   
                             });

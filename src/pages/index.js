@@ -10,7 +10,7 @@ import PanelStation from '../components/panels/panel-station';
 
 import { Modal } from 'semantic-ui-react';
 
-import { linkColorAlt } from '../constants/constants-app';
+import { linkColorAlt, roundPlaces } from '../constants/constants-app';
 import { 
   capitalizeFirstLetter, 
   chemistryResourceId,
@@ -98,7 +98,7 @@ export default function Index() {
         if (records) {
           records.forEach(d => {
             d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
-            d.ResultDisplay = +d.resultdisplay
+            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(roundPlaces));
             d.RegionName = regionDict[d.Region];
             d.TargetLatitude = +d.TargetLatitude;
             d.TargetLongitude = +d.TargetLongitude;
@@ -129,7 +129,7 @@ export default function Index() {
         if (records) {
           records.forEach(d => {
             d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
-            d.ResultDisplay = +d.resultdisplay
+            d.ResultDisplay = parseFloat((+d.resultdisplay).toFixed(roundPlaces));
             d.RegionName = regionDict[d.Region];
             d.TargetLatitude = +d.TargetLatitude;
             d.TargetLongitude = +d.TargetLongitude;
@@ -293,7 +293,7 @@ export default function Index() {
     if (!analyte) {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "Result" as ResultDisplay, "Unit", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "Result" as "ResultDisplay", "Unit", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
@@ -333,7 +333,7 @@ export default function Index() {
     if (!analyte) {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as ResultDisplay, "Unit", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as "ResultDisplay", "Unit", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query

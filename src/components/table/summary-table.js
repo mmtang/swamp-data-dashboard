@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import LoaderBlock from '../loaders/loader-block';
-import { capitalizeFirstLetter, tissueResourceId } from '../../utils/utils';
+import { capitalizeFirstLetter, formatNumber, tissueResourceId } from '../../utils/utils';
 
 import Treeize from 'treeize';
 import { Cell, Column, HeaderCell, Table  } from 'rsuite-table';
@@ -28,6 +28,14 @@ export default function SummaryTable({
     const [sortColumn, setSortColumn] = useState('SampleYear');
     const [sortType, setSortType] = useState('desc')
     const [tableData, setTableData] = useState(null); // The filtered dataset in tree structure, used for the table
+
+    // Custom formatting for number columns
+    // Have to include the conditional statement checking for a valid value; otherwise, 'NaN' will show in the tree table where there should be empty spaces
+    const NumberCell = ({ rowData, dataKey, ...props }) => (
+        <Cell {...props}>
+            { !(isNaN(rowData[dataKey])) ? formatNumber(rowData[dataKey]) : '' } 
+        </Cell>
+    );
 
     const createParams = () => {
         let querySql = `SELECT DISTINCT ON ("StationCode", "Analyte", "CommonName", "SampleYear", "ResultType", "TissueName", "TissuePrep") "StationCode", "StationName", "Region", "SampleYear", "Analyte", "CommonName", "ResultType", "Result", "Unit", "TissueName", "TissuePrep" FROM "${tissueResourceId}"`
@@ -379,7 +387,7 @@ export default function SummaryTable({
                     </Column>
                     <Column align='right' sortable width={90}>
                         <HeaderCell>Result</HeaderCell>
-                        <Cell dataKey='Result' />
+                        <NumberCell dataKey='Result' />
                     </Column>
                     <Column align='left' width={90} >
                         <HeaderCell>Unit</HeaderCell>

@@ -4,6 +4,8 @@ import { Cell, Column, HeaderCell, Table,  } from 'rsuite-table';
 import 'rsuite-table/dist/css/rsuite-table.css';
 import { tableContainer } from './table2.module.css';
 
+import { formatNumber } from '../../utils/utils';
+
 // This component generates the data table on the dashboard index page.
 // It makes use of the react-data-table-component library
 // https://github.com/jbetancur/react-data-table-component
@@ -26,6 +28,13 @@ export default function Table2({
     const [sortType, setSortType] = useState('desc')
     // References
     const containerRef = useRef(null)
+
+    // Custom formatting for number columns
+    const NumberCell = ({ rowData, dataKey, ...props }) => (
+        <Cell {...props}>
+            {formatNumber(rowData[dataKey])}
+        </Cell>
+    );
 
     // Uses state variables sortColumn and sortType to return a dynamically sorted version of the stationData dataset
     // https://rsuite.github.io/rsuite-table/#10
@@ -136,7 +145,7 @@ export default function Table2({
                         <HeaderCell>Station Code</HeaderCell>
                         <Cell dataKey='StationCode' />
                     </Column>
-                    <Column sortable width={240}>
+                    <Column fullText sortable width={240}>
                         <HeaderCell>Station Name</HeaderCell>
                         <Cell dataKey='StationName' />
                     </Column>
@@ -146,13 +155,13 @@ export default function Table2({
                     </Column>
                     {/* Check for undefined and null values here, not truthy/falsy because 0 is a valid result but it's not truthy */}
                     { tableData && tableData.length > 0 && tableData[0].ResultDisplay !== null ?  
-                        <Column sortable width={90} align='right'>
+                        <Column sortable width={85} align='right'>
                             <HeaderCell>Result</HeaderCell>
-                            <Cell dataKey='ResultDisplay' />
+                            <NumberCell dataKey='ResultDisplay' />
                         </Column>
                     : null }
                     { tableData && tableData.length > 0 && tableData[0].Unit !== null ?  
-                        <Column sortable width={90} align='left'>
+                        <Column sortable width={95} align='left'>
                             <HeaderCell>Unit</HeaderCell>
                             <Cell dataKey='Unit' />
                         </Column>

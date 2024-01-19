@@ -37,9 +37,17 @@ export default function PanelTable({ analyte, data }) {
     const chemistryColumns = [
         {
             id: 'stationcode',
-            name: 'Station',
+            name: 'Station Code',
             selector: row => row['StationCode'],
-            width: '95px',
+            width: '115px',
+            wrap: true,
+            sortable: true,
+        },
+        {
+            id: 'stationname',
+            name: 'Station Name',
+            selector: row => row['StationName'],
+            width: '140px',
             wrap: true,
             sortable: true,
         },
@@ -75,9 +83,17 @@ export default function PanelTable({ analyte, data }) {
     const toxicityColumns = [
         {
             id: 'stationcode',
-            name: 'Station',
+            name: 'Station Code',
             selector: row => row['StationCode'],
-            width: '95px',
+            width: '115px',
+            wrap: true,
+            sortable: true,
+        },
+        {
+            id: 'stationname',
+            name: 'Station Name',
+            selector: row => row['StationName'],
+            width: '140px',
             wrap: true,
             sortable: true,
         },
@@ -120,6 +136,22 @@ export default function PanelTable({ analyte, data }) {
 
     const tissueColumns = [
         {
+            id: 'stationcode',
+            name: 'Station Code',
+            selector: row => row['StationCode'],
+            width: '115px',
+            wrap: true,
+            sortable: true,
+        },
+        {
+            id: 'stationname',
+            name: 'Station Name',
+            selector: row => row['StationName'],
+            width: '140px',
+            wrap: true,
+            sortable: true,
+        },
+        {
             id: 'species',
             name: 'Species',
             selector: row => row['Species'],
@@ -155,20 +187,19 @@ export default function PanelTable({ analyte, data }) {
             right: true
         },
         {
-            id: 'sampletype',
-            name: 'Sample Type',
-            selector: row => row['CompositeIndividual'],
-            width: '120px',
+            id: 'resulttype',
+            name: 'Result Type',
+            selector: row => row['ResultType'],
+            width: '170px',
             sortable: true,
-            right: true
+            wrap: true
         },
         {
             id: 'tissueprep',
             name: 'Tissue Prep',
             selector: row => row['TissuePrep'],
             width: '140px',
-            sortable: true,
-            right: true
+            sortable: true
         }
     ];
 

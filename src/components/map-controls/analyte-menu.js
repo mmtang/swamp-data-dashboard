@@ -129,7 +129,7 @@ export default function AnalyteMenu({
                 <div style={{ marginTop: '10px' }}>
                     <Select 
                         options={speciesList} 
-                        isClearable={false}
+                        isClearable={true}
                         isLoading={loadingSpecies}
                         isDisabled={speciesDisabled}
                         isSearchable={true}

@@ -4,6 +4,7 @@ import DownloadData from '../common/download-data';
 import MatrixTag from '../common/matrix-tag';
 
 import { timeParse, extent } from 'd3';
+import { roundPlaces } from '../../constants/constants-app';
 import { chemDataFields, habitatDataFields, tissueDataFields, toxicityDataFields } from '../../constants/constants-data';
 import { chemistryResourceId, habitatResourceId, tissueResourceId, toxicityResourceId } from '../../utils/utils';
 
@@ -90,7 +91,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         records.forEach(d => {
                             d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.SampleDate);
-                            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(3));
+                            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(roundPlaces));
                             d['Censored'] = d['Censored'].toLowerCase() === 'true';  // Convert string to boolean
                             if (analyte === 'pH') {
                                 d.Unit = '';
@@ -111,7 +112,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         records.forEach(d => {
                             d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.SampleDate);
-                            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(3));
+                            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(roundPlaces));
                             d.Censored = false;  // Convert string to boolean
                         });
                         resolve(records);
@@ -127,9 +128,8 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     .then(json => json.result.records)
                     .then(records => {
                         records.forEach(d => {
-                            d.Analyte = d.Analyte;
                             d.SampleDate = parseDate(d.SampleDate);
-                            d.ResultDisplay = parseFloat((+d.MeanDisplay).toFixed(3));
+                            d.ResultDisplay = parseFloat((+d.MeanDisplay).toFixed(roundPlaces));
                             d.Censored = false;  // Convert string to boolean
                         });
                         resolve(records);
@@ -147,7 +147,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         records.forEach(d => {
                             d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.LastSampleDate);
-                            d.ResultDisplay = parseFloat((+d.Result).toFixed(3));
+                            d.ResultDisplay = parseFloat((+d.Result).toFixed(roundPlaces));
                             d.Censored = false;  // Convert string to boolean
                         });
                         resolve(records);

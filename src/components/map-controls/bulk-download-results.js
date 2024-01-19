@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DownloadData from '../common/download-data';
 
-import { popupStyle } from '../../constants/constants-app';
+import { popupStyle, roundPlaces } from '../../constants/constants-app';
 import { chemDataFields, habitatDataFields, tissueDataFields, toxicityDataFields } from '../../constants/constants-data';
 
 import { 
@@ -85,21 +85,21 @@ export default function BulkDownloadResults({ analyte, program, region, species 
                         if (analyte.source === 'chemistry' || analyte.source === 'habitat') {
                             data.forEach(d => {
                                 d.SampleDate = parseDate(d.SampleDate);
-                                d.ResultDisplay = parseFloat(((+d.ResultDisplay)).toFixed(3));
+                                d.ResultDisplay = parseFloat(((+d.ResultDisplay)).toFixed(roundPlaces));
                                 d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                             });
                         }
                         if (analyte.source === 'toxicity') {
                             data.forEach(d => {
                                 d.SampleDate = parseDate(d.SampleDate);
-                                d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(3))); // Use the ResultDisplay name for consistency when reusing chart component
+                                d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(roundPlaces))); // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Censored = false;  // Convert string to boolean                            
                             });
                         }
                         if (analyte.source === 'tissue') {
                             data.forEach(d => {
                                 d.LastSampleDate = parseDate(d.LastSampleDate);
-                                d.ResultDisplay = parseFloat(((+d.Result).toFixed(3))) // Use the ResultDisplay name for consistency when reusing chart component
+                                d.ResultDisplay = parseFloat(((+d.Result).toFixed(roundPlaces))) // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Censored = false;
                             });
                         }
@@ -145,14 +145,14 @@ export default function BulkDownloadResults({ analyte, program, region, species 
                         if (species.source === 'toxicity') {
                             data.forEach(d => {
                                 d.SampleDate = parseDate(d.SampleDate);
-                                d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(3))); // Use the ResultDisplay name for consistency when reusing chart component
+                                d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(roundPlaces))); // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Censored = false;  // Convert string to boolean                            
                             });
                         }
                         if (species.source === 'tissue') {
                             data.forEach(d => {
                                 d.LastSampleDate = parseDate(d.LastSampleDate);
-                                d.ResultDisplay = parseFloat(((+d.Result).toFixed(3))) // Use the ResultDisplay name for consistency when reusing chart component
+                                d.ResultDisplay = parseFloat(((+d.Result).toFixed(roundPlaces))) // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Censored = false;
                             });
                         }

@@ -1,7 +1,8 @@
-import { timeParse, timeFormat } from 'd3';
+import { format, timeParse, timeFormat } from 'd3';
 
 export const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
 export const formatDate = timeFormat('%Y/%m/%d');
+export const formatNumber = format(',');
 
 // https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
 export const capitalizeFirstLetter = (string) => {
