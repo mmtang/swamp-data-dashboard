@@ -116,11 +116,11 @@ export default function Chart({ analyte, data, unit, vizColors }) {
                     .tickFormat(formatAsYear ? axisFormatDateYear : axisFormatDate);
 
                 // ** Calculate y-axis max
-                // For toxicity, fix y-axis to 0-100
+                // For analytes with percent unit, fix y-axis to 0-100
                 // For some analytes (see analyteYMax dictionary in constants), we will use a pre-determined max
                 // For everything else, use the max result value
                 let yMax;
-                if (analyte.source === 'toxicity') {
+                if (analyte.unit === '%') {
                     yMax = 100;
                 } else if (Object.keys(analyteYMax).includes(analyte.label)) {
                     yMax = analyteYMax[analyte.label];

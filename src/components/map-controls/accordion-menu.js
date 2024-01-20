@@ -48,16 +48,16 @@ export default function AccordionMenu({
     const getAllAnalyteOptions = () => {
         return new Promise((resolve, reject) => {
             const chemParams = {
-                sql: `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${chemistryResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                sql: `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "Unit", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${chemistryResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             }
             const habitatParams = {
-                sql: `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${habitatResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                sql: `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "Unit", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${habitatResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             };
             const toxParams = {
-                sql: `SELECT DISTINCT ON ("Analyte", "OrganismName", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "OrganismName" AS "Species", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${toxicityResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                sql: `SELECT DISTINCT ON ("Analyte", "OrganismName", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "Unit", "OrganismName" AS "Species", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${toxicityResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             }
             const tissueParams = {
-                sql: `SELECT DISTINCT ON ("Analyte", "CommonName", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "CommonName" AS "Species", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${tissueResourceId}"`
+                sql: `SELECT DISTINCT ON ("Analyte", "CommonName", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "Unit", "CommonName" AS "Species", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${tissueResourceId}"`
             }
             Promise.all([   
                 getData(chemParams, 'chemistry'),
@@ -99,7 +99,8 @@ export default function AccordionMenu({
                     value: d.Analyte + '$' + d.MatrixDisplay, 
                     matrix: d.MatrixDisplay, 
                     category: d.AnalyteGroup1,
-                    source: d.Source
+                    source: d.Source,
+                    unit: d.Unit
                 }
             })
             // Get unique objects from an array of objects based on object attribute value

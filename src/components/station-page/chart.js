@@ -46,7 +46,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
     }
 
     const drawChart = () => {
-        const margin = { top: 30, right: 40, bottom: 65, left: 55 };
+        const margin = { top: 30, right: 40, bottom: 65, left: 67 };
         // get container + svg aspect ratio
         const container = d3.select('#' + chartId).node();
         const targetWidth = parseInt(container.getBoundingClientRect().width);
@@ -88,8 +88,11 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
 
         // Define y scale
         let yMax;
+        // For analytes with percent unit, fix y-axis to 0-100
         // For some analytes with scoring categories or thresholds (see analyteYMax dictionary), we will want to use a pre-determined max
-        if (Object.keys(analyteYMax).includes(analyte)) {
+        if (unit === '%') {
+            yMax = 100;
+        } else if (Object.keys(analyteYMax).includes(analyte)) {
             yMax = analyteYMax[analyte];
         } else {
             const results = data.map(d => d.ResultDisplay);

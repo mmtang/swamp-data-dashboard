@@ -17,7 +17,7 @@ export default function ChartSpecies({ analyte, data, unit, vizColors }) {
     const divLegend = '#index-chart-legend';
     const siteKeys = Object.keys(data.sites);
 
-    const margin = { top: 35, right: 20, bottom: 60, left: 55 };
+    const margin = { top: 35, right: 20, bottom: 65, left: 67 };
 
     // Instantiate this variable if only one site has been selected; otherwise set speciesColorDict to null
     // If displaying multiple species, we need to preassign the species values to colors first
@@ -142,11 +142,11 @@ export default function ChartSpecies({ analyte, data, unit, vizColors }) {
                     .tickFormat(formatAsYear ? axisFormatDateYear : axisFormatDate);
 
                 // ** Calculate y-axis max
-                // For toxicity, fix y-axis to 0-100
+                // For % values, fix at 100
                 // For some analytes (see analyteYMax dictionary in constants), we will use a pre-determined max
                 // For everything else, use the max result value
                 let yMax;
-                if (analyte.source === 'toxicity') {
+                if (analyte.unit === '%') {
                     yMax = 100;
                 } else if (Object.keys(analyteYMax).includes(analyte.label)) {
                     yMax = analyteYMax[analyte.label];
