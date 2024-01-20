@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { loadCss, loadModules, setDefaultOptions } from 'esri-loader';
+import { nonReferenceSiteColor, referenceSiteColorBright } from '../../constants/constants-app';
+import { hexToRGB } from '../../utils/utils';
 
-export default function MapStation({ coordinates }) {
+export default function MapStation({ coordinates, siteType }) {
     const stationMapDivRef = useRef(null);
     const stationMapRef = useRef(null);
     const stationViewRef = useRef(null);
@@ -200,12 +202,7 @@ export default function MapStation({ coordinates }) {
                                     {
                                       "type": "CIMSolidFill",
                                       "enable": true,
-                                      "color": [
-                                        241,
-                                        95,
-                                        43,
-                                        255
-                                      ]
+                                      "color": siteType === 'Reference site' ? hexToRGB(referenceSiteColorBright) : hexToRGB(nonReferenceSiteColor)
                                     }
                                   ]
                                 }

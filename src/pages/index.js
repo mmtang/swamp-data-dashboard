@@ -34,7 +34,7 @@ export default function Index() {
   const [analyte, setAnalyte] = useState(null);
   const [cursor, setCursor] = useState('auto');
   const [disclaimerVisible, setDisclaimerVisible] = useState(false);
-  const [highlightReferenceSites, setHighlightReferenceSites] = useState(false);
+  const [highlightReferenceSites, setHighlightReferenceSites] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [program, setProgram] = useState(null);

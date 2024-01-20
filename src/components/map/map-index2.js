@@ -251,7 +251,7 @@ export default function MapIndex2({
                             source: res,
                             fields: stationDataFields,
                             outFields: ['*'],
-                            renderer: stationRenderer,
+                            renderer: highlightReferenceSites ? bioassessmentStationRenderer : stationRenderer,
                             popupTemplate: stationTemplate
                         })
                         resolve();

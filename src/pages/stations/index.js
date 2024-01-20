@@ -285,7 +285,7 @@ export default function Station(props) {
                             : null }
                         </section>
                         <div className={siteMapContainer}>
-                            <MapStation coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />
+                            <MapStation coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} siteType={stationObjRef ? stationObjRef.current.SiteType : null } />
                         </div>
                         <section style={{ margin: '1.1em 0' }}>
                             <NearbyWaterbodies coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />

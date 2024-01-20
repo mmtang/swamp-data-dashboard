@@ -1,4 +1,4 @@
-import { referenceSiteColor } from "../../constants/constants-app"
+import { nonReferenceSiteColor, referenceSiteColorDark } from "../../constants/constants-app"
 
 export const bpLineRenderer = {
     type: 'unique-value',
@@ -160,7 +160,7 @@ export const stationRenderer = {
     symbol: {
         type: 'simple-marker',
         size: 7.7,
-        color: '#046b99',
+        color: nonReferenceSiteColor,
         outline: {
             color: '#fff',
             width: 1
@@ -176,7 +176,7 @@ export const bioassessmentStationRenderer = {
         symbol: {
             type: 'simple-marker',
             size: 7.7,
-            color: '#046b99',
+            color: nonReferenceSiteColor,
             outline: {
                 color: '#fff',
                 width: 1
@@ -186,8 +186,9 @@ export const bioassessmentStationRenderer = {
         value: 'Reference site',
         symbol: {
             type: 'simple-marker',
-            size: 7.7,
-            color: referenceSiteColor,
+            style: 'diamond',
+            size: 9,
+            color: referenceSiteColorDark,
             outline: {
                 color: '#fff',
                 width: 1
