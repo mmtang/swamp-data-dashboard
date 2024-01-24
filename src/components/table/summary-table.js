@@ -59,7 +59,7 @@ export default function SummaryTable({
                 whereStatements.push(`"Region" = '${regionVal}'`);
             }
             if (species) {
-                whereStatements.push(`"CommonName" = '${species.value}'`);
+                whereStatements.push(`"CommonName" = '${species.label}'`);
             }
             // Concat multiple join statements
             if (whereStatements.length > 0) {
@@ -180,6 +180,7 @@ export default function SummaryTable({
           })
           .then((json) => json.result.records)
           .then((records) => {
+            console.log(records);
             if (records.length > 0) {
                 records.forEach((d) => {
                     d.Result = +d.Result;
