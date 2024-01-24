@@ -46,7 +46,6 @@ export default function PanelStationInfo({
     const [siteShapeDict, setSiteShapeDict] = useState({});
 
     // To show the CompareSites component, the selected analyte in the station panel must match the selected analyte in the filters. Also, an analyte must be selected. If a species is selected or not selected, the panel species must match the selected species. 
-    console.log(species, panelSpecies);
     const showCompareSites = 
         (panelAnalyte && panelAnalyte.value != null) && 
         (analyte && analyte.value === panelAnalyte.value) && 

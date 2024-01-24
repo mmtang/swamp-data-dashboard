@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ButtonReload from '../components/common/button-reload';
 import ErrorFullscreen from '../components/layout/error-fullscreen';
+import MessageModal from '../components/common/message-modal';
 import ModalContent from '../components/common/modal-content';
 import LayoutMap from '../components/layout/layout-map';
 import Metadata from '../components/layout/metadata';
@@ -41,6 +42,8 @@ export default function Index() {
   const [region, setRegion] = useState(null);
   const [comparisonSites, setComparisonSites] = useState([]);
   const [selecting, setSelecting] = useState(false);
+  const [messageModal, setMessageModal] = useState('');
+  const [messageModalVisible, setMessageModalVisible] = useState(true);
   const [species, setSpecies] = useState(null);
   const [station, setStation] = useState(null);
   const [stationLoading, setStationLoading] = useState(false); // This state was previously initiated and used in panel-station.js. Hoisted up to index because there was a slight delay when clicking/loading sites, and changes were rendering before the loading panel appeared. Initating the state here allows us to use setStationLoading in the map component for immediate effect
@@ -557,6 +560,8 @@ export default function Index() {
           region={region}
           selecting={selecting}
           setMapLoaded={setMapLoaded}
+          setMessageModal={setMessageModal}
+          setMessageModalVisible={setMessageModalVisible}
           setComparisonSites={setComparisonSites}
           setHighlightReferenceSites={setHighlightReferenceSites}
           setSelecting={setSelecting}
@@ -625,6 +630,13 @@ export default function Index() {
               </Modal.Description>
             </Modal.Content>
           </Modal> 
+      : '' }
+      { messageModalVisible ? 
+        <MessageModal 
+          message={messageModal}
+          setMessageModalVisible={setMessageModalVisible} 
+          visible={messageModalVisible} 
+        />
       : '' }
     </LayoutMap>
   )

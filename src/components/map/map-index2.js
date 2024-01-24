@@ -37,6 +37,8 @@ export default function MapIndex2({
     setComparisonSites,
     setHighlightReferenceSites,
     setMapLoaded, 
+    setMessageModal,
+    setMessageModalVisible,
     setSelecting,
     setStation,
     setStationLoading,
@@ -564,10 +566,12 @@ export default function MapIndex2({
                     }
                     setComparisonSites(comparisonSites => [...comparisonSites, newObj]);
                 } else {
-                    console.log(`${stationObj.StationCode} has already been selected`);
+                    setMessageModal(`${stationObj.StationCode} has already been added. Try selecting another station.`);
+                    setMessageModalVisible(true);
                 }
             } else {
-                console.log(`${stationObj.StationCode} is the currently selected site`);
+                setMessageModal(`${stationObj.StationCode} is the currently selected station. Try selecting another station.`);
+                setMessageModalVisible(true);
             }
         }
     }

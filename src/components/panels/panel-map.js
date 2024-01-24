@@ -27,6 +27,8 @@ export default function PanelMap({
     setComparisonSites,
     setHighlightReferenceSites,
     setMapLoaded,
+    setMessageModal,
+    setMessageModalVisible,
     setSelecting,
     setStation,
     setStationLoading,
@@ -67,6 +69,8 @@ export default function PanelMap({
                     setMapLoaded={setMapLoaded}
                     setComparisonSites={setComparisonSites}
                     setHighlightReferenceSites={setHighlightReferenceSites}
+                    setMessageModal={setMessageModal}
+                    setMessageModalVisible={setMessageModalVisible}
                     setSelecting={setSelecting}
                     setStation={setStation}
                     setStationLoading={setStationLoading}
@@ -86,6 +90,8 @@ export default function PanelMap({
                     region={region}
                     selecting={selecting}
                     setComparisonSites={setComparisonSites}
+                    setMessageModal={setMessageModal}
+                    setMessageModalVisible={setMessageModalVisible}
                     setSelecting={setSelecting}
                     setStation={setStation}
                     species={species}
