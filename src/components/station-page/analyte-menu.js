@@ -128,7 +128,12 @@ export default function AnalyteMenu({
         // Reset the panel menu to graph to ensure that the graph draws whenever the user changes the analyte or species
         setActiveMenuItem('graph');
         if (selection) {
-            setPanelSpecies(selection);
+            if (selection.label === 'All species') {
+                // Reset to null as oppposed to the object { label: 'All species', value: null } to ensure that a cleared panelSpecies value will match the empty species value inherited from the main index page (variable: species), this is to ensure that comparison sites will show up when no option is selected for both species and panelSpecies
+                setPanelSpecies(null); 
+            } else {
+                setPanelSpecies(selection);
+            }
         } else {
             setPanelSpecies(null);
         }
