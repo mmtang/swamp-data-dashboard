@@ -35,6 +35,7 @@
 
 .stationHeader {
     margin: 14px 0 4px 0;
+    word-break: break-all;
 }
 
 .stationSubText {

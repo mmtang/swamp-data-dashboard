@@ -6,6 +6,7 @@ import ChartSpecies from './chart-species';
 export default function ChartPanel({ 
     analyte, 
     data,
+    setSiteShapeDict,
     species,
     unit,
     vizColors 
@@ -16,9 +17,8 @@ export default function ChartPanel({
                 <ChartSpecies 
                     analyte={analyte}
                     data={data}
-                    species={species}
+                    setSiteShapeDict={setSiteShapeDict}
                     unit={unit}
-                    vizColors={vizColors}
                 />
             : 
                 <Chart 

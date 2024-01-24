@@ -449,7 +449,7 @@ export default function Index() {
               console.error('Station data is empty');
             }
           });
-        } else if (analyte.source === 'toxicity' || species.source === 'toxicity') {
+        } else if ((analyte && analyte.source === 'toxicity') || (species && species.source === 'toxicity')) {
           getStations(paramsTox)
           .then((res) => {
             if (res.length > 0) {
@@ -460,7 +460,7 @@ export default function Index() {
               console.error('Station data is empty');
             }
           });
-        } else if (analyte.source === 'tissue' || species.source === 'tissue') {
+        } else if ((analyte && analyte.source === 'tissue') || (species && species.source === 'tissue')) {
           getTissueStations(paramsTissue)
           .then((res) => {
             if (res.length > 0) {

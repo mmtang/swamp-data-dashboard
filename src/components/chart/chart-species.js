@@ -1,12 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import { colorPaletteViz } from '../../constants/constants-app';
 import { analytes, analyteScoringCategories, analyteYMax } from '../../constants/constants-data';
 import { customTooltip, modalContent } from './chart-panel.module.css';
 
 // Component for rendering graph on the dashboard index page (station panel) for toxicity and tissue data
-export default function ChartSpecies({ analyte, data, unit, vizColors }) {
+export default function ChartSpecies({ 
+    analyte, 
+    data, 
+    setSiteShapeDict,
+    unit
+}) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
-    const speciesColorDict = useRef(null);
+    const speciesColorDictRef = useRef(null);
+    const siteShapeDictRef = useRef(null);
     const axisFormatDate = d3.timeFormat('%m/%d/%Y');
     const axisFormatDateYear = d3.timeFormat('%Y');
     const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
@@ -18,23 +25,44 @@ export default function ChartSpecies({ analyte, data, unit, vizColors }) {
     const siteKeys = Object.keys(data.sites);
 
     const margin = { top: 35, right: 20, bottom: 65, left: 67 };
+    const shapePaletteViz = [d3.symbolCircle, d3.symbolTriangle, d3.symbolSquare, d3.symbolDiamond, d3.symbolCross];
 
     // Instantiate this variable if only one site has been selected; otherwise set speciesColorDict to null
     // If displaying multiple species, we need to preassign the species values to colors first
     const mapColorsToSpecies = (data) => {
         return new Promise((resolve, reject) => {
-            if (data && siteKeys.length === 1) {
-                const siteData = data.sites[siteKeys[0]];
-                const allSpecies = (siteData.map(d => d.Species));
-                const uniqueSpecies = [...new Set(allSpecies),];
+            if (data && siteKeys.length > 0) {
+                let allSpecies = [];
+                // Loop through each collection of site data and store species values in allSpecies array
+                for (let i = 0; i < siteKeys.length; i++) {
+                    const siteData = data.sites[siteKeys[i]];
+                    const species = (siteData.map(d => d.Species));
+                    allSpecies = [...allSpecies, ...species]; // Concatenate arrays
+                }
+                const uniqueSpecies = [...new Set(allSpecies)];
+                uniqueSpecies.sort((a, b) => a - b);
                 // Initialize new dictionary to store species:color pairs
                 const speciesDict = {};
                 for (let i = 0; i < uniqueSpecies.length; i++) {
-                    speciesDict[uniqueSpecies[i]] = vizColors[i];
+                    speciesDict[uniqueSpecies[i]] = colorPaletteViz[i];
                 }
                 resolve(speciesDict);
+            }
+        })
+    }
+
+    const mapSitesToShapes = (data) => {
+        return new Promise((resolve, reject) => {
+            if (data) {
+                const siteKeys = Object.keys(data.sites);
+                // Initialize new dictionary to store site:shape pairs
+                const siteDict = {};
+                for (let i = 0; i < siteKeys.length; i++) {
+                    siteDict[siteKeys[i]] = shapePaletteViz[i];
+                }
+                resolve(siteDict);
             } else {
-                resolve({}); // Set to an empty dictionary instead of null so that speciesColorDict.current can still be accessed and not throw an error. This is needed for the part of the code that draws the points
+                resolve({}); // Set to an empty dictionary instead of null so that siteShapeDict.current can still be accessed and not throw an error. This is needed for the part of the code that draws the points
             }
         })
     }
@@ -232,20 +260,20 @@ export default function ChartSpecies({ analyte, data, unit, vizColors }) {
 
                 // Loops through each site and draw lines + points
                 for (let i = 0; i < siteKeys.length; i++) {
+                    // Initialize symbol here, does not work in anonymous function below
+                    const symbol = d3.symbol().type(siteShapeDictRef.current[siteKeys[i]]).size(80);
                     // Add points
                     const points = chart.append('g')
                         .attr('clip-path', 'url(#clip)');
-                    points.selectAll('.circle')
+                    points.selectAll('.symbol')
                         .data(data.sites[siteKeys[i]])
-                        .enter().append('circle')
-                        .attr('class', 'circle')
-                        .attr('r', 4)
-                        .attr('cx', d => xScale(d.SampleDate))
-                        .attr('cy', d => yScale(d.ResultDisplay))
-                        .attr('fill', d => d.Censored ? '#e3e4e6' : speciesColorDict.current[d.Species] || vizColors[i] ) // If drawing one site, use the assigned species color; if drawing multiple sites, use the vizColor array
-                        .attr('stroke', d => d.Censored ? speciesColorDict.current[d.Species] || vizColors[i] : '#fff')
-                        .attr('stroke-width', d => d.Censored ? 2 : 1)
-                        .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
+                        .enter()
+                        .append('path')
+                        .attr('class', 'symbol')
+                        .attr('d', symbol)
+                        .attr('transform', d => `translate(${xScale(d.SampleDate)}, ${yScale(d.ResultDisplay)})`)
+                        .attr('fill', d => d.Censored ? '#e3e4e6' : speciesColorDictRef.current[d.Species])
+                        .attr('stroke', d => d.Censored ? speciesColorDictRef.current[d.Species] : '#fff')
                         .on('mouseover', function(currentEvent, d) {
                             const displayDate = analyte.source !== 'tissue' ? tooltipFormatDate(d.SampleDate) : yearFormatDate(d.SampleDate);
                             let content = '<span style="color: #a6a6a6">' + displayDate + '</span><br>' + d.Analyte + ": ";
@@ -291,9 +319,9 @@ export default function ChartSpecies({ analyte, data, unit, vizColors }) {
                 // Remove old legend elements
                 d3.select('.legend').remove();
                 // Get species values and sort by alphabetical order
-                const species = Object.keys(speciesColorDict.current).sort((a, b) => a.localeCompare(b));
+                const species = Object.keys(speciesColorDictRef.current).sort((a, b) => a.localeCompare(b));
                 // Create accompany array with matching colors
-                const colors = species.map(d => speciesColorDict.current[d]);
+                const colors = species.map(d => speciesColorDictRef.current[d]);
                 const legendColor = d3.scaleOrdinal(colors).domain(species);
                 // Draw legend
                 const svg = d3.select(divLegend).append('svg')
@@ -320,11 +348,15 @@ export default function ChartSpecies({ analyte, data, unit, vizColors }) {
         }
 
         if (data) {
-            mapColorsToSpecies(data)
-            .then((res) => {
-                speciesColorDict.current = res;
+            Promise.all([
+                mapSitesToShapes(data),
+                mapColorsToSpecies(data)
+            ]).then((res) => {
+                siteShapeDictRef.current = res[0];
+                speciesColorDictRef.current = res[1];
+                setSiteShapeDict(res[0]);
                 drawChart(data);
-                drawLegend(speciesColorDict);
+                drawLegend(speciesColorDictRef);
             });
         }
     }, [data])

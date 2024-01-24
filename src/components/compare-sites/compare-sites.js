@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Icon, List, Popup, Segment } from 'semantic-ui-react';
+import * as d3 from 'd3';
+import { Button, Icon, Popup, Segment } from 'semantic-ui-react';
 import { colorPaletteViz, popupStyle } from '../../constants/constants-app';
 // Import styles
 import { 
@@ -14,11 +15,13 @@ import {
 } from './compare-sites.module.css';
 
 export default function CompareSites({ 
+    analyte,
     comparisonSites, 
     selecting, 
     setComparisonSites,
     setSelecting, 
     setVizColors,
+    siteShapeDict,
     station,
     vizColors
 }) {  
@@ -86,6 +89,46 @@ export default function CompareSites({
         setAllSites([]);
         setVizColors(colorPaletteViz);
     }, [station]);
+
+    const colorRow = (d, i) => {
+        return (
+            <div className={leftContainer}>
+                <div>
+                    <Icon name='map marker' />&nbsp;
+                </div>
+                <div className={stationWrapper}>
+                    <div className={stationCode} style={{ color: `${vizColors[i]}` }}>
+                        {d.StationCode}
+                    </div>
+                    <div className={stationName}>{d.StationName}</div>
+                </div>
+            </div>
+        )
+    }
+
+    const shapeRow = (d, i) => {
+        let siteSymbol = null;
+        if (siteShapeDict[d.StationCode]) {
+            siteSymbol = d3.symbol().type(siteShapeDict[d.StationCode]).size(78);
+        }
+        return (
+            <div className={leftContainer}>
+                <div style={{ width: '24px !important' }}>
+                    <svg style={{ height: '20px', width: '20px' }}>
+                        { siteSymbol ? 
+                            <path d={siteSymbol()} fill="#818182" transform="translate(10, 11)" />
+                        : null }
+                    </svg>
+                </div>&nbsp;&nbsp;
+                <div className={stationWrapper}>
+                    <div className={stationCode} style={{ color: '#103c68' }}>
+                        {d.StationCode}
+                    </div>
+                    <div className={stationName}>{d.StationName}</div>
+                </div>
+            </div>
+        )
+    }
     
     return (
         <Segment textAlign='center'>
@@ -114,17 +157,9 @@ export default function CompareSites({
                     { allSites.map((d, i) => {
                         return (
                             <div className={compareRow} key={d.StationCode}>
-                                <div className={leftContainer}>
-                                    <div>
-                                        <Icon name='map marker' />&nbsp;
-                                    </div>
-                                    <div className={stationWrapper}>
-                                        <div className={stationCode} style={{ color: `${vizColors[i]}` }}>
-                                            {d.StationCode}
-                                        </div>
-                                        <div className={stationName}>{d.StationName}</div>
-                                    </div>
-                                </div>
+                                { (analyte && (analyte.source === 'toxicity' || analyte.source === 'tissue')) ?
+                                  shapeRow(d, i) 
+                                : colorRow(d, i) }                        
                                 <div>
                                     { i > 0 ? 
                                         <Icon 

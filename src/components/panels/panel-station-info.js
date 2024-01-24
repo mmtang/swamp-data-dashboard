@@ -6,6 +6,7 @@ import DownloadSection from '../station-page/download-section';
 import LoaderBlock from '../loaders/loader-block';
 import PanelTable from '../table/panel-table';
 import { Menu, Segment } from 'semantic-ui-react';
+import * as d3 from 'd3';
 
 import { 
     capitalizeFirstLetter, 
@@ -18,6 +19,8 @@ import {
 
 import { colorPaletteViz, roundPlaces } from '../../constants/constants-app';
 import { chartContainer, menuContainer } from './panel-station-info.module.css';
+
+const shapePaletteViz = [d3.symbolCircle, d3.symbolTriangle, d3.symbolSquare, d3.symbolDiamond, d3.symbolWye];
 
 // This component generates the main content (below the site info) for when a station is selected. The dashboard loads different content based on whether or not an analyte/parameter was selected beforehand (or not)
 export default function PanelStationInfo({ 
@@ -40,9 +43,15 @@ export default function PanelStationInfo({
     const [panelSpecies, setPanelSpecies] = useState(species);
     // Make a copy of the colorPaletteViz array. Used to keep track of what colors are being used and not being used in the current render. We don't want color to be tied to array position; or else the color of a site will change every time a site is removed from the comparisonSites selection. Will use a fresh copy everytime the selected station changes
     const [vizColors, setVizColors] = useState(colorPaletteViz);  
+    const [siteShapeDict, setSiteShapeDict] = useState({});
 
-    // To show the CompareSites component, the selected analyte in the station panel must match the selected analyte in the filters. Also, an analyte must be selected. Also, the show all species option must not be selected when viewing toxicity or tissue data
-    const showCompareSites = (panelAnalyte && panelAnalyte.value != null) && (analyte && analyte.value === panelAnalyte.value);
+    // To show the CompareSites component, the selected analyte in the station panel must match the selected analyte in the filters. Also, an analyte must be selected. If a species is selected or not selected, the panel species must match the selected species. 
+    console.log(species, panelSpecies);
+    const showCompareSites = 
+        (panelAnalyte && panelAnalyte.value != null) && 
+        (analyte && analyte.value === panelAnalyte.value) && 
+        (species ? JSON.stringify(species) === JSON.stringify(panelSpecies) : true) && 
+        (species === null ? JSON.stringify(species) === JSON.stringify(panelSpecies) : true);
 
     // This function converts a JavaScript datetime object to the beginning of the year (01/01/YYYY).
     // This is used to ensure that tissue data points get plotted at the year tick and not in between ticks
@@ -186,7 +195,6 @@ export default function PanelStationInfo({
                 }
             });
         };
-
         if (allSites.length > 0) {
             let checks = [];
             for (let i = 0; i < allSites.length; i++) {
@@ -273,6 +281,24 @@ export default function PanelStationInfo({
             </div>
             {/* ------ Chart */}
             <div className={menuContainer} style={ activeMenuItem !== 'graph' ? displayNone : null }>
+                {/* ----- Compare Sites
+                If analyte selection matches analyte selection in map, then show the "Compare sites" content 
+                Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used
+                There is no easy way to compare objects except to convert the object to string; this will work as long as the order of the attribute fields in both objects are the same
+                */}
+                { showCompareSites ? 
+                    <CompareSites 
+                        analyte={analyte}
+                        comparisonSites={comparisonSites} 
+                        selecting={selecting}
+                        setSelecting={setSelecting}
+                        setComparisonSites={setComparisonSites}
+                        setVizColors={setVizColors}
+                        siteShapeDict={siteShapeDict}
+                        station={station} 
+                        vizColors={colorPaletteViz}
+                    />
+                : null }
                 <Segment className={chartContainer} placeholder textAlign='center'>
                     {/* ----- Download data */}
                     { panelAnalyte ? 
@@ -283,9 +309,10 @@ export default function PanelStationInfo({
                         <ChartPanel 
                             analyte={panelAnalyte} 
                             data={chartData}
+                            setSiteShapeDict={setSiteShapeDict}
                             species={panelSpecies}
                             unit={unitRef.current}
-                            vizColors={vizColors}
+                            vizColors={colorPaletteViz}
                         />
                     : panelAnalyte && loading ?  // If an analyte is selected but still loading, show the loader
                         <LoaderBlock />
@@ -293,22 +320,6 @@ export default function PanelStationInfo({
                         <div style={{ fontStyle: 'italic' }}>Select an analyte</div>
                     : null }
                 </Segment>
-                {/* ----- Compare Sites
-                If analyte selection matches analyte selection in map, then show the "Compare sites" content 
-                Because the user will be selecting comparison sites in the map and table, the anayte selected in the panel MUST match the anayte selected for the main map/table in order for this content to be used
-                There is no easy way to compare objects except to convert the object to string; this will work as long as the order of the attribute fields in both objects are the same
-                */}
-                { showCompareSites ? 
-                    <CompareSites 
-                        comparisonSites={comparisonSites} 
-                        selecting={selecting}
-                        setSelecting={setSelecting}
-                        setComparisonSites={setComparisonSites}
-                        setVizColors={setVizColors}
-                        station={station} 
-                        vizColors={vizColors}
-                    />
-                : null }
             </div>
             {/* ------ Table */}
             <div className={menuContainer} style={ activeMenuItem !== 'table' ? displayNone : null }>

@@ -172,7 +172,7 @@ export const bioassessmentStationRenderer = {
     type: 'unique-value',
     field: 'SiteType',
     uniqueValueInfos: [{
-        value: 'Monitoring site',
+        value: 'Non-reference site',
         symbol: {
             type: 'simple-marker',
             size: 7.7,
