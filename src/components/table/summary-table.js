@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import LoaderBlock from '../loaders/loader-block';
-import { capitalizeFirstLetter, formatNumber, tissueResourceId } from '../../utils/utils';
+import { capitalizeFirstLetter, formatNumber, regionNumDict, tissueResourceId } from '../../utils/utils';
 
 import Treeize from 'treeize';
 import { Cell, Column, HeaderCell, Table  } from 'rsuite-table';
@@ -13,13 +13,22 @@ import { loaderContainer } from './summary-table.module.css';
 // This component generates the data table for tissue data on the dashboard index page.
 export default function SummaryTable({ 
     analyte,
+    comparisonSites,
     expandedRowKeys,
     program,
     region,
     searchText,
+    selecting,
     setAllRowKeys,
+    setComparisonSites,
     setExpandedRowKeys,
+    setMessageModal,
+    setMessageModalVisible,
+    setSelecting,
+    setStation,
+    setStationLoading,
     species,
+    station
 }) {
     // State variables
     const [flatData, setFlatData] = useState(null); // The original dataset in flat structure, serves as a copy of the original dataset, used for filtering. This dataset gets updated whenever one of the filters from the main page are used and applied
@@ -38,7 +47,7 @@ export default function SummaryTable({
     );
 
     const createParams = () => {
-        let querySql = `SELECT DISTINCT ON ("StationCode", "Analyte", "CommonName", "SampleYear", "ResultType", "TissueName", "TissuePrep") "StationCode", "StationName", "Region", "SampleYear", "Analyte", "CommonName", "ResultType", "Result", "Unit", "TissueName", "TissuePrep" FROM "${tissueResourceId}"`
+        let querySql = `SELECT DISTINCT ON ("StationCode", "Analyte", "CommonName", "SampleYear", "ResultType", "TissueName", "TissuePrep") "StationCode", "StationName", "Region", "SampleYear", "Analyte", "CommonName", "ResultType", "Result", "Unit", "TissueName", "TissuePrep", "SiteType", "TargetLatitude", "TargetLongitude" FROM "${tissueResourceId}"`
         const whereStatements = [];
         if (analyte || program || region || species) {
             // This block constucts the "WHERE" part of the select query
@@ -80,8 +89,12 @@ export default function SummaryTable({
                 const remappedData = data.map(d => {
                     return { 
                         'id': generateId(),
+                        'Region': d.Region,
+                        'SiteType': d.SiteType,
                         'StationCode': d.StationCode,
                         'StationName*': d.StationName,
+                        'TargetLatitude': d.TargetLatitude,
+                        'TargetLongitude': d.TargetLongitude,
                         'children:Analyte': d.Analyte,
                         'children:id': generateId(),
                         'children:Species': d.CommonName,
@@ -170,7 +183,6 @@ export default function SummaryTable({
     const getTissueData = (params) => {
         return new Promise((resolve, reject) => {
           const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
-          console.log(url + new URLSearchParams(params));
           fetch(url + new URLSearchParams(params))
           .then((resp) => {
             if (!resp.ok) {
@@ -180,7 +192,6 @@ export default function SummaryTable({
           })
           .then((json) => json.result.records)
           .then((records) => {
-            console.log(records);
             if (records.length > 0) {
                 records.forEach((d) => {
                     d.Result = +d.Result;
@@ -229,6 +240,74 @@ export default function SummaryTable({
             newArr.splice(index, 1);
         }
         return newArr;
+    }
+
+    // This function checks if a station is already in the comparison sites array. If it does not already exist, then it adds the new value to the state array
+    // This runs when a station on the table is clicked and the selecting mode is on (true)
+    const addToComparisonList = (stationObj) => {
+        if (stationObj) {
+            // Check that the clicked site isn't the same as the currently selected site
+            if (stationObj.StationCode !== station.StationCode) {
+                // Check if site has already been selected. If not already selected (-1), add to existing array
+                // Use the ref value here, not the state, because this function cannot get the updated state. There is a useEffect function that updates the ref value whenever state changes
+                const selectedCodes = comparisonSites.map(d => d.StationCode);
+                if (selectedCodes.indexOf(stationObj.StationCode) === -1) {
+                    const newObj = {
+                        StationCode: stationObj.StationCode,
+                        StationName: stationObj.StationName
+                    }
+                    setComparisonSites(comparisonSites => [...comparisonSites, newObj]);
+                } else {
+                    setMessageModal(`${stationObj.StationCode} has already been selected. Try adding another station.`);
+                    setMessageModalVisible(true);
+                }
+            } else {
+                setMessageModal(`${stationObj.StationCode} is the currently selected station. Try adding another station.`);
+                setMessageModalVisible(true);
+            }
+        }
+    }
+
+    const handleClick = (clickedRow) => {
+        // Construct a new station object to be passed to setStation
+        const getStationObj = (row) => {
+            if (row && row.StationCode) {
+                // If a parent row is clicked
+                const newObj = {
+                    Region: row.Region,
+                    RegionName: regionNumDict[+row.Region],
+                    SiteType: row.SiteType,
+                    StationCode: row.StationCode,
+                    StationName: row.StationName,
+                    TargetLatitude: row.TargetLatitude,
+                    TargetLongitude: row.TargetLongitude
+                };
+                return newObj;
+            } else {
+                /*
+                // Use the code below to access parent attribute values if a child row is clicked
+                // If a child row is clicked, get attributes from the parent symbol
+                const symbol = Object.getOwnPropertySymbols(row).find((s) => s.description === 'parent');
+                const symbolObj = clickedRow[symbol];
+                return symbolObj.StationCode;
+                */
+               console.log('Child row clicked');
+               return null;
+            }
+        }
+        if (clickedRow) {
+            const station = getStationObj(clickedRow);
+            if (station) {
+                if (!selecting) {
+                    setStationLoading(true);
+                    setStation(station);
+                } else {
+                    addToComparisonList(station);
+                    // Reset the selecting state; this resets the selecting button after the user clicks a station
+                    setSelecting(false);
+                }
+            }
+        }
     }
 
     const handleExpandToggle = (isOpen, rowData) => {
@@ -361,7 +440,7 @@ export default function SummaryTable({
                     rowKey='id'
                     shouldUpdateScroll={false}
                     virtualized
-                    //onRowClick={handleClick}
+                    onRowClick={handleClick}
                     onExpandChange={handleExpandToggle}
                     onSortColumn={handleSortColumn}
                     sortColumn={sortColumn}

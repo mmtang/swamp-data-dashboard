@@ -566,11 +566,11 @@ export default function MapIndex2({
                     }
                     setComparisonSites(comparisonSites => [...comparisonSites, newObj]);
                 } else {
-                    setMessageModal(`${stationObj.StationCode} has already been added. Try selecting another station.`);
+                    setMessageModal(`${stationObj.StationCode} has already been selected. Try adding another station.`);
                     setMessageModalVisible(true);
                 }
             } else {
-                setMessageModal(`${stationObj.StationCode} is the currently selected station. Try selecting another station.`);
+                setMessageModal(`${stationObj.StationCode} is the currently selected station. Try adding another station.`);
                 setMessageModalVisible(true);
             }
         }

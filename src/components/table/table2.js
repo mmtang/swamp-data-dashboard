@@ -20,6 +20,7 @@ export default function Table2({
     setMessageModalVisible,
     setSelecting,
     setStation, 
+    setStationLoading,
     species,
     station, 
     tableData,
@@ -67,7 +68,7 @@ export default function Table2({
     }
 
     // This function checks if a station is already in the comparison sites array. If it does not already exist, then it adds the new value to the state array
-    // This runs when a station on the map is clicked and the selecting mode is on (true)
+    // This runs when a station on the table is clicked and the selecting mode is on (true)
     const addToComparisonList = (stationObj) => {
         if (stationObj) {
             // Check that the clicked site isn't the same as the currently selected site
@@ -82,11 +83,11 @@ export default function Table2({
                     }
                     setComparisonSites(comparisonSites => [...comparisonSites, newObj]);
                 } else {
-                    setMessageModal(`${stationObj.StationCode} has already been added. Try selecting another station.`);
+                    setMessageModal(`${stationObj.StationCode} has already been selected. Try adding another station.`);
                     setMessageModalVisible(true);
                 }
             } else {
-                setMessageModal(`${stationObj.StationCode} is the currently selected station. Try selecting another station.`);
+                setMessageModal(`${stationObj.StationCode} is the currently selected station. Try adding another station.`);
                 setMessageModalVisible(true);
             }
         }
@@ -95,6 +96,7 @@ export default function Table2({
     // This function runs whenever a table row is clicked
     const handleClick = (clickedStation) => {
         if (!selecting) {
+            setStationLoading(true);
             setStation(clickedStation);
         } else {
             addToComparisonList(clickedStation);

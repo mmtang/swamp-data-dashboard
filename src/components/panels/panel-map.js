@@ -94,6 +94,7 @@ export default function PanelMap({
                     setMessageModalVisible={setMessageModalVisible}
                     setSelecting={setSelecting}
                     setStation={setStation}
+                    setStationLoading={setStationLoading}
                     species={species}
                     station={station}
                     tableData={tableData}
@@ -102,9 +103,18 @@ export default function PanelMap({
             <div style={view !== 'summary' ? { display: 'none' } : tableContainerStyle }>
                 <SummaryContainer
                     analyte={analyte}
+                    comparisonSites={comparisonSites}
                     program={program}
                     region={region}
+                    selecting={selecting}
+                    setComparisonSites={setComparisonSites}
+                    setMessageModal={setMessageModal}
+                    setMessageModalVisible={setMessageModalVisible}
+                    setSelecting={setSelecting}
+                    setStation={setStation}
+                    setStationLoading={setStationLoading}
                     species={species}
+                    station={station}
                 />
             </div>  
         </div>

@@ -43,7 +43,7 @@ export default function Index() {
   const [comparisonSites, setComparisonSites] = useState([]);
   const [selecting, setSelecting] = useState(false);
   const [messageModal, setMessageModal] = useState('');
-  const [messageModalVisible, setMessageModalVisible] = useState(true);
+  const [messageModalVisible, setMessageModalVisible] = useState(false);
   const [species, setSpecies] = useState(null);
   const [station, setStation] = useState(null);
   const [stationLoading, setStationLoading] = useState(false); // This state was previously initiated and used in panel-station.js. Hoisted up to index because there was a slight delay when clicking/loading sites, and changes were rendering before the loading panel appeared. Initating the state here allows us to use setStationLoading in the map component for immediate effect

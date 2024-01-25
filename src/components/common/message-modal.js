@@ -21,7 +21,7 @@ export default function MessageModal({ message, setMessageModalVisible, visible 
             size='tiny'
         >
             <ModalContent>
-                <p style={{ textAlign: 'center' }}>{message}</p>
+                <p>{message}</p>
             </ModalContent>
             <ModalActions>
                 <Button compact onClick={handleClose} size='small'>

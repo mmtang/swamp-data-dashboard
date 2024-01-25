@@ -6,10 +6,18 @@ import { container } from './summary-container.module.css';
 
 export default function SummaryContainer({ 
     analyte,
+    comparisonSites,
     program,
     region,
+    selecting,
+    setComparisonSites,
+    setMessageModal,
+    setMessageModalVisible,
+    setSelecting,
+    setStation,
+    setStationLoading,
     species,
-    view
+    station
 }) {   
     // State variables
     const [allRowKeys, setAllRowKeys] = useState([]); // Array for tracking all visible rows in the summary table
@@ -30,14 +38,22 @@ export default function SummaryContainer({
             />
             <SummaryTable 
                 analyte={analyte}
+                comparisonSites={comparisonSites}
                 expandedRowKeys={expandedRowKeys}
                 program={program}
                 region={region}
                 searchText={searchText}
+                selecting={selecting}
                 setAllRowKeys={setAllRowKeys}
+                setComparisonSites={setComparisonSites}
                 setExpandedRowKeys={setExpandedRowKeys}
+                setMessageModal={setMessageModal}
+                setMessageModalVisible={setMessageModalVisible}
+                setSelecting={setSelecting}
+                setStation={setStation}
+                setStationLoading={setStationLoading}
                 species={species}
-                view={view}
+                station={station}
             />
         </div>
     )
