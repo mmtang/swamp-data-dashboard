@@ -5,6 +5,8 @@ import HelpIcon from '../icons/help-icon';
 import ProgramMenu from '../map-controls/program-menu';
 import RegionMenu from '../map-controls/region-menu';
 
+import { Button } from 'semantic-ui-react';
+
 import { 
     capitalizeFirstLetter, 
     chemistryResourceId,
@@ -25,14 +27,10 @@ import {
 // This component generates the structure for the accordion menu on the index page
 // It fetches data that is used by multiple child componenets
 export default function AccordionMenu({ 
-    analyte, 
-    program, 
-    region, 
     setAnalyte, 
     setProgram,
     setRegion,
-    setSpecies,
-    species
+    setSpecies
 }) {  
     // State for select menus
     const allAnalyteCombosRef = useRef(null);
@@ -43,6 +41,11 @@ export default function AccordionMenu({
     const [categoryList, setCategoryList] = useState(null);
     const [programList, setProgramList] = useState(null);
     const [regionList, setRegionList] = useState(null);
+    const [selectedAnalyte, setSelectedAnalyte] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedProgram, setSelectedProgram] = useState(null);
+    const [selectedRegion, setSelectedRegion] = useState(null);
+    const [selectedSpecies, setSelectedSpecies] = useState(null);
     const [speciesList, setSpeciesList] = useState(null);
 
     const getAllAnalyteOptions = () => {
@@ -88,6 +91,14 @@ export default function AccordionMenu({
                 resolve(records);
             });
         })
+    }
+
+    const handleFilterChange = () => {
+        setAnalyte(selectedAnalyte);
+        setCategory(selectedCategory);
+        setProgram(selectedProgram);
+        setRegion(selectedRegion);
+        setSpecies(selectedSpecies);
     }
 
     const updateAnalyteList = (data) => {
@@ -234,56 +245,59 @@ export default function AccordionMenu({
             if (updateProgram) {
                 // Omit filtering by selected program  valuefor the block of code below because you want the program filter menu to refresh showing all possible values for program. Repeat this same pattern in the other if statements
                 let newPrograms = allAnalyteCombosRef.current;
-                if (region) { newPrograms = newPrograms.filter(d => d['Region'] === region) };
-                if (category) { newPrograms = newPrograms.filter(d => d.AnalyteGroup1 === category) };
-                if (species) { newPrograms = newPrograms.filter(d => d.Species === species.value) };
-                if (analyte) {
-                    newPrograms = newPrograms.filter(d => d.Analyte === analyte.label);
-                    newPrograms = newPrograms.filter(d => d.MatrixDisplay === analyte.matrix);
+                if (selectedRegion) { newPrograms = newPrograms.filter(d => d['Region'] === selectedRegion) };
+                if (selectedCategory) { newPrograms = newPrograms.filter(d => d.AnalyteGroup1 === selectedCategory) };
+                if (selectedSpecies) { newPrograms = newPrograms.filter(d => d.Species === selectedSpecies.value) };
+                if (selectedAnalyte) {
+                    newPrograms = newPrograms.filter(d => d.Analyte === selectedAnalyte.label);
+                    newPrograms = newPrograms.filter(d => d.MatrixDisplay === selectedAnalyte.matrix);
                 }
                 updateProgramList(newPrograms);
             }
             if (updateRegion) {
                 let newRegions = allAnalyteCombosRef.current;
-                if (program) { newRegions = newRegions.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
-                if (category) { newRegions = newRegions.filter(d => d.AnalyteGroup1 === category) };
-                if (species) { newRegions = newRegions.filter(d => d.Species === species.value) };
-                if (analyte) {
-                    newRegions = newRegions.filter(d => d.Analyte === analyte.label);
-                    newRegions = newRegions.filter(d => d.MatrixDisplay === analyte.matrix);
+                if (selectedProgram) { newRegions = newRegions.filter(d => d[capitalizeFirstLetter(selectedProgram)] === 'True') };
+                if (selectedCategory) { newRegions = newRegions.filter(d => d.AnalyteGroup1 === selectedCategory) };
+                if (selectedSpecies) { 
+                    newRegions = newRegions.filter(d => d.Species === selectedSpecies.label);
+                    newRegions = newRegions.filter(d => d.MatrixDisplay === selectedSpecies.matrix);
+                };
+                if (selectedAnalyte) {
+                    newRegions = newRegions.filter(d => d.Analyte === selectedAnalyte.label);
+                    newRegions = newRegions.filter(d => d.MatrixDisplay === selectedAnalyte.matrix);
                 }
                 updateRegionList(newRegions);
             }
             if (updateCategory) {
                 let newCategories = allAnalyteCombosRef.current;
-                if (program) { newCategories = newCategories.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
-                if (region) { newCategories = newCategories.filter(d => d['Region'] === region) };
-                if (species) { newCategories = newCategories.filter(d => d.Species === species.value) };
-                if (analyte) {
-                    newCategories = newCategories.filter(d => d.Analyte === analyte.label);
-                    newCategories = newCategories.filter(d => d.MatrixDisplay === analyte.matrix);
+                if (selectedProgram) { newCategories = newCategories.filter(d => d[capitalizeFirstLetter(selectedProgram)] === 'True') };
+                if (selectedRegion) { newCategories = newCategories.filter(d => d['Region'] === selectedRegion) };
+                if (selectedSpecies) { newCategories = newCategories.filter(d => d.Species === selectedSpecies.value) };
+                if (selectedAnalyte) {
+                    newCategories = newCategories.filter(d => d.Analyte === selectedAnalyte.label);
+                    newCategories = newCategories.filter(d => d.MatrixDisplay === selectedAnalyte.matrix);
                 }
                 updateCategoryList(newCategories);
             }
             if (updateSpecies) {
                 let newSpecies = allAnalyteCombosRef.current;
-                if (program) { newSpecies = newSpecies.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
-                if (region) { newSpecies = newSpecies.filter(d => d['Region'] === region) };
-                if (category) { newSpecies = newSpecies.filter(d => d.AnalyteGroup1 === category) };
-                if (analyte) {
-                    newSpecies = newSpecies.filter(d => d.Analyte === analyte.label);
-                    newSpecies = newSpecies.filter(d => d.MatrixDisplay === analyte.matrix);
+                if (selectedProgram) { newSpecies = newSpecies.filter(d => d[capitalizeFirstLetter(selectedProgram)] === 'True') };
+                if (selectedRegion) { newSpecies = newSpecies.filter(d => d['Region'] === selectedRegion) };
+                if (selectedCategory) { newSpecies = newSpecies.filter(d => d.AnalyteGroup1 === selectedCategory) };
+                if (selectedAnalyte) {
+                    newSpecies = newSpecies.filter(d => d.Analyte === selectedAnalyte.label);
+                    newSpecies = newSpecies.filter(d => d.MatrixDisplay === selectedAnalyte.matrix);
                 }
                 updateSpeciesList(newSpecies);
             }
             if (updateAnalyte) {
                 let newAnalytes = allAnalyteCombosRef.current;
-                if (program) { newAnalytes = newAnalytes.filter(d => d[capitalizeFirstLetter(program)] === 'True') };
-                if (region) { newAnalytes = newAnalytes.filter(d => d['Region'] === region) };
-                if (category) { newAnalytes = newAnalytes.filter(d => d.AnalyteGroup1 === category) };
-                if (species) { 
-                    newAnalytes = newAnalytes.filter(d => d.Species === species.label);
-                    newAnalytes = newAnalytes.filter(d => d.MatrixDisplay === species.matrix);
+                if (selectedProgram) { newAnalytes = newAnalytes.filter(d => d[capitalizeFirstLetter(selectedProgram)] === 'True') };
+                if (selectedRegion) { newAnalytes = newAnalytes.filter(d => d['Region'] === selectedRegion) };
+                if (selectedCategory) { newAnalytes = newAnalytes.filter(d => d.AnalyteGroup1 === selectedCategory) };
+                if (selectedSpecies) { 
+                    newAnalytes = newAnalytes.filter(d => d.Species === selectedSpecies.label);
+                    newAnalytes = newAnalytes.filter(d => d.MatrixDisplay === selectedSpecies.matrix);
                 };
                 updateAnalyteList(newAnalytes);
             };
@@ -292,11 +306,11 @@ export default function AccordionMenu({
 
     useEffect(() => {
         updateMenuOptions({ updateProgram: false, updateRegion: true, updateCategory: true, updateSpecies: true, updateAnalyte: true });
-    }, [program]);
+    }, [selectedProgram]);
 
     useEffect(() => {
         updateMenuOptions({ updateProgram: true, updateRegion: false, updateCategory: true, updateSpecies: true, updateAnalyte: true });
-    }, [region]);
+    }, [selectedRegion]);
 
     useEffect(() => {
         // Must differentiate between whether a new category value was selected or if the previous category value was cleared
@@ -307,16 +321,16 @@ export default function AccordionMenu({
             // If the category filter was cleared, update/refresh the category menu or else it may continue to show stale values
             updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateSpecies: true, updateAnalyte: true });
         }
-    }, [category]);
+    }, [selectedCategory]);
 
     useEffect(() => {
         updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: false, updateSpecies: false, updateAnalyte: true });
-    }, [species]);
+    }, [selectedSpecies]);
 
     useEffect(() => {
         // Refresh the species menu for all cases even when analyte is not selected. 'Always refresh but control when to show the menu' is the more straight forward approach (as opposed to only refreshing it under certain conditions; for example, when a tissue or toxicity analyte is selected)
-        updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: false, updateSpecies: true, updateAnalyte: true }); 
-    }, [analyte]);
+        updateMenuOptions({ updateProgram: true, updateRegion: true, updateCategory: true, updateSpecies: true, updateAnalyte: false }); 
+    }, [selectedAnalyte]);
 
     return (
         <div style={{ marginTop: '1.4em' }}>
@@ -325,14 +339,14 @@ export default function AccordionMenu({
                         {/* A high value is needed for flex-basis so that the select box doesn't collapse under flexbox. The actual value is seemingly not that important, only that it's a high value. It might be better to set the width of the select. */}
                         <div style={{ flexBasis: '100%'}}>
                             <AnalyteMenu 
-                                analyte={analyte}
                                 analyteList={analyteList} 
-                                category={category}
+                                selectedCategory={selectedCategory}
                                 categoryList={categoryList}
-                                setAnalyte={setAnalyte} 
-                                setCategory={setCategory}
-                                setSpecies={setSpecies}
-                                species={species}
+                                selectedAnalyte={selectedAnalyte}
+                                setSelectedCategory={setSelectedCategory}
+                                selectedSpecies={selectedSpecies}
+                                setSelectedAnalyte={setSelectedAnalyte}    
+                                setSelectedSpecies={setSelectedSpecies}
                                 speciesList={speciesList}
                             />
                         </div>
@@ -343,11 +357,9 @@ export default function AccordionMenu({
                     Statewide monitoring program
                 </p>
                 <ProgramMenu 
-                    program={program} 
                     programList={programList} 
-                    setAnalyte={setAnalyte}
-                    setCategory={setCategory}
-                    setProgram={setProgram} 
+                    selectedProgram={selectedProgram} 
+                    setSelectedProgram={setSelectedProgram} 
                 />
                 <p className={pLabel}>
                     Region
@@ -358,9 +370,9 @@ export default function AccordionMenu({
                     </HelpIcon>
                 </p>
                 <RegionMenu 
-                    region={region}
                     regionList={regionList}
-                    setRegion={setRegion} 
+                    selectedRegion={selectedRegion}
+                    setSelectedRegion={setSelectedRegion} 
                 />
             </div>
             <div className={buttonContainer}>
@@ -370,8 +382,22 @@ export default function AccordionMenu({
                     setCategory={setCategory}
                     setProgram={setProgram}
                     setRegion={setRegion}
+                    setSelectedAnalyte={setSelectedAnalyte}
+                    setSelectedCategory={setSelectedCategory}
+                    setSelectedProgram={setSelectedProgram}
+                    setSelectedRegion={setSelectedRegion}
+                    setSelectedSpecies={setSelectedSpecies}
                     setSpecies={setSpecies}
                 />
+                <Button 
+                    color='black'
+                    compact
+                    onClick={handleFilterChange}
+                    onKeyPress={handleFilterChange}
+                    size='small'
+                >
+                    Apply filters
+                </Button>
             </div>
         </div>
     )

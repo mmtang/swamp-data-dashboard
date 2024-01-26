@@ -5,33 +5,33 @@ import Select from 'react-select';
 import { customSelectStyle, programDict } from '../../utils/utils';
 
 export default function ProgramMenu({ 
-    program, 
     programList, 
-    setProgram 
+    selectedProgram, 
+    setSelectedProgram 
 }) {   
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
 
     const handleChange = (selection) => {
         // Clear user selection for cross filtering
-        if (selection ) {
+        if (selection) {
             const value = selection.value;
             // Line below used to navigate to another page in the dashboard, saved for reference
             // navigate(`/programs/${value}`);
-            setProgram(value);
+            setSelectedProgram(value);
         } else {
             // Clear the program selection
-            setProgram(null)
+            setSelectedProgram(null)
         }
     }
 
     useEffect(() => {
-        if (program) {
-            setSelected({ label: programDict[program], value: program });
+        if (selectedProgram) {
+            setSelected({ label: programDict[selectedProgram], value: selectedProgram });
         } else {
             setSelected(null);
         }
-    }, [program]);
+    }, [selectedProgram]);
 
     useEffect(() => {
         if (programList) {

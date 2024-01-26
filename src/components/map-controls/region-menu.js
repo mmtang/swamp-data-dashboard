@@ -4,26 +4,26 @@ import LoaderMenu from '../loaders/loader-menu';
 import Select from 'react-select';
 import { customSelectStyle, regionDict, regionNumDict } from '../../utils/utils';
 
-export default function RegionMenu({ region, regionList, setRegion }) {   
+export default function RegionMenu({ regionList, selectedRegion, setSelectedRegion }) {   
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
 
     const handleChange = (selection) => {
-        if (selection ) {
+        if (selection) {
             const value = selection.value;
-            setRegion(regionNumDict[value]);
+            setSelectedRegion(regionNumDict[value]);
         } else {
-            setRegion(null)
+            setSelectedRegion(null)
         }
     }
 
     useEffect(() => {
-        if (region) {
-            setSelected({ label: regionDict[region], value: region })
+        if (selectedRegion) {
+            setSelected({ label: regionDict[selectedRegion], value: selectedRegion })
         } else {
             setSelected(null);
         }
-    }, [region])
+    }, [selectedRegion])
 
     useEffect(() => {
         if (regionList) {

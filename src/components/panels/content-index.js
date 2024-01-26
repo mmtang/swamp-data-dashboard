@@ -4,17 +4,11 @@ import AccordionMenu from '../map-controls/accordion-menu';
 import { infoContainer, mainContainer, welcomeHeader } from '../../pages/index.module.css';
 
 export default function ContentIndex({ 
-    analyte, 
-    program, 
-    region, 
     setAnalyte, 
-    setHighlightReferenceSites,
     setProgram,
     setRegion,
     setSpecies,
-    species,
-    station,
-    stationData
+    station
 }) {  
     const yearRef = useRef(new Date().getFullYear());
 
@@ -29,16 +23,10 @@ export default function ContentIndex({
                 <p>The <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/" target="_blank" rel="noopener noreferrer">Surface Water Ambient Monitoring Program</a> (SWAMP) mission is to generate  high quality, accessible, and usable data and information that is used to protect and restore California’s watersheds, and to inform California communities about local conditions of waterbodies monitored by SWAMP. Explore SWAMP data for the time period of 2000-{yearRef.current}.</p>
                 <section style={{ marginBottom: '30px' }}>
                     <AccordionMenu
-                        analyte={analyte}
-                        region={region}
-                        program={program}
                         setAnalyte={setAnalyte}
-                        setHighlightReferenceSites={setHighlightReferenceSites}
                         setProgram={setProgram}
                         setRegion={setRegion}
                         setSpecies={setSpecies}
-                        species={species}
-                        stationData={stationData}
                     />
                 </section>
             </div>

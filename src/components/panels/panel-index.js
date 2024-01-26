@@ -17,17 +17,11 @@ export default function PanelIndex({
     const getContent = () => {
         return (
             <ContentIndex 
-                analyte={analyte}
-                program={program}
-                region={region}
                 setAnalyte={setAnalyte}
-                setHighlightReferenceSites={setHighlightReferenceSites}
                 setProgram={setProgram}
                 setRegion={setRegion} 
                 setSpecies={setSpecies}
-                species={species}
                 station={station}
-                stationData={stationData}
             />
         )
     }

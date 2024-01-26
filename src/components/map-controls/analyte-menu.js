@@ -7,21 +7,21 @@ import { customSelectStyle } from '../../utils/utils';
 import { pLabel } from './accordion-menu.module.css';
 
 export default function AnalyteMenu({ 
-    analyte, 
     analyteList, 
-    category, 
     categoryList, 
-    setAnalyte, 
-    setCategory,
-    setSpecies,
-    species,
+    selectedAnalyte, 
+    selectedCategory, 
+    selectedSpecies,
+    setSelectedAnalyte, 
+    setSelectedCategory,
+    setSelectedSpecies,
     speciesList
 }) {
     const [loadingAnalyte, setLoadingAnalyte] = useState(true);
     const [loadingCategory, setLoadingCategory] = useState(true);
     const [loadingSpecies, setLoadingSpecies] = useState(true);
 
-    const speciesDisabled = (category !== 'Tissue' && category !== 'Toxicity' && !species && (analyte && (analyte.source !== 'tissue' && analyte.source !== 'toxicity')));
+    const speciesDisabled = (selectedCategory !== 'Tissue' && selectedCategory !== 'Toxicity' && !selectedSpecies && (selectedAnalyte && (selectedAnalyte.source !== 'tissue' && selectedAnalyte.source !== 'toxicity')));
 
     const wrapperStyle = {
         marginBottom: '10px'
@@ -49,21 +49,21 @@ export default function AnalyteMenu({
     const handleAnalyteChange = (selection) => {
         // If there is a selection, the passed object is formatted as { label: 'fhab', value: 'fhab'}
         if (selection) {
-            setAnalyte(selection);
+            setSelectedAnalyte(selection);
         } else {
-            setAnalyte(null);
+            setSelectedAnalyte(null);
         }
     }
 
     const handleCategoryChange = (selection) => {
         // The object passed to this function is formatted as { label: 'group', value: 'group'}
         // Will be null if the selection was cleared
-        setAnalyte(null);
-        setSpecies(null);
+        setSelectedAnalyte(null);
+        setSelectedSpecies(null);
         if (selection) {
-            setCategory(selection.value);
+            setSelectedCategory(selection.value);
         } else {
-            setCategory(null);
+            setSelectedCategory(null);
         }
     }
 
@@ -71,9 +71,9 @@ export default function AnalyteMenu({
         // The object passed to this function is formatted as { label: 'group', value: 'group'}
         // Will be null if the selection was cleared
         if (selection && selection.value) {
-            setSpecies(selection);
+            setSelectedSpecies(selection);
         } else {
-            setSpecies(null);
+            setSelectedSpecies(null);
         }
     }
 
@@ -109,7 +109,7 @@ export default function AnalyteMenu({
                         onChange={handleCategoryChange}
                         styles={customSelectStyle}
                         maxMenuHeight={200}
-                        value={category ? { label: category, value: category } : null}
+                        value={selectedCategory ? { label: selectedCategory, value: selectedCategory } : null}
                     />
                 </div>
             : <div style={wrapperStyle}><LoaderMenu /></div> }
@@ -127,7 +127,7 @@ export default function AnalyteMenu({
                         options={analyteList} 
                         placeholder='Analyte'
                         styles={customSelectStyle}
-                        value={analyte ? analyte : null}
+                        value={selectedAnalyte ? selectedAnalyte : null}
                     />
                 </div>
             : <LoaderMenu /> }
@@ -136,7 +136,7 @@ export default function AnalyteMenu({
                 <div style={{ marginTop: '10px' }}>
                     <Select 
                         formatOptionLabel={formatOptionLabel}
-                        isClearable={true}
+                        isClearable={false}
                         isLoading={loadingSpecies}
                         isDisabled={speciesDisabled}
                         isSearchable={true}
@@ -144,7 +144,7 @@ export default function AnalyteMenu({
                         onChange={handleSpeciesChange}
                         options={speciesList} 
                         styles={customSelectStyle}
-                        value={species ? species : { label: 'All species', value: null }}
+                        value={selectedSpecies ? selectedSpecies : { label: 'All species', value: null }}
                     />
                 </div>   
             : <div style={{ marginTop: '10px' }}><LoaderMenu /></div> }

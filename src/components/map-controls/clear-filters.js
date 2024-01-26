@@ -3,17 +3,30 @@ import { Button } from 'semantic-ui-react';
 
 import { rightButton } from './clear-filters.module.css';
 
-export default function ClearFilters({ setAnalyte, setCategory, setProgram, setRegion, setSpecies }) {  
+export default function ClearFilters({ 
+    setAnalyte, 
+    setCategory, 
+    setProgram, 
+    setRegion, 
+    setSelectedAnalyte,
+    setSelectedCategory,
+    setSelectedProgram,
+    setSelectedRegion,
+    setSelectedSpecies,
+    setSpecies 
+}) {  
     const handleClick = () => {
-        setAnalyte(null);
-        setCategory(null);
-        setProgram(null);
-        setRegion(null);
-        setSpecies(null);
+        // Reset filters
+        setSelectedAnalyte(null);
+        setSelectedCategory(null);
+        setSelectedProgram(null);
+        setSelectedRegion(null);
+        setSelectedSpecies(null);
     }
 
     return (
         <Button 
+            basic
             className={rightButton}
             color='grey'
             compact 
@@ -21,7 +34,7 @@ export default function ClearFilters({ setAnalyte, setCategory, setProgram, setR
             onKeyPress={handleClick}
             size='small'
         >
-            Reset
+            Clear filters
         </Button>
     )
 }
