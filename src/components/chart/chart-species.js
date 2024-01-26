@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { colorPaletteViz } from '../../constants/constants-app';
 import { analytes, analyteScoringCategories, analyteYMax } from '../../constants/constants-data';
 import { customTooltip, modalContent } from './chart-panel.module.css';
 
@@ -9,7 +8,8 @@ export default function ChartSpecies({
     analyte, 
     data, 
     setSiteShapeDict,
-    unit
+    unit,
+    vizColors
 }) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
     const speciesColorDictRef = useRef(null);
@@ -44,7 +44,7 @@ export default function ChartSpecies({
                 // Initialize new dictionary to store species:color pairs
                 const speciesDict = {};
                 for (let i = 0; i < uniqueSpecies.length; i++) {
-                    speciesDict[uniqueSpecies[i]] = colorPaletteViz[i];
+                    speciesDict[uniqueSpecies[i]] = vizColors[i];
                 }
                 resolve(speciesDict);
             }
@@ -283,6 +283,12 @@ export default function ChartSpecies({
                             content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
                             if (d.Species) {
                                 content += '<br>' + d.Species;
+                                if (analyte.source === 'tissue') {
+                                    content += ' (' + d.TissuePrep + ')';
+                                }
+                            }
+                            if (analyte.source === 'tissue') {
+                                content += '<br>' + d.ResultType;
                             }
                             if (d.DisplayText) {
                                 // Look for values of greater than 2 to exclude values like '<' and '<='

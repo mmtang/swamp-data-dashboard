@@ -6,7 +6,6 @@ import DownloadSection from '../station-page/download-section';
 import LoaderBlock from '../loaders/loader-block';
 import PanelTable from '../table/panel-table';
 import { Menu, Segment } from 'semantic-ui-react';
-import * as d3 from 'd3';
 
 import { 
     capitalizeFirstLetter, 
@@ -19,8 +18,6 @@ import {
 
 import { colorPaletteViz, roundPlaces } from '../../constants/constants-app';
 import { chartContainer, menuContainer } from './panel-station-info.module.css';
-
-const shapePaletteViz = [d3.symbolCircle, d3.symbolTriangle, d3.symbolSquare, d3.symbolDiamond, d3.symbolWye];
 
 // This component generates the main content (below the site info) for when a station is selected. The dashboard loads different content based on whether or not an analyte/parameter was selected beforehand (or not)
 export default function PanelStationInfo({ 
@@ -44,6 +41,7 @@ export default function PanelStationInfo({
     // Make a copy of the colorPaletteViz array. Used to keep track of what colors are being used and not being used in the current render. We don't want color to be tied to array position; or else the color of a site will change every time a site is removed from the comparisonSites selection. Will use a fresh copy everytime the selected station changes
     const [vizColors, setVizColors] = useState(colorPaletteViz);  
     const [siteShapeDict, setSiteShapeDict] = useState({});
+
 
     // To show the CompareSites component, the selected analyte in the station panel must match the selected analyte in the filters. Also, an analyte must be selected. If a species is selected or not selected, the panel species must match the selected species. 
     const showCompareSites = 
@@ -295,10 +293,10 @@ export default function PanelStationInfo({
                         setVizColors={setVizColors}
                         siteShapeDict={siteShapeDict}
                         station={station} 
-                        vizColors={colorPaletteViz}
+                        vizColors={vizColors}
                     />
                 : null }
-                <Segment className={chartContainer} placeholder textAlign='center'>
+                <Segment className={chartContainer} textAlign='center'>
                     {/* ----- Download data */}
                     { panelAnalyte ? 
                         <DownloadSection data={chartData} loading={loading} />
@@ -311,7 +309,7 @@ export default function PanelStationInfo({
                             setSiteShapeDict={setSiteShapeDict}
                             species={panelSpecies}
                             unit={unitRef.current}
-                            vizColors={colorPaletteViz}
+                            vizColors={vizColors}
                         />
                     : panelAnalyte && loading ?  // If an analyte is selected but still loading, show the loader
                         <LoaderBlock />

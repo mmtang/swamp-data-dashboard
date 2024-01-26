@@ -1,39 +1,21 @@
-import * as d3 from 'd3';
-
+// Old colors
 //export const colorPaletteViz = ['#1f77b4', '#ff7f0e', '#2ca02c', '#af7aa1', '#17becf', '#9467bd','#e377c2', '#7f7f7f', '#bcbd22', '#8c564b'];
 
+// New colors based off Paul Tol's color palettes: https://personal.sron.nl/~pault/
 export const colorPaletteViz = [
-    '#377eb8', 
-    '#66a61e',
-    '#984ea3',
-    '#ff7f00',
-    '#17becf',
-    '#b3e900',
-    '#c42e60',
-    '#a65628',
-    '#f781bf',
-    '#8dd3c7',
-    '#bebada',
-    '#fb8072',
-    '#80b1d3',
-    '#fdb462',
-    '#fccde5',
-    '#bc80bd',
-    '#ffed6f',
-    '#c4eaff',
-    '#cf8c00',
-    '#1b9e77',
-    '#d95f02',
-    '#e7298a',
-    '#e6ab02',
-    '#a6761d',
-    '#0097ff',
-    '#00d067',
-    '#af8d00',
-    '#7f80cd'
+    '#0077bb',
+    '#ee7733',
+    '#44aa99',
+    '#aa4499',
+    '#999933',
+    '#332288',
+    '#228833',
+    '#33bbee',
+    '#ddcc77',
+    '#cc6677',
+    '#575757',
+    '#882255',
 ]
-
-const shapePaletteViz = [d3.symbolCircle, d3.symbolTriangle, d3.symbolSquare, d3.symbolDiamond, d3.symbolWye];
 
 // An alternative color to use (light turquoise/seafoam) for links on a dark background
 export const linkColorAlt = {

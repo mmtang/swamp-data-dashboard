@@ -19,6 +19,7 @@ export default function ChartPanel({
                     data={data}
                     setSiteShapeDict={setSiteShapeDict}
                     unit={unit}
+                    vizColors={vizColors}
                 />
             : 
                 <Chart 

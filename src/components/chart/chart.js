@@ -240,7 +240,7 @@ export default function Chart({ analyte, data, unit, vizColors }) {
                         .data(data.sites[siteKeys[i]])
                         .enter().append('circle')
                         .attr('class', 'circle')
-                        .attr('r', 4)
+                        .attr('r', 5)
                         .attr('cx', d => xScale(d.SampleDate))
                         .attr('cy', d => yScale(d.ResultDisplay))
                         .attr('fill', d => d.Censored ? '#e3e4e6' : vizColors[i])
