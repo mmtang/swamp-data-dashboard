@@ -35,6 +35,7 @@ export default function Index() {
   const [analyte, setAnalyte] = useState(null);
   const [cursor, setCursor] = useState('auto');
   const [disclaimerVisible, setDisclaimerVisible] = useState(false);
+  const [filterByMapExtent, setFilterByMapExtent] = useState(false);
   const [highlightReferenceSites, setHighlightReferenceSites] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -405,6 +406,7 @@ export default function Index() {
     setMapLoaded(false);
     setView('map') // We need to reset the view every time analyte, region, or program changes because the map must be in view in order to retrieve the extent (and then update tableData)
     // If none of the filters are selected, change state to the full station dataset
+    // setFilterByMapExtent(false);
     if (!program && !region && !analyte && !species) {
       setStationData(allStationRef.current);
     } else {
@@ -490,7 +492,7 @@ export default function Index() {
         });
       }
     }
-  }, [analyte, program, region, species ])
+  }, [analyte, program, region, species])
 
   // This function runs upon initial load
   // Get full station dataset - data for use in map and table
@@ -554,11 +556,13 @@ export default function Index() {
           analyte={analyte}
           comparisonSites={comparisonSites}
           cursor={cursor}
+          filterByMapExtent={filterByMapExtent}
           highlightReferenceSites={highlightReferenceSites}
           mapLoaded={mapLoaded}
           program={program}
           region={region}
           selecting={selecting}
+          setFilterByMapExtent={setFilterByMapExtent}
           setMapLoaded={setMapLoaded}
           setMessageModal={setMessageModal}
           setMessageModalVisible={setMessageModalVisible}

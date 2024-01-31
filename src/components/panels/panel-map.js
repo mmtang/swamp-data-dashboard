@@ -19,12 +19,14 @@ export default function PanelMap({
     analyte,
     comparisonSites,
     cursor,
+    filterByMapExtent,
     highlightReferenceSites,
     mapLoaded,
     region, 
     program,
     selecting,
     setComparisonSites,
+    setFilterByMapExtent,
     setHighlightReferenceSites,
     setMapLoaded,
     setMessageModal,
@@ -47,8 +49,10 @@ export default function PanelMap({
         <div className={content} style={{ cursor: cursor }}>
             <PanelMapMenu 
                 analyte={analyte}
+                filterByMapExtent={filterByMapExtent}
                 program={program}
                 region={region}
+                setFilterByMapExtent={setFilterByMapExtent}
                 setView={setView}
                 species={species}
                 stationData={stationData}
@@ -61,6 +65,7 @@ export default function PanelMap({
                 <MapIndex2 
                     analyte={analyte} 
                     comparisonSites={comparisonSites}
+                    filterByMapExtent={filterByMapExtent}
                     highlightReferenceSites={highlightReferenceSites}
                     mapLoaded={mapLoaded}
                     program={program}

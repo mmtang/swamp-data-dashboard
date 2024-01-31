@@ -30,6 +30,7 @@ import { container, mapLegendContainer } from './map-index2.module.css';
 
 export default function MapIndex2({ 
     comparisonSites,
+    filterByMapExtent,
     highlightReferenceSites,
     mapLoaded,
     region,
@@ -62,6 +63,7 @@ export default function MapIndex2({
     const landUseLayerRef = useRef(null);
     const layerListRef = useRef(null);
     const listenerRef = useRef(null); // Used for keeping track of selection modes, example: user selecting comparison sites
+    const listenerFilterRef = useRef(null); // Used for storing the filter by extent listener
     const mapRef = useRef(null);
     const regionLayerRef = useRef(null);
     const searchRef = useRef(null);
@@ -353,6 +355,11 @@ export default function MapIndex2({
                     addFeatures: newFeatures,
                 });
                 setTimeout(() => {
+                    if (filterByMapExtent) {
+                        filterTableDataByExtent()
+                    } else {
+                        unfilterTableData();
+                    }
                     setMapLoaded(true);
                 }, 1000)
             }, 100); // Set timeout to prevent flashing on the map. I picked 100ms because this timing seems to work well with the map's loading indicator (automatically generated)
@@ -466,6 +473,7 @@ export default function MapIndex2({
                     ]);
                     // addStationPopupListener();
                     // Initialize search sources
+                    //filterTableDataByExtent(); // Populate station main table
                     resetSearchSources(); 
                     refreshIntegratedReport();
                     setMapLoaded(true);
@@ -579,32 +587,72 @@ export default function MapIndex2({
     useEffect(() => {
         if (stationLayerRef.current) {
             refreshStationLayer(stationData);
-            refreshTableData();
+        }
+    }, [stationData]);
+
+    useEffect(() => {
+        if (filterByMapExtent === true) {
+            filterTableDataByExtent();
+            addFilterListener();
+        } else {
+            // Remove existing listener, if it exists
+            if (listenerFilterRef.current) { 
+                listenerFilterRef.current.remove();
+            }
+            unfilterTableData();
+        }
+    }, [filterByMapExtent]);
+
+    // Adds a listener to a the map that fires every time the map extent changes
+    const addFilterListener = () => {
+        loadModules([
+            'esri/core/reactiveUtils',
+        ]).then(([reactiveUtils]) => {
+            listenerFilterRef.current = reactiveUtils.watch(
+                // getValue function
+                () => viewRef.current.updating === false,
+                // callback
+                (updating) => {
+                    filterTableDataByExtent();
+                }
+            );
+        });
+    }
+
+    // Query features from the current map extent and set as the new table data
+    const filterTableDataByExtent = () => {
+        stationLayerRef.current.queryFeatures({
+            geometry: viewRef.current.extent
+        }).then(results => {
+            // Get feature attributes
+            const features = results.features;
+            const featureData = features.map(d => d.attributes);
+            setTableData(featureData);
+        });
+    }
+
+    // Query all features from the station layer and set as the new table data
+    const unfilterTableData = async () => {
+        if (stationLayerRef.current) {
+            stationLayerRef.current.queryFeatures()
+            .then((results) => {
+                const features = results.features;
+                const featureData = features.map(d => d.attributes);
+                setTableData(featureData);
+            });
         }
     }
-    , [stationData]);
 
-    const refreshTableData = () => {
-        if (viewRef.current && stationLayerRef.current) {
-            viewRef.current.whenLayerView(stationLayerRef.current).then(layerView => {
-                layerView.watch('updating', function(value) {
-                    if (!value) {
-                        // Query features in the current map extent
-                        layerView.queryFeatures({
-                            geometry: viewRef.current.extent
-                        }).then(results => {
-                            // Get feature attributes
-                            const features = results.features;
-                            const featureData = features.map(d => d.attributes);
-                            setTableData(featureData);
-                        })
-                    }
-                })
-            })
+    // Used to load initial dataset into main table
+    useEffect(() => {
+        if (viewRef.current) {
+            unfilterTableData();
         }
-    }
+    }, [stationLayerRef.current]);
 
-    // Listener for map extent changes - updating station list
+    /*
+    // Listener for filtering table automatically on map extent change - updating station list
+    // Watchutils is deprecated
     useEffect(() => {
         if (viewRef.current && stationLayerRef.current) {
             viewRef.current.whenLayerView(stationLayerRef.current).then(layerView => {
@@ -624,6 +672,7 @@ export default function MapIndex2({
             })
         }
     }, [stationLayerRef.current]);
+    */
 
     const goToStation = (stationCode) => {
         if (stationLayerRef.current && stationCode) {

@@ -9,6 +9,10 @@
     padding: 0; /* required for the tab colors to work */
 }
 
+.iconContainer {
+    margin-right: 1.24em;
+}
+
 .menuItem {
     width: 90px;
     height: 50px;
@@ -37,6 +41,12 @@
     width: 100%;
 }
 
+.rightContainer {
+    align-items: center;
+    display: flex;
+    justify-content: center; 
+}
+
 .statContainer {
     align-items: center;
     display: flex;
@@ -44,7 +54,7 @@
     flex-wrap: nowrap;
     height: 100%;
     justify-content: flex-end;
-    padding-right: 1.24em;
+    padding-right: 1em;
     width: 120px;
 }
 

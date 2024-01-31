@@ -3,16 +3,20 @@ import BulkDownload from '../map-controls/bulk-download';
 import { Icon } from 'semantic-ui-react';
 import { 
     container, 
+    iconContainer,
     menuItem, 
     menuWrapper, 
+    rightContainer,
     statContainer, 
     statLabel 
 } from './panel-map-menu.module.css';
 
 export default function PanelMapMenu({ 
     analyte,
+    filterByMapExtent,
     program,
     region,
+    setFilterByMapExtent,
     setView, 
     species,
     stationData,
@@ -27,6 +31,14 @@ export default function PanelMapMenu({
     const handleDataClick = () => {
         if (dataModalVisible === false) {
             setDataModalVisible(true);
+        }
+    }
+
+    const handleFilterClick = () => {
+        if (filterByMapExtent === false) {
+            setFilterByMapExtent(true);
+        } else {
+            setFilterByMapExtent(false);
         }
     }
 
@@ -94,14 +106,25 @@ export default function PanelMapMenu({
                     />
                 </div>
             </div>
-            {/* Station count */} 
-            <div>
+            
+            <div className={rightContainer}>
+                {/* Station count */} 
                 { tableData ? 
                     <div className={statContainer}>
                         <span className={statLabel}>{tableData.length}&nbsp;&nbsp;stations</span>
                     </div> 
-                    : null 
-                }
+                : null }
+                {/* Filter by map extent icon */} 
+                <div className={iconContainer} style={{ opacity: filterByMapExtent ? '100%' : '50%' }}>
+                    <Icon 
+                        color={ filterByMapExtent ? 'teal' : null }
+                        fitted
+                        inverted 
+                        link
+                        name='filter' 
+                        onClick={handleFilterClick}
+                    />
+                </div>
             </div>
         </div>
     )
