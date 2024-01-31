@@ -120,6 +120,7 @@ export default function PanelMap({
                     setStationLoading={setStationLoading}
                     species={species}
                     station={station}
+                    tableData={tableData}
                 />
             </div>  
         </div>

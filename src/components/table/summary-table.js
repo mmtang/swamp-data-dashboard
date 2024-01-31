@@ -28,7 +28,8 @@ export default function SummaryTable({
     setStation,
     setStationLoading,
     species,
-    station
+    station,
+    visibleStations
 }) {
     // State variables
     const [flatData, setFlatData] = useState(null); // The original dataset in flat structure, serves as a copy of the original dataset, used for filtering. This dataset gets updated whenever one of the filters from the main page are used and applied
@@ -126,7 +127,6 @@ export default function SummaryTable({
             if (data && data.length > 0) {
                 // Filtering the data - return all objects where any of the object's properties includes the search term
                 const filtered = data.filter(d => Object.keys(d).some(k => String(d[k]).toLowerCase().includes(searchString.toLowerCase())));
-                setFilteredData(filtered);
                 resolve(filtered);
             } else {
                 resolve([]);
@@ -388,7 +388,7 @@ export default function SummaryTable({
         // SearchText should be a string, even if a number is searched
         // Capture empty searches (passed as an empty string ('')) in the else statement
         if (searchText) {
-            getFilteredData(flatData, searchText)
+            getFilteredData(filteredData, searchText)
             .then((data) => getSortedData(data))
             .then((data) => convertToDataTree(data))
             .then((data) => {
@@ -400,8 +400,8 @@ export default function SummaryTable({
             });
         } else {
             // User cleared search - reset the filtered dataset state to the original dataset
-            setFilteredData(flatData);
-            getSortedData(flatData)
+            // setFilteredData(filteredData);
+            getSortedData(filteredData)
             .then((data) => convertToDataTree(data))
             .then((data) => {
                 getRowKeys(data)
@@ -423,6 +423,23 @@ export default function SummaryTable({
             setAllRowKeys([]);
         }
     }, [tableData]);
+
+    // Everytime the list of visible stations change, filter and replace the original data (flatData) 
+    useEffect(() => {
+        if (visibleStations && flatData) {
+            const dataForVisibleSites = flatData.filter(d => visibleStations.includes(d.StationCode));
+            setFilteredData(dataForVisibleSites);
+            getSortedData(dataForVisibleSites)
+            .then((data) => convertToDataTree(data))
+            .then((data) => {
+                getRowKeys(data)
+                .then((keys) => {
+                    setExpandedRowKeys(keys);
+                    setTableData(data);
+                });
+            });     
+        }
+    }, [visibleStations]);
 
     return (
         <div className={tableContainer}>
