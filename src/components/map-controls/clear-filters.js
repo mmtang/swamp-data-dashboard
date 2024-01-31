@@ -4,16 +4,11 @@ import { Button } from 'semantic-ui-react';
 import { rightButton } from './clear-filters.module.css';
 
 export default function ClearFilters({ 
-    setAnalyte, 
-    setCategory, 
-    setProgram, 
-    setRegion, 
     setSelectedAnalyte,
     setSelectedCategory,
     setSelectedProgram,
     setSelectedRegion,
-    setSelectedSpecies,
-    setSpecies 
+    setSelectedSpecies
 }) {  
     const handleClick = () => {
         // Reset filters

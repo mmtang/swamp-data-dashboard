@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import BulkDownload from '../map-controls/bulk-download';
-import { Icon } from 'semantic-ui-react';
+import { Icon, Popup } from 'semantic-ui-react';
 import { 
     container, 
     iconContainer,
@@ -27,6 +27,13 @@ export default function PanelMapMenu({
     const [dataModalVisible, setDataModalVisible] = useState(false);
 
     const showTable = !((analyte && analyte.source === 'tissue') || (species && species.source === 'tissue'));
+
+    const popupStyle = {
+        borderRadius: 0,
+        fontSize: '0.85em',
+        opacity: 1,
+        padding: '1em'
+    }
 
     const handleDataClick = () => {
         if (dataModalVisible === false) {
@@ -115,14 +122,22 @@ export default function PanelMapMenu({
                     </div> 
                 : null }
                 {/* Filter by map extent icon */} 
-                <div className={iconContainer} style={{ opacity: filterByMapExtent ? '100%' : '50%' }}>
-                    <Icon 
-                        color={ filterByMapExtent ? 'teal' : null }
-                        fitted
-                        inverted 
-                        link
-                        name='filter' 
-                        onClick={handleFilterClick}
+                <div className={iconContainer} style={{ opacity: filterByMapExtent ? '100%' : '60%' }}>
+                    <Popup
+                        inverted
+                        content='Filter table by map extent'
+                        style={popupStyle}
+                        trigger={
+                            <Icon 
+                                color={ filterByMapExtent ? 'teal' : null }
+                                fitted
+                                inverted 
+                                link
+                                name='filter' 
+                                onClick={handleFilterClick}
+                                position='top left'
+                            />
+                        }
                     />
                 </div>
             </div>
