@@ -274,6 +274,8 @@ export default function ChartSpecies({
                         .attr('transform', d => `translate(${xScale(d.SampleDate)}, ${yScale(d.ResultDisplay)})`)
                         .attr('fill', d => d.Censored ? '#e3e4e6' : speciesColorDictRef.current[d.Species])
                         .attr('stroke', d => d.Censored ? speciesColorDictRef.current[d.Species] : '#fff')
+                        .attr('stroke-width', d => d.Censored ? 2 : 1)
+                        .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                         .on('mouseover', function(currentEvent, d) {
                             const displayDate = analyte.source !== 'tissue' ? tooltipFormatDate(d.SampleDate) : yearFormatDate(d.SampleDate);
                             let content = '<span style="color: #a6a6a6">' + displayDate + '</span><br>' + d.Analyte + ": ";

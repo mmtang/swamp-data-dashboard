@@ -129,14 +129,14 @@ export default function PanelStationInfo({
                                 d.SampleDate = parseDate(d.SampleDate);
                                 d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(roundPlaces)));  // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Species = d.OrganismName;
-                                d.Censored = false;  // Convert string to boolean                            
+                                d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean                            
                             });
                         } else if (dataAnalyte.source === 'tissue') {
                             data.forEach(d => {
                                 d.SampleDate = dateToYear(parseDate(d.LastSampleDate));
                                 d.ResultDisplay = parseFloat(((+d.Result).toFixed(roundPlaces)));  // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Species = d.CommonName;
-                                d.Censored = false;  // Convert string to boolean   
+                                d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean   
                             });
                         }
                         resolve(data);

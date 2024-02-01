@@ -4,11 +4,12 @@ import { capitalizeFirstLetter, formatNumber, regionNumDict, tissueResourceId } 
 
 import Treeize from 'treeize';
 import { Cell, Column, HeaderCell, Table  } from 'rsuite-table';
+import { Button, Icon } from 'semantic-ui-react';
 
 // Import styles
 import 'rsuite-table/dist/css/rsuite-table.css';
 import { tableContainer } from './table2.module.css';
-import { loaderContainer } from './summary-table.module.css';
+import { buttonWrapper, loaderContainer } from './summary-table.module.css';
 
 // This component generates the data table for tissue data on the dashboard index page.
 export default function SummaryTable({ 
@@ -44,6 +45,25 @@ export default function SummaryTable({
     const NumberCell = ({ rowData, dataKey, ...props }) => (
         <Cell {...props}>
             { !(isNaN(rowData[dataKey])) ? formatNumber(rowData[dataKey]) : '' } 
+        </Cell>
+    );
+
+    const ExpandCell = ({ rowData, dataKey, expandedRowKeys, onClick, ...props }) => (
+        <Cell {...props}>
+            { rowData['StationCode'] ? 
+                <div className={buttonWrapper}>
+                     <Button 
+                        compact 
+                        onClick={event => {
+                            handleClick(rowData);
+                        }}
+                        size='mini'
+                        style={{ cursor: `${selecting ? 'crosshair' : 'pointer' }` }}
+                    >
+                            Select
+                    </Button>
+                </div>
+            : null }
         </Cell>
     );
 
@@ -457,12 +477,16 @@ export default function SummaryTable({
                     rowKey='id'
                     shouldUpdateScroll={false}
                     virtualized
-                    onRowClick={handleClick}
+                    //onRowClick={handleClick}
                     onExpandChange={handleExpandToggle}
                     onSortColumn={handleSortColumn}
                     sortColumn={sortColumn}
                 >
-                    <Column align='left' fullText sortable width={160}>
+                    <Column width={80}>
+                        <HeaderCell>#</HeaderCell>
+                        <ExpandCell dataKey='id' onClick={handleClick} />
+                    </Column>
+                    <Column align='left' fullText sortable treeCol width={160}>
                         <HeaderCell>Station Code</HeaderCell>
                         <Cell dataKey='StationCode' />
                     </Column>
