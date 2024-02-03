@@ -1,4 +1,5 @@
 import { format, timeParse, timeFormat } from 'd3';
+import { analyteScoringCategories } from '../constants/constants-data';
 
 export const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
 export const formatDate = timeFormat('%Y/%m/%d');
@@ -318,6 +319,22 @@ export const hexToRGB = (hex) => {
           b = parseInt(hex.slice(5, 7), 16);
     // Return alpha 255 for full opacity
     return ([r, g, b, 255]);
+}
+
+// Return the CSCI score category given the provided value
+// Either returns 'Likely intact' for non-reference sites or 'Likely intact (Reference)' for reference sites
+export const getCsciCategoryValue = (row) => {
+    const csciCategories = analyteScoringCategories['csci'];
+    for (let i = 0; i < csciCategories.length; i++) {
+        let stringText = '';
+        if ((row['ResultDisplay'] >= csciCategories[i].lowerValue) && (row['ResultDisplay'] <= csciCategories[i].upperValue)) {
+            stringText += csciCategories[i].label;
+            if (row['SiteType'] === 'Reference site') {
+                stringText += ' (Reference site)'
+            }
+            return stringText;
+        } 
+    }
 }
 
 

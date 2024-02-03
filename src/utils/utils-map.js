@@ -73,6 +73,7 @@ export const convertStationDataToGraphics = async (data) => {
                         ObjectId: d.StationCode,
                         CommonName: d.CommonName,
                         CompositeIndividual: d.CompositeIndividual,
+                        DisplayCategory: d.DisplayCategory,
                         StationCode: d.StationCode,
                         StationName: d.StationName,
                         TargetLatitude: +d.TargetLatitude,
@@ -176,6 +177,11 @@ export const stationDataFields = [
     {
         name: 'Unit',
         alias: 'unit',
+        type: 'string'
+    },
+    {
+        name: 'DisplayCategory',
+        alias: 'Category',
         type: 'string'
     },
     {

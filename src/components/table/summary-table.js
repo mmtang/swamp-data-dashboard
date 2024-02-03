@@ -4,7 +4,7 @@ import { capitalizeFirstLetter, formatNumber, regionNumDict, tissueResourceId } 
 
 import Treeize from 'treeize';
 import { Cell, Column, HeaderCell, Table  } from 'rsuite-table';
-import { Button, Icon } from 'semantic-ui-react';
+import { Button } from 'semantic-ui-react';
 
 // Import styles
 import 'rsuite-table/dist/css/rsuite-table.css';

@@ -16,6 +16,7 @@ import {
   capitalizeFirstLetter, 
   chemistryResourceId,
   formatDate, 
+  getCsciCategoryValue, 
   habitatResourceId,
   parseDate, 
   programDict,
@@ -34,6 +35,7 @@ export default function Index() {
 
   const [analyte, setAnalyte] = useState(null);
   const [cursor, setCursor] = useState('auto');
+  const [disableReferenceSites, setDisableReferenceSites] = useState(false);
   const [disclaimerVisible, setDisclaimerVisible] = useState(false);
   const [filterByMapExtent, setFilterByMapExtent] = useState(false);
   const [highlightReferenceSites, setHighlightReferenceSites] = useState(true);
@@ -259,7 +261,7 @@ export default function Index() {
     if (!analyte) {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultDisplay", "Unit", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultDisplay", "Unit", "Analyte", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region) {
         // This block constucts the "WHERE" part of the select query
@@ -297,7 +299,7 @@ export default function Index() {
     if (!analyte) {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "Result" as "ResultDisplay", "Unit", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "Result" as "ResultDisplay", "Unit", "Analyte", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
@@ -337,7 +339,7 @@ export default function Index() {
     if (!analyte) {
       querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as "ResultDisplay", "Unit", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as "ResultDisplay", "Unit", "Analyte", "SiteType" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
@@ -391,11 +393,23 @@ export default function Index() {
             uniqueStations.push(row);
           }
         }
+        /* Don't think the block below is needed
         if (uniqueStations[0].resultdisplay) {
           uniqueStations.forEach(d => {
             d.LastResult = parseFloat((+d.ResultDisplay).toFixed(3));
           });
         };
+        */
+       // Special case for CSCI; adding DisplayCategory values
+        if (analyte && analyte.label === 'CSCI') {
+          // The CSCI map symbology includes the reference sites built into the renderer; disable the highlight reference sites option in the map legend as long as CSCI is selected
+          setDisableReferenceSites(true);
+          uniqueStations.forEach(d => {
+            d.DisplayCategory = getCsciCategoryValue(d);
+          });
+        } else {
+          setDisableReferenceSites(false);
+        }
         return uniqueStations;
       } else {
         setLoaded('error');
@@ -556,6 +570,7 @@ export default function Index() {
           analyte={analyte}
           comparisonSites={comparisonSites}
           cursor={cursor}
+          disableReferenceSites={disableReferenceSites}
           filterByMapExtent={filterByMapExtent}
           highlightReferenceSites={highlightReferenceSites}
           mapLoaded={mapLoaded}

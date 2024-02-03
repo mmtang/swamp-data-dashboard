@@ -5,7 +5,12 @@ import { Icon } from 'semantic-ui-react';
 
 import { container, content, contentWrapper, expandArrow, header } from './map-legend.module.css';
 
-export default function MapLegend({ highlightReferenceSites, mapLoaded, setHighlightReferenceSites }) {
+export default function MapLegend({ 
+    disableReferenceSites,
+    highlightReferenceSites, 
+    mapLoaded, 
+    setHighlightReferenceSites 
+}) {
     const [expanded, setExpanded] = useState(false);
     const displayStyle = expanded === true ? 'block' : 'none';
 
@@ -35,6 +40,7 @@ export default function MapLegend({ highlightReferenceSites, mapLoaded, setHighl
             </div>
             <div className={contentWrapper} style={{ display: displayStyle }}>
                 <HighlightReference 
+                    disableReferenceSites={disableReferenceSites}
                     highlightReferenceSites={highlightReferenceSites} 
                     setHighlightReferenceSites={setHighlightReferenceSites}  
                 />

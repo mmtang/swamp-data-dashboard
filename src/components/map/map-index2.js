@@ -7,6 +7,7 @@ import {
     bioassessmentStationRenderer,
     bpLineRenderer, 
     bpPolyRenderer, 
+    csciStationRenderer,
     irLineRenderer2020, 
     irPolyRenderer2020, 
     regionRenderer, 
@@ -29,7 +30,9 @@ import {
 import { container, mapLegendContainer } from './map-index2.module.css';
 
 export default function MapIndex2({ 
+    analyte,
     comparisonSites,
+    disableReferenceSites,
     filterByMapExtent,
     highlightReferenceSites,
     mapLoaded,
@@ -351,6 +354,15 @@ export default function MapIndex2({
             deleteFeatures: currentFeatures.features, // delete the old features
         }).then((results) => {
             setTimeout(() => {
+                if (analyte && analyte.label === 'CSCI') {
+                    setRenderer(stationLayerRef.current, csciStationRenderer);
+                } else {
+                    if (highlightReferenceSites) {
+                        setRenderer(stationLayerRef.current, bioassessmentStationRenderer);
+                    } else {
+                        setRenderer(stationLayerRef.current, stationRenderer);
+                    }
+                }
                 stationLayerRef.current.applyEdits({
                     addFeatures: newFeatures,
                 });
@@ -1037,6 +1049,7 @@ export default function MapIndex2({
         <React.Fragment>
              <div className={mapLegendContainer}>
                 <MapLegend 
+                    disableReferenceSites={disableReferenceSites}
                     highlightReferenceSites={highlightReferenceSites}
                     mapLoaded={mapLoaded}   
                     setHighlightReferenceSites={setHighlightReferenceSites}

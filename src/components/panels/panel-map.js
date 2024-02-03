@@ -19,6 +19,7 @@ export default function PanelMap({
     analyte,
     comparisonSites,
     cursor,
+    disableReferenceSites,
     filterByMapExtent,
     highlightReferenceSites,
     mapLoaded,
@@ -65,6 +66,7 @@ export default function PanelMap({
                 <MapIndex2 
                     analyte={analyte} 
                     comparisonSites={comparisonSites}
+                    disableReferenceSites={disableReferenceSites}
                     filterByMapExtent={filterByMapExtent}
                     highlightReferenceSites={highlightReferenceSites}
                     mapLoaded={mapLoaded}

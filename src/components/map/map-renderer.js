@@ -196,3 +196,122 @@ export const bioassessmentStationRenderer = {
         }
     }]
 }
+
+// Modified colors based on original colors
+const csciColors = {
+    vla: '#f50000',
+    la: '#fdb100',
+    pa: '#baf700',
+    li: '#247400'
+}
+
+/*
+// Blue-Red colors
+const csciColors = {
+    vla: '#D04848',
+    la: '#F3B95F',
+    pa: '#FDE767',
+    li: '#6895D2'
+}
+*/
+
+export const csciStationRenderer = {
+    type: 'unique-value',
+    field: 'DisplayCategory',
+    uniqueValueInfos: [{
+        value: 'Likely intact (Reference site)',
+        symbol: {
+            type: 'simple-marker',
+            style: 'diamond',
+            size: 9,
+            color: csciColors['li'],
+            outline: {
+                color: '#103350',
+                width: 1
+            }
+        }
+    }, {
+        value: 'Likely intact',
+        symbol: {
+            type: 'simple-marker',
+            size: 7.7,
+            color: csciColors['li'],
+            outline: {
+                color: '#103350',
+                width: 1
+            }
+        }
+    }, {
+        value: 'Possibly altered (Reference site)',
+        symbol: {
+            type: 'simple-marker',
+            style: 'diamond',
+            size: 9,
+            //color: '#FDE767',
+            color: csciColors['pa'],
+            outline: {
+                color: '#103350',
+                width: 1
+            }
+        }
+    }, {
+        value: 'Possibly altered',
+        symbol: {
+            type: 'simple-marker',
+            size: 7.7,
+            //color: '#FDE767',
+            color: csciColors['pa'],
+            outline: {
+                color: '#103350',
+                width: 1
+            }
+        }
+    }, {
+        value: 'Likely altered (Reference site)',
+        symbol: {
+            type: 'simple-marker',
+            style: 'diamond',
+            size: 9,
+            color: csciColors['la'],
+            outline: {
+                color: '#103350',
+                width: 1
+            }
+        }
+    }, {
+        value: 'Likely altered',
+        symbol: {
+            type: 'simple-marker',
+            size: 7.7,
+            color: csciColors['la'],
+            outline: {
+                color: '#103350',
+                width: 1
+            }
+        }
+    }, {
+        value: 'Very likely altered (Reference site)',
+        symbol: {
+            type: 'simple-marker',
+            style: 'diamond',
+            size: 9,
+            color: csciColors['vla'],
+            outline: {
+                color: '#103350',
+                width: 1
+            }
+        }
+    }, {
+        value: 'Very likely altered',
+        symbol: {
+            type: 'simple-marker',
+            size: 7.7,
+            color: csciColors['vla'],
+            outline: {
+                color: '#103350',
+                width: 1
+            }
+        }
+    }]
+}
+
