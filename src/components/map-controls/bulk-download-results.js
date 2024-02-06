@@ -66,9 +66,9 @@ export default function BulkDownloadResults({ analyte, program, region, species 
                 }
                 if (species) {
                     if (species.source === 'toxicity') {
-                        sql += ` AND "OrganismName" = '${species.value}'`;
+                        sql += ` AND "OrganismName" = '${species.label}'`;
                     } else if (species.source === 'tissue') {
-                        sql += ` AND "CommonName" = '${species.value}'`;
+                        sql += ` AND "CommonName" = '${species.label}'`;
                     }
                 }
                 let params = {
@@ -116,7 +116,7 @@ export default function BulkDownloadResults({ analyte, program, region, species 
                     fieldsRef.current = tissueDataFields;
                 }
                 // Build query string
-                let sql = `SELECT * FROM "${resource}" WHERE "${species.source === 'toxicity' ? 'OrganismName' : 'CommonName'}" = '${species.value}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                let sql = `SELECT * FROM "${resource}" WHERE "${species.source === 'toxicity' ? 'OrganismName' : 'CommonName'}" = '${species.label}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 if (program) {
                     sql += ` AND "${capitalizeFirstLetter(program)}" = 'True'`;
                 }

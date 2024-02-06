@@ -223,29 +223,29 @@ export const analyteScoringCategories = {
             type: 'area',
             label: 'Very likely altered',
             lowerValue: 0,
-            upperValue: 0.62, 
-            fillColor: '#b8544f'
+            upperValue: 0.6299999, // Actual given range is <= 0.62
+            fillColor: '#FBB4AE'
         },
         {
             type: 'area',
             label: 'Likely altered',
-            lowerValue: 0.621, // Actual value is 0.63
-            upperValue: 0.79,
-            fillColor: '#f7c00d'
+            lowerValue: 0.63, 
+            upperValue: 0.7999999, // Actual given range is 0.63 - 0.79
+            fillColor: '#FED9A6'
         },
         {
             type: 'area',
             label: 'Possibly altered',
-            lowerValue: 0.791, // Actual value is 0.80
-            upperValue: 0.91,
-            fillColor: '#ffeda0'
+            lowerValue: 0.8,
+            upperValue: 0.9199999, // Actual given range is 0.8 - 0.91
+            fillColor: '#FFFFCC'
         },
         {
             type: 'area',
             label: 'Likely intact',
-            lowerValue: 0.911, // Actual value is 0.91
-            upperValue: 1.5,  // Taken from the highest value found in CEDEN - Dec 2021
-            fillColor: '#558ed5'
+            lowerValue: 0.92, // Actual given range is >= 0.92
+            upperValue: 1.4,  // Actual value on score range is 1.4. Some values from CEDEN are slightly above 1.4, so I am using 1.5 here to catch those values
+            fillColor: '#CCEBC5'
         }
     ],
     'ipi': [
@@ -253,29 +253,29 @@ export const analyteScoringCategories = {
             type: 'area',
             label: 'Very likely altered',
             lowerValue: 0,
-            upperValue: 0.7,
-            fillColor: '#b8544f'
+            upperValue: 0.699999, // Actal given range is <= 0.70
+            fillColor: '#FBB4AE'
         },
         {
             type: 'area',
             label: 'Likely altered',
-            lowerValue: 0.701,  // Actual value is 0.71
-            upperValue: 0.83,
-            fillColor: '#f7c00d'
+            lowerValue: 0.7,  
+            upperValue: 0.83, // Actal given range is 0.71 - 0.83
+            fillColor: '#FED9A6'
         },
         {
             type: 'area',
             label: 'Possibly altered',
-            lowerValue: 0.831,  // Actual value is 0.84
-            upperValue: 0.93,
-            fillColor: '#ffeda0'
+            lowerValue: 0.8399999,  
+            upperValue: 0.93, // Actual given range is 0.84 - 0.93
+            fillColor: '#FFFFCC'
         },
         {
             type: 'area',
             label: 'Likely intact',
-            lowerValue: 0.931,  // Actual value is 0.94
-            upperValue: 1.3,  // Taken from the highest value found in CEDEN - Dec 2021
-            fillColor: '#558ed5'
+            lowerValue: 0.9399999,
+            upperValue: 1.4, // Actual given range is >= 0.94
+            fillColor: '#CCEBC5'
         }
     ]
 }
@@ -489,24 +489,25 @@ export const tissueDataFields = [
     'Project',
     'StationCode',
     'StationName',
+    'LocationCode',
     'CommonName',
     'FinalID',
     'TissueName',
     'TissuePrep',
-    'CompositeIndividual',
+    'MatrixDisplay',
     'Analyte',
     'Result',
     'Unit',
     'SampleYear',
+    'Region',
     'TargetLatitude',
     'TargetLongitude',
     'TLAvgLength(mm)',
     'DataQuality',
     'DataQualityIndicator',
-    'MatrixDisplay',
-    'NonDetectCount',
-    'NumberOfResults',
-    'Region'
+    'N_in_Avg',
+    'ND_in_Avg',
+    'DisplayText'
 ];
 
 // Data categories to use in app

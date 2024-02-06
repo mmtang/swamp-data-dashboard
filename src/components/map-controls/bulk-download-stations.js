@@ -18,7 +18,8 @@ export default function BulkDownloadStations({ stationData }) {
         'TargetLatitude',
         'TargetLongitude',
         'Region',
-        'RegionName'
+        'RegionName',
+        'SiteType'
     ]
 
     const handleDownload = () => {

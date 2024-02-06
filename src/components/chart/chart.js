@@ -190,7 +190,7 @@ export default function Chart({ analyte, data, unit, vizColors }) {
                                 .attr('x', 0 + margin.left)
                                 .attr('y', d => yScale(d.upperValue))
                                 .attr('fill', d => d['fillColor'])
-                                .attr('opacity', 0.25);
+                                .attr('opacity', 0.8);
                             rectGroup.selectAll('text')
                                 .data(rects)
                                 .enter().append('text')

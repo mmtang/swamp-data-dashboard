@@ -94,6 +94,11 @@ a {
   width: 100%;
 }
 
+.ui.basic.orange.label {
+  border-color: #de6e28 !important;
+  color: #de6e28 !important;
+}
+
 /* Layer List Styles */
 
 .esri-layer-list {
@@ -335,3 +340,5 @@ https://stackoverflow.com/questions/2639373/css-html-how-do-i-change-the-color-o
 .rs-table-hover .rs-table-row:hover, .rs-table-row-header, .rs-table-row-header .rs-table-cell {
   background-color: #f5f5f5 !important;
 }
+
+

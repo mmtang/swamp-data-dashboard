@@ -180,7 +180,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                             .attr('x', 0 + margin.left)
                             .attr('y', d => yScale(d.upperValue))
                             .attr('fill', d => d['fillColor'])
-                            .attr('opacity', 0.25);
+                            .attr('opacity', 0.8);
                         rectGroup.selectAll('text')
                             .data(rects)
                             .enter().append('text')
@@ -210,7 +210,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             .attr('stroke-width', d => d.Censored ? 2 : 1)
             .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
             .on('mouseover', function(currentEvent, d) {
-                const displayDate = analyte.source !== 'tissue' ? tooltipFormatDate(d.SampleDate) : yearFormatDate(d.SampleDate);
+                const displayDate = d.MatrixDisplay !== 'tissue' ? tooltipFormatDate(d.SampleDate) : yearFormatDate(d.SampleDate);
                 let content = '<span style="color: #a6a6a6">' + displayDate + '</span><br>' + d.Analyte + ": ";
                 if (['<', '>', '<=', '>='].includes(d.DisplayText)) {
                     content += d.DisplayText + ' ';
@@ -218,6 +218,12 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                 content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
                 if (d.Species) {
                     content += '<br>' + d.Species;
+                    if (d.MatrixDisplay === 'tissue') {
+                        content += ` (${d.TissuePrep})`;
+                    }
+                }
+                if (d.MatrixDisplay === 'tissue') {
+                    content += '<br>' + d.ResultType;
                 }
                 if (d.DisplayText) {
                     // Look for values of greater than 2 to exclude values like '<' and '<='

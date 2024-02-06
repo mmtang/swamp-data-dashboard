@@ -34,7 +34,7 @@ export default function BulkDownload({
             </div>
             { dataModalVisible ? 
                 <Modal
-                    /* closeIcon */
+                    closeIcon
                     closeOnDimmerClick={true}
                     open={dataModalVisible}
                     onClose={() => setDataModalVisible(false)}
@@ -43,7 +43,7 @@ export default function BulkDownload({
                     <Modal.Content scrolling>
                         <Modal.Description>
                             <div>
-                                <p>Download data (.csv) for all SWAMP stations based on the selection listed below. To change the current selection, close out of this window and select new filter values. The data file includes stations outside the current map extent.</p>
+                                <p>Download data (.csv) for all SWAMP stations based on the selection listed below. To change the current selection, close out of this window and select new filter values. The data file includes stations outside the current map extent. To download data for a single station, click on the station from the map or table.</p>
                                 <Table 
                                     celled
                                     className={downloadTable} 
@@ -60,7 +60,7 @@ export default function BulkDownload({
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>Species:</Table.Cell>
-                                            <Table.Cell><i>{ species && species.value ? species.value : 'All' }</i></Table.Cell>
+                                            <Table.Cell><i>{ species && species.value ? species.label : 'All' }</i></Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>Program:</Table.Cell>

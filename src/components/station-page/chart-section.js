@@ -129,6 +129,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     .then(records => {
                         records.forEach(d => {
                             d.SampleDate = parseDate(d.SampleDate);
+                            d.Species = d.OrganismName;
                             d.ResultDisplay = parseFloat((+d.MeanDisplay).toFixed(roundPlaces));
                             d.Censored = false;  // Convert string to boolean
                         });
@@ -147,6 +148,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         records.forEach(d => {
                             d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.LastSampleDate);
+                            d.Species = d.CommonName;
                             d.ResultDisplay = parseFloat((+d.Result).toFixed(roundPlaces));
                             d.Censored = false;  // Convert string to boolean
                         });

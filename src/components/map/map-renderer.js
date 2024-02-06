@@ -159,7 +159,7 @@ export const stationRenderer = {
     type: 'simple',
     symbol: {
         type: 'simple-marker',
-        size: 7.7,
+        size: 7,
         color: nonReferenceSiteColor,
         outline: {
             color: '#fff',
@@ -175,7 +175,7 @@ export const bioassessmentStationRenderer = {
         value: 'Non-reference site',
         symbol: {
             type: 'simple-marker',
-            size: 7.7,
+            size: 7,
             color: nonReferenceSiteColor,
             outline: {
                 color: '#fff',
@@ -187,7 +187,7 @@ export const bioassessmentStationRenderer = {
         symbol: {
             type: 'simple-marker',
             style: 'diamond',
-            size: 9,
+            size: 8.5,
             color: referenceSiteColorDark,
             outline: {
                 color: '#fff',
@@ -198,22 +198,22 @@ export const bioassessmentStationRenderer = {
 }
 
 // Modified colors based on original colors
-const csciColors = {
-    vla: '#f50000',
-    la: '#fdb100',
-    pa: '#baf700',
-    li: '#247400'
-}
-
 /*
-// Blue-Red colors
 const csciColors = {
-    vla: '#D04848',
-    la: '#F3B95F',
-    pa: '#FDE767',
-    li: '#6895D2'
+    vla: '#C22A19',
+    la: '#F28E2B',
+    pa: '#F5C710',
+    li: '#578B54'
 }
 */
+
+const csciColors = {
+    vla: '#DA292C',
+    la: '#FDB46C',
+    pa: '#FFED4B',
+    li: '#61ff12'
+}
+
 
 export const csciStationRenderer = {
     type: 'unique-value',
@@ -223,7 +223,7 @@ export const csciStationRenderer = {
         symbol: {
             type: 'simple-marker',
             style: 'diamond',
-            size: 9,
+            size: 8.5,
             color: csciColors['li'],
             outline: {
                 color: '#103350',
@@ -234,7 +234,7 @@ export const csciStationRenderer = {
         value: 'Likely intact',
         symbol: {
             type: 'simple-marker',
-            size: 7.7,
+            size: 7,
             color: csciColors['li'],
             outline: {
                 color: '#103350',
@@ -246,7 +246,7 @@ export const csciStationRenderer = {
         symbol: {
             type: 'simple-marker',
             style: 'diamond',
-            size: 9,
+            size: 8.5,
             //color: '#FDE767',
             color: csciColors['pa'],
             outline: {
@@ -258,7 +258,7 @@ export const csciStationRenderer = {
         value: 'Possibly altered',
         symbol: {
             type: 'simple-marker',
-            size: 7.7,
+            size: 7,
             //color: '#FDE767',
             color: csciColors['pa'],
             outline: {
@@ -271,7 +271,7 @@ export const csciStationRenderer = {
         symbol: {
             type: 'simple-marker',
             style: 'diamond',
-            size: 9,
+            size: 8.5,
             color: csciColors['la'],
             outline: {
                 color: '#103350',
@@ -282,7 +282,7 @@ export const csciStationRenderer = {
         value: 'Likely altered',
         symbol: {
             type: 'simple-marker',
-            size: 7.7,
+            size: 7,
             color: csciColors['la'],
             outline: {
                 color: '#103350',
@@ -294,7 +294,7 @@ export const csciStationRenderer = {
         symbol: {
             type: 'simple-marker',
             style: 'diamond',
-            size: 9,
+            size: 8.5,
             color: csciColors['vla'],
             outline: {
                 color: '#103350',
@@ -305,7 +305,7 @@ export const csciStationRenderer = {
         value: 'Very likely altered',
         symbol: {
             type: 'simple-marker',
-            size: 7.7,
+            size: 7,
             color: csciColors['vla'],
             outline: {
                 color: '#103350',
