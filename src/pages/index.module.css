@@ -10,7 +10,7 @@
 .mainContainer {
     background-color: #fff;
     box-shadow: 0 0 12px 0 rgb(0, 0, 0, 0.15);
-    flex-basis: 38%;
+    flex-basis: 40%;
     height: 100%;
     order: 1;
     overflow-y: auto;
@@ -22,7 +22,7 @@
     height: 100%;
     top: calc(60px + 50px);
     order: 2;
-    flex-basis: 62%;
+    flex-basis: 60%;
     z-index: 2;
 }
 

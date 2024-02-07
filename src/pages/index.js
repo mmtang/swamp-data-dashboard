@@ -533,7 +533,7 @@ export default function Index() {
             setStationData(data);   
             setTimeout(() => {
               setZoomToStation(selection.value.StationCode);    
-            }, 5000);
+            }, 250);
           }
         } else {
           // If there is no region or program value, set stations to all data (default)

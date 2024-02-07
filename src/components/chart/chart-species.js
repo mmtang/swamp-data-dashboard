@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { analytes, analyteScoringCategories, analyteYMax } from '../../constants/constants-data';
+import { toxColors } from '../../constants/constants-app';
+import { analytes, analyteScoringCategories, analyteYMax, toxicitySigValues } from '../../constants/constants-data';
 import { customTooltip, modalContent } from './chart-panel.module.css';
 
 // Component for rendering graph on the dashboard index page (station panel) for toxicity and tissue data
@@ -261,10 +262,11 @@ export default function ChartSpecies({
                 // Loops through each site and draw lines + points
                 for (let i = 0; i < siteKeys.length; i++) {
                     // Initialize symbol here, does not work in anonymous function below
-                    const symbol = d3.symbol().type(siteShapeDictRef.current[siteKeys[i]]).size(80);
+                    // Make the size of the points for tox data a little bigger to account for increased stroke width
+                    const sizePoint = analyte.source === 'toxicity' ? 90 : 80;
+                    const symbol = d3.symbol().type(siteShapeDictRef.current[siteKeys[i]]).size(sizePoint);
                     // Add points
-                    const points = chart.append('g')
-                        .attr('clip-path', 'url(#clip)');
+                    const points = chart.append('g');
                     points.selectAll('.symbol')
                         .data(data.sites[siteKeys[i]])
                         .enter()
@@ -273,8 +275,24 @@ export default function ChartSpecies({
                         .attr('d', symbol)
                         .attr('transform', d => `translate(${xScale(d.SampleDate)}, ${yScale(d.ResultDisplay)})`)
                         .attr('fill', d => d.Censored ? '#e3e4e6' : speciesColorDictRef.current[d.Species])
-                        .attr('stroke', d => d.Censored ? speciesColorDictRef.current[d.Species] : '#fff')
-                        .attr('stroke-width', d => d.Censored ? 2 : 1)
+                        .attr('stroke', d => {
+                            if (analyte.source === 'toxicity') {
+                                if (toxicitySigValues.includes(d.SigEffectCode)) {
+                                    return toxColors.lightRed;
+                                } else {
+                                    return toxColors.lightBlue;
+                                }
+                            } else {
+                                return d.Censored ? speciesColorDictRef.current[d.Species] : '#fff';
+                            }
+                        })
+                        .attr('stroke-width', d => {
+                            if (analyte.source === 'toxicity') {
+                                return 3;
+                            } else {
+                                return d.Censored ? 2 : 1;
+                            }
+                        })
                         .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                         .on('mouseover', function(currentEvent, d) {
                             const displayDate = analyte.source !== 'tissue' ? tooltipFormatDate(d.SampleDate) : yearFormatDate(d.SampleDate);
@@ -310,7 +328,7 @@ export default function ChartSpecies({
                                 .style('left', (currentEvent.pageX) + 'px')
                                 .style('top', (currentEvent.pageY - 28) + 'px');
                         })
-                        .on('mouseout', () => {
+                        .on('mouseout', function(currentEvent, d) {
                             return tooltip.style('opacity', 0);
                         })
                         .merge(points)
@@ -337,16 +355,16 @@ export default function ChartSpecies({
                     .attr('width', '100%')
                     .attr('height', species.length * 18)
                     .style('font', '0.8em Source Sans Pro');
-                const legend = svg.append('g')
+                const speciesLegend = svg.append('g')
                     .selectAll('g')
                     .data(species)
                     .join('g')
                     .attr('transform', (d, i) => `translate(0, ${i * 18})`);
-                legend.append('rect')
+                speciesLegend.append('rect')
                     .attr('width', 20)
                     .attr('height', 20)
                     .attr('fill', d => legendColor(d));
-                legend.append('text')
+                speciesLegend.append('text')
                     .attr('x', 24)
                     .attr('y', 9)
                     .attr('text-anchor', 'start')

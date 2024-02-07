@@ -3,7 +3,8 @@ import LoaderBlock from '../loaders/loader-block';
 
 import * as d3 from 'd3';
 import { colorPaletteViz } from '../../constants/constants-app';
-import { analytes, analyteScoringCategories, analyteYMax  } from '../../constants/constants-data';
+import { toxColors } from '../../constants/constants-app';
+import { analytes, analyteScoringCategories, analyteYMax, toxicitySigValues  } from '../../constants/constants-data';
 
 import { chart, chartContainer, customTooltip } from './chart.module.css';
 
@@ -196,18 +197,43 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
         }
 
         // Draw points
-        const points = chart.append('g')
-            .attr('clip-path', 'url(#clip)');
+        const points = chart.append('g');
         points.selectAll('.circle')
             .data(data)
             .enter().append('circle')
             .attr('class', 'circle')
-            .attr('r', 4)
+            .attr('r', 5)
             .attr('cx', d => xScale(d.SampleDate))
             .attr('cy', d => yScale(d.ResultDisplay))
-            .attr('fill', d => d.Censored ? '#e3e4e6' : colorPaletteViz[0])
-            .attr('stroke', d => d.Censored ? colorPaletteViz[0] : '#fff')
-            .attr('stroke-width', d => d.Censored ? 2 : 1)
+            .attr('fill', d=> {
+                if (d.SigEffectCode) {
+                    if (toxicitySigValues.includes(d.SigEffectCode)) {
+                        return toxColors.darkRed;
+                    } else {
+                        return toxColors.darkBlue;
+                    }
+                } else {
+                    return d.Censored ? '#e3e4e6' : colorPaletteViz[0];
+                }
+            })
+            .attr('stroke', d => {
+                if (d.SigEffectCode) {
+                    if (toxicitySigValues.includes(d.SigEffectCode)) {
+                        return toxColors.lightRed;
+                    } else {
+                        return toxColors.lightBlue;
+                    }
+                } else {
+                    return d.Censored ? colorPaletteViz[0] : '#fff';
+                }
+            })
+            .attr('stroke-width', d => {
+                if (d.SigEffectCode) {
+                    return 3;
+                } else {
+                    return d.Censored ? 2 : 1;
+                }
+            })
             .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
             .on('mouseover', function(currentEvent, d) {
                 const displayDate = d.MatrixDisplay !== 'tissue' ? tooltipFormatDate(d.SampleDate) : yearFormatDate(d.SampleDate);

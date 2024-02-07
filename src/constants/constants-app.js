@@ -42,6 +42,13 @@ export const nonReferenceSiteColor = '#046b99';
 export const referenceSiteColorBright = '#f2711c';
 export const referenceSiteColorDark = '#de6e28'; 
 
+export const toxColors = {
+    lightBlue: '#8ec4de',
+    darkBlue: '#1065ab',
+    lightRed: '#FBB4AE',
+    darkRed: '#B31529'
+}
+
 export const referenceSitesText = "Reference sites are sampling locations where human disturbance is absent or minimal. These sites are used to set benchmark expectations for healthy streams."
 
 export const roundPlaces = 3;

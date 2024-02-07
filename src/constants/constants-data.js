@@ -519,3 +519,7 @@ export const dataQualityCategories = [
     'Extensive review needed',
     'Not assessed'
 ]
+
+export const toxicitySigValues = [
+    'SL'
+]

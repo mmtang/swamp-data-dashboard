@@ -1,5 +1,5 @@
 .container {
-    width: 62vw;
+    width: 60vw;
     /* Subtract 60px for navbar (navbar.js) and 50px for sub-navbar (panel-menu.js) */
     height: calc(100vh - 60px - 50px);  
     position: relative;

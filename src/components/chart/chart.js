@@ -234,8 +234,7 @@ export default function Chart({ analyte, data, unit, vizColors }) {
                     */
 
                     // Add points
-                    const points = chart.append('g')
-                        .attr('clip-path', 'url(#clip)');
+                    const points = chart.append('g');
                     points.selectAll('.circle')
                         .data(data.sites[siteKeys[i]])
                         .enter().append('circle')

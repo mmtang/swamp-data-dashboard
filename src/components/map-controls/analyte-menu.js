@@ -97,6 +97,7 @@ export default function AnalyteMenu({
 
     return (
         <div>
+            <p className={pLabel}>Select analyte and/or species:</p>
             {/* Category Menu */}
             { !loadingCategory ? 
                 <div style={wrapperStyle}>
@@ -113,7 +114,6 @@ export default function AnalyteMenu({
                     />
                 </div>
             : <div style={wrapperStyle}><LoaderMenu /></div> }
-            <p className={pLabel}>Select analyte and/or species:</p>
             {/* Analyte/Parameter */}
             { !loadingAnalyte ? 
                 <div style={wrapperStyle}>
