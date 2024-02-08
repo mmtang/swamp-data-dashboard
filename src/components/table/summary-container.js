@@ -41,7 +41,7 @@ export default function SummaryContainer({
         }
     }, [tableData]);
 
-    if (analyte && analyte.source === 'tissue') {
+    if ((analyte && analyte.source === 'tissue') || (species && species.source === 'tissue')) {
         return (
             <div className={container}>
                 <SummarySubMenu 

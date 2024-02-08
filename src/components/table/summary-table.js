@@ -68,13 +68,13 @@ export default function SummaryTable({
     );
 
     const createParams = () => {
-        let querySql = `SELECT DISTINCT ON ("StationCode", "Analyte", "CommonName", "SampleYear", "ResultType", "TissueName", "TissuePrep") "StationCode", "StationName", "Region", "SampleYear", "Analyte", "CommonName", "ResultType", "Result", "Unit", "TissueName", "TissuePrep", "SiteType", "TargetLatitude", "TargetLongitude" FROM "${tissueResourceId}"`
+        let querySql = `SELECT DISTINCT ON ("StationCode", "AnalyteDisplay", "CommonName", "SampleYear", "ResultType", "TissueName", "TissuePrep") "StationCode", "StationName", "Region", "SampleYear", "AnalyteDisplay" AS "Analyte", "CommonName", "ResultType", "Result", "Unit", "TissueName", "TissuePrep", "SiteType", "TargetLatitude", "TargetLongitude" FROM "${tissueResourceId}"`
         const whereStatements = [];
         if (analyte || program || region || species) {
             // This block constucts the "WHERE" part of the select query
             // There can be one or more filters
             if (analyte) {
-                whereStatements.push(`"Analyte" = '${analyte.label}'`);
+                whereStatements.push(`"AnalyteDisplay" = '${analyte.label}'`);
                 whereStatements.push(`"MatrixDisplay" = '${analyte.matrix}'`);
             }
             if (program) {
