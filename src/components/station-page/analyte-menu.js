@@ -72,13 +72,13 @@ export default function AnalyteMenu({
         return new Promise((resolve, reject) => {
             if (station) {
                 // --- Chemistry
-                const chemistrySql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte" AS "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                const chemistrySql = `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
                 const chemistryParams = {
                     resource_id: chemistryResourceId,
                     sql: chemistrySql
                 };
                 // --- Habitat
-                const habitatSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte" AS "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                const habitatSql = `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay") "StationCode", "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
                 const habitatParams = {
                     resource_id: habitatResourceId,
                     sql: habitatSql
@@ -90,7 +90,7 @@ export default function AnalyteMenu({
                     sql: toxSql
                 };
                 // --- Tissue
-                const tissueSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "CommonName") "StationCode", "Analyte" AS "AnalyteDisplay", "CommonName" AS "Species", "MatrixDisplay", "AnalyteGroup1" FROM "${tissueResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                const tissueSql = `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "CommonName") "StationCode", "AnalyteDisplay", "CommonName" AS "Species", "MatrixDisplay", "AnalyteGroup1" FROM "${tissueResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 const tissueParams = {
                     resource_id: tissueResourceId,
                     sql: tissueSql

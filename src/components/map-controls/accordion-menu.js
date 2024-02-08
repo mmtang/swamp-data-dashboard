@@ -57,7 +57,7 @@ export default function AccordionMenu({
                 sql: `SELECT DISTINCT ON ("AnalyteDisplay", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay" AS "Analyte", "Unit", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${habitatResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             };
             const toxParams = {
-                sql: `SELECT DISTINCT ON ("AnalyteDisplay", "OrganismName", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay" AS "Analyte", "Unit", "OrganismName" AS "Species", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${toxicityResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                sql: `SELECT DISTINCT ON ("Analyte", "OrganismName", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "Analyte", "Unit", "OrganismName" AS "Species", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${toxicityResourceId}" WHERE "DataQuality" NOT IN ('MetaData', 'Reject record')`
             }
             const tissueParams = {
                 sql: `SELECT DISTINCT ON ("AnalyteDisplay", "CommonName", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region") "AnalyteDisplay" AS "Analyte", "Unit", "CommonName" AS "Species", "AnalyteGroup1", "MatrixDisplay", "Bioaccumulation", "Bioassessment", "Fhab", "Spot", "Region" FROM "${tissueResourceId}"`
@@ -68,7 +68,6 @@ export default function AccordionMenu({
                 getData(toxParams, 'toxicity'),
                 getData(tissueParams, 'tissue')
             ]).then((res) => {
-                console.log(res);
                 const allOptions = res[0].concat(res[1], res[2], res[3]);
                 allOptions.forEach(d => {
                     d.Region = '' + parseInt(d.Region)
