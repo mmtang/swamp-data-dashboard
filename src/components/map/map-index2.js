@@ -354,7 +354,7 @@ export default function MapIndex2({
             deleteFeatures: currentFeatures.features, // delete the old features
         }).then((results) => {
             setTimeout(() => {
-                if (analyte && analyte.label === 'CSCI') {
+                if (analyte && analyte.label === 'California Stream Condition Index (CSCI)') {
                     setRenderer(stationLayerRef.current, csciStationRenderer);
                 } else {
                     if (highlightReferenceSites) {

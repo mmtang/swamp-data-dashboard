@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import AboutResults from '../learn/about-results';
 import AnalyteMenu from '../station-page/analyte-menu';
 import ChartPanel from '../chart/chart-panel';
 import CompareSites from '../compare-sites/compare-sites';
@@ -317,6 +318,7 @@ export default function PanelStationInfo({
                         <div style={{ fontStyle: 'italic' }}>Select an analyte</div>
                     : null }
                 </Segment>
+                <AboutResults />
             </div>
             {/* ------ Table */}
             <div className={menuContainer} style={ activeMenuItem !== 'table' ? displayNone : null }>

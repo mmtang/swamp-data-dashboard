@@ -69,48 +69,52 @@ export default function AnalyteMenu({
 
     // Get all Analyte-Species combinations from toxicity and tissue dataset
     const getAllCombos = (station) => {
-        if (station) {
-            // --- Chemistry
-            const chemistrySql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte" AS "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
-            const chemistryParams = {
-                resource_id: chemistryResourceId,
-                sql: chemistrySql
-            };
-            // --- Habitat
-            const habitatSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte" AS "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
-            const habitatParams = {
-                resource_id: habitatResourceId,
-                sql: habitatSql
-            };
-            // --- Toxicity
-            const toxSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "OrganismName") "StationCode", "Analyte" AS "AnalyteDisplay", "OrganismName" AS "Species", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
-            const toxParams = {
-                resource_id: toxicityResourceId,
-                sql: toxSql
-            };
-            // --- Tissue
-            const tissueSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "CommonName") "StationCode", "Analyte" AS "AnalyteDisplay", "CommonName" AS "Species", "MatrixDisplay", "AnalyteGroup1" FROM "${tissueResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
-            const tissueParams = {
-                resource_id: tissueResourceId,
-                sql: tissueSql
-            }
-            Promise.all([
-                getData(chemistryParams, 'chemistry'),
-                getData(habitatParams, 'habitat'),
-                getData(toxParams, 'toxicity'),
-                getData(tissueParams, 'tissue')
-                // Add tissue here
-            ]).then((res) => {
-                // Concatenate the records into one array
-                let allData = res[0].concat(res[1], res[2], res[3]);
-                // Add ID field, this is to allow us to filter by analyte and matrix based off one field
-                allData.forEach(d => {
-                    d.id = d.AnalyteDisplay + '$' + d.MatrixDisplay;
-                    d.idSpecies = d.Species + '$' + d.MatrixDisplay;
+        return new Promise((resolve, reject) => {
+            if (station) {
+                // --- Chemistry
+                const chemistrySql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte" AS "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${chemistryResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                const chemistryParams = {
+                    resource_id: chemistryResourceId,
+                    sql: chemistrySql
+                };
+                // --- Habitat
+                const habitatSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay") "StationCode", "Analyte" AS "AnalyteDisplay", "MatrixDisplay", "AnalyteGroup1" FROM "${habitatResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`
+                const habitatParams = {
+                    resource_id: habitatResourceId,
+                    sql: habitatSql
+                };
+                // --- Toxicity
+                const toxSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "OrganismName") "StationCode", "Analyte" AS "AnalyteDisplay", "OrganismName" AS "Species", "MatrixDisplay", "AnalyteGroup1" FROM "${toxicityResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                const toxParams = {
+                    resource_id: toxicityResourceId,
+                    sql: toxSql
+                };
+                // --- Tissue
+                const tissueSql = `SELECT DISTINCT ON ("Analyte", "MatrixDisplay", "CommonName") "StationCode", "Analyte" AS "AnalyteDisplay", "CommonName" AS "Species", "MatrixDisplay", "AnalyteGroup1" FROM "${tissueResourceId}" WHERE "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                const tissueParams = {
+                    resource_id: tissueResourceId,
+                    sql: tissueSql
+                }
+                Promise.all([
+                    getData(chemistryParams, 'chemistry'),
+                    getData(habitatParams, 'habitat'),
+                    getData(toxParams, 'toxicity'),
+                    getData(tissueParams, 'tissue')
+                    // Add tissue here
+                ]).then((res) => {
+                    // Concatenate the records into one array
+                    let allData = res[0].concat(res[1], res[2], res[3]);
+                    // Add ID field, this is to allow us to filter by analyte and matrix based off one field
+                    allData.forEach(d => {
+                        d.id = d.AnalyteDisplay + '$' + d.MatrixDisplay;
+                        d.idSpecies = d.Species + '$' + d.MatrixDisplay;
+                    });
+                    resolve(allData);
                 });
-                setAllCombos(allData);
-            });
-        }
+            } else {
+                resolve(null);
+            }
+        })  
     };
 
     const handleAnalyteChange = (selection) => {
@@ -208,13 +212,15 @@ export default function AnalyteMenu({
     }
 
     useEffect(() => {
-        refreshSpeciesDisabled();
         if (station && !allCombos) {
-            getAllCombos(station);
-        }
-        if (station && allCombos) {
+            getAllCombos(station)
+            .then((res) => {
+                setAllCombos(res);                
+            })
+        } else if (station && allCombos) {
             updateAnalyteList();
             updateSpeciesList();
+            refreshSpeciesDisabled();
         }
     }, [station]);
 
@@ -222,6 +228,7 @@ export default function AnalyteMenu({
         if (allCombos) {
             updateAnalyteList();
             updateSpeciesList();
+            refreshSpeciesDisabled();
         }
     }, [allCombos]);
 

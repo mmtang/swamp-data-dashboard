@@ -65,7 +65,7 @@ export const analytes = {
         page: null,
         blurb: "Copper is a naturally occurring metal that is found in the earth's crust. It is a trace mineral that is essential for aquatic life, but excess amounts can impair biological function and lead to death."
     },
-    'CSCI': {
+    'California Stream Condition Index (CSCI)': {
         code: 'csci',
         label: 'California Stream Condition Index',
         page: 'csci',
@@ -97,7 +97,7 @@ export const analytes = {
         page: null,
         blurb: 'Hardness refers to the amount of dissolved calcium, magnesium, and other minerals present in water. The hardness of a waterbody is determined primarily by the geology of the area and the rate of erosion.'
     },
-    'IPI': {
+    'Index of Physical Habitat Integrity (IPI)': {
         code: 'ipi',
         label: 'Index of Physical Habitat Integrity',
         page: 'ipi',
@@ -208,13 +208,13 @@ export const analytes = {
 }
 
 export const habitatAnalytes = [
-    'CSCI',
-    'IPI'
+    'California Stream Condition Index (CSCI)',
+    'Index of Physical Habitat Integrity (IPI)'
 ]
 
 export const analyteYMax = {
-    'CSCI': 1.5,
-    'IPI': 1.3
+    'California Stream Condition Index (CSCI)': 1.5,
+    'Index of Physical Habitat Integrity (IPI)': 1.4
 }
 
 export const analyteScoringCategories = {
@@ -253,27 +253,27 @@ export const analyteScoringCategories = {
             type: 'area',
             label: 'Very likely altered',
             lowerValue: 0,
-            upperValue: 0.699999, // Actal given range is <= 0.70
+            upperValue: 0.7099999, // Actal given range is <= 0.70
             fillColor: '#FBB4AE'
         },
         {
             type: 'area',
             label: 'Likely altered',
-            lowerValue: 0.7,  
-            upperValue: 0.83, // Actal given range is 0.71 - 0.83
+            lowerValue: 0.71,  
+            upperValue: 0.8399999, // Actal given range is 0.71 - 0.83
             fillColor: '#FED9A6'
         },
         {
             type: 'area',
             label: 'Possibly altered',
-            lowerValue: 0.8399999,  
-            upperValue: 0.93, // Actual given range is 0.84 - 0.93
+            lowerValue: 0.84,  
+            upperValue: 0.9399999, // Actual given range is 0.84 - 0.93
             fillColor: '#FFFFCC'
         },
         {
             type: 'area',
             label: 'Likely intact',
-            lowerValue: 0.9399999,
+            lowerValue: 0.94,
             upperValue: 1.4, // Actual given range is >= 0.94
             fillColor: '#CCEBC5'
         }
