@@ -175,7 +175,7 @@ export const bioassessmentStationRenderer = {
         value: 'Non-reference site',
         symbol: {
             type: 'simple-marker',
-            size: 6.5,
+            size: 7,
             color: nonReferenceSiteColor,
             outline: {
                 color: '#fff',
@@ -186,8 +186,8 @@ export const bioassessmentStationRenderer = {
         value: 'Reference site',
         symbol: {
             type: 'simple-marker',
-            style: 'diamond',
-            size: 8,
+            style: 'triangle',
+            size: 8.5,
             color: referenceSiteColorDark,
             outline: {
                 color: '#fff',
@@ -222,7 +222,7 @@ export const csciStationRenderer = {
         value: 'Likely intact (Reference site)',
         symbol: {
             type: 'simple-marker',
-            style: 'diamond',
+            style: 'triangle',
             size: 8,
             color: csciColors['li'],
             outline: {
@@ -245,7 +245,7 @@ export const csciStationRenderer = {
         value: 'Possibly altered (Reference site)',
         symbol: {
             type: 'simple-marker',
-            style: 'diamond',
+            style: 'triangle',
             size: 8,
             //color: '#FDE767',
             color: csciColors['pa'],
@@ -270,7 +270,7 @@ export const csciStationRenderer = {
         value: 'Likely altered (Reference site)',
         symbol: {
             type: 'simple-marker',
-            style: 'diamond',
+            style: 'triangle',
             size: 8,
             color: csciColors['la'],
             outline: {
@@ -293,7 +293,7 @@ export const csciStationRenderer = {
         value: 'Very likely altered (Reference site)',
         symbol: {
             type: 'simple-marker',
-            style: 'diamond',
+            style: 'triangle',
             size: 8,
             color: csciColors['vla'],
             outline: {

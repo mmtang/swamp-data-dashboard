@@ -308,7 +308,6 @@ export default function PanelStationInfo({
                             analyte={panelAnalyte} 
                             data={chartData}
                             setSiteShapeDict={setSiteShapeDict}
-                            species={panelSpecies}
                             unit={unitRef.current}
                             vizColors={vizColors}
                         />

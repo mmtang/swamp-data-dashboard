@@ -41,7 +41,7 @@ export default function ChartSpecies({
                     allSpecies = [...allSpecies, ...species]; // Concatenate arrays
                 }
                 const uniqueSpecies = [...new Set(allSpecies)];
-                uniqueSpecies.sort((a, b) => a - b);
+                uniqueSpecies.sort((a, b) => a.localeCompare(b));
                 // Initialize new dictionary to store species:color pairs
                 const speciesDict = {};
                 for (let i = 0; i < uniqueSpecies.length; i++) {
@@ -296,17 +296,20 @@ export default function ChartSpecies({
                         .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                         .on('mouseover', function(currentEvent, d) {
                             const displayDate = analyte.source !== 'tissue' ? tooltipFormatDate(d.SampleDate) : yearFormatDate(d.SampleDate);
-                            let content = '<span style="color: #a6a6a6">' + displayDate + '</span><br>' + d.Analyte + ": ";
+                            let content = '<b>' + displayDate + '</b><br>';
+                            if (siteKeys.length > 1) {
+                                content += '<span style="color: #ababab">' + d.StationName + '</span><br>';
+                            }
+                            if (d.Species) {
+                                content += d.Species;
+                                if (analyte.source === 'tissue') {
+                                    content += ': ';
+                                };
+                            }
                             if (['<', '>', '>=', '<='].includes(d.DisplayText)) {
                                 content += d.ResultQualCode + ' ';
                             }
                             content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
-                            if (d.Species) {
-                                content += '<br>' + d.Species;
-                                if (analyte.source === 'tissue') {
-                                    content += ' (' + d.TissuePrep + ')';
-                                }
-                            }
                             if (analyte.source === 'tissue') {
                                 content += '<br>' + d.ResultType;
                             }

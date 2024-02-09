@@ -1,20 +1,73 @@
 // Old colors
 //export const colorPaletteViz = ['#1f77b4', '#ff7f0e', '#2ca02c', '#af7aa1', '#17becf', '#9467bd','#e377c2', '#7f7f7f', '#bcbd22', '#8c564b'];
 
-// New colors based off Paul Tol's color palettes: https://personal.sron.nl/~pault/
+// New colors based off Tableau categorical color palette
+/*
 export const colorPaletteViz = [
-    '#0077bb',
-    '#ee7733',
-    '#44aa99',
-    '#aa4499',
-    '#999933',
-    '#332288',
-    '#228833',
-    '#33bbee',
-    '#ddcc77',
-    '#cc6677',
-    '#575757',
-    '#882255',
+    '#1f77b4',
+    '#aec7e8',
+    '#ff7f0e',
+    '#ffbb78',
+    '#2ca02c',
+    '#98df8a',
+    '#9467bd',
+    '#c5b0d5',
+    '#8c564b',
+    '#c49c94',
+    '#e377c2', 
+    '#f7b6d2',
+    '#7f7f7f',
+    '#c7c7c7',
+    '#bcbd22',
+    '#dbdb8d',
+    '#17becf',
+    '#9edae5',
+    '#d62728',
+    '#ff9896', 
+    '#1f77b4', // Colors start repeating
+    '#aec7e8',
+    '#ff7f0e',
+    '#ffbb78',
+    '#2ca02c',
+    '#98df8a',
+    '#9467bd',
+    '#c5b0d5',
+    '#8c564b',
+    '#c49c94'
+]
+*/
+
+export const colorPaletteViz = [
+    '#1f77b4',
+    '#ff7f0e',
+    '#2ca02c',
+    '#9467bd',
+    '#8c564b',
+    '#e377c2', 
+    '#7f7f7f',
+    '#bcbd22',
+    '#17becf',
+    '#d62728',
+    '#aec7e8',
+    '#ffbb78',
+    '#98df8a',
+    '#c5b0d5',
+    '#c49c94',
+    '#f7b6d2',
+    '#c7c7c7',
+    '#dbdb8d',
+    '#9edae5',
+    '#ff9896',
+    '#1f77b4', // Colors start repeating
+    '#aec7e8',
+    '#ff7f0e',
+    '#ffbb78',
+    '#2ca02c',
+    '#98df8a',
+    '#9467bd',
+    '#c5b0d5',
+    '#8c564b',
+    '#c49c94'
 ]
 
 // An alternative color to use (light turquoise/seafoam) for links on a dark background

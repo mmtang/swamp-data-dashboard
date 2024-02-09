@@ -122,9 +122,9 @@ export default function CompareSites({
                 </div>&nbsp;&nbsp;
                 <div className={stationWrapper}>
                     <div className={stationCode} style={{ color: '#103c68' }}>
-                        {d.StationCode}
+                        {d.StationName}
                     </div>
-                    <div className={stationName}>{d.StationName}</div>
+                    <div className={stationName}>{d.StationCode}</div>
                 </div>
             </div>
         )
@@ -157,9 +157,7 @@ export default function CompareSites({
                     { allSites.map((d, i) => {
                         return (
                             <div className={compareRow} key={d.StationCode}>
-                                { (analyte && (analyte.source === 'toxicity' || analyte.source === 'tissue')) ?
-                                  shapeRow(d, i) 
-                                : colorRow(d, i) }                        
+                                {shapeRow(d, i)}                        
                                 <div>
                                     { i > 0 ? 
                                         <Icon 

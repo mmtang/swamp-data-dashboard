@@ -422,6 +422,7 @@ export default function Index() {
     // If none of the filters are selected, change state to the full station dataset
     // setFilterByMapExtent(false);
     if (!program && !region && !analyte && !species) {
+      setDisableReferenceSites(false);
       setStationData(allStationRef.current);
     } else {
       const paramsChem = createParams(chemistryResourceId);

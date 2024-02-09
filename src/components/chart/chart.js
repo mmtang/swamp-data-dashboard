@@ -4,14 +4,32 @@ import { analytes, analyteScoringCategories, analyteYMax } from '../../constants
 import { customTooltip, modalContent } from './chart-panel.module.css';
 
 // Component for rendering graph on the dashboard index page (station panel)
-export default function Chart({ analyte, data, unit, vizColors }) {
+export default function Chart({ analyte, data, setSiteShapeDict, unit, vizColors }) {
     const randomId = useRef(Math.floor((Math.random() * 100000).toString()));
+    const siteShapeDictRef = useRef(null);
     const axisFormatDate = d3.timeFormat('%-m/%-d/%Y');
     const axisFormatDateYear = d3.timeFormat('%Y');
     const tooltipFormatDate = d3.timeFormat('%b %e, %Y');
     const formatNumber = d3.format(',');
+    const shapePaletteViz = [d3.symbolCircle, d3.symbolTriangle, d3.symbolSquare, d3.symbolDiamond, d3.symbolCross];
 
     const divContainer = '#index-chart-container';
+
+    const mapSitesToShapes = (data) => {
+        return new Promise((resolve, reject) => {
+            if (data) {
+                const siteKeys = Object.keys(data.sites);
+                // Initialize new dictionary to store site:shape pairs
+                const siteDict = {};
+                for (let i = 0; i < siteKeys.length; i++) {
+                    siteDict[siteKeys[i]] = shapePaletteViz[i];
+                }
+                resolve(siteDict);
+            } else {
+                resolve({}); // Set to an empty dictionary instead of null so that siteShapeDict.current can still be accessed and not throw an error. This is needed for the part of the code that draws the points
+            }
+        })
+    }
 
     useEffect(() => {
         const responsive = (id) => {
@@ -234,20 +252,29 @@ export default function Chart({ analyte, data, unit, vizColors }) {
                     */
 
                     // Add points
+                    const symbol = d3.symbol().type(siteShapeDictRef.current[siteKeys[i]]).size(80);
+
                     const points = chart.append('g');
-                    points.selectAll('.circle')
+                    points.selectAll('.symbol')
                         .data(data.sites[siteKeys[i]])
-                        .enter().append('circle')
-                        .attr('class', 'circle')
-                        .attr('r', 5)
-                        .attr('cx', d => xScale(d.SampleDate))
-                        .attr('cy', d => yScale(d.ResultDisplay))
-                        .attr('fill', d => d.Censored ? '#e3e4e6' : vizColors[i])
-                        .attr('stroke', d => d.Censored ? vizColors[i] : '#fff')
+                        .enter()
+                        .append('path')
+                        .attr('class', 'symbol')
+                        //.attr('r', 5)
+                        //.attr('cx', d => xScale(d.SampleDate))
+                        //.attr('cy', d => yScale(d.ResultDisplay))
+                        .attr('d', symbol)
+                        .attr('transform', d => `translate(${xScale(d.SampleDate)}, ${yScale(d.ResultDisplay)})`)
+                        //.attr('fill', d => d.Censored ? '#e3e4e6' : vizColors[i])
+                        .attr('fill', d => d.Censored ? '#e3e4e6' : vizColors[0])
+                        .attr('stroke', d => d.Censored ? vizColors[0] : '#fff')
                         .attr('stroke-width', d => d.Censored ? 2 : 1)
                         .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
                         .on('mouseover', function(currentEvent, d) {
-                            let content = '<span style="color: #a6a6a6">' + tooltipFormatDate(d.SampleDate) + '</span><br>' + d.Analyte + ": ";
+                            let content = '<b>' + tooltipFormatDate(d.SampleDate) + '</b><br>';
+                            if (siteKeys.length > 1) {
+                                content += '<span style="color: #ababab">' + d.StationName + '</span><br>'
+                            }
                             if (['<', '>', '>=', '<='].includes(d.DisplayText)) {
                                 content += d.ResultQualCode + ' ';
                             }
@@ -255,7 +282,7 @@ export default function Chart({ analyte, data, unit, vizColors }) {
                             if (d.DisplayText) {
                                 // Look for values of greater than 2 to exclude values like '<' and '<='
                                 if (d.DisplayText.length > 2) {
-                                    content += '<br><i>* ' + d.DisplayText + '</i>';
+                                    content += '<br><br><i>* ' + d.DisplayText + '</i>';
                                 }
                             }
                             return tooltip
@@ -299,7 +326,13 @@ export default function Chart({ analyte, data, unit, vizColors }) {
         };
 
         if (data) {
-            drawChart(data);
+            Promise.all([
+                mapSitesToShapes(data),
+            ]).then((res) => {
+                siteShapeDictRef.current = res[0];
+                setSiteShapeDict(res[0]);
+                drawChart(data);
+            });
         }
     }, [data])
     
