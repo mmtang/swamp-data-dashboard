@@ -282,7 +282,7 @@ export default function Chart({ analyte, data, setSiteShapeDict, unit, vizColors
                             if (d.DisplayText) {
                                 // Look for values of greater than 2 to exclude values like '<' and '<='
                                 if (d.DisplayText.length > 2) {
-                                    content += '<br><br><i>* ' + d.DisplayText + '</i>';
+                                    content += '<br><i>* ' + d.DisplayText + '</i>';
                                 }
                             }
                             return tooltip

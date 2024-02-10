@@ -1,0 +1,14 @@
+.iconWrapper {
+    height: 20px;
+    margin: -5px;
+    width: 20px;
+}
+
+.messageContainer {
+    align-items: center;
+    display: flex; 
+    font-size: 0.84em;
+    line-height: 1.3em;
+    margin: 0;
+    text-align: left;
+}
