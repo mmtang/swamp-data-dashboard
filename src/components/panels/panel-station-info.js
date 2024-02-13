@@ -297,7 +297,7 @@ export default function PanelStationInfo({
                         vizColors={vizColors}
                     />
                 : null }
-                <Segment className={chartContainer} textAlign='center'>
+                <Segment className={chartContainer} placeholder={loading} textAlign='center'>
                     {/* ----- Download data */}
                     { panelAnalyte ? 
                         <DownloadSection data={chartData} loading={loading} />

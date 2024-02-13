@@ -6,7 +6,7 @@
     object-fit: contain;
     -o-object-fit: contain;
     position: fixed;
-    z-index: 999;
+    z-index: 900;
 }
 
 .closeIcon {
@@ -17,6 +17,7 @@
     position: absolute;
     right: 0;
     top: 0;
+    z-index: 910;
 }
 
 .closeIcon:hover {

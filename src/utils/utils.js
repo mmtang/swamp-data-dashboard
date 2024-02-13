@@ -321,13 +321,21 @@ export const hexToRGB = (hex) => {
     return ([r, g, b, 255]);
 }
 
+// Don't use the .toFixed function - it has some issues with rounding up/down .5
+// https://stackoverflow.com/questions/10015027/javascript-tofixed-not-rounding
+export const round = (num, precision) => {
+    var base = 10 ** precision;
+    return (Math.round(num * base) / base).toFixed(precision);
+};
+
 // Return the CSCI score category given the provided value
 // Either returns 'Likely intact' for non-reference sites or 'Likely intact (Reference)' for reference sites
 export const getCsciCategoryValue = (row) => {
     const csciCategories = analyteScoringCategories['csci'];
     for (let i = 0; i < csciCategories.length; i++) {
         let stringText = '';
-        if ((row['ResultDisplay'] >= csciCategories[i].lowerValue) && (row['ResultDisplay'] <= csciCategories[i].upperValue)) {
+        const result = round(row['ResultDisplay'], 2);
+        if ((result >= csciCategories[i].lowerValue) && (result <= csciCategories[i].upperValue)) {
             stringText += csciCategories[i].label;
             if (row['SiteType'] === 'Reference site') {
                 stringText += ' (Reference site)'

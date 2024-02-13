@@ -223,27 +223,27 @@ export const analyteScoringCategories = {
             type: 'area',
             label: 'Very likely altered',
             lowerValue: 0,
-            upperValue: 0.6299999, // Actual given range is <= 0.62
+            upperValue: 0.624, // Actual given range is <= 0.62
             fillColor: '#FBB4AE'
         },
         {
             type: 'area',
             label: 'Likely altered',
-            lowerValue: 0.63, 
-            upperValue: 0.7999999, // Actual given range is 0.63 - 0.79
+            lowerValue: 0.625, 
+            upperValue: 0.794, // Actual given range is 0.63 - 0.79
             fillColor: '#FED9A6'
         },
         {
             type: 'area',
             label: 'Possibly altered',
-            lowerValue: 0.8,
-            upperValue: 0.9199999, // Actual given range is 0.8 - 0.91
+            lowerValue: 0.795,
+            upperValue: 0.914, // Actual given range is 0.8 - 0.91
             fillColor: '#FFFFCC'
         },
         {
             type: 'area',
             label: 'Likely intact',
-            lowerValue: 0.92, // Actual given range is >= 0.92
+            lowerValue: 0.915, // Actual given range is >= 0.92
             upperValue: 1.4,  // Actual value on score range is 1.4. Some values from CEDEN are slightly above 1.4, so I am using 1.5 here to catch those values
             fillColor: '#CCEBC5'
         }
@@ -253,27 +253,27 @@ export const analyteScoringCategories = {
             type: 'area',
             label: 'Very likely altered',
             lowerValue: 0,
-            upperValue: 0.7099999, // Actal given range is <= 0.70
+            upperValue: 0.704, // Actal given range is <= 0.70
             fillColor: '#FBB4AE'
         },
         {
             type: 'area',
             label: 'Likely altered',
-            lowerValue: 0.71,  
-            upperValue: 0.8399999, // Actal given range is 0.71 - 0.83
+            lowerValue: 0.705,  
+            upperValue: 0.834, // Actal given range is 0.71 - 0.83
             fillColor: '#FED9A6'
         },
         {
             type: 'area',
             label: 'Possibly altered',
-            lowerValue: 0.84,  
-            upperValue: 0.9399999, // Actual given range is 0.84 - 0.93
+            lowerValue: 0.835,  
+            upperValue: 0.934, // Actual given range is 0.84 - 0.93
             fillColor: '#FFFFCC'
         },
         {
             type: 'area',
             label: 'Likely intact',
-            lowerValue: 0.94,
+            lowerValue: 0.935,
             upperValue: 1.4, // Actual given range is >= 0.94
             fillColor: '#CCEBC5'
         }
@@ -496,6 +496,7 @@ export const tissueDataFields = [
     'TissuePrep',
     'MatrixDisplay',
     'Analyte',
+    'ResultType',
     'Result',
     'Unit',
     'SampleYear',

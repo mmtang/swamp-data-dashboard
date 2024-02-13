@@ -20,7 +20,7 @@ const Csci = () => {
                 <ListItem className={listContainer}>
                     <ListIcon name='full square' size='big' style={{ color: '#d6efd0' }} />
                     <ListContent>
-                        <ListHeader className={textStyle}>Likely intact stream conditions</ListHeader>
+                        <ListHeader className={textStyle}>Likely intact stream condition</ListHeader>
                         <ListDescription className={textStyle}>
                             ≥ 0.92
                         </ListDescription>
@@ -29,7 +29,7 @@ const Csci = () => {
                 <ListItem className={listContainer}>
                     <ListIcon name='full square' size='big' style={{ color: '#ffffd6' }} />
                     <ListContent>
-                        <ListHeader className={textStyle}>Possibly altered stream conditions</ListHeader>
+                        <ListHeader className={textStyle}>Possibly altered stream condition</ListHeader>
                         <ListDescription className={textStyle}>
                             0.80 - 0.91
                         </ListDescription>
@@ -38,7 +38,7 @@ const Csci = () => {
                 <ListItem className={listContainer}>
                     <ListIcon name='full square' size='big' style={{ color: '#fee0b7' }} />
                     <ListContent>
-                        <ListHeader className={textStyle}>Likely altered stream conditions</ListHeader>
+                        <ListHeader className={textStyle}>Likely altered stream condition</ListHeader>
                         <ListDescription className={textStyle}>
                             0.63 - 0.79
                         </ListDescription>
@@ -47,7 +47,7 @@ const Csci = () => {
                 <ListItem className={listContainer}>
                     <ListIcon name='full square' size='big' style={{ color: '#fbc3be' }} />
                     <ListContent>
-                        <ListHeader className={textStyle}>Very likely altered stream conditions</ListHeader>
+                        <ListHeader className={textStyle}>Very likely altered stream condition</ListHeader>
                         <ListDescription className={textStyle}>
                             ≤ 0.62
                         </ListDescription>
