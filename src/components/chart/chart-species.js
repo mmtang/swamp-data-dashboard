@@ -300,16 +300,17 @@ export default function ChartSpecies({
                             if (siteKeys.length > 1) {
                                 content += '<span style="color: #ababab">' + d.StationName + '</span><br>';
                             }
-                            if (d.Species) {
-                                content += d.Species;
-                                if (analyte.source === 'tissue') {
-                                    content += ': ';
-                                };
-                            }
+                            content += d.Analyte + ': ';
                             if (['<', '>', '>=', '<='].includes(d.DisplayText)) {
                                 content += d.ResultQualCode + ' ';
                             }
-                            content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
+                            content += formatNumber(d.ResultDisplay) + ' ' + d.Unit + '<br>';
+                            if (d.Species) {
+                                content += d.Species;
+                            }
+                            if (d.TissuePrep) {
+                                content += ' (' + d.TissuePrep + ')';
+                            }
                             if (analyte.source === 'tissue') {
                                 content += '<br>' + d.ResultType;
                             }

@@ -131,8 +131,8 @@ export default function Table2({
                     affixHorizontalScrollbar={true}
                     data={getSortedData()}
                     fillHeight={true}
-                    height={500}
                     loading={loading}
+                    minHeight={800}
                     rowHeight={38}
                     onRowClick={handleClick}
                     onSortColumn={handleSortColumn}

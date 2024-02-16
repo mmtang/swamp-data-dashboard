@@ -275,10 +275,10 @@ export default function Chart({ analyte, data, setSiteShapeDict, unit, vizColors
                             if (siteKeys.length > 1) {
                                 content += '<span style="color: #ababab">' + d.StationName + '</span><br>'
                             }
+                            content += d.Analyte + ': ' + formatNumber(d.ResultDisplay) + ' ' + d.Unit;
                             if (['<', '>', '>=', '<='].includes(d.DisplayText)) {
                                 content += d.ResultQualCode + ' ';
                             }
-                            content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
                             if (d.DisplayText) {
                                 // Look for values of greater than 2 to exclude values like '<' and '<='
                                 if (d.DisplayText.length > 2) {

@@ -42,7 +42,6 @@ export const colorPaletteViz = [
     '#ff7f0e',
     '#2ca02c',
     '#9467bd',
-    '#8c564b',
     '#e377c2', 
     '#7f7f7f',
     '#bcbd22',
@@ -58,6 +57,7 @@ export const colorPaletteViz = [
     '#dbdb8d',
     '#9edae5',
     '#ff9896',
+    '#8c564b',
     '#1f77b4', // Colors start repeating
     '#aec7e8',
     '#ff7f0e',
