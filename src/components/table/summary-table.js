@@ -486,7 +486,7 @@ export default function SummaryTable({
                         <HeaderCell>#</HeaderCell>
                         <ExpandCell dataKey='id' onClick={handleClick} />
                     </Column>
-                    <Column align='left' fullText sortable treeCol width={160}>
+                    <Column align='left' fullText sortable treeCol width={150}>
                         <HeaderCell>Station Code</HeaderCell>
                         <Cell dataKey='StationCode' />
                     </Column>

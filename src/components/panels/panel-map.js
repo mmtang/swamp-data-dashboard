@@ -7,14 +7,6 @@ import SummaryContainer from '../table/summary-container';
 
 import { content } from './panel-map.module.css';
 
-const tableContainerStyle = {
-    height: '100%', // subtract height of main navbar and sub navbar
-    overflowX: 'auto',
-    overflowY: 'auto',
-    position: 'relative',
-    width: '100%'
-}
-
 export default function PanelMap({ 
     analyte,
     comparisonSites,
@@ -46,6 +38,14 @@ export default function PanelMap({
     view,
     zoomToStation
 }) {   
+    const tableContainerStyle = {
+        height: '100%',
+        overflowX: 'auto',
+        overflowY: 'auto',
+        position: 'relative',
+        width: '100%'
+    }
+
     return (
         <div className={content} style={{ cursor: cursor }}>
             <PanelMapMenu 
@@ -89,7 +89,8 @@ export default function PanelMap({
                     zoomToStation={zoomToStation}
                 />
             </div>
-            <div style={view !== 'table' ? { display: 'none' } : tableContainerStyle }>
+            {/* Safari requires the use of the 'key' parameter in the divs containing the tables or else the tables will not redraw as the user switches back and forth between the map and table. Using a value tied to the relevant state will ensure that the component is redrawn in Safari. */}
+            <div key={view === 'table'} style={view !== 'table' ? { display: 'none' } : tableContainerStyle }>
                 <Table2
                     analyte={analyte}
                     comparisonSites={comparisonSites}
@@ -107,7 +108,7 @@ export default function PanelMap({
                     tableData={tableData}
                 />
             </div>  
-            <div style={view !== 'summary' ? { display: 'none' } : tableContainerStyle }>
+            <div key={view === 'summary'} style={view !== 'summary' ? { display: 'none' } : tableContainerStyle }>
                 <SummaryContainer
                     analyte={analyte}
                     comparisonSites={comparisonSites}
