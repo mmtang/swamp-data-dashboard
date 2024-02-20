@@ -90,7 +90,7 @@ export default function PanelMap({
                 />
             </div>
             {/* Safari requires the use of the 'key' parameter in the divs containing the tables or else the tables will not redraw as the user switches back and forth between the map and table. Using a value tied to the relevant state will ensure that the component is redrawn in Safari. */}
-            <div key={view === 'table'} style={view !== 'table' ? { display: 'none' } : tableContainerStyle }>
+            <div key={view === 'summary' ? true : 'lobo1'} style={view !== 'table' ? { display: 'none' } : tableContainerStyle }>
                 <Table2
                     analyte={analyte}
                     comparisonSites={comparisonSites}
@@ -108,7 +108,7 @@ export default function PanelMap({
                     tableData={tableData}
                 />
             </div>  
-            <div key={view === 'summary'} style={view !== 'summary' ? { display: 'none' } : tableContainerStyle }>
+            <div key={view === 'summary' ? true : 'lobo2'} style={view !== 'summary' ? { display: 'none' } : tableContainerStyle }>
                 <SummaryContainer
                     analyte={analyte}
                     comparisonSites={comparisonSites}

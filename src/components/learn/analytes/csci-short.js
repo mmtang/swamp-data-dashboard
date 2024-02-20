@@ -10,10 +10,9 @@ import {
 } from 'semantic-ui-react';
 import { linkStyle, listContainer, textStyle } from './analytes.module.css';
 
-const Csci = () => {
+const CsciShort = () => {
     return (
         <div>
-            <h3>About the data</h3>
             <p>The California Stream Condition Index (CSCI) is a statewide index used to translate complex data about benthic macroinvertebrates found living in a stream into an overall measure of stream health. CSCI scores closer to 0 indicate a greater departure from reference condition and degradation of biological condition. Scores greater than 1 indicate greater taxonomic richness and more complex ecological function than predicted for a site given its natural environment setting.</p>
             <Divider hidden />
             <List>
@@ -66,9 +65,8 @@ const Csci = () => {
                     <a href="https://www.waterboards.ca.gov/water_issues/programs/swamp/bioassessment/" target="_blank" rel="noopener noreferrer">SWAMP Bioassessment Program</a>
                 </ListItem>
             </List>
-            <Divider hidden />
         </div>
     )
 }
 
-export default Csci;
+export default CsciShort;

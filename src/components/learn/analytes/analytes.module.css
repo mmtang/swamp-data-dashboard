@@ -4,9 +4,9 @@
 
 .listContainer {
     font-size: 0.9em;
-    margin-bottom: 0.8em;
+    margin-bottom: 0.6em;
 }
 
 .textStyle {
-    color: #5d5d5d;
+    color: #5d5d5d !important;
 }

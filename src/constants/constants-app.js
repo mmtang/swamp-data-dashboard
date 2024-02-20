@@ -97,7 +97,7 @@ export const referenceSiteColorDark = '#de6e28';
 
 export const toxColors = {
     lightBlue: '#8ec4de',
-    darkBlue: '#1065ab',
+    darkBlue: '#1f77b4',
     lightRed: '#FBB4AE',
     darkRed: '#B31529'
 }

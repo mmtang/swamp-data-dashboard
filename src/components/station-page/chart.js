@@ -216,24 +216,8 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                     return d.Censored ? '#e3e4e6' : colorPaletteViz[0];
                 }
             })
-            .attr('stroke', d => {
-                if (d.SigEffectCode) {
-                    if (toxicitySigValues.includes(d.SigEffectCode)) {
-                        return toxColors.lightRed;
-                    } else {
-                        return toxColors.lightBlue;
-                    }
-                } else {
-                    return d.Censored ? colorPaletteViz[0] : '#fff';
-                }
-            })
-            .attr('stroke-width', d => {
-                if (d.SigEffectCode) {
-                    return 3;
-                } else {
-                    return d.Censored ? 2 : 1;
-                }
-            })
+            .attr('stroke', d => d.Censored ? colorPaletteViz[0] : '#fff')
+            .attr('stroke-width', d => d.Censored ? 2 : 1)
             .attr('stroke-dasharray', d => d.Censored ? ('2,1') : 0)
             .on('mouseover', function(currentEvent, d) {
                 const displayDate = d.MatrixDisplay !== 'tissue' ? tooltipFormatDate(d.SampleDate) : yearFormatDate(d.SampleDate);
@@ -250,6 +234,9 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                 }
                 if (d.MatrixDisplay === 'tissue') {
                     content += '<br>' + d.ResultType;
+                }
+                if (d.SigEffectCode && toxicitySigValues.includes(d.SigEffectCode)) {
+                    content += '<br>Likely toxic';
                 }
                 if (d.DisplayText) {
                     // Look for values of greater than 2 to exclude values like '<' and '<='

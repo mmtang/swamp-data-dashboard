@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import AboutDataShort from '../learn/about-data-short';
 import Chart from './chart';
 import DownloadData from '../common/download-data';
 import MatrixTag from '../common/matrix-tag';
@@ -168,6 +169,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                             <h4 className={analyteTitle}>
                                 {analyteObj.Analyte} 
                                 {analyteObj.Species ? ` (${analyteObj.Species})` : null}
+                                <AboutDataShort analyte={analyteObj} /> 
                             </h4>
                         </div>
                         <DownloadData 

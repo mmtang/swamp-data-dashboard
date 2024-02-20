@@ -280,7 +280,7 @@ export default function ChartSpecies({
                                 if (toxicitySigValues.includes(d.SigEffectCode)) {
                                     return toxColors.lightRed;
                                 } else {
-                                    return toxColors.lightBlue;
+                                    return d.Censored ? speciesColorDictRef.current[d.Species] : '#fff';
                                 }
                             } else {
                                 return d.Censored ? speciesColorDictRef.current[d.Species] : '#fff';
@@ -288,7 +288,11 @@ export default function ChartSpecies({
                         })
                         .attr('stroke-width', d => {
                             if (analyte.source === 'toxicity') {
-                                return 3;
+                                if (toxicitySigValues.includes(d.SigEffectCode)) {
+                                    return 3;
+                                } else {
+                                    return d.Censored ? 2 : 1;
+                                }
                             } else {
                                 return d.Censored ? 2 : 1;
                             }
@@ -313,6 +317,9 @@ export default function ChartSpecies({
                             }
                             if (analyte.source === 'tissue') {
                                 content += '<br>' + d.ResultType;
+                            }
+                            if (d.SigEffectCode && toxicitySigValues.includes(d.SigEffectCode)) {
+                                content += '<br>Likely toxic';
                             }
                             if (d.DisplayText) {
                                 // Look for values of greater than 2 to exclude values like '<' and '<='
