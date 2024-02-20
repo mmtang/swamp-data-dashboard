@@ -3,6 +3,7 @@ import AboutDataShort from '../learn/about-data-short';
 import Chart from './chart';
 import DownloadData from '../common/download-data';
 import MatrixTag from '../common/matrix-tag';
+import NdMessage from '../common/nd-message';
 
 import { timeParse, extent } from 'd3';
 import { roundPlaces } from '../../constants/constants-app';
@@ -61,11 +62,20 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     // Can have multiple (equivalent) units in one parameter dataset
                     const units = [...new Set(results[i].map(d => d.Unit))];
                     const unitString = units.join(', ');
+                    // Determine if there is a ND or DNQ value in the data
                     const data = results[i];
+                    let hasCensoredData = false;
+                    if (data[0].Censored) {
+                        const values = data.map(d => d['Censored']);
+                        if (values.includes(true)) {
+                            hasCensoredData = true;
+                        }
+                    };
                     analyteData[analyteKey] = { 
                         data: data,
                         matrix: results[i][0].MatrixDisplay,
-                        unit: unitString
+                        unit: unitString,
+                        hasCensoredData: hasCensoredData
                     };
                 }
                 setData(analyteData);
@@ -114,7 +124,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                             d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.SampleDate);
                             d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(roundPlaces));
-                            d.Censored = false;  // Convert string to boolean
+                            d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                         });
                         resolve(records);
                     });
@@ -132,7 +142,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                             d.SampleDate = parseDate(d.SampleDate);
                             d.Species = d.OrganismName;
                             d.ResultDisplay = parseFloat((+d.MeanDisplay).toFixed(roundPlaces));
-                            d.Censored = false;  // Convert string to boolean
+                            d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                         });
                         resolve(records);
                     });
@@ -151,7 +161,8 @@ export default function ChartSection({ station, selectedAnalytes }) {
                             d.SampleDate = parseDate(d.LastSampleDate);
                             d.Species = d.CommonName;
                             d.ResultDisplay = parseFloat((+d.Result).toFixed(roundPlaces));
-                            d.Censored = false;  // Convert string to boolean
+                            d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
+
                         });
                         resolve(records);
                     });
@@ -193,6 +204,11 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         dateExtent={dateExtentRef.current}
                         unit={data ? data[analyteObj.Key].unit : null}
                     />
+                    { data && data[analyteObj.Key].hasCensoredData ?
+                        <div style={{ marginBottom: '0.8em' }}>
+                            <NdMessage />
+                        </div>
+                    : null }
                 </div>
             )}
         </div>

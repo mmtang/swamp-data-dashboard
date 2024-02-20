@@ -6,7 +6,6 @@ import ToxicityShort from './analytes/toxicity-short';
 const AboutDataShort = ({ analyte }) => {
     const getAnalyteInfo = (analyte) => {
         if (analyte) {
-            console.log(analyte);
             if (analyte.Source === 'toxicity') {
                 return <HelpIcon position='bottom center' wide='very'><ToxicityShort /></HelpIcon>
             } else {

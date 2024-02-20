@@ -131,6 +131,14 @@ export default function PanelTable({ analyte, data }) {
             width: '80px',
             sortable: true,
             right: true
+        },
+        {
+            id: 'comments',
+            name: 'Comments',
+            selector: row => row['DisplayText'],
+            width: '160px',
+            wrap: true,
+            sortable: false
         }
     ]
 
@@ -163,7 +171,7 @@ export default function PanelTable({ analyte, data }) {
             id: 'sampleyear',
             name: 'Year',
             selector: row => row['SampleYear'],
-            width: '70px',
+            width: '80px',
             wrap: true,
             sortable: true,
             //format: row => formatDate(row['SampleDate']),
@@ -200,6 +208,14 @@ export default function PanelTable({ analyte, data }) {
             selector: row => row['TissuePrep'],
             width: '140px',
             sortable: true
+        },
+        {
+            id: 'comments',
+            name: 'Comments',
+            selector: row => row['DisplayText'],
+            width: '160px',
+            wrap: true,
+            sortable: false
         }
     ];
 

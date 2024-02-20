@@ -17,32 +17,15 @@ export default function ChartPanel({
         setShowNdMessage(false);
         if (data) {
             const allSites = Object.keys(data.sites);
-            if (analyte.source === 'tissue') {
-                let allValues = [];
-                for (const d of allSites) {
-                    // Get all ND_in_Avg values
-                    const values = data.sites[d].map(d => d['ND_in_Avg']);
-                    allValues = [...allValues, ...values];
-                }
-                // Add all values, a sum above 0 means there is a ND present
-                const sum = allValues.reduce((previous, current) => {
-                    return previous + current;
-                }, 0);
-                if (sum > 0) {
-                    setShowNdMessage(true);
-                }
-            } else {
-                let allValues = [];
-                for (const d of allSites) {
-                    // Get all ResultQualCode values
-                    const values = data.sites[d].map(d => d['ResultQualCode']);
-                    allValues = [...allValues, ...values];
-                }
-                if (allValues.includes('ND') || allValues.includes('DNQ')) {
-                    setShowNdMessage(true);
-                }
+            let allValues = [];
+            for (const d of allSites) {
+                // Get all ND_in_Avg values
+                const values = data.sites[d].map(d => d['Censored']);
+                allValues = [...allValues, ...values];
             }
-            
+            if (allValues.includes(true)) {
+                setShowNdMessage(true);
+            }
         }
     }, [data]);
 

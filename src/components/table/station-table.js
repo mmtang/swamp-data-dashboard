@@ -43,6 +43,14 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
         return a < b ? -1 : 1;
     };
 
+    const analyteSort = (rowA, rowB) => {
+        const a = rowA['AnalyteDisplay'].toLowerCase();
+        const b = rowB['AnalyteDisplay'].toLowerCase();
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    }
+
     const columns = [
         {
             id: 'matrix',
@@ -54,8 +62,8 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
             format: row => <MatrixTag matrix={row['MatrixDisplay']} />
         },
         {
-            id: 'parameter',
-            name: 'Parameter',
+            id: 'analyte',
+            name: 'Analyte',
             selector: row => row['AnalyteDisplay'],
             width: '200px',
             wrap: true,
@@ -127,12 +135,13 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
             format: row => <MatrixTag matrix={row['MatrixDisplay']} />
         },
         {
-            id: 'parameter',
-            name: 'Parameter',
+            id: 'Analyte',
+            name: 'Analyte',
             selector: row => row['AnalyteDisplay'],
             width: '200px',
             wrap: true,
-            sortable: true
+            sortable: true,
+            sortFunction: analyteSort
         },
         {
             id: 'species',

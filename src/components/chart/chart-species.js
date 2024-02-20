@@ -317,6 +317,9 @@ export default function ChartSpecies({
                             }
                             if (analyte.source === 'tissue') {
                                 content += '<br>' + d.ResultType;
+                                if (d.LocationCode) {
+                                    content += ' ' + d.LocationCode;
+                                }
                             }
                             if (d.SigEffectCode && toxicitySigValues.includes(d.SigEffectCode)) {
                                 content += '<br>Likely toxic';
@@ -324,7 +327,7 @@ export default function ChartSpecies({
                             if (d.DisplayText) {
                                 // Look for values of greater than 2 to exclude values like '<' and '<='
                                 if (d.DisplayText.length > 2) {
-                                    content += '<br><i>* ' + d.DisplayText + '</i>';
+                                    content += '<br><i>*' + d.DisplayText + '</i>';
                                 }
                             }
                             return tooltip
