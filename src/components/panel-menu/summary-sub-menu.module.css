@@ -5,7 +5,7 @@
     display: flex;
     flex-wrap: nowrap;
     height: 54px;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding: 0 1.24em 0 1em; /* required for the tab colors to work */
 }
 

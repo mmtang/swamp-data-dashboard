@@ -124,6 +124,7 @@ export default function Table2({
         setLoading(false);
     }, [analyte, program, region, species]);  // Using tableData as the sole dependency doesn't work. State needs to be reset before the new data is passed into the component. Else, the table will try to sort on a column like "ResultDisplay" when that column may not exist in the new dataset
 
+
     return (
         <div ref={containerRef} className={tableContainer}>
             { tableData ?

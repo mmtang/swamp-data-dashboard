@@ -16,8 +16,7 @@ const Toxicity = () => {
     return (
         <div>
             <h3>About the data</h3>
-            <p>Sample results assessed as "likely toxic" are displayed on the graph with a red <b>outline</b>, as follows:</p>
-            <Divider hidden />
+            <p>Sample results classified as "likely toxic" are displayed on the graph with a red <b>outline</b>, as follows:</p>
             <List>
                 <ListItem className={listContainer}>
                     <ListIcon name='circle outline' size='large' style={{ color: `${toxColors.lightRed}` }} />

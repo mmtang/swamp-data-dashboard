@@ -15,6 +15,7 @@ export default function SummarySubMenu({ allRowKeys, searchText, setExpandedRowK
 
     return (
         <div className={container}>
+            {/*
             <div className={menuItem}>
                 <SearchSubmit
                     placeholderText='Search table'
@@ -23,6 +24,7 @@ export default function SummarySubMenu({ allRowKeys, searchText, setExpandedRowK
                     theme='light'
                 />
             </div>
+            */}
             <div>
                 <div className={menuItem}>
                     <Button attached='left' onClick={handleExpandClick} size='tiny'>Expand all</Button>

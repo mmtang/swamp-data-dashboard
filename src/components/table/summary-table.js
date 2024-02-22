@@ -30,6 +30,7 @@ export default function SummaryTable({
     setStationLoading,
     species,
     station,
+    view,
     visibleStations
 }) {
     // State variables
@@ -353,7 +354,8 @@ export default function SummaryTable({
         .then((data) => {
             getRowKeys(data)
             .then((keys) => {
-                setExpandedRowKeys(keys);
+                //setExpandedRowKeys(keys);
+                setExpandedRowKeys([]);
                 setTableData(data);
                 setLoading(false);
             });
@@ -370,7 +372,8 @@ export default function SummaryTable({
             if (treeData) {
                 getRowKeys(treeData)
                 .then((keys) => {
-                    setExpandedRowKeys(keys);
+                    //setExpandedRowKeys(keys);
+                    setExpandedRowKeys([]);
                     setTableData(treeData);
                     setLoading(false);
                 });
@@ -395,7 +398,8 @@ export default function SummaryTable({
                 if (treeData) {
                     getRowKeys(treeData)
                     .then((keys) => {
-                        setExpandedRowKeys(keys);
+                        //setExpandedRowKeys(keys);
+                        setExpandedRowKeys([]);
                         setTableData(treeData);
                         setLoading(false);
                     });
@@ -414,7 +418,8 @@ export default function SummaryTable({
             .then((data) => {
                 getRowKeys(data)
                 .then((keys) => {
-                    setExpandedRowKeys(keys);
+                    //setExpandedRowKeys(keys);
+                    setExpandedRowKeys([]);
                     setTableData(data);
                 });
             });
@@ -426,7 +431,8 @@ export default function SummaryTable({
             .then((data) => {
                 getRowKeys(data)
                 .then((keys) => {
-                    setExpandedRowKeys(keys);
+                    //setExpandedRowKeys(keys);
+                    setExpandedRowKeys([])
                     setTableData(data);
                 });
             });
@@ -454,12 +460,19 @@ export default function SummaryTable({
             .then((data) => {
                 getRowKeys(data)
                 .then((keys) => {
-                    setExpandedRowKeys(keys);
+                    //setExpandedRowKeys(keys);
+                    setExpandedRowKeys([]);
                     setTableData(data);
                 });
             });     
         }
     }, [visibleStations]);
+
+    useEffect(() => {
+        if (view === 'summary') {
+            console.log('summary logged');
+        }
+    }, [view]);
 
     return (
         <div className={tableContainer}>
@@ -468,7 +481,7 @@ export default function SummaryTable({
                     bordered
                     cellBordered
                     data={tableData}
-                    defaultExpandAllRows={true}
+                    defaultExpandAllRows={false}
                     expandedRowKeys={expandedRowKeys}
                     fillHeight={true}
                     isTree
@@ -481,16 +494,17 @@ export default function SummaryTable({
                     onExpandChange={handleExpandToggle}
                     onSortColumn={handleSortColumn}
                     sortColumn={sortColumn}
+                    style={{ height: '100%' }}
                 >
                     <Column width={80}>
-                        <HeaderCell>#</HeaderCell>
+                        <HeaderCell> </HeaderCell>
                         <ExpandCell dataKey='id' onClick={handleClick} />
                     </Column>
-                    <Column align='left' fullText sortable treeCol width={150}>
+                    <Column align='left' fullText sortable treeCol width={165}>
                         <HeaderCell>Station Code</HeaderCell>
                         <Cell dataKey='StationCode' />
                     </Column>
-                    <Column fullText sortable width={140}>
+                    <Column fullText sortable width={180}>
                         <HeaderCell>Station Name</HeaderCell>
                         <Cell dataKey='StationName' />
                     </Column>
@@ -521,6 +535,10 @@ export default function SummaryTable({
                     <Column width={130} fullText>
                         <HeaderCell>Tissue Prep</HeaderCell>
                         <Cell dataKey='TissuePrep' />
+                    </Column>
+                    <Column width={130} fullText>
+                        <HeaderCell>Comments</HeaderCell>
+                        <Cell dataKey='DisplayText' />
                     </Column>
                 </Table> 
             : <div className={loaderContainer}><LoaderBlock /></div> }

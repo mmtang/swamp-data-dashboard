@@ -16,7 +16,7 @@ const ToxicityShort = () => {
         <div>
             <p>Toxicity tests are used to determine the effects of pollutants upon aquatic organisms. These tests are typically conducted by exposing laboratory-grown organisms, such as water fleas, to a water or sediment sample for a set amount of time and comparing the resulting effects to a control consisting of uncontaminated water or sediment.</p>
             <p>Each sample response is compared to the control response within a test batch. The relative difference in the responses determines the magnitude of toxicity. The threshold value used to determine if a sample result is toxic or non-toxic can be different for each test batch depending on the control response.</p>
-            <p>Sample results assessed as "likely toxic" are displayed in red, as follows:</p>
+            <p>Sample results classified as "likely toxic" are displayed on the graph in red, as follows:</p>
             <Divider hidden />
             <List>
                 <ListItem className={listContainer}>

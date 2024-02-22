@@ -231,14 +231,13 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                 if (d.Species) {
                     content += '<br>' + d.Species;
                     if (d.MatrixDisplay === 'tissue') {
-                        content += ` (${d.TissuePrep})`;
+                        if (d.TissuePrep !== 'None' && d.TissuePrep !== 'Not Recorded') {
+                            content += ' (' + d.TissuePrep + ')';
+                        }
                     }
                 }
                 if (d.MatrixDisplay === 'tissue') {
                     content += '<br>' + d.ResultType;
-                    if (d.LocationCode) {
-                        content += ' ' + d.LocationCode;
-                    }
                 }
                 if (d.SigEffectCode && toxicitySigValues.includes(d.SigEffectCode)) {
                     content += '<br>Likely toxic';

@@ -5,7 +5,7 @@ import PanelMapMenu from '../panel-menu/panel-map-menu';
 import Table2 from '../table/table2';
 import SummaryContainer from '../table/summary-container';
 
-import { content } from './panel-map.module.css';
+import { content, tableContainer } from './panel-map.module.css';
 
 export default function PanelMap({ 
     analyte,
@@ -38,7 +38,8 @@ export default function PanelMap({
     view,
     zoomToStation
 }) {   
-    const tableContainerStyle = {
+    const containerStyle = {
+        display: 'block',
         height: '100%',
         overflowX: 'auto',
         overflowY: 'auto',
@@ -61,7 +62,7 @@ export default function PanelMap({
                 view={view}
             />
             {/* Load the map and table components at the same time and control visibility through styles + state. Do not do conditional loading (loading one at a time) because it will force the component to reload every time a new selection is clicked */}
-            <div style={view !== 'map' ? { display: 'none' } : null }>
+            <div style={view !== 'map' ? { display: 'none' } : containerStyle }>
                 { !mapLoaded ? <LoaderPanel /> : null }
                 <MapIndex2 
                     analyte={analyte} 
@@ -90,7 +91,7 @@ export default function PanelMap({
                 />
             </div>
             {/* Safari requires the use of the 'key' parameter in the divs containing the tables or else the tables will not redraw as the user switches back and forth between the map and table. Using a value tied to the relevant state will ensure that the component is redrawn in Safari. */}
-            <div key={view === 'summary' ? true : 'lobo1'} style={view !== 'table' ? { display: 'none' } : tableContainerStyle }>
+            <div className={tableContainer} style={view !== 'table' ? { display: 'none' } : null }>
                 <Table2
                     analyte={analyte}
                     comparisonSites={comparisonSites}
@@ -108,7 +109,7 @@ export default function PanelMap({
                     tableData={tableData}
                 />
             </div>  
-            <div key={view === 'summary' ? true : 'lobo2'} style={view !== 'summary' ? { display: 'none' } : tableContainerStyle }>
+            <div className={tableContainer} style={view !== 'summary' ? { display: 'none' } : null }>
                 <SummaryContainer
                     analyte={analyte}
                     comparisonSites={comparisonSites}
@@ -124,6 +125,7 @@ export default function PanelMap({
                     species={species}
                     station={station}
                     tableData={tableData}
+                    view={view}
                 />
             </div>  
         </div>
