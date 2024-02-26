@@ -85,6 +85,10 @@ a {
   border: 3px solid #f2f2f2;
 }
 
+.ui.dimmer {
+  z-index: 10000 !important; /* Need a high z-index to have Semantic UI's dimmer/modal above the main container scrollbar in Safari */
+}
+
 .ui.modal > .header {
   color: #5d5d5d !important;
 }

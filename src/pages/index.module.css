@@ -14,7 +14,7 @@
     order: 1;
     overflow-y: auto;
     top: 60px;
-    z-index: 50 !important;
+    /* z-index: 50 !important; */ /* Must remove this for full screen site photo to show in Safari */
 }
 
 .mapContainer {

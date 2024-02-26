@@ -6,7 +6,7 @@
     object-fit: contain;
     -o-object-fit: contain;
     position: fixed;
-    z-index: 900;
+    z-index: 10010;
 }
 
 .closeIcon {
@@ -17,7 +17,7 @@
     position: absolute;
     right: 0;
     top: 0;
-    z-index: 910;
+    z-index: 10020; 
 }
 
 .closeIcon:hover {
@@ -39,15 +39,15 @@
     background-color: rgba(12, 13, 14, 0.9);
     bottom: 0;
     display: flex;
-    height: calc(100vh - 60px);
+    height: 100vh;
     justify-content: center;
     left: 0;
     margin: 0;
     position: fixed;
     right: 0;
-    top: 60; /* Height of the nav bar */
+    top: 0; 
     width: 100vw;
-    z-index: 900;
+    z-index: 10000; /* Must have a high value for the full screen to show above all elements, including the main container scrollbar in Safari */
 }
 
 .wrapper {
