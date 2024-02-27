@@ -295,7 +295,7 @@ export default function Station(props) {
                     <div className={rightContainer}>
                         <section>
                             <h2>Explore station data</h2>
-                            <p>The table below offers a summary of the data collected at this SWAMP monitoring station. For a more detailed view of the data, select a parameter or multiple parameters and click the "Graph data" button below.</p>
+                            <p>The table below offers a summary of the data collected at this SWAMP monitoring station. For a more detailed view of the data, select an analyte or multiple analytes and click the "Graph data" button below.</p>
                         </section>
                         <section>
                             <div className={buttonContainer}>

@@ -1,35 +1,15 @@
 import React from 'react';
 import {
-    Divider,
     ListItem,
-    ListIcon,
-    ListHeader,
     ListDescription,
-    ListContent,
     List
 } from 'semantic-ui-react';
-import { toxColors } from '../../../constants/constants-app';
-import { linkStyle, listContainer, textStyle } from './analytes.module.css';
+import { linkStyle } from './analytes.module.css';
 
 const ToxicityShort = () => {
     return (
         <div>
-            <p>Toxicity tests are used to determine the effects of pollutants upon aquatic organisms. These tests are typically conducted by exposing laboratory-grown organisms, such as water fleas, to a water or sediment sample for a set amount of time and comparing the resulting effects to a control consisting of uncontaminated water or sediment.</p>
-            <p>Each sample response is compared to the control response within a test batch. The relative difference in the responses determines the magnitude of toxicity. The threshold value used to determine if a sample result is toxic or non-toxic can be different for each test batch depending on the control response.</p>
-            <p>Sample results classified as "likely toxic" are displayed on the graph in red, as follows:</p>
-            <Divider hidden />
-            <List>
-                <ListItem className={listContainer}>
-                    <ListIcon name='circle' style={{ color: `${toxColors.darkRed}` }} />
-                    <ListContent>
-                        <ListHeader className={textStyle}>Likely toxic</ListHeader>
-                        <ListDescription className={textStyle}>
-                            The result is significantly different from the control, and the percent effect is greater than the evaluation threshold. Includes data points with the "SL" qualifier.
-                        </ListDescription>
-                    </ListContent>
-                </ListItem>
-            </List>
-            <Divider hidden />
+            <p>Toxicity tests are used to determine the effects of pollutants on aquatic organisms. These tests are typically conducted by exposing laboratory-grown organisms, such as water fleas, to water or sediment samples for a specific test duration. At the end of the test, each sample response is compared to the response of a control sample consisting of uncontaminated water or sediment. Within every test batch, the relative difference between the control and sample responses is calculated to determine the magnitude of toxicity. The control response must meet test acceptability criteria to be used for toxicity calculations. If the percent relative difference from the control is greater than the evaluation threshold, the sample is considered toxic.</p>
             <p>More information:</p>
             <List bulleted className={linkStyle}>
                 <ListItem>

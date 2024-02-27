@@ -321,7 +321,7 @@ export default function ChartSpecies({
                                 content += '<br>' + d.ResultType;
                             }
                             if (d.SigEffectCode && toxicitySigValues.includes(d.SigEffectCode)) {
-                                content += '<br>Likely toxic';
+                                content += '<br>Toxic';
                             }
                             if (d.DisplayText) {
                                 // Look for values of greater than 2 to exclude values like '<' and '<='

@@ -21,8 +21,6 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
     const randomId = Math.floor(100000 + Math.random() * 900000);
     const chartId = `chart-${randomId}`;
 
-    console.log(data);
-
     const responsive = (id) => {
         // get container + svg aspect ratio
         const svg = d3.select('#' + id),
@@ -240,7 +238,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                     content += '<br>' + d.ResultType;
                 }
                 if (d.SigEffectCode && toxicitySigValues.includes(d.SigEffectCode)) {
-                    content += '<br>Likely toxic';
+                    content += '<br>Toxic';
                 }
                 if (d.DisplayText) {
                     // Look for values of greater than 2 to exclude values like '<' and '<='

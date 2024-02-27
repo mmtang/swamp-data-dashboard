@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import AboutDataLegend from '../learn/about-data-legend';
 import AboutDataShort from '../learn/about-data-short';
 import Chart from './chart';
 import DownloadData from '../common/download-data';
@@ -204,6 +205,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         dateExtent={dateExtentRef.current}
                         unit={data ? data[analyteObj.Key].unit : null}
                     />
+                    <AboutDataLegend analyte={analyteObj} />
                     { data && data[analyteObj.Key].hasCensoredData ?
                         <div style={{ marginBottom: '0.8em' }}>
                             <NdMessage />

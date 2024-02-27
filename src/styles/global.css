@@ -86,7 +86,8 @@ a {
 }
 
 .ui.dimmer {
-  z-index: 10000 !important; /* Need a high z-index to have Semantic UI's dimmer/modal above the main container scrollbar in Safari */
+  background-color: rgba(0, 0, 0, .4);
+  z-index: 10000 !important; /* Need a high z-index here to have Semantic's dimmer/modal above the main container scrollbar in Safari */
 }
 
 .ui.modal > .header {
@@ -258,8 +259,8 @@ Unfortunately, this still does not fix the flickering issue */
   font-size: 0.9em;
 }
 
-.ui.dimmer {
-  background-color: rgba(0, 0, 0, .4);
+.ui.popup {
+  z-index: 10100 !important; /* Need a high index here to ensure Semantic's popups appear above the modal, especially the chart popups */
 }
 
 .ui.message {
