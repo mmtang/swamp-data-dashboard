@@ -182,7 +182,7 @@ export default function MapIndex2({
                     irLayer2020Ref.current = new GroupLayer({
                         id: 'ir-group-layer-2020',
                         title: '2020-2022 Integrated Report',
-                        visible: false,
+                        visible: true,
                         layers: [irLine2020Ref.current, irPoly2020Ref.current],
                         listMode: 'show',
                         visibilityMode: 'inherited'

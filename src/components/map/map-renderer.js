@@ -171,18 +171,17 @@ export const stationRenderer = {
 export const bioassessmentStationRenderer = {
     type: 'unique-value',
     field: 'SiteType',
-    uniqueValueInfos: [{
-        value: 'Non-reference site',
-        symbol: {
-            type: 'simple-marker',
-            size: 7,
-            color: nonReferenceSiteColor,
-            outline: {
-                color: '#fff',
-                width: 1
-            }
+    defaultSymbol: {
+        type: 'simple-marker',
+        size: 7,
+        color: nonReferenceSiteColor,
+        outline: {
+            color: '#fff',
+            width: 1
         }
-    }, {
+    },
+    defaultLabel: ' ',
+    uniqueValueInfos: [{
         value: 'Reference site',
         symbol: {
             type: 'simple-marker',
@@ -193,7 +192,8 @@ export const bioassessmentStationRenderer = {
                 color: '#fff',
                 width: 1
             }
-        }
+        },
+        label: 'Reference site'
     }]
 }
 
