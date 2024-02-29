@@ -6,7 +6,7 @@ import DownloadData from '../common/download-data';
 import MatrixTag from '../common/matrix-tag';
 import NdMessage from '../common/nd-message';
 
-import { timeParse, extent } from 'd3';
+import { timeParse, extent, selectAll } from 'd3';
 import { roundPlaces } from '../../constants/constants-app';
 import { chemDataFields, habitatDataFields, tissueDataFields, toxicityDataFields } from '../../constants/constants-data';
 import { chemistryResourceId, habitatResourceId, tissueResourceId, toxicityResourceId } from '../../utils/utils';
@@ -25,6 +25,8 @@ export default function ChartSection({ station, selectedAnalytes }) {
     useEffect(() => {
         // Get data for all selected analytes
         if (station && selectedAnalytes) {
+            // Remove old chart tooltips
+            selectAll('.station-chart-tooltip').remove();
             if (data) { setData(null) };
             let analyteList = selectedAnalytes;
             // Sort list ascending so that the graphed analytes are displayed in alphabetical order

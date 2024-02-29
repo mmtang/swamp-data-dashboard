@@ -79,7 +79,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
         // Initialize tooltip
         const tooltip = d3.select('body').append('div')
             .attr('id', `tooltip-${randomId}`)
-            .attr('class', customTooltip)
+            .attr('class', customTooltip + ' station-chart-tooltip')
             .style('opacity', 0);
 
         // Define x scale

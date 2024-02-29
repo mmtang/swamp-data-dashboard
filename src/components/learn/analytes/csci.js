@@ -14,7 +14,7 @@ const Csci = () => {
     return (
         <div>
             <h3>About the data</h3>
-            <p>The California Stream Condition Index (CSCI) is a statewide index used to translate complex data about benthic macroinvertebrates found living in a stream into an overall measure of stream health. CSCI scores closer to 0 indicate a greater departure from reference condition and degradation of biological condition. Scores greater than 1 indicate greater taxonomic richness and more complex ecological function than predicted for a site given its natural environment setting.</p>
+            <p>The California Stream Condition Index (CSCI) is a statewide index used to translate complex data about benthic macroinvertebrates found living in a stream into an overall measure of stream health. CSCI scores closer to 0 indicate a greater departure from reference condition and degradation of biological condition. Scores close to or greater than 1 indicate taxonomic richness and ecological function similar to levels predicted for a site given its natural environmental setting.</p>
             <Divider hidden />
             <List>
                 <ListItem className={listContainer}>
