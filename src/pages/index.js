@@ -405,7 +405,7 @@ export default function Index() {
           // The CSCI map symbology includes the reference sites built into the renderer; disable the highlight reference sites option in the map legend as long as CSCI is selected
           setDisableReferenceSites(true);
           uniqueStations.forEach(d => {
-            d.DisplayCategory = getCsciCategoryValue(d);
+            d.DisplayCategory = getCsciCategoryValue(d, true);
           });
         } else {
           setDisableReferenceSites(false);

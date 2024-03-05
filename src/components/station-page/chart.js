@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 import { colorPaletteViz } from '../../constants/constants-app';
 import { toxColors } from '../../constants/constants-app';
 import { analytes, analyteScoringCategories, analyteYMax, toxicitySigValues  } from '../../constants/constants-data';
+import { getCsciCategoryValue } from '../../utils/utils';
 
 import { chart, chartContainer, customTooltip } from './chart.module.css';
 
@@ -239,6 +240,9 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                 }
                 if (d.SigEffectCode && toxicitySigValues.includes(d.SigEffectCode)) {
                     content += '<br>Toxic';
+                }
+                if (d.Analyte === 'California Stream Condition Index (CSCI)') {
+                    content += '<br>' + getCsciCategoryValue(d, false);
                 }
                 if (d.DisplayText) {
                     // Look for values of greater than 2 to exclude values like '<' and '<='

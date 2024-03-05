@@ -21,7 +21,7 @@ const CsciShort = () => {
                     <ListContent>
                         <ListHeader className={textStyle}>Likely intact stream condition</ListHeader>
                         <ListDescription className={textStyle}>
-                            ≥ 0.92
+                            {'≥ 0.92'}
                         </ListDescription>
                     </ListContent>
                 </ListItem>
@@ -30,7 +30,7 @@ const CsciShort = () => {
                     <ListContent>
                         <ListHeader className={textStyle}>Possibly altered stream condition</ListHeader>
                         <ListDescription className={textStyle}>
-                            0.80 - 0.91
+                            0.79 - 0.92
                         </ListDescription>
                     </ListContent>
                 </ListItem>
@@ -48,7 +48,7 @@ const CsciShort = () => {
                     <ListContent>
                         <ListHeader className={textStyle}>Very likely altered stream condition</ListHeader>
                         <ListDescription className={textStyle}>
-                            ≤ 0.62
+                            {'< 0.63'}
                         </ListDescription>
                     </ListContent>
                 </ListItem>

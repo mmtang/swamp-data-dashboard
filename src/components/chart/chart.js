@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { analytes, analyteScoringCategories, analyteYMax } from '../../constants/constants-data';
+import { getCsciCategoryValue } from '../../utils/utils';
 import { customTooltip, modalContent } from './chart-panel.module.css';
 
 // Component for rendering graph on the dashboard index page (station panel)
@@ -284,6 +285,9 @@ export default function Chart({ analyte, data, setSiteShapeDict, unit, vizColors
                                 if (d.DisplayText.length > 2) {
                                     content += '<br><i>*' + d.DisplayText + '</i>';
                                 }
+                            }
+                            if (d.Analyte === 'California Stream Condition Index (CSCI)') {
+                                content += '<br>' + getCsciCategoryValue(d, false);
                             }
                             return tooltip
                                 .style('opacity', 1)

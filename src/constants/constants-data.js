@@ -223,28 +223,28 @@ export const analyteScoringCategories = {
             type: 'area',
             label: 'Very likely altered',
             lowerValue: 0,
-            upperValue: 0.624, // Actual given range is <= 0.62
+            upperValue: 0.63, // Given range is < 0.63
             fillColor: '#FBB4AE'
         },
         {
             type: 'area',
             label: 'Likely altered',
-            lowerValue: 0.625, 
-            upperValue: 0.794, // Actual given range is 0.63 - 0.79
+            lowerValue: 0.63, // >= 0.63
+            upperValue: 0.79, // < 0.79
             fillColor: '#FED9A6'
         },
         {
             type: 'area',
             label: 'Possibly altered',
-            lowerValue: 0.795,
-            upperValue: 0.914, // Actual given range is 0.8 - 0.91
+            lowerValue: 0.79, // >= 0.79
+            upperValue: 0.92, // < 0.92
             fillColor: '#FFFFCC'
         },
         {
             type: 'area',
             label: 'Likely intact',
-            lowerValue: 0.915, // Actual given range is >= 0.92
-            upperValue: 1.4,  // Actual value on score range is 1.4. Some values from CEDEN are slightly above 1.4, so I am using 1.5 here to catch those values
+            lowerValue: 0.92, // >= 0.92
+            upperValue: 1.45,  // Actual value on score range is 1.4. Some values from CEDEN are slightly above 1.4, so I am using 1.45 here to catch those values
             fillColor: '#CCEBC5'
         }
     ],

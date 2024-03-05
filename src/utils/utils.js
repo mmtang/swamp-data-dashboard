@@ -330,14 +330,14 @@ export const round = (num, precision) => {
 
 // Return the CSCI score category given the provided value
 // Either returns 'Likely intact' for non-reference sites or 'Likely intact (Reference)' for reference sites
-export const getCsciCategoryValue = (row) => {
+export const getCsciCategoryValue = (row, refText = true) => {
     const csciCategories = analyteScoringCategories['csci'];
     for (let i = 0; i < csciCategories.length; i++) {
         let stringText = '';
-        const result = round(row['ResultDisplay'], 2);
-        if ((result >= csciCategories[i].lowerValue) && (result <= csciCategories[i].upperValue)) {
+        const result = row['ResultDisplay'];
+        if ((result >= csciCategories[i].lowerValue) && (result < csciCategories[i].upperValue)) {
             stringText += csciCategories[i].label;
-            if (row['SiteType'] === 'Reference site') {
+            if (refText === true && row['SiteType'] === 'Reference site') {
                 stringText += ' (Reference site)'
             }
             return stringText;
