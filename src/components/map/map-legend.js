@@ -39,13 +39,15 @@ export default function MapLegend({
                 />
             </div>
             <div className={contentWrapper} style={{ display: displayStyle }}>
+                {/*
                 <HighlightReference 
                     disableReferenceSites={disableReferenceSites}
                     highlightReferenceSites={highlightReferenceSites} 
                     setHighlightReferenceSites={setHighlightReferenceSites}  
                 />
+                */}  
                 <div id='map-legend-container' className={content} />
-            </div>    
+            </div>  
         </div>
     )
 }

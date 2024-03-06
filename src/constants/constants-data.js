@@ -223,7 +223,7 @@ export const analyteScoringCategories = {
             type: 'area',
             label: 'Very likely altered',
             lowerValue: 0,
-            upperValue: 0.63, // Given range is < 0.63
+            upperValue: 0.63, // < 0.63
             fillColor: '#FBB4AE'
         },
         {

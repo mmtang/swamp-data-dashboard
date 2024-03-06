@@ -337,7 +337,7 @@ export const getCsciCategoryValue = (row, refText = true) => {
         const result = row['ResultDisplay'];
         if ((result >= csciCategories[i].lowerValue) && (result < csciCategories[i].upperValue)) {
             stringText += csciCategories[i].label;
-            if (refText === true && row['SiteType'] === 'Reference site') {
+            if (refText === true && row['StationCategory'] === 'Reference') {
                 stringText += ' (Reference site)'
             }
             return stringText;

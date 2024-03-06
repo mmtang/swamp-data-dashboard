@@ -93,7 +93,7 @@ export default function Station(props) {
             if (stationCode) {
                 let url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
                 const params = {
-                    sql: `SELECT "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", "SiteType" FROM "${stationsResourceId}" WHERE UPPER("StationCode")=UPPER('${stationCode}')`
+                    sql: `SELECT "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", "StationCategory" FROM "${stationsResourceId}" WHERE UPPER("StationCode")=UPPER('${stationCode}')`
                 };
                 fetch(url + new URLSearchParams(params))
                 .then((resp) => {
@@ -269,7 +269,7 @@ export default function Station(props) {
                         <section>
                             <h2 className={stationName}>{stationObjRef.current.StationName ? stationObjRef.current.StationName : null}</h2>
                             <span style={{ fontSize: '0.95em' }}>{stationObjRef.current.StationCode ? stationObjRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{stationObjRef.current.RegionName} Region</span>
-                            { stationObjRef.current && stationObjRef.current.SiteType === 'Reference site' ? 
+                            { stationObjRef.current && stationObjRef.current.StationCategory === 'Reference' ? 
                             <div className={tagContainer}>
                                 <Popup
                                     inverted
@@ -285,7 +285,7 @@ export default function Station(props) {
                             : null }
                         </section>
                         <div className={siteMapContainer}>
-                            <MapStation coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} siteType={stationObjRef ? stationObjRef.current.SiteType : null } />
+                            <MapStation coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} stationCategory={stationObjRef ? stationObjRef.current.StationCategory : null } />
                         </div>
                         <section style={{ margin: '1.1em 0' }}>
                             <NearbyWaterbodies coordinates={[stationObjRef.current.TargetLongitude, stationObjRef.current.TargetLatitude]} />

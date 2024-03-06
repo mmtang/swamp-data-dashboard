@@ -116,7 +116,7 @@ export default function PanelStation({
                         {stationRef.current ? stationRef.current.StationCode : null}&nbsp;&nbsp;&#9679;&nbsp;&nbsp;{stationRef.current ? stationRef.current.RegionName : null}  Region
                     </span>
                     <div className={buttonGrid}>
-                        { station && station.SiteType === 'Reference site' ? 
+                        { station && station.StationCategory === 'Reference' ? 
                             <div className={tagContainer}>
                                 <Popup
                                     inverted

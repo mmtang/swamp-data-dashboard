@@ -29,7 +29,7 @@ export default function HighlightReference({
             <Checkbox 
                 checked={highlightReferenceSites}
                 disabled={disableReferenceSites}
-                label='Show reference sites' 
+                label='Highlight reference sites' 
                 onChange={(e, data) => handleReferenceChange(data.checked)}
                 style={calciteMatch}
             />

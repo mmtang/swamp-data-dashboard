@@ -170,7 +170,7 @@ export const stationRenderer = {
 
 export const bioassessmentStationRenderer = {
     type: 'unique-value',
-    field: 'SiteType',
+    field: 'StationCategory',
     defaultSymbol: {
         type: 'simple-marker',
         size: 7,
@@ -182,7 +182,7 @@ export const bioassessmentStationRenderer = {
     },
     defaultLabel: ' ',
     uniqueValueInfos: [{
-        value: 'Reference site',
+        value: 'Reference',
         symbol: {
             type: 'simple-marker',
             style: 'triangle',

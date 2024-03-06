@@ -222,7 +222,7 @@ export default function Index() {
         if (stationCode) {
             let url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
             const params = {
-                sql: `SELECT "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", "SiteType" FROM "${stationsResourceId}" WHERE UPPER("StationCode")=UPPER('${stationCode}')`
+                sql: `SELECT "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", "StationCategory" FROM "${stationsResourceId}" WHERE UPPER("StationCode")=UPPER('${stationCode}')`
             };
             fetch(url + new URLSearchParams(params))
             .then((resp) => {
@@ -259,9 +259,9 @@ export default function Index() {
   const createParams = (resource) => {
     let querySql;
     if (!analyte) {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "StationCategory" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultDisplay", "Unit", "AnalyteDisplay" AS "Analyte", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "ResultDisplay", "Unit", "AnalyteDisplay" AS "Analyte", "StationCategory" FROM "${resource}"`;
     };
     if (analyte || program || region) {
         // This block constucts the "WHERE" part of the select query
@@ -297,9 +297,9 @@ export default function Index() {
   const createTissueParams = (resource) => {
     let querySql;
     if (!analyte) {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "StationCategory" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "Result" as "ResultDisplay", "Unit", "AnalyteDisplay" AS "Analyte", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("LastSampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, MAX("SampleYear") OVER (PARTITION BY "StationCode") as "SampleYear", "CommonName", "ResultType", "Result" as "ResultDisplay", "Unit", "AnalyteDisplay" AS "Analyte", "StationCategory" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
@@ -337,9 +337,9 @@ export default function Index() {
   const createToxicityParams = (resource) => {
     let querySql;
     if (!analyte) {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "StationCategory" FROM "${resource}"`;
     } else {
-      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as "ResultDisplay", "Unit", "Analyte", "SiteType" FROM "${resource}"`;
+      querySql = `SELECT DISTINCT ON ("StationCode") "StationCode", "StationName", "TargetLatitude", "TargetLongitude", "Region", MAX("SampleDate") OVER (PARTITION BY "StationCode") as MaxSampleDate, "MeanDisplay" as "ResultDisplay", "Unit", "Analyte", "StationCategory" FROM "${resource}"`;
     };
     if (analyte || program || region || species) {
         // This block constucts the "WHERE" part of the select query
