@@ -149,6 +149,9 @@ export default function Chart({ analyte, data, setSiteShapeDict, unit, vizColors
                     yMax = 100;
                 } else if (Object.keys(analyteYMax).includes(analyte.label)) {
                     yMax = analyteYMax[analyte.label];
+                } else if (allResults.every(d => d === 0)) {
+                    // If every result is 0, then assign the yMax as 10 (arbitrary number) so that the zero data points are drawn at the bottom of the graph instead of the middle
+                    yMax = 10;
                 } else {
                     yMax = d3.max(allResults);
                 }
@@ -161,6 +164,8 @@ export default function Chart({ analyte, data, setSiteShapeDict, unit, vizColors
                 } else {
                     yMin = 0;
                 }
+
+                
 
                 const yScale = d3.scaleLinear()
                     .domain([yMin, yMax])

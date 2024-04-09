@@ -170,6 +170,12 @@ export default function ChartSpecies({
                     .ticks(numTicks)
                     .tickFormat(formatAsYear ? axisFormatDateYear : axisFormatDate);
 
+                let allResults = [];
+                for (let i = 0; i < siteKeys.length; i++) {
+                    const results = data.sites[siteKeys[i]].map(d => d.ResultDisplay);
+                    allResults = [...allResults, ...results];
+                }
+
                 // ** Calculate y-axis max
                 // For % values, fix at 100
                 // For some analytes (see analyteYMax dictionary in constants), we will use a pre-determined max
@@ -179,12 +185,10 @@ export default function ChartSpecies({
                     yMax = 100;
                 } else if (Object.keys(analyteYMax).includes(analyte.label)) {
                     yMax = analyteYMax[analyte.label];
+                } else if (allResults.every(d => d === 0)) {
+                    // If every result is 0, then assign the yMax as 10 (arbitrary number) so that the zero data points are drawn at the bottom of the graph instead of the middle
+                    yMax = 10;
                 } else {
-                    let allResults = [];
-                    for (let i = 0; i < siteKeys.length; i++) {
-                        const results = data.sites[siteKeys[i]].map(d => d.ResultDisplay);
-                        allResults = [...allResults, ...results];
-                    }
                     yMax = d3.max(allResults);
                 }
 

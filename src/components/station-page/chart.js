@@ -88,6 +88,8 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             .domain(dateExtent)
             .range([margin.left, width - margin.right]);
 
+        const results = data.map(d => d.ResultDisplay);
+
         // Define y scale
         let yMax;
         // For analytes with percent unit, fix y-axis to 0-100
@@ -96,8 +98,10 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             yMax = 100;
         } else if (Object.keys(analyteYMax).includes(analyte)) {
             yMax = analyteYMax[analyte];
+        } else if (results.every(d => d === 0)) {
+            // If every result is 0, then assign the yMax as 10 (arbitrary number) so that the zero data points are drawn at the bottom of the graph instead of the middle
+            yMax = 10;
         } else {
-            const results = data.map(d => d.ResultDisplay);
             yMax = d3.max(results);
         }
         const yScale = d3.scaleLinear()
