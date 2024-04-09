@@ -69,7 +69,7 @@ export default function SummaryTable({
     );
 
     const createParams = () => {
-        let querySql = `SELECT DISTINCT ON ("StationCode", "AnalyteDisplay", "CommonName", "SampleYear", "ResultType", "TissueName", "TissuePrep") "StationCode", "StationName", "Region", "SampleYear", "AnalyteDisplay" AS "Analyte", "CommonName", "ResultType", "Result", "Unit", "TissueName", "TissuePrep", "SiteType", "TargetLatitude", "TargetLongitude" FROM "${tissueResourceId}"`
+        let querySql = `SELECT DISTINCT ON ("StationCode", "AnalyteDisplay", "CommonName", "SampleYear", "ResultType", "TissueName", "TissuePrep") "StationCode", "StationName", "Region", "SampleYear", "AnalyteDisplay" AS "Analyte", "CommonName", "ResultType", "Result", "Unit", "TissueName", "TissuePrep", "StationCategory", "TargetLatitude", "TargetLongitude" FROM "${tissueResourceId}"`
         const whereStatements = [];
         if (analyte || program || region || species) {
             // This block constucts the "WHERE" part of the select query
@@ -467,12 +467,6 @@ export default function SummaryTable({
             });     
         }
     }, [visibleStations]);
-
-    useEffect(() => {
-        if (view === 'summary') {
-            console.log('summary logged');
-        }
-    }, [view]);
 
     return (
         <div className={tableContainer}>

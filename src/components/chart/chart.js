@@ -138,22 +138,32 @@ export default function Chart({ analyte, data, setSiteShapeDict, unit, vizColors
                 // For analytes with percent unit, fix y-axis to 0-100
                 // For some analytes (see analyteYMax dictionary in constants), we will use a pre-determined max
                 // For everything else, use the max result value
+                let allResults = [];
+                for (let i = 0; i < siteKeys.length; i++) {
+                    const results = data.sites[siteKeys[i]].map(d => d.ResultDisplay);
+                    allResults = [...allResults, ...results];
+                }
+
                 let yMax;
                 if (analyte.unit === '%') {
                     yMax = 100;
                 } else if (Object.keys(analyteYMax).includes(analyte.label)) {
                     yMax = analyteYMax[analyte.label];
                 } else {
-                    let allResults = [];
-                    for (let i = 0; i < siteKeys.length; i++) {
-                        const results = data.sites[siteKeys[i]].map(d => d.ResultDisplay);
-                        allResults = [...allResults, ...results];
-                    }
                     yMax = d3.max(allResults);
                 }
 
+                // ** Calculate y-axis min
+                // Check if there is a value below zero. If all values are above zero, then set zero as the min. Otherwise, set the lowest value as the min.
+                let yMin;
+                if (allResults.some(d => d < 0)) {
+                    yMin = d3.min(allResults);
+                } else {
+                    yMin = 0;
+                }
+
                 const yScale = d3.scaleLinear()
-                    .domain([0, yMax])
+                    .domain([yMin, yMax])
                     .range([height - margin.bottom, margin.top]);
 
                 // Define y-axis
