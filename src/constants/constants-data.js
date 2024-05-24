@@ -503,7 +503,7 @@ export const tissueDataFields = [
     'Region',
     'TargetLatitude',
     'TargetLongitude',
-    'TLAvgLength(mm)',
+    'TLAvgLength_mm',
     'DataQuality',
     'DataQualityIndicator',
     'N_in_Avg',
