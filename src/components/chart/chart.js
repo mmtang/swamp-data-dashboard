@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { analytes, analyteScoringCategories, analyteYMax } from '../../constants/constants-data';
-import { getCsciCategoryValue } from '../../utils/utils';
+import { getCsciCategoryValue, roundAsNeeded } from '../../utils/utils';
 import { customTooltip, modalContent } from './chart-panel.module.css';
 
 // Component for rendering graph on the dashboard index page (station panel)
@@ -291,7 +291,7 @@ export default function Chart({ analyte, data, setSiteShapeDict, unit, vizColors
                             if (siteKeys.length > 1) {
                                 content += '<span style="color: #ababab">' + d.StationName + '</span><br>'
                             }
-                            content += d.Analyte + ': ' + formatNumber(d.ResultDisplay) + ' ' + d.Unit;
+                            content += d.Analyte + ': ' + formatNumber(roundAsNeeded(d.ResultDisplay)) + ' ' + d.Unit;
                             if (['<', '>', '>=', '<='].includes(d.DisplayText)) {
                                 content += d.ResultQualCode + ' ';
                             }

@@ -19,7 +19,6 @@ export default function SummaryContainer({
     species,
     station,
     tableData,
-    view
 }) {   
     // State variables
     const [allRowKeys, setAllRowKeys] = useState([]); // Array for tracking all visible rows in the summary table
@@ -69,7 +68,6 @@ export default function SummaryContainer({
                     setStationLoading={setStationLoading}
                     species={species}
                     station={station}
-                    view={view}
                     visibleStations={visibleStations}
                 />
             </div>

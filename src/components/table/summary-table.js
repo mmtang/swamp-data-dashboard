@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import LoaderBlock from '../loaders/loader-block';
-import { capitalizeFirstLetter, formatNumber, regionNumDict, tissueResourceId } from '../../utils/utils';
+import { capitalizeFirstLetter, formatNumber, regionNumDict, roundAsNeeded, tissueResourceId } from '../../utils/utils';
 
 import Treeize from 'treeize';
 import { Cell, Column, HeaderCell, Table  } from 'rsuite-table';
@@ -30,7 +30,6 @@ export default function SummaryTable({
     setStationLoading,
     species,
     station,
-    view,
     visibleStations
 }) {
     // State variables
@@ -45,7 +44,7 @@ export default function SummaryTable({
     // Have to include the conditional statement checking for a valid value; otherwise, 'NaN' will show in the tree table where there should be empty spaces
     const NumberCell = ({ rowData, dataKey, ...props }) => (
         <Cell {...props}>
-            { !(isNaN(rowData[dataKey])) ? formatNumber(rowData[dataKey]) : '' } 
+            { !(isNaN(rowData[dataKey])) ? formatNumber(roundAsNeeded(rowData[dataKey])) : '' } 
         </Cell>
     );
 

@@ -4,7 +4,7 @@ import { Cell, Column, HeaderCell, Table,  } from 'rsuite-table';
 import 'rsuite-table/dist/css/rsuite-table.css';
 import { tableContainer } from './table2.module.css';
 
-import { formatNumber } from '../../utils/utils';
+import { formatNumber, roundAsNeeded } from '../../utils/utils';
 
 // This component generates the data table on the dashboard index page.
 // It makes use of the react-data-table-component library
@@ -35,7 +35,7 @@ export default function Table2({
     // Custom formatting for number columns
     const NumberCell = ({ rowData, dataKey, ...props }) => (
         <Cell {...props}>
-            {formatNumber(rowData[dataKey])}
+            {formatNumber(roundAsNeeded(rowData[dataKey]))}
         </Cell>
     );
 

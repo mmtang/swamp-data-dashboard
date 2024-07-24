@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
+import { roundAsNeeded } from '../../utils/utils';
 import { format, timeFormat } from 'd3';
 // Import styles
 import { container } from './panel-table.module.css';
@@ -64,10 +65,10 @@ export default function PanelTable({ analyte, data }) {
         {
             id: 'result',
             name: 'Result',
-            selector: row => row['ResultDisplay'],
+            selector: row => roundAsNeeded(row['ResultDisplay']),
             width: '90px',
             sortable: true,
-            format: row => formatResult(row['ResultDisplay']),
+            format: row => formatResult(roundAsNeeded(row['ResultDisplay'])),
             right: true
         },
         {
@@ -118,10 +119,10 @@ export default function PanelTable({ analyte, data }) {
         {
             id: 'result',
             name: 'Result',
-            selector: row => row['ResultDisplay'],
+            selector: row => roundAsNeeded(row['ResultDisplay']),
             width: '90px',
             sortable: true,
-            format: row => formatResult(row['ResultDisplay']),
+            format: row => formatResult(roundAsNeeded(row['ResultDisplay'])),
             right: true
         },
         {
@@ -180,10 +181,10 @@ export default function PanelTable({ analyte, data }) {
         {
             id: 'result',
             name: 'Result',
-            selector: row => row['ResultDisplay'],
+            selector: row => roundAsNeeded(row['ResultDisplay']),
             width: '85px',
             sortable: true,
-            format: row => formatResult(row['ResultDisplay']),
+            format: row => formatResult(roundAsNeeded(row['ResultDisplay'])),
             right: true
         },
         {

@@ -17,7 +17,7 @@ import {
     toxicityResourceId 
 } from '../../utils/utils';
 
-import { colorPaletteViz, roundPlaces } from '../../constants/constants-app';
+import { colorPaletteViz } from '../../constants/constants-app';
 import { chartContainer, menuContainer } from './panel-station-info.module.css';
 
 // This component generates the main content (below the site info) for when a station is selected. The dashboard loads different content based on whether or not an analyte/parameter was selected beforehand (or not)
@@ -119,7 +119,7 @@ export default function PanelStationInfo({
                             data.forEach(d => {
                                 d.Analyte = d.AnalyteDisplay;
                                 d.SampleDate = parseDate(d.SampleDate);
-                                d.ResultDisplay = parseFloat(((+d.ResultDisplay)).toFixed(roundPlaces));
+                                d.ResultDisplay = parseFloat(d.ResultDisplay);
                                 d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                                 if (d.Unit === 'none') {
                                     d.Unit = '';  // for pH records
@@ -128,14 +128,14 @@ export default function PanelStationInfo({
                         } else if (dataAnalyte.source === 'toxicity') {
                             data.forEach(d => {
                                 d.SampleDate = parseDate(d.SampleDate);
-                                d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(roundPlaces)));  // Use the ResultDisplay name for consistency when reusing chart component
+                                d.ResultDisplay = parseFloat(d.MeanDisplay);  // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Species = d.OrganismName;
                                 d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean                            
                             });
                         } else if (dataAnalyte.source === 'tissue') {
                             data.forEach(d => {
                                 d.SampleDate = dateToYear(parseDate(d.LastSampleDate));
-                                d.ResultDisplay = parseFloat(((+d.Result).toFixed(roundPlaces)));  // Use the ResultDisplay name for consistency when reusing chart component
+                                d.ResultDisplay = parseFloat(d.Result);  // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Species = d.CommonName;
                                 d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean   
                             });

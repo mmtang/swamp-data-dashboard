@@ -1,4 +1,5 @@
 import { format, timeParse, timeFormat } from 'd3';
+import { roundPlaces } from '../constants/constants-app';
 import { analyteScoringCategories } from '../constants/constants-data';
 
 export const parseDate = timeParse('%Y-%m-%dT%H:%M:%S');
@@ -327,6 +328,16 @@ export const round = (num, precision) => {
     var base = 10 ** precision;
     return (Math.round(num * base) / base).toFixed(precision);
 };
+
+// This function rounds a number to a number of decimal places as needed so that the returned number is above 0
+// Round up to 5 decimal places as needed (this can be changed)
+export const roundAsNeeded = (num) => {
+    for (let step = roundPlaces; step < 6; step++)
+        if ((+num).toFixed(step) > 0) {
+            return +(+num).toFixed(step + 1); // Add one to ensure that leading number is not rounded to next place
+        }
+    return num;
+}
 
 // Return the CSCI score category given the provided value
 // Either returns 'Likely intact' for non-reference sites or 'Likely intact (Reference)' for reference sites

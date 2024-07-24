@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import MatrixTag from '../common/matrix-tag';
 import DataTable from 'react-data-table-component';
 import { tableWrapper } from './station-table.module.css';
+import { roundPlaces } from '../../constants/constants-app';
+import { roundAsNeeded } from '../../utils/utils';
 
 // This component renders the table on the station page using data passed from index, the parent component
 export default function StationTable({ data, selectedAnalytes, setSelectedAnalytes }) {
@@ -89,37 +91,37 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
         {
             id: 'lastResult',
             name: 'Last Result',
-            selector: row => row['ResultDisplay'] + ' ' + row['Unit'],
+            selector: row => roundAsNeeded(row['ResultDisplay']) + ' ' + row['Unit'],
             width: '145px',
             sortable: false,
-            format: row => row['ResultDisplay'].toLocaleString() + ' ' + row['Unit'],
+            format: row => roundAsNeeded(row['ResultDisplay']) + ' ' + row['Unit'],
             right: true
         },
         {
             id: 'min',
             name: 'Min',
-            selector: row => row['Min'],
+            selector: row => roundAsNeeded(row['Min']),
             width: '84px',
             sortable: false,
-            format: row => row['Min'].toLocaleString(),
+            format: row => roundAsNeeded(row['Min']) + '',
             right: true
         },
         {
             id: 'mean',
             name: 'Mean',
-            selector: row => row['Mean'],
+            selector: row => roundAsNeeded(row['Mean']),
             width: '84px',
             sortable: false,
-            format: row => row['Mean'].toLocaleString(),
+            format: row => roundAsNeeded(row['Mean']) + '',
             right: true
         },
         {
             id: 'max',
             name: 'Max',
-            selector: row => row['Max'],
+            selector: row => roundAsNeeded(row['Max']),
             width: '84px',
             sortable: false,
-            format: row => row['Max'].toLocaleString(),
+            format: row => roundAsNeeded(row['Max']) + '',
             right: true
         }
     ];
@@ -172,37 +174,37 @@ export default function StationTable({ data, selectedAnalytes, setSelectedAnalyt
         {
             id: 'lastResult',
             name: 'Last Result',
-            selector: row => row['ResultDisplay'] + ' ' + row['Unit'],
+            selector: row => roundAsNeeded(row['ResultDisplay']) + ' ' + row['Unit'],
             width: '145px',
             sortable: false,
-            format: row => row['ResultDisplay'].toLocaleString() + ' ' + row['Unit'],
+            format: row => roundAsNeeded(row['ResultDisplay']) + ' ' + row['Unit'],
             right: true
         },
         {
             id: 'min',
             name: 'Min',
-            selector: row => row['Min'],
+            selector: row => roundAsNeeded(row['Min']),
             width: '84px',
             sortable: false,
-            format: row => row['Min'].toLocaleString(),
+            format: row => roundAsNeeded(row['Min']) + '',
             right: true
         },
         {
             id: 'mean',
             name: 'Mean',
-            selector: row => row['Mean'],
+            selector: row => roundAsNeeded(row['Mean']),
             width: '84px',
             sortable: false,
-            format: row => row['Mean'].toLocaleString(),
+            format: row => roundAsNeeded(row['Mean']) + '',
             right: true
         },
         {
             id: 'max',
             name: 'Max',
-            selector: row => row['Max'],
+            selector: row => roundAsNeeded(row['Max']),
             width: '84px',
             sortable: false,
-            format: row => row['Max'].toLocaleString(),
+            format: row => roundAsNeeded(row['Max']) + '',
             right: true
         }
     ];

@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import { colorPaletteViz } from '../../constants/constants-app';
 import { toxColors } from '../../constants/constants-app';
 import { analytes, analyteScoringCategories, analyteYMax, toxicitySigValues  } from '../../constants/constants-data';
-import { getCsciCategoryValue } from '../../utils/utils';
+import { getCsciCategoryValue, roundAsNeeded } from '../../utils/utils';
 
 import { chart, chartContainer, customTooltip } from './chart.module.css';
 
@@ -230,7 +230,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                 if (['<', '>', '<=', '>='].includes(d.DisplayText)) {
                     content += d.DisplayText + ' ';
                 }
-                content += formatNumber(d.ResultDisplay) + ' ' + d.Unit;
+                content += formatNumber(roundAsNeeded(d.ResultDisplay)) + ' ' + d.Unit;
                 if (d.Species) {
                     content += '<br>' + d.Species;
                     if (d.MatrixDisplay === 'tissue') {

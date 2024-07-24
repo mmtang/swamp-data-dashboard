@@ -7,7 +7,6 @@ import MatrixTag from '../common/matrix-tag';
 import NdMessage from '../common/nd-message';
 
 import { timeParse, extent, selectAll } from 'd3';
-import { roundPlaces } from '../../constants/constants-app';
 import { chemDataFields, habitatDataFields, tissueDataFields, toxicityDataFields } from '../../constants/constants-data';
 import { chemistryResourceId, habitatResourceId, tissueResourceId, toxicityResourceId } from '../../utils/utils';
 
@@ -105,7 +104,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         records.forEach(d => {
                             d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.SampleDate);
-                            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(roundPlaces));
+                            d.ResultDisplay = parseFloat(d.ResultDisplay);
                             d['Censored'] = d['Censored'].toLowerCase() === 'true';  // Convert string to boolean
                             if (analyte === 'pH') {
                                 d.Unit = '';
@@ -126,7 +125,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         records.forEach(d => {
                             d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.SampleDate);
-                            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(roundPlaces));
+                            d.ResultDisplay = parseFloat(d.ResultDisplay);
                             d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                         });
                         resolve(records);
@@ -144,7 +143,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         records.forEach(d => {
                             d.SampleDate = parseDate(d.SampleDate);
                             d.Species = d.OrganismName;
-                            d.ResultDisplay = parseFloat((+d.MeanDisplay).toFixed(roundPlaces));
+                            d.ResultDisplay = parseFloat(+d.MeanDisplay);
                             d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                         });
                         resolve(records);
@@ -163,7 +162,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                             d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.LastSampleDate);
                             d.Species = d.CommonName;
-                            d.ResultDisplay = parseFloat((+d.Result).toFixed(roundPlaces));
+                            d.ResultDisplay = parseFloat(d.Result);
                             d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
 
                         });

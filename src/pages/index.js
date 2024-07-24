@@ -11,7 +11,7 @@ import PanelStation from '../components/panels/panel-station';
 
 import { Modal } from 'semantic-ui-react';
 
-import { linkColorAlt, roundPlaces } from '../constants/constants-app';
+import { linkColorAlt } from '../constants/constants-app';
 import { 
   capitalizeFirstLetter, 
   chemistryResourceId,
@@ -104,7 +104,7 @@ export default function Index() {
         if (records) {
           records.forEach(d => {
             d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
-            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(roundPlaces));
+            d.ResultDisplay = parseFloat(d.ResultDisplay);
             d.RegionName = regionDict[d.Region];
             d.TargetLatitude = +d.TargetLatitude;
             d.TargetLongitude = +d.TargetLongitude;
@@ -135,7 +135,7 @@ export default function Index() {
         if (records) {
           records.forEach(d => {
             d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
-            d.ResultDisplay = parseFloat((+d.resultdisplay).toFixed(roundPlaces));
+            d.ResultDisplay = parseFloat(d.resultdisplay);
             d.RegionName = regionDict[d.Region];
             d.TargetLatitude = +d.TargetLatitude;
             d.TargetLongitude = +d.TargetLongitude;

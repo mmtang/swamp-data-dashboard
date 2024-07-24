@@ -125,7 +125,6 @@ export default function PanelMap({
                     species={species}
                     station={station}
                     tableData={tableData}
-                    view={view}
                 />
             </div>  
         </div>

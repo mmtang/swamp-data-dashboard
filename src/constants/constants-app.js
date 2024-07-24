@@ -104,4 +104,4 @@ export const toxColors = {
 
 export const referenceSitesText = "Reference sites are sampling locations where human disturbance is absent or minimal. These sites are used to set benchmark expectations for healthy streams."
 
-export const roundPlaces = 3;
+export const roundPlaces = 2;

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { toxColors } from '../../constants/constants-app';
 import { analytes, analyteScoringCategories, analyteYMax, toxicitySigValues } from '../../constants/constants-data';
+import { roundAsNeeded } from '../../utils/utils';
 import { customTooltip, modalContent } from './chart-panel.module.css';
 
 // Component for rendering graph on the dashboard index page (station panel) for toxicity and tissue data
@@ -312,7 +313,7 @@ export default function ChartSpecies({
                             if (['<', '>', '>=', '<='].includes(d.DisplayText)) {
                                 content += d.ResultQualCode + ' ';
                             }
-                            content += formatNumber(d.ResultDisplay) + ' ' + d.Unit + '<br>';
+                            content += formatNumber(roundAsNeeded(d.ResultDisplay)) + ' ' + d.Unit + '<br>';
                             if (d.Species) {
                                 content += d.Species;
                             }

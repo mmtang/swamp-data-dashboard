@@ -14,7 +14,7 @@ import TableMenu from '../../components/station-page/table-menu';
 import TableSearch from '../../components/station-page/table-search';
 
 import { Label, Popup } from 'semantic-ui-react';
-import { linkColorAlt, popupStyle, referenceSitesText, roundPlaces } from '../../constants/constants-app';
+import { linkColorAlt, popupStyle, referenceSitesText } from '../../constants/constants-app';
 import { 
     chemistryResourceId, 
     habitatResourceId, 
@@ -156,12 +156,12 @@ export default function Station(props) {
                     if (records.length > 0) {
                         records.forEach(d => {
                             d.NumResults = +d.count;
-                            d.Min = parseFloat((+d.minresult).toFixed(roundPlaces));
-                            d.Mean = parseFloat((+d.avgresult).toFixed(roundPlaces));
-                            d.Max = parseFloat((+d.maxresult).toFixed(roundPlaces));
+                            d.Min = parseFloat(d.minresult);
+                            d.Mean = parseFloat(d.avgresult);
+                            d.Max = parseFloat(d.maxresult);
                             d.Unit = (d.Analyte === 'pH' ? '' : d.Unit);
                             d.LastSampleDate = formatDate(parseDate(d.maxsampledate));
-                            d.ResultDisplay = parseFloat((+d.ResultDisplay).toFixed(roundPlaces));
+                            d.ResultDisplay = parseFloat(d.ResultDisplay);
                             d.Source = source;
                         });
                     }
