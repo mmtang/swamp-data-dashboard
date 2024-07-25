@@ -51,7 +51,16 @@ export default function ChartSection({ station, selectedAnalytes }) {
                 }
                 const mergedDates = [].concat(...allDates);  // Merge into a single array
                 // Calculate extent
-                const dateExtent = extent(mergedDates);
+                let dateExtent = extent(mergedDates);
+                
+                // Check if a tissue data type was selected; if a tissue analyte is selected, need to move the date of the earliest year to January 1 and the date of the most recent year to January 1 the followig year. For example, the earliest date of 06/02/2012 becomes 01/01/2012 and the latest date of 09/08/2013 becomes 01/01/2014. Do this, otherwise points for tissue data will be drawn outside the graph's x-axis extent
+                const allDataSources = analyteList.map(d => d.Source);
+                if (allDataSources.includes('tissue') && (results.length > 1) && (dateExtent[0] != dateExtent[1])) {
+                    const alteredExtentDates = [new Date(dateExtent[0].getFullYear(), 0, 1), new Date(dateExtent[1].getFullYear() + 1, 0, 11)];
+                    dateExtent = alteredExtentDates;
+                }
+
+                // Save date extent values to the extent reference
                 dateExtentRef.current = dateExtent;
 
                 // *** Organize the returned data into a dictionary organized by analyte name
@@ -201,7 +210,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         </DownloadData>
                     </div>
                     <Chart 
-                        analyte={analyteObj.Analyte}
+                        analyte={analyteObj}
                         data={data ? data[analyteObj.Key].data : null}
                         dateExtent={dateExtentRef.current}
                         unit={data ? data[analyteObj.Key].unit : null}

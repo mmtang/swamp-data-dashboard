@@ -112,12 +112,20 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
         // Limit number of ticks based on width of chart (screen size)
         const numTicks = targetWidth < 600 ? 5 : null;
         
+        // Old criteria, not using anymore. Keep for reference. See below for updated code/criteria.
         // Check multiple criteria to see if the x-axis should be formatted as year or as the full date
-        const formatAsYear = (((data.length > 1) && (dateExtent[0] !== dateExtent[1])) && ((dateExtent[0].getYear() !== dateExtent[1].getYear()) || (analyte.source === 'tissue')));
+        //const formatAsYear = ((data.length > 1) && (dateExtent[0] !== dateExtent[1]) && (dateExtent[0].getYear() !== dateExtent[1].getYear())) || (analyte.source === 'tissue');
+
+        // Format x-axis labels as years for all tissue data
+        const formatAsYear = analyte.Source === 'tissue';
+
+        // Check if there is only one year in the date extent
+        // Trying to address issue of graphing tissue data + non tissue data at the same time with the same date extent. Want to show years for tissue data and the full date for non tissue
+        const oneYearExtent = dateExtent[0].getFullYear() === dateExtent[1].getFullYear();
 
         const xAxis = d3.axisBottom()
             .scale(xScale)
-            .ticks(numTicks)
+            .ticks(formatAsYear && oneYearExtent ? 1 : formatAsYear ? d3.timeYear.every(1) : numTicks)
             .tickFormat(formatAsYear ? axisFormatDateYear : axisFormatDate);
         chart.append('g')
             .attr('class', 'x axis')
@@ -208,7 +216,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             .enter().append('circle')
             .attr('class', 'circle')
             .attr('r', 5)
-            .attr('cx', d => xScale(d.SampleDate))
+            .attr('cx', d => xScale(formatAsYear ? new Date(parseInt(d.SampleYear), 0) : d.SampleDate)) // Convert the sample year (string) to new datetime object (first January of the year)
             .attr('cy', d => yScale(d.ResultDisplay))
             .attr('fill', d=> {
                 if (d.SigEffectCode) {
@@ -270,7 +278,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                 return tooltip.style('opacity', 0);
             })
             .merge(points)
-            .attr('cx', d => xScale(d.SampleDate))
+            .attr('cx', d => xScale(formatAsYear ? new Date(parseInt(d.SampleYear), 0) : d.SampleDate))
             .attr('cy', d => yScale(d.ResultDisplay));
         points.exit()
             .remove();
