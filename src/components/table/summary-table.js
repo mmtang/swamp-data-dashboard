@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import LoaderBlock from '../loaders/loader-block';
-import { capitalizeFirstLetter, formatNumber, regionNumDict, roundAsNeeded, tissueResourceId } from '../../utils/utils';
+import { capitalizeFirstLetter, cleanParameter, formatNumber, regionNumDict, roundAsNeeded, tissueResourceId } from '../../utils/utils';
 
 import Treeize from 'treeize';
 import { Cell, Column, HeaderCell, Table  } from 'rsuite-table';
@@ -74,7 +74,7 @@ export default function SummaryTable({
             // This block constucts the "WHERE" part of the select query
             // There can be one or more filters
             if (analyte) {
-                whereStatements.push(`"AnalyteDisplay" = '${analyte.label}'`);
+                whereStatements.push(`"AnalyteDisplay" = '${cleanParameter(analyte.label)}'`);
                 whereStatements.push(`"MatrixDisplay" = '${analyte.matrix}'`);
             }
             if (program) {

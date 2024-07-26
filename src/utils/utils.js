@@ -314,6 +314,11 @@ export const convertStationsToGeoJSON = (data) => {
     }
 }
 
+// Used for cleaning up characters that can mess up API requests, mainly used for analyte names
+export const cleanParameter = (str) => { 
+    return str.replace(/'/g, "''"); // replace single quote with two single quotes;
+}
+
 export const hexToRGB = (hex) => {
     const r = parseInt(hex.slice(1, 3), 16),
           g = parseInt(hex.slice(3, 5), 16),

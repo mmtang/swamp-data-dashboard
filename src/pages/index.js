@@ -8,6 +8,7 @@ import Metadata from '../components/layout/metadata';
 import PanelIndex from '../components/panels/panel-index';
 import PanelMap from '../components/panels/panel-map';
 import PanelStation from '../components/panels/panel-station';
+import { cleanParameter } from '../utils/utils';
 
 import { Modal } from 'semantic-ui-react';
 
@@ -268,7 +269,7 @@ export default function Index() {
         // There can be one or more filters
         const whereStatements = [];
         if (analyte) {
-          whereStatements.push(`"AnalyteDisplay" = '${analyte.label}'`);
+          whereStatements.push(`"AnalyteDisplay" = '${cleanParameter(analyte.label)}'`);
           whereStatements.push(`"MatrixDisplay" = '${analyte.matrix}'`);
         }
         if (program) {
@@ -306,7 +307,7 @@ export default function Index() {
         // There can be one or more filters
         const whereStatements = [];
         if (analyte) {
-          whereStatements.push(`"AnalyteDisplay" = '${analyte.label}'`);
+          whereStatements.push(`"AnalyteDisplay" = '${cleanParameter(analyte.label)}'`);
           whereStatements.push(`"MatrixDisplay" = '${analyte.matrix}'`);
         }
         if (program) {
@@ -346,7 +347,7 @@ export default function Index() {
         // There can be one or more filters
         const whereStatements = [];
         if (analyte) {
-          whereStatements.push(`"Analyte" = '${analyte.label}'`);
+          whereStatements.push(`"Analyte" = '${cleanParameter(analyte.label)}'`);
           whereStatements.push(`"MatrixDisplay" = '${analyte.matrix}'`);
         }
         if (program) {

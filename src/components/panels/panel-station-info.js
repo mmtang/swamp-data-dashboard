@@ -11,6 +11,7 @@ import { Menu, Segment } from 'semantic-ui-react';
 import { 
     capitalizeFirstLetter, 
     chemistryResourceId, 
+    cleanParameter,
     habitatResourceId, 
     parseDate, 
     tissueResourceId, 
@@ -76,16 +77,16 @@ export default function PanelStationInfo({
                 let sql;
                 if (dataAnalyte.source === 'chemistry') {
                     resource = chemistryResourceId;
-                    sql = `SELECT * FROM "${resource}" WHERE "AnalyteDisplay" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                    sql = `SELECT * FROM "${resource}" WHERE "AnalyteDisplay" = '${cleanParameter(dataAnalyte.label)}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 } else if (dataAnalyte.source === 'habitat') {
                     resource = habitatResourceId;
-                    sql = `SELECT * FROM "${resource}" WHERE "AnalyteDisplay" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                    sql = `SELECT * FROM "${resource}" WHERE "AnalyteDisplay" = '${cleanParameter(dataAnalyte.label)}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 } else if (dataAnalyte.source === 'toxicity') {
                     resource = toxicityResourceId;
-                    sql = `SELECT * FROM "${resource}" WHERE "Analyte" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                    sql = `SELECT * FROM "${resource}" WHERE "Analyte" = '${cleanParameter(dataAnalyte.label)}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 } else if (dataAnalyte.source === 'tissue') {
                     resource = tissueResourceId;
-                    sql = `SELECT * FROM "${resource}" WHERE "Analyte" = '${dataAnalyte.label}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
+                    sql = `SELECT * FROM "${resource}" WHERE "Analyte" = '${cleanParameter(dataAnalyte.label)}' AND "MatrixDisplay" = '${dataAnalyte.matrix}' AND "StationCode" = '${station.StationCode}' AND "DataQuality" NOT IN ('MetaData', 'Reject record')`;
                 }
                 // Build query string
                 const url = 'https://data.ca.gov/api/3/action/datastore_search_sql?';
