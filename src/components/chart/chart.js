@@ -164,13 +164,11 @@ export default function Chart({ analyte, data, setSiteShapeDict, unit, vizColors
                 // ** Calculate y-axis min
                 // Check if there is a value below zero. If all values are above zero, then set zero as the min. Otherwise, set the lowest value as the min.
                 let yMin;
-                if (allResults.some(d => d < 0)) {
+                if (d3.min(allResults) < 0) {
                     yMin = d3.min(allResults);
                 } else {
                     yMin = 0;
                 }
-
-                
 
                 const yScale = d3.scaleLinear()
                     .domain([yMin, yMax])

@@ -198,8 +198,17 @@ export default function ChartSpecies({
                     yMax = d3.max(allResults);
                 }
 
+                // ** Calculate y-axis min
+                // Check if there is a value below zero. If all values are above zero, then set zero as the min. Otherwise, set the lowest value as the min.
+                let yMin;
+                if (d3.min(allResults) < 0) {
+                    yMin = d3.min(allResults);
+                } else {
+                    yMin = 0;
+                }
+
                 const yScale = d3.scaleLinear()
-                    .domain([0, yMax])
+                    .domain([yMin, yMax])
                     .range([height - margin.bottom, margin.top]);
 
                 // Define y-axis
