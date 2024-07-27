@@ -95,7 +95,12 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
         // For analytes with percent unit, fix y-axis to 0-100
         // For some analytes with scoring categories or thresholds (see analyteYMax dictionary), we will want to use a pre-determined max
         if (unit === '%') {
-            yMax = 100;
+            // % for some analytes can be > 100
+            if (d3.max(results) > 100) {
+                yMax = d3.max(results);
+            } else {
+                yMax = 100;
+            }
         } else if (Object.keys(analyteYMax).includes(analyte)) {
             yMax = analyteYMax[analyte];
         } else if (results.every(d => d === 0)) {

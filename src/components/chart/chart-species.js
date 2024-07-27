@@ -183,7 +183,12 @@ export default function ChartSpecies({
                 // For everything else, use the max result value
                 let yMax;
                 if (analyte.unit === '%') {
-                    yMax = 100;
+                    // % for some analytes can be > 100
+                    if (d3.max(allResults) > 100) {
+                        yMax = d3.max(allResults);
+                    } else {
+                        yMax = 100;
+                    }
                 } else if (Object.keys(analyteYMax).includes(analyte.label)) {
                     yMax = analyteYMax[analyte.label];
                 } else if (allResults.every(d => d === 0)) {
