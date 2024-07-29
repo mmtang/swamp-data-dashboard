@@ -231,7 +231,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             .enter().append('circle')
             .attr('class', 'circle')
             .attr('r', 5)
-            .attr('cx', d => xScale(formatAsYear ? new Date(parseInt(d.SampleYear), 0) : d.SampleDate)) // Convert the sample year (string) to new datetime object (first January of the year)
+            .attr('cx', d => xScale(formatAsYear ? new Date(parseInt(d.SampleYear), 0, 1) : d.SampleDate)) // Convert the sample year (string) to new datetime object (first January of the year)
             .attr('cy', d => yScale(d.ResultDisplay))
             .attr('fill', d=> {
                 if (d.SigEffectCode) {
@@ -293,7 +293,7 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
                 return tooltip.style('opacity', 0);
             })
             .merge(points)
-            .attr('cx', d => xScale(formatAsYear ? new Date(parseInt(d.SampleYear), 0) : d.SampleDate))
+            .attr('cx', d => xScale(formatAsYear ? new Date(parseInt(d.SampleYear), 0, 1) : d.SampleDate))
             .attr('cy', d => yScale(d.ResultDisplay));
         points.exit()
             .remove();
