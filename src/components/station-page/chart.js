@@ -101,8 +101,8 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
             } else {
                 yMax = 100;
             }
-        } else if (Object.keys(analyteYMax).includes(analyte)) {
-            yMax = analyteYMax[analyte];
+        } else if (Object.keys(analyteYMax).includes(analyte['Analyte'])) {
+            yMax = analyteYMax[analyte['Analyte']];
         } else if (results.every(d => d === 0)) {
             // If every result is 0, then assign the yMax as 10 (arbitrary number) so that the zero data points are drawn at the bottom of the graph instead of the middle
             yMax = 10;
@@ -188,10 +188,11 @@ export default function Chart({ analyte, data, dateExtent, unit }) {
 
         // Draw reference geometries
         // Check that reference values exist
-        if (analytes[analyte]) {
-            if (Object.keys(analyteScoringCategories).includes(analytes[analyte].code)) {
+        const analyteName = analyte['Analyte'];
+        if (analytes[analyteName]) {
+            if (Object.keys(analyteScoringCategories).includes(analytes[analyteName].code)) {
                 // Get reference values
-                const categories = analyteScoringCategories[analytes[analyte].code];
+                const categories = analyteScoringCategories[analytes[analyteName].code];
                 if (categories.length > 0) {
                     // Rectangles (area graphs)
                     const rects = categories.filter(d => d['type'] === 'area');
