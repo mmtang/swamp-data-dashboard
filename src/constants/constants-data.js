@@ -253,28 +253,28 @@ export const analyteScoringCategories = {
             type: 'area',
             label: 'Very likely altered',
             lowerValue: 0,
-            upperValue: 0.704, // Actal given range is <= 0.70
+            upperValue: 0.71, // < 0.71
             fillColor: '#FBB4AE'
         },
         {
             type: 'area',
             label: 'Likely altered',
-            lowerValue: 0.705,  
-            upperValue: 0.834, // Actal given range is 0.71 - 0.83
+            lowerValue: 0.71, // >= 0.71
+            upperValue: 0.84, // < 0.84
             fillColor: '#FED9A6'
         },
         {
             type: 'area',
             label: 'Possibly altered',
-            lowerValue: 0.835,  
-            upperValue: 0.934, // Actual given range is 0.84 - 0.93
+            lowerValue: 0.84,  // >= 0.84
+            upperValue: 0.94, // < 0.94
             fillColor: '#FFFFCC'
         },
         {
             type: 'area',
             label: 'Likely intact',
-            lowerValue: 0.935,
-            upperValue: 1.4, // Actual given range is >= 0.94
+            lowerValue: 0.94, // >= 0.94
+            upperValue: 1.4,
             fillColor: '#CCEBC5'
         }
     ]

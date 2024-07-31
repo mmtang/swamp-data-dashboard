@@ -361,4 +361,20 @@ export const getCsciCategoryValue = (row, refText = true) => {
     }
 }
 
+// Return the IPI score category given the provided value
+export const getIpiCategoryValue = (row, refText = true) => {
+    const ipiCategories = analyteScoringCategories['ipi'];
+    for (let i = 0; i < ipiCategories.length; i++) {
+        let stringText = '';
+        const result = row['ResultDisplay'];
+        if ((result >= ipiCategories[i].lowerValue) && (result < ipiCategories[i].upperValue)) {
+            stringText += ipiCategories[i].label;
+            if (refText === true && row['StationCategory'] === 'Reference') {
+                stringText += ' (Reference site)'
+            }
+            return stringText;
+        } 
+    }
+}
+
 
