@@ -77,10 +77,9 @@ export const linkColorAlt = {
 
 // Matrix colors
 export const matrixColor = {
-    //'benthic': '#e76f51',
-    //'habitat': '#1a4d2e',
     'samplewater': '#0081a7',
     'sediment': '#917c78',
+    'tissue': '#00665A', 
     'other': '#0f4c5c'
 }
 

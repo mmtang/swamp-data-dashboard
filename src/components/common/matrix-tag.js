@@ -4,8 +4,9 @@ import { tagBox, tagWrapper } from './matrix-tag.module.css';
 
 export default function MatrixTag({ matrix, height }) {
     const sedimentColor = matrixColor['sediment'];
+    const tissueColor = matrixColor['tissue'];
     const waterColor = matrixColor['samplewater'];
-    const otherColor = '#0f4c5c';
+    const otherColor = matrixColor['other'];
 
     const tagColor = (matrix) => {
         switch (matrix) {
@@ -14,6 +15,9 @@ export default function MatrixTag({ matrix, height }) {
                 break;
             case 'sediment':
                 return sedimentColor;
+                break;
+            case 'tissue':
+                return tissueColor;
                 break;
             default:
                 return otherColor;

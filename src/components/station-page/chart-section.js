@@ -7,6 +7,7 @@ import MatrixTag from '../common/matrix-tag';
 import NdMessage from '../common/nd-message';
 
 import { timeParse, extent, selectAll } from 'd3';
+import { matrixColor } from '../../constants/constants-app';
 import { chemDataFields, habitatDataFields, tissueDataFields, toxicityDataFields } from '../../constants/constants-data';
 import { chemistryResourceId, cleanParameter, habitatResourceId, tissueResourceId, toxicityResourceId } from '../../utils/utils';
 
@@ -190,7 +191,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
         <div className={sectionContainer}>
             { vizAnalytes.map(analyteObj => 
                 <div key={analyteObj.Key}>
-                    <div className={analyteHeader}>
+                    <div className={analyteHeader} style={{ borderTop: `5px solid ${matrixColor[analyteObj.Matrix] || matrixColor['other']}` }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             { analyteObj.Matrix ? <MatrixTag matrix={analyteObj.Matrix} height={25} /> : null }
                             <h4 className={analyteTitle}>
