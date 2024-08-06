@@ -59,7 +59,7 @@ export default function Station(props) {
             const params = new URLSearchParams(document.location.search);
             const stationCode = params.get('id');
             if (stationCode) {
-                stationCodeRef.current = stationCode.toUpperCase();
+                stationCodeRef.current = stationCode;
                 resolve(stationCode);
             } else {
                 // Error catching for when there is not an id param in the page request (cannot parse id value). Does not check if the station value/code is valid (see getStationInfo)
