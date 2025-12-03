@@ -91,9 +91,9 @@ export const bpPolyRenderer = {
     ]
 }
 
-export const irLineRenderer2020 = {
+export const irLineRenderer = {
     type: 'unique-value',
-    field: 'listing_status',
+    field: 'listingstatus',
     defaultSymbol: { type: 'simple-line' },
     uniqueValueInfos: [
         {
@@ -115,9 +115,9 @@ export const irLineRenderer2020 = {
     ]
 }
 
-export const irPolyRenderer2020 = {
+export const irPolyRenderer = {
     type: 'unique-value',
-    field: 'listing_status',
+    field: 'listingstatus',
     defaultSymbol: { type: 'simple-fill' },
     uniqueValueInfos: [
         {

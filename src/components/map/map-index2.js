@@ -8,8 +8,8 @@ import {
     bpLineRenderer, 
     bpPolyRenderer, 
     csciStationRenderer,
-    irLineRenderer2020, 
-    irPolyRenderer2020, 
+    irLineRenderer, 
+    irPolyRenderer, 
     regionRenderer, 
     stationRenderer 
 } from './map-renderer';
@@ -60,9 +60,9 @@ export default function MapIndex2({
     const divRef = useRef(null); // Map container
     const expandGalleryRef = useRef(null); // Used for basemap gallery
     // IR Sublayers - Need to have separate refs for both layers because the features in each layer will be filtered by region based on user selection. The refs are needed to change the layer's definition expression
-    const irLayer2020Ref = useRef(null);
-    const irLine2020Ref = useRef(null);
-    const irPoly2020Ref = useRef(null);
+    const irLayerRef = useRef(null);
+    const irLineRef = useRef(null);
+    const irPolyRef = useRef(null);
     const landUseLayerRef = useRef(null);
     const layerListRef = useRef(null);
     const listenerRef = useRef(null); // Used for keeping track of selection modes, example: user selecting comparison sites
@@ -103,52 +103,67 @@ export default function MapIndex2({
 
     // This function fetches the Integrated Report layer services for polys and lines and stores both in a group layer object. The IR features are visible on the map upon initial load
     const drawIntegratedReport = () => {
-        const irTemplate2020 = {
+        const irTemplate = {
             // Must include these outfields here (and in the layer creator) for the content function to receive the feature attributes
-            outFields: ['waterbody_id', 'waterbody_name', 'regional_board', 'waterbody_type', 'waterbody_category', 'listing_status', 'pollutants_listed', 'fact_sheet', 'wb_size', 'waterbody_counties'],
-            title: '<div style="padding: 4px 0"><span style="font-size: 1.05em; color: #ffffff">{waterbody_name}</span></div>',
+            outFields: ['waterbodyid', 'waterbodyname', 'boardname', 'waterbodytype', 'waterbodysize', 'waterbodyunit', 'integratedreportcategory', 'listingstatus', 'newpollutantlisted', 'newpollutantsdelisted', 'pastcyclelistings', 'hyperlink'],
+            title: '<div style="padding: 4px 0"><span style="font-size: 1.05em; color: #ffffff">{waterbodyname}</span></div>',
             content: [
                 {
                     type: 'fields',
                     fieldInfos: [
                         {
-                            fieldName: 'waterbody_id',
-                            label: 'ID',
+                            fieldName: 'waterbodyid',
+                            label: 'Waterbody ID',
                             visible: true
                         },
                         {
-                            fieldName: 'waterbody_type',
-                            label: 'Type',
+                            fieldName: 'waterbodytype',
+                            label: 'Waterbody Type',
                             visible: true
                         },
                         {
-                            fieldName: 'regional_board',
-                            label: 'Region',
+                            fieldName: 'boardname',
+                            label: 'Regional Board Name',
                             visible: true
                         },
                         {
-                            fieldName: 'waterbody_category',
-                            label: 'Waterbody Category',
+                            fieldName: 'waterbodysize',
+                            label: 'Waterbody Size',
                             visible: true
                         },
                         {
-                            fieldName: 'wb_size',
-                            label: 'Size (miles)',
+                            fieldName: 'waterbodyunit',
+                            label: 'Waterbody Size Units',
+                            visible: true
+                        },
+                                                {
+                            fieldName: 'integratedreportcategory',
+                            label: 'IR Category',
                             visible: true
                         },
                         {
-                            fieldName: 'listing_status',
+                            fieldName: 'listingstatus',
                             label: 'Listing Status',
                             visible: true
                         },
                         {
-                            fieldName: 'pollutants_listed',
-                            label: 'Pollutants Listed',
+                            fieldName: 'newpollutantlisted',
+                            label: 'New Pollutant Listed',
                             visible: true
                         },
                         {
-                            fieldName: 'fact_sheet',
-                            label: 'Fact Sheet',
+                            fieldName: 'newpollutantsdelisted',
+                            label: 'New Pollutants Delisted',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'pastcyclelistings',
+                            label: 'Past Cycle Listings',
+                            visible: true
+                        },
+                        {
+                            fieldName: 'hyperlink',
+                            label: 'Hyperlink',
                             visible: true
                         }
                     ]
@@ -159,31 +174,31 @@ export default function MapIndex2({
             if (mapRef) {
                 loadModules(['esri/layers/FeatureLayer', 'esri/layers/GroupLayer'])
                 .then(([FeatureLayer, GroupLayer]) => {
-                    // 2020 IR Layer
-                    irLine2020Ref.current = new FeatureLayer({
-                        id: 'ir-line-layer-2020',
-                        title: 'Streams, Rivers, Beaches',
-                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Lines/FeatureServer/0',
-                        outfields: ['waterbody_id', 'waterbody_name', 'waterbody_counties', 'wb_size', 'waterbody_type', 'regional_board', 'wb_category', 'listing_status', 'fact_sheet', 'pollutants_listed'],
+                    // IR Layer
+                    irLineRef.current = new FeatureLayer({
+                        id: 'ir-line-layer',
+                        title: '2024 Integrated Report Lines',
+                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Proposed_2024_Integrated_Report_Lines/FeatureServer/0',
+                        outfields: ['waterbodyid', 'waterbodyname', 'boardname', 'waterbodytype', 'waterbodysize', 'waterbodyunit', 'integratedreportcategory', 'listingstatus', 'newpollutantlisted', 'newpollutantsdelisted', 'pastcyclelistings', 'hyperlink'],
                         listMode: 'hide',
-                        popupTemplate: irTemplate2020,
-                        renderer: irLineRenderer2020
+                        popupTemplate: irTemplate,
+                        renderer: irLineRenderer
                     });
-                    irPoly2020Ref.current = new FeatureLayer({
-                        id: 'ir-poly-layer-2020',
-                        title: 'Lakes, Bays, Reservoirs',
-                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/Polys/FeatureServer/0',
-                        outfields: ['waterbody_id', 'waterbody_name', 'waterbody_counties', 'wb_size', 'waterbody_type', 'regional_board', 'wb_category', 'listing_status', 'fact_sheet', 'pollutants_listed'],
+                    irPolyRef.current = new FeatureLayer({
+                        id: 'ir-poly-layer',
+                        title: '2024 Integrated Report Polygons',
+                        url: 'https://gispublic.waterboards.ca.gov/portalserver/rest/services/Hosted/2024_Integrated_Report_Polygons/FeatureServer/0',
+                        outfields: ['waterbodyid', 'waterbodyname', 'boardname', 'waterbodytype', 'waterbodysize', 'waterbodyunit', 'integratedreportcategory', 'listingstatus', 'newpollutantlisted', 'newpollutantsdelisted', 'pastcyclelistings', 'hyperlink'],
                         listMode: 'hide',
                         opacity: 0.8,
-                        popupTemplate: irTemplate2020,
-                        renderer: irPolyRenderer2020
+                        popupTemplate: irTemplate,
+                        renderer: irPolyRenderer
                     });
-                    irLayer2020Ref.current = new GroupLayer({
-                        id: 'ir-group-layer-2020',
-                        title: '2020-2022 Integrated Report',
+                    irLayerRef.current = new GroupLayer({
+                        id: 'ir-group-layer',
+                        title: '2024 Integrated Report',
                         visible: true,
-                        layers: [irLine2020Ref.current, irPoly2020Ref.current],
+                        layers: [irLineRef.current, irPolyRef.current],
                         listMode: 'show',
                         visibilityMode: 'inherited'
                     });
@@ -224,15 +239,15 @@ export default function MapIndex2({
     const refreshIntegratedReport = () => {
         const constructDefExp = () => {
             if (region) {
-                return `regional_board = '${irRegionDict[regionDict[region]]}'`;
+                return `boardname = '${irRegionDict[regionDict[region]]}'`;
             } else if (!region) {
                 return '';
             }
         }
         if (mapRef.current) {
             // Update filters
-            irLine2020Ref.current.definitionExpression = constructDefExp();
-            irPoly2020Ref.current.definitionExpression = constructDefExp();
+            irLineRef.current.definitionExpression = constructDefExp();
+            irPolyRef.current.definitionExpression = constructDefExp();
         }
     }
 
@@ -480,7 +495,7 @@ export default function MapIndex2({
                     // Add layers in order
                     mapRef.current.addMany([
                         landUseLayerRef.current, 
-                        irLayer2020Ref.current,
+                        irLayerRef.current,
                         stationLayerRef.current
                     ]);
                     // addStationPopupListener();
@@ -970,22 +985,22 @@ export default function MapIndex2({
         // At some point, want to change this so it's not hard-coded
         searchRef.current.sources = [
             {
-                layer: irLine2020Ref.current,
-                searchFields: ['waterbody_id', 'waterbody_name'],
-                displayField: 'waterbody_name',
+                layer: irLineRef.current,
+                searchFields: ['waterbodyid', 'waterbodyname'],
+                displayField: 'waterbodyname',
                 exactMatch: false,
-                outFields: ['waterbody_name'],
-                name: '2020-2022 Integrated Report Streams, Rivers, Beaches',
-                placeholder: 'Example: Burney Creek'
+                outFields: ['waterbodyname'],
+                name: '2024 Integrated Report Lines',
+                placeholder: 'Example: Wildcat Creek'
             },
             {
-                layer: irPoly2020Ref.current,
-                searchFields: ['waterbody_id', 'waterbody_name'],
-                displayField: 'waterbody_name',
+                layer: irPolyRef.current,
+                searchFields: ['waterbodyid', 'waterbodyname'],
+                displayField: 'waterbodyname',
                 exactMatch: false,
-                outFields: ['waterbody_name'],
-                name: '2020-2022 Integrated Report Lakes, Bays, Reservoirs',
-                placeholder: 'Example: Folsom Lake'
+                outFields: ['waterbodyname'],
+                name: '2024 Integrated Report Polygons',
+                placeholder: 'Example: Irvine Lake'
             },
             {
                 layer: stationLayerRef.current,
