@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import DownloadData from '../common/download-data';
 
+import { stationDownloadFields } from '../../constants/constants-data';
+
 import { Button, Icon } from 'semantic-ui-react';
 import { downloadButton } from './bulk-download.module.css';
 
@@ -11,16 +13,6 @@ export default function BulkDownloadStations({ stationData }) {
     const [dataError, setDataError] = useState(false);
     const [downloadData, setDownloadData] = useState(null);
     const [fetchingData, setFetchingData] = useState(false);
-
-    const fields = [
-        'StationCode',
-        'StationName',
-        'TargetLatitude',
-        'TargetLongitude',
-        'Region',
-        'RegionName',
-        'SiteType'
-    ]
 
     const handleDownload = () => {
         setFetchingData(true);
@@ -55,7 +47,7 @@ export default function BulkDownloadStations({ stationData }) {
                     compact={true}
                     data={downloadData} 
                     disabled={ stationData ? false : true }
-                    fields={fields}
+                    fields={stationDownloadFields}
                     size='tiny'
                 >
                     Download stations
