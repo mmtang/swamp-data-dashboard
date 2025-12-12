@@ -1,15 +1,15 @@
 .iconWrapper {
     align-items: center; 
     display: flex;
-    height: 34px;
+    height: 35px;
     justify-content: center;
     margin-left: 0.6em;
-    width: 34px;
+    width: 35px;
 }
 
 .logo {
     vertical-align: middle;
-    height: 34px;
+    height: 35px;
     margin: auto 16px auto 0;
 }
 
@@ -39,7 +39,7 @@
 }
 
 .searchContainer {
-    border: 1px solid #2e4558;
+    border: 2px solid #2e4558;
 }
 
 .titleContainer {
