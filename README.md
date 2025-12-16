@@ -12,22 +12,34 @@ A web application for exploring and downloading water quality data collected by 
 
 ## Installation
 
-Install the Gatsby CLI via [npm](https://www.npmjs.com). -g to install globally.
+Install Node.js. Verify the installation of node and npm:
 
 ```
-npm install -g gatsby-cli
+node -v     # node version 18+
+npm -v      # npm version 9+
 ```
 
-Clone the repository and navigate into the directory.
+Clone the repository and navigate into the directory:
 
 ```
 git clone https://github.com/mmtang/swamp-data-dashboard.git
 cd swamp-data-dashboard
 ```
 
-Run the app in development mode and view it in the browser.
+Install development dependencies:
+
+```
+npm install
+```
+
+Run the app in development mode:
 
 ```
 gatsby develop
+```
+
+View it in the browser:
+
+```
 open http://localhost:8000
 ```
