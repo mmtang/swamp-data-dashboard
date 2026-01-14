@@ -82,16 +82,28 @@ export default function BulkDownloadResults({ analyte, program, region, species 
                     .then((records) => {
                         // Process the returned data based on the data source/type
                         let data = records;
-                        if (analyte.source === 'chemistry' || analyte.source === 'habitat') {
+                        if (analyte.source === 'chemistry') {
                             data.forEach(d => {
                                 d.SampleDate = parseDate(d.SampleDate);
+                                d.CalibrationDate = parseDate(d.CalibrationDate);
+                                d.PrepPreservationDate = parseDate(d.PrepPreservationDate);
+                                d.DigestExtractDate = parseDate(d.DigestExtractDate);
+                                d.AnalysisDate = parseDate(d.AnalysisDate);
                                 d.ResultDisplay = parseFloat(((+d.ResultDisplay)).toFixed(roundPlaces));
                                 d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                             });
                         }
+                        if (analyte.source === 'habitat') {
+                            data.forEach(d => {
+                                d.SampleDate = parseDate(d.SampleDate);
+                                d.ResultDisplay = parseFloat(((+d.ResultDisplay)).toFixed(roundPlaces));
+                                d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
+                            })
+                        }
                         if (analyte.source === 'toxicity') {
                             data.forEach(d => {
                                 d.SampleDate = parseDate(d.SampleDate);
+                                d.ToxBatchStartDate = parseDate(d.ToxBatchStartDate);
                                 d.ResultDisplay = parseFloat(((+d.MeanDisplay).toFixed(roundPlaces))); // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Censored = false;  // Convert string to boolean                            
                             });

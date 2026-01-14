@@ -61,7 +61,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     // If all selected analytes are tissue analytes and all sample years are the same year
                     const singleYearExtentDates = [new Date(dateExtent[0].getFullYear(), 0, 1), new Date(dateExtent[0].getFullYear(), 0, 1)];
                     dateExtent = singleYearExtentDates;
-                } else if (allDataSources.includes('tissue') && (dateExtent[0] != dateExtent[1])) {
+                } else if (allDataSources.includes('tissue') && (dateExtent[0] !== dateExtent[1])) {
                     const alteredExtentDates = [new Date(dateExtent[0].getFullYear(), 0, 1), new Date(dateExtent[1].getFullYear(), 11, 31)];
                     dateExtent = alteredExtentDates;
                 }
@@ -119,6 +119,10 @@ export default function ChartSection({ station, selectedAnalytes }) {
                         records.forEach(d => {
                             d.Analyte = d.AnalyteDisplay;
                             d.SampleDate = parseDate(d.SampleDate);
+                            d.CalibrationDate = parseDate(d.CalibrationDate);
+                            d.PrepPreservationDate = parseDate(d.PrepPreservationDate);
+                            d.DigestExtractDate = parseDate(d.DigestExtractDate);
+                            d.AnalysisDate = parseDate(d.AnalysisDate);
                             d.ResultDisplay = parseFloat(d.ResultDisplay);
                             d['Censored'] = d['Censored'].toLowerCase() === 'true';  // Convert string to boolean
                             if (analyte === 'pH') {
@@ -157,6 +161,7 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     .then(records => {
                         records.forEach(d => {
                             d.SampleDate = parseDate(d.SampleDate);
+                            d.ToxBatchStartDate = parseDate(d.ToxBatchStartDate);
                             d.Species = d.OrganismName;
                             d.ResultDisplay = parseFloat(+d.MeanDisplay);
                             d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
@@ -175,7 +180,8 @@ export default function ChartSection({ station, selectedAnalytes }) {
                     .then(records => {
                         records.forEach(d => {
                             d.Analyte = d.AnalyteDisplay;
-                            d.SampleDate = parseDate(d.LastSampleDate);
+                            d.SampleDate = parseDate(d.LastSampleDate); // Include a copy of LastSampleDate as SampleDate for the chart
+                            d.LastSampleDate = parseDate(d.LastSampleDate);
                             d.Species = d.CommonName;
                             d.ResultDisplay = parseFloat(d.Result);
                             d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean

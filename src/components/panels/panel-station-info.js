@@ -116,19 +116,31 @@ export default function PanelStationInfo({
                     .then((records) => {
                         // Process the returned data based on the data source/type
                         let data = records;
-                        if (dataAnalyte.source === 'chemistry' || dataAnalyte.source === 'habitat') {
+                        if (dataAnalyte.source === 'chemistry') {
                             data.forEach(d => {
                                 d.Analyte = d.AnalyteDisplay;
                                 d.SampleDate = parseDate(d.SampleDate);
+                                d.CalibrationDate = parseDate(d.CalibrationDate);
+                                d.PrepPreservationDate = parseDate(d.PrepPreservationDate);
+                                d.DigestExtractDate = parseDate(d.DigestExtractDate);
+                                d.AnalysisDate = parseDate(d.AnalysisDate);
                                 d.ResultDisplay = parseFloat(d.ResultDisplay);
                                 d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
                                 if (d.Unit === 'none') {
                                     d.Unit = '';  // for pH records
                                 }
                             });
+                        } else if (dataAnalyte.source === 'habitat') {
+                            data.forEach(d => {
+                                d.Analyte = d.AnalyteDisplay;
+                                d.SampleDate = parseDate(d.SampleDate);
+                                d.ResultDisplay = parseFloat(d.ResultDisplay);
+                                d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean
+                            })
                         } else if (dataAnalyte.source === 'toxicity') {
                             data.forEach(d => {
                                 d.SampleDate = parseDate(d.SampleDate);
+                                d.ToxBatchStartDate = parseDate(d.ToxBatchStartDate);
                                 d.ResultDisplay = parseFloat(d.MeanDisplay);  // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Species = d.OrganismName;
                                 d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean                            
@@ -136,6 +148,7 @@ export default function PanelStationInfo({
                         } else if (dataAnalyte.source === 'tissue') {
                             data.forEach(d => {
                                 d.SampleDate = dateToYear(parseDate(d.LastSampleDate));
+                                d.LastSampleDate = dateToYear(parseDate(d.LastSampleDate));
                                 d.ResultDisplay = parseFloat(d.Result);  // Use the ResultDisplay name for consistency when reusing chart component
                                 d.Species = d.CommonName;
                                 d.Censored = d.Censored.toLowerCase() === 'true';  // Convert string to boolean   

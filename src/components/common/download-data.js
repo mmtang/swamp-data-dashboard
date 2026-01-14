@@ -4,6 +4,8 @@ import { Button, Icon } from 'semantic-ui-react';
 import { timeFormat } from 'd3';
 import { rowButton } from './download-data.module.css';
 
+import { dateFields } from '../../constants/constants-data';
+
 // This component renders a button. When the button is clicked, the array of JavaScript objects passed to the component is converted to a CSV file and downloaded in the browser.
 export default function DownloadData({ 
     children, 
@@ -30,7 +32,7 @@ export default function DownloadData({
             const header = csvFields.join(columnDelimiter);
             const rows = array.map(obj => {
                 return csvFields.map(fieldName => { 
-                        if (fieldName === 'SampleDate') {
+                        if (dateFields.includes(fieldName)) {
                             // Formatting of the date in file has to be done here, trying to do so elsewhere changes the date value of the data points in the chart, which breaks the tooltip. Not sure why. 
                             if (obj[fieldName]) {
                                 return formatDate(obj[fieldName]); 

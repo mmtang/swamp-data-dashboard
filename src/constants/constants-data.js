@@ -354,7 +354,6 @@ export const chemDataFields = [
     'DataQuality',
     'DataQualityIndicator',
     'ResultDisplay',
-    'Region',
     'DisplayText',
     'Censored',
     'AnalyteDisplay',
@@ -578,4 +577,14 @@ export const dataQualityCategories = [
 
 export const toxicitySigValues = [
     'SL'
+]
+
+export const dateFields = [
+    'SampleDate',
+    'CalibrationDate',
+    'PrepPreservationDate',
+    'DigestExtractDate',
+    'AnalysisDate',
+    'ToxBatchStartDate',
+    'LastSampleDate'
 ]
